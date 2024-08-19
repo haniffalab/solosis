@@ -1,0 +1,137 @@
+#!/lustre/scratch126/cellgen/team298/soft/hlb-conda/hl_minimal_v1.0.0/bin/python
+# Path is hard coded to avoid conflicts between the user defined python exec and this
+# @vm11
+# Date created: Mon  5 Aug 14:42:55 BST 2024
+# Date modified: Mon 19 Aug 11:40:23 BST 2024
+
+
+
+import click
+import subprocess
+import os
+import functools 
+SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
+
+
+#### Create options that can common to all ####
+
+cmd_test = [
+    click.option("--farm")
+]
+
+def farm_options(func):
+
+    @click.option('--mem')
+    @click.option('--ncores')
+    @click.option('--nprocs')
+    @click.option('')
+    @functools.wraps(func)
+    
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@click.group()
+def cli():
+    """
+    Command line suite for HaniffaLab
+    version 1.0.0
+    """
+    pass
+
+
+@cli.group()
+def irods():
+    """
+    Set of commands for interacting with irods
+    Please note that you have `iinit` before running these commands
+    """
+    pass
+
+@cli.group()
+def test():
+    """
+    testing for development.
+    this will be group name.
+    """
+    pass
+
+
+
+
+@irods.command()
+@click.option('--samplefile', required=True, help="Sample file text file")
+def download_processed(samplefile):
+    """
+    Downloads processed irods data or any folder from irods
+    and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
+    Requires a sample file.
+    
+    -----------------------
+    
+    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+    Input file should have 3 mandatory columns
+    1st column: sanger_id
+    2nd column: sample_name
+    LAST column: irods path
+    You can have any column in between
+
+    pBCN14844712 BK31_1 /seq/illumina/runs/49/..../cellranger710multi....
+    pBCN14844713 BK31_2 /seq/illumina/runs/49/..../cellranger710multi....
+    pBCN14844714 BK31_3 /seq/illumina/runs/49/..../cellranger710multi....
+    pBCN14844715 BK31_4 /seq/illumina/runs/49/..../cellranger710multi....
+   
+    
+    
+    
+    ----------------------
+
+    Suggested way. Open Haniffa sample tracker excel file.
+    Copy/paste your project sample rows to a local excel file.
+    Remove columns to match required format.
+
+    """
+    shell_script=os.path.join(SHELL_SCRIPT_BASE,"irods..download_processed")
+    result = subprocess.run([shell_script, samplefile ], capture_output=True, text=True)
+    click.echo(result.stdout)
+
+@test.command()
+@click.option('--first_name', required=True, help="First name")
+@click.option('--last_name', required=True, help="Last name")
+#@click.option('--farm', is_flag=True, help="Last name")
+def helloworld(first_name, last_name, **kwargs):
+    """
+    Doc string will be displayed when help is displayed.
+    first_name: first name
+    last name: Any thing 
+    """
+    print(kwargs)
+    pass 
+
+    if farm:
+        shell_script='echo'
+        results = subprocess.run([shell_script, '"Hello World"', first_name, last_name], capture_output = True, text = True)
+        print(results)
+    else:
+        print(f"Hello World.... {first_name} {last_name}")
+
+    return 0
+
+
+@test.command()
+def cellbender():
+    """
+    Doc string will be displayed when help is displayed.
+    Cellbender Removes droplets and ambient RNA from scRNA seq data.
+    Version:0.3.0
+    sample_ID: list of samples, CSV file format needed and header as 'samples' 
+    """
+    shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender")
+    result_CB = subprocess.run([shell_cellbender_script], capture_output=True, text=True)
+    click.echo(result_CB.stdout)
+
+
+
+if __name__ == "__main__":
+    cli()
