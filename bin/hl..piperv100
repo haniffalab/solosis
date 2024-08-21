@@ -10,6 +10,7 @@ import click
 import subprocess
 import os
 import functools 
+from cmdbase import helpers 
 SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
 
 
@@ -21,21 +22,20 @@ cmd_test = [
 
 
 def hist(func):
+    @functools.wraps(func) # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
-        print("hist....")
+        rn = helpers.generate_random_name()
+        print(rn)
         print(f"kwargs of {func.__name__} : {kwargs}")
         result = func(*args, **kwargs)
         return result
     return wrapper
-
-
 
 def farm_options(func):
 
     @click.option('--mem')
     @click.option('--ncores')
     @click.option('--nprocs')
-    @click.option('')
     @functools.wraps(func)
     
     def wrapper(*args, **kwargs):
@@ -111,7 +111,6 @@ def download_processed(samplefile):
 @test.command()
 @click.option('--first_name', required=True, help="First name")
 @click.option('--last_name', required=True, help="Last name")
-#@click.option('--farm', is_flag=True, help="Last name")
 def helloworld(first_name, last_name, **kwargs):
     """
     Doc string will be displayed when help is displayed.
@@ -128,9 +127,13 @@ def helloworld(first_name, last_name, **kwargs):
 
     return "Hello World"
 
+@test.command()
+@click.option('--x')
+@farm_options
 @hist
-def test_hist(x):
-    return 
+def test_hist(x, *args, **kwargs):
+    print(x)
+    return x
 
 
 
