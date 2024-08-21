@@ -19,6 +19,17 @@ cmd_test = [
     click.option("--farm")
 ]
 
+
+def hist(func):
+    def wrapper(*args, **kwargs):
+        print("hist....")
+        print(f"kwargs of {func.__name__} : {kwargs}")
+        result = func(*args, **kwargs)
+        return result
+    return wrapper
+
+
+
 def farm_options(func):
 
     @click.option('--mem')
@@ -50,6 +61,7 @@ def irods():
     pass
 
 @cli.group()
+#@hist
 def test():
     """
     testing for development.
@@ -106,9 +118,7 @@ def helloworld(first_name, last_name, **kwargs):
     first_name: first name
     last name: Any thing 
     """
-    print(kwargs)
-    pass 
-
+    farm = 0
     if farm:
         shell_script='echo'
         results = subprocess.run([shell_script, '"Hello World"', first_name, last_name], capture_output = True, text = True)
@@ -116,22 +126,34 @@ def helloworld(first_name, last_name, **kwargs):
     else:
         print(f"Hello World.... {first_name} {last_name}")
 
-    return 0
+    return "Hello World"
+
+@hist
+def test_hist(x):
+    return 
+
 
 
 @test.command()
-def cellbender():
+@click.option('--total_droplets_included', required=True, help="total_droplets_included")
+def cellbender(total_droplets_included, **kwargs):
     """
-    Doc string will be displayed when help is displayed.
-    Cellbender Removes droplets and ambient RNA from scRNA seq data.
-    Version:0.3.0
-    sample_ID: list of samples, CSV file format needed and header as 'samples' 
+    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
+    --------------------------------- \n
+        [ C E L L B E N D E R]  
+
+    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
+    Version:0.3.0.
+   
+    sample_ID: list of samples, CSV file format needed and header as 'samples'
+    ---------------------------------
     """
-    shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender")
-    result_CB = subprocess.run([shell_cellbender_script], capture_output=True, text=True)
+    shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender") #can we change script base to sc-voyage dir?
+    result_CB = subprocess.run([shell_cellbender_script, total_droplets_included], capture_output=True, text=True)
     click.echo(result_CB.stdout)
 
 
 
 if __name__ == "__main__":
     cli()
+    #test_hist(2)
