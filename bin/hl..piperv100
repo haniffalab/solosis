@@ -104,9 +104,12 @@ def download_processed(samplefile):
     Remove columns to match required format.
 
     """
+    print("Using irods to download data")
+    print("If you have a large set of files, this command will take a while to run")
     shell_script=os.path.join(SHELL_SCRIPT_BASE,"irods..download_processed")
     result = subprocess.run([shell_script, samplefile ], capture_output=True, text=True)
     click.echo(result.stdout)
+
 
 @test.command()
 @click.option('--first_name', required=True, help="First name")
@@ -141,7 +144,7 @@ def test_hist(x, *args, **kwargs):
 @click.option('--total_droplets_included', required=True, help="total_droplets_included")
 def cellbender(total_droplets_included, **kwargs):
     """
-    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
+    Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
     --------------------------------- \n
         [ C E L L B E N D E R]  
 
@@ -154,6 +157,25 @@ def cellbender(total_droplets_included, **kwargs):
     shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender") #can we change script base to sc-voyage dir?
     result_CB = subprocess.run([shell_cellbender_script, total_droplets_included], capture_output=True, text=True)
     click.echo(result_CB.stdout)
+
+
+
+@test.command()
+def cellranger():
+    """
+    Cellranger aligns sc-rna seq reads...  
+    --------------------------------- \n
+        [ C E L L R A N G E R]  
+
+    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly & annotation, and Feature Barcode analysis from single cell data.  
+    Version:7.2.0.
+   
+    sample_ID: list of samples, CSV file format needed and header as 'samples'
+    ---------------------------------
+    """
+    shell_cellranger_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellranger") #can we change script base to sc-voyage d>
+    result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
+    click.echo(result_CR.stdout)
 
 
 
