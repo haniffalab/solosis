@@ -8,7 +8,7 @@ This suite is made to work with farm22. The instructions below are to be perform
 1. Append your bashrc
 
 ```
-echo "source /lustre/scratch126/cellgen/team298/soft/hl.bashrc" >> $HOME/.bashrc
+echo "source /software/cellgen/team298/shared/hl.bashrc" >> $HOME/.bashrc
 source ~/.bashrc
 ```
 
