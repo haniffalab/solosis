@@ -21,10 +21,22 @@ fi
 #### INPUT #### 
 file=$1
 ofile=$(basename $file).irods
+retain_bam=$2
+retain_bam=0
 rm -f $ofile
 target_dir=$HL_IRODS_DOWNLOAD # This is obtained by module load hl
+cwd=`pwd`
+rn=$RANDOM
+echo $rn
 ####
 
+
+#### FARM options ####
+queue="normal"
+walltime="03:00:00"
+
+bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M500 -R\"select[mem>500] rusage[mem=500]\" "
+irods_command="iget -KVf --progress -r "
 while read line
 do
     if [ `echo $line | grep -c -i Sample` -ne 1 ]; then
@@ -32,10 +44,20 @@ do
         sample_id=`echo $line | awk ' { print $2 } '`
         irods_path=`echo $line | awk ' { print $NF } '`
         folder_name="$target_dir/${sample_id}_${sanger_id}"
-#        rm -rf $folder_name
-        echo "Irods::$irods_path --> Folder::$folder_name"
-        echo "iget -KVf --progress -r $irods_path $folder_name" >>  $ofile
+	if [ -d $folder_name ]; then
+		echo "[Warn] Target folder already exists. Not downloading. Irods::$irods_path --> Folder::$folder_name"
+	else
+		echo "[Info] Irods::$irods_path --> Folder::$folder_name"
+		if [ $retain_bam == 1 ]; then
+			echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
+		else
+			echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ; rm -rf $folder_name/gex_possorted_bam.bam ; find $folder_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
+		fi
+
+	fi
     fi
 done < $file
 
-bsub -J irods_dl -o irods_dl_%J.log -e irods_dl_%J.log -q normal -n 1  -M4000 -R"select[mem>4000] rusage[mem=4000]" bash $ofile
+
+#bsub -J irods_dl -o irods_dl_%J.log -e irods_dl_%J.log -q normal -n 1  -M4000 -R"select[mem>4000] rusage[mem=4000]" bash $ofile
+bash $ofile
