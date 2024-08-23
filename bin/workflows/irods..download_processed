@@ -1,8 +1,4 @@
 #!/bin/bash
-
-
-
-#!/bin/bash
 # @vm11
 # Thu  6 Jun 13:15:00 BST 2024
 
@@ -10,7 +6,7 @@
 
 if [ $# -ne 1 ]; then
     echo "hl..irods samples.txt"
-    echo "Input example is in /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt"
+    echo "Input example is in /software/cellgen/team298/shared/hlpiper_v1.0.0/examples/irods_download.txt"
     echo "Input file should have 3 mandatory columns"
     echo "1st column: sanger_id"
     echo "2nd column: sample_name"
