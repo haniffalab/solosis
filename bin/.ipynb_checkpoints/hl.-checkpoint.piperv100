@@ -10,8 +10,7 @@ import click
 import subprocess
 import os
 import functools 
-from pathlib import Path
-from cmdbase import helpers 
+
 SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
 
 
@@ -25,11 +24,22 @@ cmd_test = [
 def hist(func):
     @functools.wraps(func) # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
-        print(rn)
+        print("hist....")
         print(f"kwargs of {func.__name__} : {kwargs}")
         result = func(*args, **kwargs)
         return result
     return wrapper
+
+def my_custom_decorator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print("Custom decorator: Before the function call")
+        result = func(*args, **kwargs)
+        print("Custom decorator: After the function call")
+        return result
+    return wrapper
+
+
 
 def farm_options(func):
 
@@ -69,13 +79,7 @@ def test():
     """
     pass
 
-@cli.group()
-def scRNA_analysis():
-    """
-    Set of commands for analysing scRNA-seq data including:
-    alignment, demultiplexing, removal of ambient RNA & doublets.
-    """
-    pass
+
 
 
 @irods.command()
@@ -110,13 +114,9 @@ def download_processed(samplefile):
     Remove columns to match required format.
 
     """
-    print("Using irods to download data")
-    print("If you have a large set of files, this command will take a while to run")
     shell_script=os.path.join(SHELL_SCRIPT_BASE,"irods..download_processed")
     result = subprocess.run([shell_script, samplefile ], capture_output=True, text=True)
     click.echo(result.stdout)
-    click.echo(result.stderr)
-
 
 @test.command()
 @click.option('--first_name', required=True, help="First name")
@@ -140,7 +140,6 @@ def helloworld(first_name, last_name, **kwargs):
 @test.command()
 @click.option('--x')
 @farm_options
-@hist
 def test_hist(x, *args, **kwargs):
     print(x)
     return x
@@ -151,7 +150,7 @@ def test_hist(x, *args, **kwargs):
 @click.option('--total_droplets_included', required=True, help="total_droplets_included")
 def cellbender(total_droplets_included, **kwargs):
     """
-    Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
+    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
     --------------------------------- \n
         [ C E L L B E N D E R]  
 
@@ -167,65 +166,6 @@ def cellbender(total_droplets_included, **kwargs):
 
 
 
-@test.command()
-def cellranger():
-    """
-    Cellranger aligns sc-rna seq reads...  
-    --------------------------------- \n
-        [ C E L L R A N G E R]  
-
-    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly & annotation, and Feature Barcode analysis from single cell data.  
-    Version:7.2.0.
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellranger_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellranger") #can we change script base to sc-voyage d>
-    result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
-    click.echo(result_CR.stdout)
-
-
-@scRNA_analysis.command()
-@click.option('--total_droplets_included', required=True, help="total_droplets_included")
-def cellbender(total_droplets_included, **kwargs):
-    """
-    Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
-    --------------------------------- \n
-        [ C E L L B E N D E R]  
-
-    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
-    Version:0.3.0.
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender") #can we change script base to sc-voyage d>
-    result_CB = subprocess.run([shell_cellbender_script, total_droplets_included], capture_output=True, text=True)
-    click.echo(result_CB.stdout)
-
-
-@scRNA_analysis.command()
-def cellranger():
-    """
-    Cellranger aligns sc-rna seq reads...  
-    --------------------------------- \n
-        [ C E L L R A N G E R]  
-
-    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly>
-    Version:7.2.0.
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellranger_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellranger") #can we change script base to sc-voyage d>
-    result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
-    click.echo(result_CR.stdout)
-
 if __name__ == "__main__":
-    
-    rn = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
-    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
     cli()
-
     #test_hist(2)

@@ -18,6 +18,9 @@ if [ $# -ne 1 ]; then
     echo "You can have any column in between"
     exit 0
 fi
+
+HL_HIST_FOLDER=".pap/"
+
 #### INPUT #### 
 file=$1
 ofile=$(basename $file).irods
@@ -37,8 +40,12 @@ walltime="03:00:00"
 
 bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M500 -R\"select[mem>500] rusage[mem=500]\" "
 irods_command="iget -KVf --progress -r "
+####
+
+declare -i i=0
 while read line
 do
+	i+=1
     if [ `echo $line | grep -c -i Sample` -ne 1 ]; then
         sanger_id=`echo $line | awk ' { print $1 } '`
         sample_id=`echo $line | awk ' { print $2 } '`
@@ -47,17 +54,31 @@ do
 	if [ -d $folder_name ]; then
 		echo "[Warn] Target folder already exists. Not downloading. Irods::$irods_path --> Folder::$folder_name"
 	else
-		echo "[Info] Irods::$irods_path --> Folder::$folder_name"
+		echo "($i)[Info] Irods::$irods_path --> Folder::$folder_name"
 		if [ $retain_bam == 1 ]; then
-			echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
+			#echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
+			echo "$irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
 		else
-			echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ; rm -rf $folder_name/gex_possorted_bam.bam ; find $folder_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
+			#echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ; rm -rf $folder_name/gex_possorted_bam.bam ; find $folder_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
+			echo "$irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ; rm -rf $folder_name/gex_possorted_bam.bam ; find $folder_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
 		fi
 
 	fi
     fi
 done < $file
 
+total_jobs=$(cat $ofile | wc -l)
+
+cat > irods_dl_${rn}.bsub <<EOF
+#!/bin/bash
+#BSUB -J irods_dl_${rn}_[1-$total_jobs]%20
+#BSUB -o $HL_HIST_FOLDER/lsf/irods_dl_${rn}_%I.out
+#BSUB -e $HL_HIST_FOLDER/lsf/irods_dl_${rn}_%I.err
+
+COMMAND=\$(sed -n "\${LSB_JOBINDEX}p" $ofile) 
+eval \$COMMAND
+EOF
 
 #bsub -J irods_dl -o irods_dl_%J.log -e irods_dl_%J.log -q normal -n 1  -M4000 -R"select[mem>4000] rusage[mem=4000]" bash $ofile
-bash $ofile
+#bash $ofile
+bsub < irods_dl_${rn}.bsub

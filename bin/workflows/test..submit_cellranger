@@ -1,0 +1,25 @@
+#!/bin/bash
+# @lg28
+# Wed  21 Aug 12:48:40 BST 2024
+
+
+set -euo pipefail
+
+GROUP="team298"
+CPU=16
+MEM=64000
+Q="normal"
+
+while IFS=, read -r sample; do
+  bsub \
+    -n $CPU \
+    -M $MEM \
+    -R"span[hosts=1] select[mem>${MEM}] rusage[mem=${MEM}]" \
+    -G $GROUP \
+    -q $Q \
+    -o $VOY_CODE/logs/$sample.%J.bsub.log \
+    -e $VOY_CODE/logs/$sample.%J.bsub.err \
+    $VOY_CODE/cellranger/cellranger_count.sh $sample $VOY_TMP/$sample
+done < <(tail -n +2 $VOY_CODE/samples.csv)
+
+
