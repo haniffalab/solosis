@@ -1,0 +1,19 @@
+#!/bin/bash
+
+
+if [ $# -lt 4 ]; then
+	echo "Usage: $0 job_name queue ncores mem [file/command]"
+	exit 0
+fi
+
+job_name=$1; shift
+queue=$1; shift
+ncores=$1; shift
+mem=$1; shift
+
+
+
+
+bsub -J $job_name -o ${job_name}_%J.log -e ${job_name}_%J.log -q $queue -n $ncores  -M$mem -R"select[mem>$mem] rusage[mem=$mem]" $@
+
+

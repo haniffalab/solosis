@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+if [ $# -lt 4 ]; then
+	echo "Usage: $0 job_name queue ncores mem file_of_commands.txt"
+	exit 0
+fi
+
+job_name=$1; shift
+queue=$1; shift
+ncores=$1; shift
+mem=$1; shift
+ofile=$1; shift
+
+
+total_jobs=$(cat $ofile | wc -l)
+bsub_file=${job_name}_${rn}.bsub
+
+cat > $bsub_file <<eof
+#!/bin/bash
+#bsub -j irods_dl_${rn}_[1-$total_jobs]%20
+#bsub -o $hl_hist_folder/lsf/irods_dl_${rn}_%i.out
+#bsub -e $hl_hist_folder/lsf/irods_dl_${rn}_%i.err
+#bsub -n 1  
+#bsub -m $mem
+#bsub -r "select[mem>$mem] rusage[mem=$mem]"
+#bsub -w $walltime
+command=\$(sed -n "\${lsb_jobindex}p" $ofile) 
+eval \$command
+eof
+
+bsub < $bsub_file
+
+
+
+
