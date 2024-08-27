@@ -83,6 +83,14 @@ def scRNA_analysis():
     """
     pass
 
+@cli.group()
+def alignment():
+"""
+Set of commands for seq data alignment.
+"""
+pass
+
+################ irods commands ################
 
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
@@ -123,6 +131,23 @@ def download_processed(samplefile):
     click.echo(result.stdout)
     click.echo(result.stderr)
 
+
+@irods.command()
+##@click.option('--samplefile', required=True, help="Sample file text file")
+def pull_fastqs():
+    """
+    Downloads processed irods data or any folder from irods
+    and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
+    Requires a sample file.
+    """
+    print("Using irods to download data")
+    print("If you have a large set of files, this command will take a while to run")
+    shell_script_fq=os.path.join(SHELL_SCRIPT_BASE,"irods..fastqs")
+    result_fq = subprocess.run([shell_script_fq], capture_output=True, text=True)
+    click.echo(result_fq.stdout)
+    click.echo(result_fq.stderr)
+
+############### test commands ###################
 
 @test.command()
 @click.option("--first_name", required=True, help="First name")
@@ -205,6 +230,7 @@ def cellranger():
     )
     click.echo(result_CR.stdout)
 
+################### scrna seq analysis commands ###################
 
 @scRNA_analysis.command()
 @click.option('--total_droplets_included', required=True, help="total_droplets_included")
@@ -224,8 +250,9 @@ def cellbender(total_droplets_included, **kwargs):
     result_CB = subprocess.run([shell_cellbender_script, total_droplets_included], capture_output=True, text=True)
     click.echo(result_CB.stdout)
 
+################# alignment commands ###################
 
-@scRNA_analysis.command()
+@alignment.command()
 def cellranger():
     """
     Cellranger aligns sc-rna seq reads...  
@@ -241,6 +268,27 @@ def cellranger():
     shell_cellranger_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellranger") #can we change script base to sc-voyage d>
     result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
     click.echo(result_CR.stdout)
+
+
+@alignment.command()
+def starsolo():
+    """
+    STARsolo aligns sc-rna seq reads...  
+    --------------------------------- \n
+        [ S T A R S O L O ]  
+
+    STARsolo ...
+    Version:2.7.11b   
+   
+    sample_ID: list of samples, CSV file format needed and header as 'samples'
+    ---------------------------------
+    """
+    shell_starsolo_script=os.path.join(SHELL_SCRIPT_BASE,"alignment..submit_starsolo") #can we change script base to sc-voyage dir
+    result_STAR = subprocess.run([shell_starsolo_script], capture_output=True, text=True)
+    click.echo(result_STAR.stdout)
+
+####
+
 
 if __name__ == "__main__":
     
