@@ -1,4 +1,4 @@
-# hlpiper
+# Haniffa-utils
 
 A plug and play pipeline for the lab
 This suite is made to work with farm22. The instructions below are to be performed in farm unless otherwise stated.
