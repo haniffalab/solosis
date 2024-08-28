@@ -1,0 +1,22 @@
+#!/bin/bash
+# @lg28
+# Thu  22 Aug 16:46:44 BST 2024
+
+set -euo pipefail
+
+GROUP="team298"
+CPU=16
+MEM=64000
+Q="normal"
+
+while IFS=, read -r sample; do
+  bsub \
+    -n $CPU \
+    -M $MEM \
+    -R"span[hosts=1] select[mem>${MEM}] rusage[mem=${MEM}]" \
+    -G $GROUP \
+    -q $Q \
+    -o $VOY_CODE/logs/$sample.%J.bsub.log \
+    -e $VOY_CODE/logs/$sample.%J.bsub.err \
+    $VOY_CODE/starsolo/starsolo_10x_auto.sh $VOY_TMP/$sample $sample $VOY_DATA/$sample/starsolo
+done < <(tail -n +2 $VOY_CODE/samples.csv)
