@@ -18,7 +18,7 @@ from datetime import datetime
 
 SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
 LOCAL_HIST=".pap/hist"
-GLOBAL_HIST=""
+GLOBAL_HIST=os.path.join(os.environ['HOME'],".pap", "hist")
 
 #### Create options that can common to all ####
 
@@ -28,8 +28,8 @@ def create_env():
     CWD = os.getcwd() # Current Working dir
     Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
     Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
-    with open(LOCAL_HIST, 'a'):
-        pass
+    #with open(LOCAL_HIST, 'a'):
+    #    pass
     return CWD
 
 
@@ -37,13 +37,19 @@ def hist(func):
     @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
         print(RUN_TOKEN)
-        print(f"kwargs of {func.__name__} : {kwargs}")
+        print(GLOBAL_HIST)
         result = func(*args, **kwargs)
 
         # history items
         func_name = func.__name__
-        invoke_time =  datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        print(kwargs)
+        invoke_time =  datetime.now().strftime("%d/%m/%y, %H:%M:%S")
+        x = " ,".join([ str(k) + ":" + str(v) for k,v in kwargs.items() ])
+        h = pd.DataFrame({"func_name": func_name, 
+                          "time": invoke_time, 
+                          "cwd": CWD,
+                          "args": x}, index = [RUN_TOKEN])
+        h.to_csv(LOCAL_HIST, mode='a', header=not os.path.exists(LOCAL_HIST))
+        h.to_csv(GLOBAL_HIST, mode='a', header=not os.path.exists(GLOBAL_HIST))
         return result
 
     return wrapper
@@ -99,6 +105,7 @@ def scRNA_analysis():
 
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
+@hist
 def download_processed(samplefile):
     """
     Downloads processed irods data or any folder from irods
