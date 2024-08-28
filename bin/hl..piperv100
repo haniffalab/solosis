@@ -104,10 +104,10 @@ def scRNA_analysis():
 
 @cli.group()
 def alignment():
-"""
-Set of commands for seq data alignment.
-"""
-pass
+    """
+    Set of commands for seq data alignment.
+    """
+    pass
 
 ################ irods commands ################
 
