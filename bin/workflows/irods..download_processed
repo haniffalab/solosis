@@ -33,8 +33,8 @@ echo $rn
 #### FARM options ####
 queue="normal"
 walltime="03:00:00"
-
-bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M500 -R\"select[mem>500] rusage[mem=500]\" "
+mem=2000
+bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M$mem -R\"select[mem>$mem] rusage[mem=$mem]\" "
 irods_command="iget -KVf --progress -r "
 ####
 
