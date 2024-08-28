@@ -12,12 +12,13 @@ import functools
 from pathlib import Path
 from cmdbase import helpers 
 import pandas as pd
-SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
 import functools
 from cmdbase import helpers
+from datetime import datetime
 
 SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
-
+LOCAL_HIST=".pap/hist"
+GLOBAL_HIST=""
 
 #### Create options that can common to all ####
 
@@ -27,8 +28,9 @@ def create_env():
     CWD = os.getcwd() # Current Working dir
     Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
     Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
-    with open('.pap/hist', 'a'):
-        os.utime('hist', None)
+    with open(LOCAL_HIST, 'a'):
+        pass
+    return CWD
 
 
 def hist(func):
@@ -37,6 +39,11 @@ def hist(func):
         print(RUN_TOKEN)
         print(f"kwargs of {func.__name__} : {kwargs}")
         result = func(*args, **kwargs)
+
+        # history items
+        func_name = func.__name__
+        invoke_time =  datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        print(kwargs)
         return result
 
     return wrapper
@@ -250,5 +257,5 @@ def cellranger():
 
 if __name__ == "__main__":
     RUN_TOKEN = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
-    create_env()
+    CWD = create_env()
     cli()
