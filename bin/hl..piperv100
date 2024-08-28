@@ -11,26 +11,45 @@ import os
 import functools 
 from pathlib import Path
 from cmdbase import helpers 
-SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
+import pandas as pd
 import functools
 from cmdbase import helpers
+from datetime import datetime
 
 SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
-
+LOCAL_HIST=".pap/hist"
+GLOBAL_HIST=os.path.join(os.environ['HOME'],".pap", "hist")
 
 #### Create options that can common to all ####
 
-cmd_test = [click.option("--farm")]
+#cmd_test = [click.option("--farm")]
+
+def create_env():
+    CWD = os.getcwd() # Current Working dir
+    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
+    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
+    #with open(LOCAL_HIST, 'a'):
+    #    pass
+    return CWD
 
 
 def hist(func):
-    @functools.wraps(
-        func
-    )  # Ensures the original function name is registered by click instead of registering wrapper
+    @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
-        print(rn)
-        print(f"kwargs of {func.__name__} : {kwargs}")
+        print(RUN_TOKEN)
+        print(GLOBAL_HIST)
         result = func(*args, **kwargs)
+
+        # history items
+        func_name = func.__name__
+        invoke_time =  datetime.now().strftime("%d/%m/%y, %H:%M:%S")
+        x = " ,".join([ str(k) + ":" + str(v) for k,v in kwargs.items() ])
+        h = pd.DataFrame({"func_name": func_name, 
+                          "time": invoke_time, 
+                          "cwd": CWD,
+                          "args": x}, index = [RUN_TOKEN])
+        h.to_csv(LOCAL_HIST, mode='a', header=not os.path.exists(LOCAL_HIST))
+        h.to_csv(GLOBAL_HIST, mode='a', header=not os.path.exists(GLOBAL_HIST))
         return result
 
     return wrapper
@@ -94,6 +113,7 @@ pass
 
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
+@hist
 def download_processed(samplefile):
     """
     Downloads processed irods data or any folder from irods
@@ -291,8 +311,6 @@ def starsolo():
 
 
 if __name__ == "__main__":
-    
-    rn = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
-    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
+    RUN_TOKEN = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
+    CWD = create_env()
     cli()
