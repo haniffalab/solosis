@@ -11,6 +11,7 @@ import os
 import functools 
 from pathlib import Path
 from cmdbase import helpers 
+import pandas as pd
 SHELL_SCRIPT_BASE="/lustre/scratch126/cellgen/team298/soft/hlpiper_v1.0.0/bin/workflows"
 import functools
 from cmdbase import helpers
@@ -20,15 +21,20 @@ SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflo
 
 #### Create options that can common to all ####
 
-cmd_test = [click.option("--farm")]
+#cmd_test = [click.option("--farm")]
+
+def create_env():
+    CWD = os.getcwd() # Current Working dir
+    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
+    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
+    with open('.pap/hist', 'a'):
+        os.utime('hist', None)
 
 
 def hist(func):
-    @functools.wraps(
-        func
-    )  # Ensures the original function name is registered by click instead of registering wrapper
+    @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
-        print(rn)
+        print(RUN_TOKEN)
         print(f"kwargs of {func.__name__} : {kwargs}")
         result = func(*args, **kwargs)
         return result
@@ -243,8 +249,6 @@ def cellranger():
     click.echo(result_CR.stdout)
 
 if __name__ == "__main__":
-    
-    rn = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
-    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
+    RUN_TOKEN = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
+    create_env()
     cli()
