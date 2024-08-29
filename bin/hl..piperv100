@@ -34,6 +34,9 @@ def create_env():
 
 
 def hist(func):
+    """
+    A decorator for creating history each time the command is successfully invoked
+    """
     @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
         print(f"Invocation token: {RUN_TOKEN}")
@@ -51,7 +54,6 @@ def hist(func):
         h.to_csv(LOCAL_HIST, mode='a', header=not os.path.exists(LOCAL_HIST))
         h.to_csv(GLOBAL_HIST, mode='a', header=not os.path.exists(GLOBAL_HIST))
         return result
-
     return wrapper
 
 
