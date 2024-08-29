@@ -67,6 +67,12 @@ do
     fi
 done < $file
 
+if [ ! -f $ofile ]; then
+	echo "Looks like nothing needs to be done"
+	echo "Exiting cleanly..."
+	exit 0
+fi
+
 total_jobs=$(cat $ofile | wc -l)
 
 cat > irods_dl_${rn}.bsub <<EOF

@@ -36,8 +36,8 @@ def create_env():
 def hist(func):
     @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
     def wrapper(*args, **kwargs):
-        print(RUN_TOKEN)
-        print(GLOBAL_HIST)
+        print(f"Invocation token: {RUN_TOKEN}")
+        print("----------------------------")
         result = func(*args, **kwargs)
 
         # history items
@@ -113,8 +113,10 @@ def alignment():
 
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
+@click.option("--retainbam", default = False, is_flag = True, required=False, help="Download alignment bam file")
+@click.option("--overwrite", default = False, is_flag = True, required=False, help="Overwrite existing folder contents")
 @hist
-def download_processed(samplefile):
+def download_processed(samplefile, retainbam, overwrite):
     """
     Downloads processed irods data or any folder from irods
     and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
@@ -147,7 +149,9 @@ def download_processed(samplefile):
     print("Using irods to download data")
     print("If you have a large set of files, this command will take a while to run")
     shell_script = os.path.join(SHELL_SCRIPT_BASE, "irods..download_processed")
-    result = subprocess.run([shell_script, samplefile], capture_output=True, text=True)
+    overwrite = str(overwrite * 1)
+    retainbam = str(retainbam * 1)
+    result = subprocess.run([shell_script, samplefile, retainbam, overwrite], capture_output=True, text=True)
     click.echo(result.stdout)
     click.echo(result.stderr)
 
