@@ -35,18 +35,9 @@ GLOBAL_DIR=os.path.join(os.environ['HOME'],".pap")
 GLOBAL_HIST=os.path.join(GLOBAL_DIR, "hist")
 
 os.environ['SHELL_SCRIPT_BASE'] = SHELL_SCRIPT_BASE
+os.environ['GLOBAL_DIR'] = GLOBAL_DIR
 
 #### Create options that can common to all ####
-
-#cmd_test = [click.option("--farm")]
-
-def create_env():
-    CWD = os.getcwd() # Current Working dir
-    Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
-    Path(GLOBAL_DIR+"/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(GLOBAL_DIR+"/scripts/").mkdir(parents=True, exist_ok=True)
-    return CWD
 
 
 def hist(func):
@@ -76,14 +67,12 @@ def hist(func):
 
 
 def farm_options(func):
-
     @click.option("--mem")
     @click.option("--ncores")
     @click.option("--nprocs")
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
-
     return wrapper
 
 
@@ -107,7 +96,7 @@ def irods():
 
 
 @cli.group()
-# @hist
+@hist
 def test():
     """
     testing for development.
@@ -149,5 +138,5 @@ alignment.add_command(cmdbase.alignment.starsolo)
 
 if __name__ == "__main__":
     RUN_TOKEN = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
-    CWD = create_env()
+    CWD = helpers.create_env()
     cli()
