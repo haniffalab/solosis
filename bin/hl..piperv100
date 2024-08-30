@@ -116,7 +116,8 @@ def test():
     pass
 
 @cli.group()
-def scRNA_analysis():
+@hist
+def rna():
     """
     Set of commands for analysing scRNA-seq data including:
     alignment, demultiplexing, removal of ambient RNA & doublets.
@@ -124,6 +125,7 @@ def scRNA_analysis():
     pass
 
 @cli.group()
+@hist
 def alignment():
     """
     Set of commands for seq data alignment.
@@ -133,124 +135,15 @@ def alignment():
 ################ irods commands ################
 irods.add_command(cmdbase.irods.pull_processed)
 irods.add_command(cmdbase.irods.pull_fastqs)
-############### test commands ###################
-
-
-@test.command()
-@click.option("--x")
-@farm_options
-@hist
-def test_hist(x, *args, **kwargs):
-    print(x)
-    return x
-
-
-@test.command()
-@click.option(
-    "--total_droplets_included", required=True, help="total_droplets_included"
-)
-def cellbender(total_droplets_included, **kwargs):
-    """
-    Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
-    --------------------------------- \n
-        [ C E L L B E N D E R]
-
-    Cellbender Removes droplets and ambient RNA from scRNA seq data.
-    Version:0.3.0.
-
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellbender_script = os.path.join(
-        SHELL_SCRIPT_BASE, "test..submit_cellbender"
-    )  # can we change script base to sc-voyage dir?
-    result_CB = subprocess.run(
-        [shell_cellbender_script, total_droplets_included],
-        capture_output=True,
-        text=True,
-    )
-    click.echo(result_CB.stdout)
-
-
-@test.command()
-def cellranger():
-    """
-    Cellranger aligns sc-rna seq reads...
-    --------------------------------- \n
-        [ C E L L R A N G E R]
-
-    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly & annotation, and Feature Barcode analysis from single cell data.
-    Version:7.2.0.
-
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellranger_script = os.path.join(
-        SHELL_SCRIPT_BASE, "test..submit_cellranger"
-    )  # can we change script base to sc-voyage d>
-    result_CR = subprocess.run(
-        [shell_cellranger_script], capture_output=True, text=True
-    )
-    click.echo(result_CR.stdout)
 
 ################### scrna seq analysis commands ###################
-
-@scRNA_analysis.command()
-@click.option('--total_droplets_included', required=True, help="total_droplets_included")
-def cellbender(total_droplets_included, **kwargs):
-    """
-    Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
-    --------------------------------- \n
-        [ C E L L B E N D E R]  
-
-    Cellbender Removes droplets and ambient RNA from scRNA seq data.  
-    Version:0.3.0.
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellbender_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellbender") #can we change script base to sc-voyage d>
-    result_CB = subprocess.run([shell_cellbender_script, total_droplets_included], capture_output=True, text=True)
-    click.echo(result_CB.stdout)
+rna.add_command(cmdbase.rna.cellbender)
 
 ################# alignment commands ###################
+alignment.add_command(cmdbase.alignment.cellranger)
+alignment.add_command(cmdbase.alignment.starsolo)
 
-@alignment.command()
-def cellranger():
-    """
-    Cellranger aligns sc-rna seq reads...  
-    --------------------------------- \n
-        [ C E L L R A N G E R]  
-
-    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly>
-    Version:7.2.0.
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_cellranger_script=os.path.join(SHELL_SCRIPT_BASE,"test..submit_cellranger") #can we change script base to sc-voyage d>
-    result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
-    click.echo(result_CR.stdout)
-
-
-@alignment.command()
-def starsolo():
-    """
-    STARsolo aligns sc-rna seq reads...  
-    --------------------------------- \n
-        [ S T A R S O L O ]  
-
-    STARsolo ...
-    Version:2.7.11b   
-   
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
-    ---------------------------------
-    """
-    shell_starsolo_script=os.path.join(SHELL_SCRIPT_BASE,"alignment..submit_starsolo") #can we change script base to sc-voyage dir
-    result_STAR = subprocess.run([shell_starsolo_script], capture_output=True, text=True)
-    click.echo(result_STAR.stdout)
-
-####
+############### test commands ###################
 
 
 
