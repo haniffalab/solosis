@@ -27,7 +27,8 @@ except KeyError:
 CWD = os.getcwd() # Current Working dir
 USER = os.environ['USER']
 LOCAL_HIST=".pap/hist"
-GLOBAL_HIST=os.path.join(os.environ['HOME'],".pap", "hist")
+GLOBAL_DIR=os.path.join(os.environ['HOME'],".pap")
+GLOBAL_HIST=os.path.join(GLOBAL_DIR, "hist")
 
 #### Create options that can common to all ####
 
@@ -37,8 +38,8 @@ def create_env():
     CWD = os.getcwd() # Current Working dir
     Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
     Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
-    Path(GLOBAL_HIST+"/lsf/").mkdir(parents=True, exist_ok=True)
-    Path(GLOBAL_HIST+"/scripts/").mkdir(parents=True, exist_ok=True)
+    Path(GLOBAL_DIR+"/lsf/").mkdir(parents=True, exist_ok=True)
+    Path(GLOBAL_DIR+"/scripts/").mkdir(parents=True, exist_ok=True)
     return CWD
 
 
