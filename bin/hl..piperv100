@@ -16,7 +16,16 @@ import functools
 from cmdbase import helpers
 from datetime import datetime
 
-SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
+#### GLOBAL DEFS ####
+VERSION="1.0.0"
+try:
+    SHELL_SCRIPT_BASE = os.environ['SHELL_SCRIPT_BASE']
+except KeyError:
+    print("No user defined env var SHELL_SCRIPT_BASE. Using global def for script base folder")
+    SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
+
+CWD = os.getcwd() # Current Working dir
+USER = os.environ['USER']
 LOCAL_HIST=".pap/hist"
 GLOBAL_HIST=os.path.join(os.environ['HOME'],".pap", "hist")
 
@@ -49,6 +58,8 @@ def hist(func):
         x = " ,".join([ str(k) + ":" + str(v) for k,v in kwargs.items() ])
         h = pd.DataFrame({"func_name": func_name, 
                           "time": invoke_time, 
+                          "username": USER,
+                          "version": VERSION,
                           "cwd": CWD,
                           "args": x}, index = [RUN_TOKEN])
         h.to_csv(LOCAL_HIST, mode='a', header=not os.path.exists(LOCAL_HIST))
