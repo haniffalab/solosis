@@ -37,8 +37,8 @@ def create_env():
     CWD = os.getcwd() # Current Working dir
     Path(".pap/lsf/").mkdir(parents=True, exist_ok=True)
     Path(".pap/scripts/").mkdir(parents=True, exist_ok=True)
-    #with open(LOCAL_HIST, 'a'):
-    #    pass
+    Path(GLOBAL_HIST+"/lsf/").mkdir(parents=True, exist_ok=True)
+    Path(GLOBAL_HIST+"/scripts/").mkdir(parents=True, exist_ok=True)
     return CWD
 
 
