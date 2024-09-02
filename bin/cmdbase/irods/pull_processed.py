@@ -3,6 +3,8 @@ import click
 import os
 
 
+SHELL_SCRIPT_BASE = os.environ['SHELL_SCRIPT_BASE']
+
 @click.command("pull-processed")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option("--retainbam", default = False, is_flag = True, required=False, help="Download alignment bam file")
