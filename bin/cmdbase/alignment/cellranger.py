@@ -21,5 +21,3 @@ def cellranger():
     result_CR = subprocess.run([shell_cellranger_script], capture_output=True, text=True)
     click.echo(result_CR.stdout)
 
-
-

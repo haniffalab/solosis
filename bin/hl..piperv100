@@ -19,7 +19,6 @@ from datetime import datetime
 
 #### GLOBAL DEFS ####
 
-VERSION="1.0.0"
 
 try:
     SHELL_SCRIPT_BASE = os.environ['SHELL_SCRIPT_BASE']
@@ -28,52 +27,22 @@ except KeyError:
     SHELL_SCRIPT_BASE = "/software/cellgen/team298/shared/hlpiper_v1.0.0/bin/workflows"
 
 
+VERSION="1.0.0"
 CWD = os.getcwd() # Current Working dir
 USER = os.environ['USER']
 LOCAL_HIST=".pap/hist"
 GLOBAL_DIR=os.path.join(os.environ['HOME'],".pap")
 GLOBAL_HIST=os.path.join(GLOBAL_DIR, "hist")
+RUN_TOKEN = helpers.generate_token() # Create a random id whenever the script is invoked. For history registration
 
+# export for other subfunctions
 os.environ['SHELL_SCRIPT_BASE'] = SHELL_SCRIPT_BASE
 os.environ['GLOBAL_DIR'] = GLOBAL_DIR
-
+os.environ['GLOBAL_HIST'] = GLOBAL_HIST
+os.environ['LOCAL_HIST'] = LOCAL_HIST
+os.environ['VERSION'] = VERSION
+os.environ['RUN_TOKEN'] = RUN_TOKEN
 #### Create options that can common to all ####
-
-
-def hist(func):
-    """
-    A decorator for creating history each time the command is successfully invoked
-    """
-    @functools.wraps(func)  # Ensures the original function name is registered by click instead of registering wrapper
-    def wrapper(*args, **kwargs):
-        #print(f"Invocation token: {RUN_TOKEN}")
-        #print("----------------------------")
-        result = func(*args, **kwargs)
-
-        # history items
-        func_name = func.__name__
-        invoke_time =  datetime.now().strftime("%d/%m/%y, %H:%M:%S")
-        x = " ,".join([ str(k) + ":" + str(v) for k,v in kwargs.items() ])
-        h = pd.DataFrame({"func_name": func_name, 
-                          "time": invoke_time, 
-                          "username": USER,
-                          "version": VERSION,
-                          "cwd": CWD,
-                          "args": x}, index = [RUN_TOKEN])
-        h.to_csv(LOCAL_HIST, mode='a', header=not os.path.exists(LOCAL_HIST))
-        h.to_csv(GLOBAL_HIST, mode='a', header=not os.path.exists(GLOBAL_HIST))
-        return result
-    return wrapper
-
-
-def farm_options(func):
-    @click.option("--mem")
-    @click.option("--ncores")
-    @click.option("--nprocs")
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    return wrapper
 
 
 @click.group()
@@ -86,7 +55,7 @@ def cli():
 
 
 @cli.group()
-@hist
+@helpers.history
 def irods():
     """
     Set of commands for interacting with irods
@@ -96,7 +65,7 @@ def irods():
 
 
 @cli.group()
-@hist
+@helpers.history
 def test():
     """
     testing for development.
@@ -104,8 +73,14 @@ def test():
     """
     pass
 
+@click.command()
+@helpers.farm
+def farmtest(*args,**kwargs):
+    click.echo(f"{kwargs}")
+
+
 @cli.group()
-@hist
+@helpers.history
 def rna():
     """
     Set of commands for analysing scRNA-seq data including:
@@ -114,7 +89,7 @@ def rna():
     pass
 
 @cli.group()
-@hist
+@helpers.history
 def alignment():
     """
     Set of commands for seq data alignment.
@@ -133,10 +108,9 @@ alignment.add_command(cmdbase.alignment.cellranger)
 alignment.add_command(cmdbase.alignment.starsolo)
 
 ############### test commands ###################
-
-
+test.add_command(farmtest)
 
 if __name__ == "__main__":
-    RUN_TOKEN = helpers.generate_random_name() # Create a random id whenever the script is invoked. For history registration
     CWD = helpers.create_env()
+    print(GLOBAL_HIST)
     cli()
