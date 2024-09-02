@@ -1,7 +1,7 @@
 #!/software/cellgen/team298/shared/envs/hlb-conda/hl_minimal_v1.0.0/bin/python
 import click
 import os
-
+import subprocess
 
 SHELL_SCRIPT_BASE = os.environ['SHELL_SCRIPT_BASE']
 
