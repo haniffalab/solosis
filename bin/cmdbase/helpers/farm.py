@@ -6,19 +6,7 @@ import functools
 
 def farm(function):
     function = click.option('--mem')(function)
-    function = click.option('--bar')(function)
-    function = click.option('--foo')(function)
+    function = click.option('--cores')(function)
+    function = click.option('--time')(function)
     return function
 
-
-"""
-def farm(func):
-    @click.option("--mem")
-    @click.option("--ncores")
-    @click.option("--nprocs")
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    return wrapper
-
-"""

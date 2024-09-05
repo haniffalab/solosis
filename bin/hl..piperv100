@@ -73,11 +73,6 @@ def test():
     """
     pass
 
-@click.command()
-@helpers.farm
-def farmtest(*args,**kwargs):
-    click.echo(f"{kwargs}")
-
 
 @cli.group()
 @helpers.history
@@ -96,6 +91,25 @@ def alignment():
     """
     pass
 
+#### Test and devel
+
+@click.command()
+@helpers.farm
+@click.option("--user_params", required=False, help="WITHIN QUOTES specify anything to be passed to cmd")
+def argtest(user_params, **kwargs):
+    shell_script = os.path.join(SHELL_SCRIPT_BASE, "test..args")
+    print(SHELL_SCRIPT_BASE)
+    #result = subprocess.run([shell_script, samplefile, retainbam, overwrite], capture_output=True, text=True)
+    result = subprocess.run([shell_script, "hello", user_params], capture_output = True, text = True)
+    click.echo(result)
+    click.echo(result.stdout)
+    click.echo(result.stderr)
+
+
+####
+
+
+
 ################ irods commands ################
 irods.add_command(cmdbase.irods.pull_processed)
 irods.add_command(cmdbase.irods.pull_fastqs)
@@ -108,9 +122,8 @@ alignment.add_command(cmdbase.alignment.cellranger)
 alignment.add_command(cmdbase.alignment.starsolo)
 
 ############### test commands ###################
-test.add_command(farmtest)
+test.add_command(argtest)
 
 if __name__ == "__main__":
     CWD = helpers.create_env()
-    print(GLOBAL_HIST)
     cli()
