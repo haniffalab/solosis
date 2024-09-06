@@ -1,2 +1,8 @@
 test/
-bin/ckpt.tar.gz
+*ckpt.tar.gz
+.ipynb_checkpoints
+__pycache__/
+.venv
+.env
+*.swp
+.DS_Store

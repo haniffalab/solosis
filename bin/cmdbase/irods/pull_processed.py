@@ -1,14 +1,28 @@
-#!/software/cellgen/team298/shared/envs/hlb-conda/hl_minimal_v1.0.0/bin/python
-import click
+#!/usr/bin/env python3
 import os
 import subprocess
 
-SHELL_SCRIPT_BASE = os.environ['SHELL_SCRIPT_BASE']
+import click
+
+SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
+
 
 @click.command("pull-processed")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--retainbam", default = False, is_flag = True, required=False, help="Download alignment bam file")
-@click.option("--overwrite", default = False, is_flag = True, required=False, help="Overwrite existing folder contents")
+@click.option(
+    "--retainbam",
+    default=False,
+    is_flag=True,
+    required=False,
+    help="Download alignment bam file",
+)
+@click.option(
+    "--overwrite",
+    default=False,
+    is_flag=True,
+    required=False,
+    help="Overwrite existing folder contents",
+)
 def pull_processed(samplefile, retainbam, overwrite):
     """
     Downloads processed irods data or any folder from irods
@@ -44,9 +58,8 @@ def pull_processed(samplefile, retainbam, overwrite):
     shell_script = os.path.join(SHELL_SCRIPT_BASE, "irods..download_processed")
     overwrite = str(overwrite * 1)
     retainbam = str(retainbam * 1)
-    result = subprocess.run([shell_script, samplefile, retainbam, overwrite], capture_output=True, text=True)
+    result = subprocess.run(
+        [shell_script, samplefile, retainbam, overwrite], capture_output=True, text=True
+    )
     click.echo(result.stdout)
     click.echo(result.stderr)
-
-
-

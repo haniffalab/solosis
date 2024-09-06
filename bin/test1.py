@@ -1,6 +1,5 @@
-#!/software/cellgen/team298/shared/envs/hlb-conda/hl_minimal_v1.0.0/bin/python
+#!/usr/bin/env python3
 import click
-import os
 from cmdbase import pipeline
 
 
@@ -8,9 +7,11 @@ from cmdbase import pipeline
 def cli():
     pass
 
+
 @cli.group()
 def test():
     pass
+
 
 test.add_command(pipeline.irods.download_processed)
 
