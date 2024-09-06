@@ -40,6 +40,7 @@ os.environ["GLOBAL_HIST"] = GLOBAL_HIST
 os.environ["LOCAL_HIST"] = LOCAL_HIST
 os.environ["VERSION"] = VERSION
 os.environ["RUN_TOKEN"] = RUN_TOKEN
+os.environ["CWD"] = CWD
 #### Create options that can common to all ####
 
 
@@ -115,15 +116,18 @@ def argtest(user_params, **kwargs):
 
 ####
 
+################# basic commands ###########
+cli.add_command(cmdbase.basic.history)
+
 
 ################ irods commands ################
 irods.add_command(cmdbase.irods.pull_processed)
 irods.add_command(cmdbase.irods.pull_fastqs)
 
-################### scrna seq analysis commands ###################
+################# scrna seq analysis commands ##
 rna.add_command(cmdbase.rna.cellbender)
 
-################# alignment commands ###################
+################# alignment commands ###########
 alignment.add_command(cmdbase.alignment.cellranger)
 alignment.add_command(cmdbase.alignment.starsolo)
 
