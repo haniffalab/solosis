@@ -68,4 +68,14 @@ The ```--total_droplets_included``` flag is required.
 hl..piperv100 test cellbender --total_droplets_included 30000
 ```
 
+# Development
+
+Install dev dependencies and install pre-commit hooks
+
+```
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r envs/dev/requirements.txt
+pre-commit install
+```
 

@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - nvidia
+dependencies:
+  - python=3.8
+  - pandas=2.0.3
+  - click=8.1.7

@@ -1,4 +1,2 @@
+from . import alignment, irods, rna
 from .helpers import *
-from . import irods
-from . import rna
-from . import alignment
