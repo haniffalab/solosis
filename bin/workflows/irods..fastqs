@@ -25,10 +25,15 @@ if [ $# -lt 1 ]; then
 	exit 0
 fi
 META=$1; shift
+NF_PUBLISH_DIR=/lustre/scratch126/cellgen/team298/tmp/
+samplefile="irods2fastq.$RUN_TOKEN.txt"
 
-cmd="nextflow run /lustre/scratch126/cellgen/team298/vm11/PROJECTS/PIPELINE/Haniffa-utils/bin/nf/nf-irods-to-fastq/main.nf \
-    --meta \"${META}\" \
+echo "sample" > irods2fastq.$RUN_TOKEN.txt
+awk ' { print $1 } ' $META >> $samplefile
+cmd="nextflow run $HL_NF_BASE/nf-irods-to-fastq/main.nf \
+    --meta \"${samplefile}\" \
     -resume \
-    --publish_dir /lustre/scratch126/cellgen/team298/tmp/
+    --publish_dir $NF_PUBLISH_DIR
     "
-echo $cmd
+#echo $cmd
+exec $cmd
