@@ -13,9 +13,22 @@ module load cellgen/singularity
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
 
 #input file, CSV with irods metadata
-META="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
+#META="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
 
-nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
-    --meta "${META}" \
+usage() {
+	echo "Usage: $0 samples.csv"
+	echo "sample.csv example is in /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
+}
+
+if [ $# -lt 1 ]; then
+	usage
+	exit 0
+fi
+META=$1; shift
+
+cmd="nextflow run /lustre/scratch126/cellgen/team298/vm11/PROJECTS/PIPELINE/Haniffa-utils/bin/nf/nf-irods-to-fastq/main.nf \
+    --meta \"${META}\" \
     -resume \
     --publish_dir /lustre/scratch126/cellgen/team298/tmp/
+    "
+echo $cmd
