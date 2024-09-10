@@ -9,7 +9,8 @@ SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
 
 
 @click.command("cellranger")
-def cellranger():
+@click.option('--samplefile', required=True, help="Sample file text file")
+def cellranger(samplefile):
     """
     Cellranger aligns sc-rna seq reads...
     --------------------------------- \n
@@ -25,6 +26,6 @@ def cellranger():
         SHELL_SCRIPT_BASE, "test..submit_cellranger"
     )  # can we change script base to sc-voyage d>
     result_CR = subprocess.run(
-        [shell_cellranger_script], capture_output=True, text=True
+        [shell_cellranger_script, samplefile], capture_output=True, text=True
     )
     click.echo(result_CR.stdout)
