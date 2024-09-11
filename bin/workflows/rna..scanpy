@@ -15,7 +15,7 @@ sample_tsv=$1; shift
 mkdir -p pap
 
 HL_HIST_FOLDER=".pap"
-mem=10000
+mem=50000
 target_dir=$HL_IRODS_DOWNLOAD # This is obtained by module load hl
 cwd=`pwd`
 run_token=$RUN_TOKEN
