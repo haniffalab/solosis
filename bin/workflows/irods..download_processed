@@ -36,7 +36,7 @@ echo $rn
 queue="normal"
 walltime="05:00:00"
 mem=4000
-bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M$mem -R\"select[mem>$mem] rusage[mem=$mem]\" "
+#bsub_command="bsub -J irods_dl -oo irods_dl_${rn}.log -eo irods_dl_${rn}.log -q $queue -n 1  -M$mem -R\"select[mem>$mem] rusage[mem=$mem]\" "
 irods_command="iget -KVf --progress -r "
 ####
 declare -i i=0
@@ -48,7 +48,8 @@ do
         sanger_id=`echo $line | awk ' { print $1 } '`
         sample_id=`echo $line | awk ' { print $2 } '`
         irods_path=`echo $line | awk ' { print $NF } '`
-        folder_name="$target_dir/${sample_id}_${sanger_id}"
+        mkdir -p $target_dir/${sample_id}_${sanger_id}
+        folder_name="$target_dir/${sample_id}_${sanger_id}/processed_sanger/"
 	if [ $overwrite -eq 1 ]; then
 		rm -rf $folder_name
 	fi
