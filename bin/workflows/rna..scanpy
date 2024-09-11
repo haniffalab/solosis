@@ -52,7 +52,7 @@ cat > $bsub_id.bsub <<EOF
 #BSUB -e $HL_HIST_FOLDER/lsf/${bsub_id}_%I.err
 #BSUB -M $mem
 #BSUB -R "select[mem>$mem] rusage[mem=$mem]"
-eval $conda_env
+conda activate $conda_env
 COMMAND=\$(sed -n "\${LSB_JOBINDEX}p" $ofile) 
 eval \$COMMAND
 EOF
