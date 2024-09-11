@@ -48,20 +48,21 @@ do
         sanger_id=`echo $line | awk ' { print $1 } '`
         sample_id=`echo $line | awk ' { print $2 } '`
         irods_path=`echo $line | awk ' { print $NF } '`
-        mkdir -p $target_dir/${sample_id}_${sanger_id}
-        folder_name="$target_dir/${sample_id}_${sanger_id}/processed_sanger/"
+        folder_name="$target_dir/${sample_id}_${sanger_id}"
+        target_name="$folder_name/processed_sanger/"
+        mkdir -p $target_name
 	if [ $overwrite -eq 1 ]; then
-		rm -rf $folder_name
+		rm -rf $target_name
 	fi
-	if [ -d $folder_name ]; then
-		echo "[Warn] Target folder already exists. Not downloading. Try overwrite option if you want to download. Irods::$irods_path --> Folder::$folder_name "
+	if [ -d $target_name ]; then
+		echo "[Warn] Target folder already exists. Not downloading. Try overwrite option if you want to download. Irods::$irods_path --> Folder::$target_name "
 	else
-		echo "($i)[Info] Irods::$irods_path --> Folder::$folder_name"
+		echo "($i)[Info] Irods::$irods_path --> Folder::$target_name"
 		if [ $retain_bam == 1 ]; then
 			#echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
-			echo "$irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
+			echo "$irods_command $irods_path $target_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
 		else
-			echo "$irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ; rm -rf $folder_name/gex_possorted_bam.bam ; find $folder_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
+			echo "$irods_command $irods_path $target_name ; chmod -R 774 $folder_name ; rm -rf $target_name/gex_possorted_bam.bam ; find $target_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
 		fi
 
 	fi
