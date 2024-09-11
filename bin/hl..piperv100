@@ -87,6 +87,17 @@ def rna():
 @helpers.history
 def alignment():
     """
+    Set of commands for alignment tools.
+    """
+    pass
+
+
+################ irods commands ################
+
+@irods.command()
+@click.option("--samplefile", required=True, help="Sample file text file")
+def download_processed(samplefile):
+    """
     Set of commands for seq data alignment.
     """
     pass
