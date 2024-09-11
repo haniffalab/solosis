@@ -2,20 +2,22 @@
 # @lg28
 # Tue  27 Aug 15:11:02 BST 2024
 
-set -eo pipefail
-
 # LSF group is set and visible for nextflow job submissions
 export LSB_DEFAULT_USERGROUP=team298
-# load modules
+
+##lg28 added these to original run.sh from cellgen
+export VOY_TMP=/lustre/scratch126/cellgen/team298/tmp
+export NXF_WORK=/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/work
+module load cellgen/irods
 module load cellgen/nextflow
 module load cellgen/singularity
+
 # add Singularity to the the path
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
 
 #input file, CSV with irods metadata
-META="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
+META=$1
 
-nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
+NXF_FILE_ROOT=$VOY_TMP nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
     --meta "${META}" \
-    -resume \
-    --publish_dir /lustre/scratch126/cellgen/team298/tmp/
+    -resume
