@@ -10,6 +10,9 @@ This suite is made to work with farm22. The instructions below are to be perform
 ```
 echo "source /software/cellgen/team298/shared/hl.bashrc" >> $HOME/.bashrc
 source ~/.bashrc
+
+#move to home dir
+cd
 ```
 
 2. Module load
@@ -27,7 +30,7 @@ hl..piperv100 --help
 
 SingleCell-Voyage retrieves FASTQ files from iRODS storage to Lustre storage on HPC, processes them with Cellranger and Cellbender, optionally aligns with STARsolo, and finally runs scAutoQC for streamlined sample data processing. 
 
-Here sc-voyage has ben integrated into hl-piperv100 module.
+Here sc-voyage has been integrated into hl-piperv100 module.
 
 1. Export environment variables
 
