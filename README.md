@@ -46,7 +46,7 @@ nano /lustre/scratch126/cellgen/team298/pipelines/sc-voyage/samples.csv
 3. Run the NF-irods-to-lustre pipeline to pull fastqs
 
 ```
-hl..piperv100 irods pull_fastqs #[CHECK]
+hl..piperv100 irods pull-fastqs --sampefile path/to/file.csv
 ```
 
 4. Execute Cellranger
@@ -56,7 +56,7 @@ hl..piperv100 alignment cellranger
 
 5. [OPTIONAL] run STARsolo
 ```
-hl..piperv100 alignment starsolo #[CHECK]
+hl..piperv100 alignment starsolo
 ```
 
 7. Execute Cellbender
@@ -65,7 +65,7 @@ The ```--total_droplets_included``` flag is required.
 
 (For more information- ```hl..piperv100 scRNA_analysis cellbender --help```)
 ```
-hl..piperv100 test cellbender --total_droplets_included 30000
+hl..piperv100 rna cellbender --total_droplets_included 30000
 ```
 
 # Development
