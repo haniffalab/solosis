@@ -15,7 +15,7 @@ source ~/.bashrc
 2. Module load
 
 ```
-module load hl-piper/v1.0.0
+module load haniffa-utils
 ```
 
 3. Main command help
