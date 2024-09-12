@@ -18,6 +18,30 @@ export PATH="/software/singularity/v3.10.0/bin:$PATH"
 #input file, CSV with irods metadata
 META=$1
 
-NXF_FILE_ROOT=$VOY_TMP nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
-    --meta "${META}" \
-    -resume
+cmd="$VOY_TMP nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
+    --meta \"${META}\" \
+    -resume"
+#META="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
+
+usage() {
+	echo "Usage: $0 samples.csv"
+	echo "sample.csv example is in /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
+}
+
+if [ $# -lt 1 ]; then
+	usage
+	exit 0
+fi
+
+# NF_PUBLISH_DIR=/lustre/scratch126/cellgen/team298/tmp/
+# samplefile="irods2fastq.$RUN_TOKEN.txt"
+
+# echo "sample" > irods2fastq.$RUN_TOKEN.txt
+# awk ' { print $1 } ' $META >> $samplefile
+# cmd="nextflow run $HL_NF_BASE/nf-irods-to-fastq/main.nf \
+#     --meta \"${samplefile}\" \
+#     -resume \
+#     --publish_dir $NF_PUBLISH_DIR
+#     "
+# echo $cmd
+exec $cmd
