@@ -5,12 +5,17 @@ import subprocess
 import click
 
 SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
-HL_IRODS_DOWNLOAD=os.environ["HL_IRODS_DOWNLOAD"]
+HL_IRODS_DOWNLOAD = os.environ["HL_IRODS_DOWNLOAD"]
+
 
 @click.command("scanpy")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--sample_basedir", required=False, default = HL_IRODS_DOWNLOAD,
-              help="sample database folder")
+@click.option(
+    "--sample_basedir",
+    required=False,
+    default=HL_IRODS_DOWNLOAD,
+    help="sample database folder",
+)
 def scanpyrun(samplefile, sample_basedir):
     """
     Basic scanpy run
