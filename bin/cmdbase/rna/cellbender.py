@@ -5,12 +5,15 @@ import subprocess
 
 import click
 
+SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
+
 
 @click.command("cellbender")
+@click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
     "--total_droplets_included", required=True, help="total_droplets_included"
 )
-def cellbender(total_droplets_included, **kwargs):
+def cellbender(samplefile, total_droplets_included, **kwargs):
     """
     Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
     --------------------------------- \n
@@ -23,10 +26,10 @@ def cellbender(total_droplets_included, **kwargs):
     ---------------------------------
     """
     shell_cellbender_script = os.path.join(
-        SHELL_SCRIPT_BASE, "test..submit_cellbender"
+        SHELL_SCRIPT_BASE, "rna..submit_cellbender"
     )  # can we change script base to sc-voyage d>
     result_CB = subprocess.run(
-        [shell_cellbender_script, total_droplets_included],
+        [shell_cellbender_script, samplefile, total_droplets_included],
         capture_output=True,
         text=True,
     )

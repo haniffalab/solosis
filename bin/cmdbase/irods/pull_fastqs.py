@@ -9,7 +9,7 @@ SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
 
 
 @click.command("pull-fastqs")
-@click.option('--samplefile', required=True, help="Sample file text file")
+@click.option("--samplefile", required=True, help="Sample file text file")
 def pull_fastqs(samplefile):
     """
     Downloads processed irods data or any folder from irods
@@ -19,6 +19,8 @@ def pull_fastqs(samplefile):
     print("Using irods to download data")
     print("If you have a large set of files, this command will take a while to run")
     shell_script_fq = os.path.join(SHELL_SCRIPT_BASE, "irods..fastqs")
-    result_fq = subprocess.run([shell_script_fq, samplefile], capture_output=True, text=True)
+    result_fq = subprocess.run(
+        [shell_script_fq, samplefile], capture_output=True, text=True
+    )
     click.echo(result_fq.stdout)
     click.echo(result_fq.stderr)

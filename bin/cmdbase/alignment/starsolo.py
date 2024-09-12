@@ -9,7 +9,8 @@ SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
 
 
 @click.command()
-def starsolo():
+@click.option("--samplefile", required=True, help="Sample file text file")
+def starsolo(samplefile):
     """
     STARsolo aligns sc-rna seq reads...
     --------------------------------- \n
@@ -25,6 +26,6 @@ def starsolo():
         SHELL_SCRIPT_BASE, "alignment..submit_starsolo"
     )  # can we change script base to sc-voyage dir
     result_STAR = subprocess.run(
-        [shell_starsolo_script], capture_output=True, text=True
+        [shell_starsolo_script, samplefile], capture_output=True, text=True
     )
     click.echo(result_STAR.stdout)
