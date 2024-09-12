@@ -94,6 +94,7 @@ def alignment():
 
 ################ irods commands ################
 
+
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
 def download_processed(samplefile):
