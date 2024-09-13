@@ -30,7 +30,7 @@ rm -f $commands_file
 
 # Loop through the CSV, generating commands for each sample
 tail -n +2 $samples_file | while IFS=, read -r sample; do
-  echo "cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS" >> $commands_file
+  echo "cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger-hl/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS" >> $commands_file
 done
 
 # Get the total number of jobs

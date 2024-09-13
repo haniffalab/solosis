@@ -24,7 +24,7 @@ while IFS=, read -r sample; do
     -o $VOY_CODE/logs/$sample.%J.bsub.log \
     -e $VOY_CODE/logs/$sample.%J.bsub.err \
     -gpu "mode=shared:j_exclusive=no:gmem=${GMEM}:num=1:gmodel=NVIDIAA100_SXM4_80GB" \
-    cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS
+    cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger-hl/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS
     #$VOY_CODE/cellbender/cellbender_remove-background.sh $sample $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5
 done < <(tail -n +2 $VOY_CODE/samples.csv)
 
