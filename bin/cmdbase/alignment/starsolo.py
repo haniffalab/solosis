@@ -9,7 +9,7 @@ SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
 
 
 @click.command()
-@click.option('--samplefile', required=True, help="Sample file text file")
+@click.option("--samplefile", required=True, help="Sample file text file")
 def starsolo(samplefile):
     """
     STARsolo aligns sc-rna seq reads...

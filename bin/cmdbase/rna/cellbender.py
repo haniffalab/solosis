@@ -7,9 +7,11 @@ import click
 
 SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
 
+
 @click.command("cellbender")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--total_droplets_included", required=True, help="total_droplets_included"
+@click.option(
+    "--total_droplets_included", required=True, help="total_droplets_included"
 )
 def cellbender(samplefile, total_droplets_included, **kwargs):
     """

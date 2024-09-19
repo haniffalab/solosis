@@ -4,7 +4,7 @@
 # Date created: Mon  5 Aug 14:42:55 BST 2024
 # Date modified: Fri 30 Aug 15:46:45 BST 2024
 
-#### this is the original copy for this version.. 
+#### this is the original copy for this version..
 
 
 import os
@@ -89,8 +89,6 @@ def rna():
 @cli.group()
 @helpers.history
 def alignment():
-<<<<<<< HEAD
-=======
     """
     Set of commands for alignment tools.
     """
@@ -99,10 +97,10 @@ def alignment():
 
 ################ irods commands ################
 
+
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
 def download_processed(samplefile):
->>>>>>> 2bd93c1 (editing main script)
     """
     Set of commands for seq data alignment.
     """

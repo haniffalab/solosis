@@ -94,6 +94,7 @@ def alignment():
 
 ################ irods commands ################
 
+
 @irods.command()
 @click.option("--samplefile", required=True, help="Sample file text file")
 def download_processed(samplefile):
@@ -137,6 +138,7 @@ irods.add_command(cmdbase.irods.pull_fastqs)
 
 ################# scrna seq analysis commands ##
 rna.add_command(cmdbase.rna.cellbender)
+rna.add_command(cmdbase.rna.scanpyrun)
 
 ################# alignment commands ###########
 alignment.add_command(cmdbase.alignment.cellranger)

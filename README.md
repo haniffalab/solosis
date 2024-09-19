@@ -10,12 +10,15 @@ This suite is made to work with farm22. The instructions below are to be perform
 ```
 echo "source /software/cellgen/team298/shared/hl.bashrc" >> $HOME/.bashrc
 source ~/.bashrc
+
+#move to home dir
+cd
 ```
 
 2. Module load
 
 ```
-module load hl-piper/v1.0.0
+module load haniffa-utils
 ```
 
 3. Main command help
@@ -27,7 +30,7 @@ hl..piperv100 --help
 
 SingleCell-Voyage retrieves FASTQ files from iRODS storage to Lustre storage on HPC, processes them with Cellranger and Cellbender, optionally aligns with STARsolo, and finally runs scAutoQC for streamlined sample data processing. 
 
-Here sc-voyage has ben integrated into hl-piperv100 module.
+Here sc-voyage has been integrated into hl-piperv100 module.
 
 1. Export environment variables
 
@@ -46,7 +49,7 @@ nano /lustre/scratch126/cellgen/team298/pipelines/sc-voyage/samples.csv
 3. Run the NF-irods-to-lustre pipeline to pull fastqs
 
 ```
-hl..piperv100 irods pull_fastqs #[CHECK]
+hl..piperv100 irods pull-fastqs --sampefile path/to/file.csv
 ```
 
 4. Execute Cellranger
@@ -56,7 +59,7 @@ hl..piperv100 alignment cellranger
 
 5. [OPTIONAL] run STARsolo
 ```
-hl..piperv100 alignment starsolo #[CHECK]
+hl..piperv100 alignment starsolo
 ```
 
 7. Execute Cellbender
@@ -65,7 +68,7 @@ The ```--total_droplets_included``` flag is required.
 
 (For more information- ```hl..piperv100 scRNA_analysis cellbender --help```)
 ```
-hl..piperv100 test cellbender --total_droplets_included 30000
+hl..piperv100 rna cellbender --total_droplets_included 30000
 ```
 
 # Development
