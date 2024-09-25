@@ -56,6 +56,8 @@ do
 	fi
 	if [ -d $target_name ]; then
 		echo "[Warn] Target folder already exists. Not downloading. Try overwrite option if you want to download. Irods::$irods_path --> Folder::$target_name "
+		echo "[Warn] Just linking them"
+		ln -s $folder_name $cwd/
 	else
 		echo "($i)[Info] Irods::$irods_path --> Folder::$target_name"
 		if [ $retain_bam == 1 ]; then
