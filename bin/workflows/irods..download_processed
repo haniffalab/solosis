@@ -28,6 +28,7 @@ rm -f $ofile
 target_dir=$HL_IRODS_DOWNLOAD # This is obtained by module load hl
 cwd=`pwd`
 rn=$RANDOM
+rn=$RUN_TOKEN
 echo $rn
 ####
 
@@ -50,7 +51,7 @@ do
         irods_path=`echo $line | awk ' { print $NF } '`
         folder_name="$target_dir/${sample_id}_${sanger_id}"
         target_name="$folder_name/processed_sanger/"
-        mkdir -p $target_name
+	mkdir -p $folder_name
 	if [ $overwrite -eq 1 ]; then
 		rm -rf $target_name
 	fi
@@ -59,7 +60,6 @@ do
 	else
 		echo "($i)[Info] Irods::$irods_path --> Folder::$target_name"
 		if [ $retain_bam == 1 ]; then
-			#echo "sleep 5; $bsub_command $irods_command $irods_path $folder_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
 			echo "$irods_command $irods_path $target_name ; chmod -R 774 $folder_name ;  ln -s $folder_name $cwd/" >>  $ofile
 		else
 			echo "$irods_command $irods_path $target_name ; chmod -R 774 $folder_name ; rm -rf $target_name/gex_possorted_bam.bam ; find $target_name -name 'possorted_genome_bam.bam' -exec rm -rf {} \; ; ln -s $folder_name $cwd/" >>  $ofile
@@ -87,7 +87,5 @@ cat > irods_dl_${rn}.bsub <<EOF
 COMMAND=\$(sed -n "\${LSB_JOBINDEX}p" $ofile) 
 eval \$COMMAND
 EOF
-
-#bsub -J irods_dl -o irods_dl_%J.log -e irods_dl_%J.log -q normal -n 1  -M4000 -R"select[mem>4000] rusage[mem=4000]" bash $ofile
-#bash $ofile
+echo "[Info] batch job submitted. check using 'bjobs -w' command"
 bsub < irods_dl_${rn}.bsub

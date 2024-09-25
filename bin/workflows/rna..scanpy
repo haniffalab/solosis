@@ -32,6 +32,7 @@ do
 	#sample_folder="$samples_database/${sample_id}_${sanger_id}/processed_sanger/"
 	outpt_folder="$samples_database/${sample_name}/rna_scanpy/"
 	mkdir -p $outpt_folder
+	echo "($i) [Info] $sample_name will be processed in $outpt_folder"
 	cmd="papermill $HL_PIPE_BASEDIR/bin/nb/sc_base1.ipynb $outpt_folder/$sample_name.ipynb  -p samples_database '${samples_database}' -p sample_name $sample_name -k python3;ln -s $samples_database/${sample_name} ."
 	echo $cmd >> $ofile
     fi
@@ -57,5 +58,6 @@ COMMAND=\$(sed -n "\${LSB_JOBINDEX}p" $ofile)
 eval \$COMMAND
 EOF
 
+echo "[Info] batch job submitted. check using 'bjobs -w' command"
 bsub < ${bsub_id}.bsub
 
