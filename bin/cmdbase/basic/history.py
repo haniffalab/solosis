@@ -19,6 +19,9 @@ from tabulate import tabulate
     help="Retrieve all history",
 )
 def history(last, all):
+    """
+    History of commands used with Solosis
+    """
     CWD = os.environ["CWD"]
     hist_file = os.path.join(CWD, ".pap/") + "hist"
     if not os.path.exists(hist_file):

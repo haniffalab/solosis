@@ -55,6 +55,7 @@ def cli():
 @helpers.history
 def irods():
     """
+    Interacting with irods
     Set of commands for interacting with irods
     Please note that you have `iinit` before running these commands
     """
@@ -74,6 +75,7 @@ def test():
 @helpers.history
 def rna():
     """
+    scRNAseq analysis suite
     Set of commands for analysing scRNA-seq data including:
     alignment, demultiplexing, removal of ambient RNA & doublets.
     """
@@ -83,6 +85,7 @@ def rna():
 @helpers.history
 def alignment():
     """
+    Align fastq to genome
     Set of commands for alignment tools.
     """
     pass
