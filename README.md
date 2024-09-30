@@ -26,6 +26,41 @@ module load haniffa-utils
 ```
 hl..solosis1 --help
 ```
+
+# How to run (Pull-processed/Scanpy notebook)
+
+1. **Make input file** 
+
+```bash
+nano samplefile.txt
+```
+
+1. **Populate input file** 
+
+No header needed & the columns are separated by tab (.tsv)
+
+```bash
+#sampleID				  #sample_name	  	  	  #cellranger_path 
+pBCN14634207	    BK18-BLD-3-SC-1a_G      /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
+pBCN14634303	    BK18-BLD-3-SC-1a_C      /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
+```
+
+1. **Pull cellranger outputs from iRODS**
+
+(For more information- `hl..solosis1 irods pull-processed --help`)
+
+```bash
+hl..solosis1 irods pull-processed --sampefile path/to/samplefile.txt
+```
+
+1. **Run initial scanpy workflow**
+
+(For more information- hl..solosis1 rna scanpy --help)
+
+```bash
+hl..solosis1 rna scanpy --sampefile path/to/samplefile.txt
+```
+
 # scRNA seq analysis
 
 SingleCell-Voyage retrieves FASTQ files from iRODS storage to Lustre storage on HPC, processes them with Cellranger and Cellbender, optionally aligns with STARsolo, and finally runs scAutoQC for streamlined sample data processing. 
