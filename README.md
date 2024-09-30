@@ -24,13 +24,13 @@ module load haniffa-utils
 3. Main command help
 
 ```
-hl..piperv100 --help
+hl..solosis1 --help
 ```
 # scRNA seq analysis
 
 SingleCell-Voyage retrieves FASTQ files from iRODS storage to Lustre storage on HPC, processes them with Cellranger and Cellbender, optionally aligns with STARsolo, and finally runs scAutoQC for streamlined sample data processing. 
 
-Here sc-voyage has been integrated into hl-piperv100 module.
+Here sc-voyage has been integrated into hl-solosis1 module.
 
 1. Export environment variables
 
@@ -49,26 +49,26 @@ nano /lustre/scratch126/cellgen/team298/pipelines/sc-voyage/samples.csv
 3. Run the NF-irods-to-lustre pipeline to pull fastqs
 
 ```
-hl..piperv100 irods pull-fastqs --sampefile path/to/file.csv
+hl..solosis1 irods pull-fastqs --sampefile path/to/file.csv
 ```
 
 4. Execute Cellranger
 ```
-hl..piperv100 alignment cellranger
+hl..solosis1 alignment cellranger
 ```
 
 5. [OPTIONAL] run STARsolo
 ```
-hl..piperv100 alignment starsolo
+hl..solosis1 alignment starsolo
 ```
 
 7. Execute Cellbender
 
 The ```--total_droplets_included``` flag is required.
 
-(For more information- ```hl..piperv100 scRNA_analysis cellbender --help```)
+(For more information- ```hl..solosis1 scRNA_analysis cellbender --help```)
 ```
-hl..piperv100 rna cellbender --total_droplets_included 30000
+hl..solosis1 rna cellbender --total_droplets_included 30000
 ```
 
 # Development
