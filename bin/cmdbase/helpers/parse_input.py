@@ -72,6 +72,7 @@ def parse_input(
         )
 
         # @TODO: determine required values -> throw error if not found
+        # @TODO: use sample_id as sample_name if not present
         logging.info(f"Writing to file {os.path.join(output_dir,output_filename)}")
         logging.info(f"Writing headers: {SAMPLE_HEADERS}")
         with open(os.path.join(output_dir, output_filename), "w") as out_csv:
