@@ -71,6 +71,7 @@ def parse_input(
             else f"{output_filename}.csv"
         )
 
+        # @TODO: determine required values -> throw error if not found
         logging.info(f"Writing to file {os.path.join(output_dir,output_filename)}")
         logging.info(f"Writing headers: {SAMPLE_HEADERS}")
         with open(os.path.join(output_dir, output_filename), "w") as out_csv:
@@ -82,5 +83,5 @@ def parse_input(
                     if has_header:
                         parsed_row.append(row.get(header, None))
                     else:
-                        parsed_row.append(row[i])
+                        parsed_row.append(row[i] if i < len(row) else None)
                 writer.writerow(parsed_row)
