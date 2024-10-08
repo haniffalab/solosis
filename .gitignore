@@ -1,8 +1,37 @@
-test/
+# Flask
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+venv/
+.venv/
+env*
+dist/
+build/
+*.egg
+*.egg-info/
+.tox/
+.cache/
+.pytest_cache/
+.idea/
+docs/_build/
+.vscode
+instance/
+*.swp
+*~
+*.pyc
+__pycache__/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover
+
+# Sphinx
+sphinx/_build
+
 *ckpt.tar.gz
 .ipynb_checkpoints
-__pycache__/
-.venv
-.env
-*.swp
-.DS_Store
