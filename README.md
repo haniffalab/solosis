@@ -1,7 +1,17 @@
-# Haniffa-utils
+# Solosis
 
 A plug and play pipeline for the lab
 This suite is made to work with farm22. The instructions below are to be performed in farm unless otherwise stated.
+
+# Installation
+
+1. Setup and run
+
+```
+module use append /software/cellgen/team298/shared/solosis/modulefiles
+module load solosis
+solosis-cli --help
+```
 
 # Installation
 
@@ -117,3 +127,10 @@ python -m pip install -r envs/dev/requirements.txt
 pre-commit install
 ```
 
+# Testing
+
+1. Setup and run
+
+```
+pytest
+```
