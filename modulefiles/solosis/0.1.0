@@ -20,5 +20,5 @@ module load cellgen/irods
 
 setenv SOLOSIS_BASE /software/cellgen/team298/shared/solosis
 
-prepend-path PATH $env(SOLOSIS_BASE)/bin
+prepend-path PATH $env(SOLOSIS_BASE)
 
