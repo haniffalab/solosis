@@ -1,0 +1,33 @@
+.rst-content .code-block-caption {
+  text-align: left;
+  font-weight: 700;
+  display: block;
+  color: #fff;
+  background: #742e75;
+  padding: 6px 12px;
+}
+.rst-content div[class^="highlight"] {
+  margin-top: 0;
+}
+.admonition.shell-output {
+  font-size: 85%;
+  line-height: 1;
+}
+.admonition.shell-output .admonition-title:before {
+  content: None;
+}
+.admonition.shell-output .admonition-title {
+  font-style: italic;
+}
+.citation {
+  font-weight: bold;
+  font-style: italic;
+}
+code.docutils.literal.notranslate {
+  white-space: nowrap;
+}
+.wy-side-nav-search, .wy-nav-top {
+  background: #6F1270;
+}
+
+/* initial colour- background: #6ab0de;*/
