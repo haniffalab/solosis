@@ -22,6 +22,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./envs/dev/requirements.txt
       - name: Run tests
-        run: python -m pytest --cov=bin tests/test_cli.py
+        run: python -m pytest --cov --cov-report=xml tests/test_cli.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
