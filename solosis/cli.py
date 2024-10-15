@@ -1,3 +1,5 @@
+from importlib.metadata import version as pkg_version
+
 import click
 
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
@@ -5,6 +7,7 @@ from solosis.commands.irods import pull_cellranger, pull_fastqs
 
 
 @click.group()
+@click.version_option(version=pkg_version("solosis"))
 def cli():
     """Command line utility for the Cellular Genetics
     programme at the Wellcome Sanger Institute"""
