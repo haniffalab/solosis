@@ -5,7 +5,7 @@ import click
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 
-VERSION = "1.0.1"
+VERSION = "0.1.0"
 
 
 @click.group()
