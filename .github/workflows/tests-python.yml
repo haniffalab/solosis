@@ -11,10 +11,6 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: Install libvips
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libvips
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.10
@@ -27,7 +23,5 @@ jobs:
           pip install -r ./envs/dev/requirements.txt
       - name: Run tests
         run: python -m pytest --cov=bin tests/test_class.py
-        env:
-          PYTHONPATH: ./bin
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
