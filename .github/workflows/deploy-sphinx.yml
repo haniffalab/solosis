@@ -1,9 +1,16 @@
 name: deploy-docs
 
+# on:
+#   push:
+#     branches: [main]
+#     tags: ["v*"]
+
 on:
   push:
-    branches: [main]
-    tags: ["v*"]
+    branches: [dev]
+
+  pull_request:
+    branches: [main, dev]
 
 jobs:
   run:

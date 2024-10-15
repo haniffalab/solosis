@@ -24,4 +24,6 @@ jobs:
       - name: Run tests
         run: python -m pytest --cov --cov-report=xml tests/test_cli.py
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
