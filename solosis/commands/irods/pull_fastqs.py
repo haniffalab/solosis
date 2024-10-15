@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 import click
 
 
@@ -11,7 +14,11 @@ def cmd(samplefile):
     """
     print("Using irods to download data")
     print("If you have a large set of files, this command will take a while to run")
-    shell_script_fq = os.path.join(SHELL_SCRIPT_BASE, "irods..fastqs")
+
+    shell_script_fq = os.path.join(
+        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/irods/pull-fastqs/submit.sh"
+    )
+
     result_fq = subprocess.run(
         [shell_script_fq, samplefile], capture_output=True, text=True
     )

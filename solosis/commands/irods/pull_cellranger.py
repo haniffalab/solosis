@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 import click
 
 
@@ -49,11 +52,14 @@ def cmd(samplefile, retainbam, overwrite):
     """
     print("Using irods to download data")
     print("If you have a large set of files, this command will take a while to run")
-    shell_script = os.path.join(SHELL_SCRIPT_BASE, "irods..download_processed")
+
+    shell_cellranger_script = os.path.join(
+        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/irods/pull-cellranger/submit.sh"
+    )
     overwrite = str(overwrite * 1)
     retainbam = str(retainbam * 1)
     result = subprocess.run(
-        [shell_script, samplefile, retainbam, overwrite], capture_output=True, text=True
+        [shell_cellranger_script, samplefile, retainbam, overwrite], capture_output=True, text=True
     )
     click.echo(result.stdout)
     click.echo(result.stderr)

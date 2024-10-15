@@ -1,6 +1,6 @@
 import click
 
-from solosis.commands.alignment import cellranger, starsolo
+from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 
 
@@ -13,6 +13,7 @@ def cli():
 
 # Alignment
 cli.add_command(cellranger.cmd)
+cli.add_command(cellrangerARC.cmd)
 cli.add_command(starsolo.cmd)
 
 # iRods
