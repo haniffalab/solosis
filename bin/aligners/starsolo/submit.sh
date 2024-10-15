@@ -10,21 +10,18 @@ export VOY_TMP=/lustre/scratch126/cellgen/team298/tmp
 export VOY_DATA=/lustre/scratch126/cellgen/team298/sample_data
 export VOY_PIPELINES=/lustre/scratch126/cellgen/team298/pipelines
 
+module load cellgen/star
+
 GROUP="team298"
 CPU=16
 MEM=64000
 Q="normal"
 
-#samples_file="$VOY_CODE/samples.csv"
-output_dir="$VOY_CODE/logs"
-#job_script="$VOY_CODE/starsolo/starsolo_10x_auto.sh"
-#tmp_dir="$VOY_TMP"
-#data_dir="$VOY_DATA"
 samples_file=$1
 
 # Create an output file to hold the commands for each sample
 commands_file=$(basename "$samples_file").commands
-rm -f $commands_file
+rm -f $commands_file #this isn't working?
 
 # Read the sample file and prepare commands for each sample
 tail -n +2 $samples_file | while IFS=, read -r sample; do
@@ -39,8 +36,8 @@ bsub_array_script="submit_starsolo_${RANDOM}.bsub"
 cat > $bsub_array_script <<EOF
 #!/bin/bash
 #BSUB -J starsolo_array[1-$total_jobs]%20  # Limit to 20 jobs at once
-#BSUB -o $output_dir/%J_%I.bsub.log        # %I is job index in array
-#BSUB -e $output_dir/%J_%I.bsub.err
+#BSUB -o $VOY_CODE/logs/%J_%I.bsub.log        # %I is job index in array
+#BSUB -e $VOY_CODE/logs/%J_%I.bsub.err
 #BSUB -n $CPU
 #BSUB -M $MEM
 #BSUB -R "span[hosts=1] select[mem>${MEM}] rusage[mem=${MEM}]"

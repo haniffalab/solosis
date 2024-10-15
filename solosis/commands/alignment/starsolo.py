@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 import click
 
 
@@ -16,8 +19,9 @@ def cmd(samplefile):
     ---------------------------------
     """
     shell_starsolo_script = os.path.join(
-        SHELL_SCRIPT_BASE, "alignment..submit_starsolo"
-    )  # can we change script base to sc-voyage dir
+        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/aligners/starsolo/submit.sh"
+    )
+    # can we change script base to sc-voyage dir
     result_STAR = subprocess.run(
         [shell_starsolo_script, samplefile], capture_output=True, text=True
     )
