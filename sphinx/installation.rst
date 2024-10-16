@@ -24,6 +24,7 @@ Load the solosis module.
 
    module load solosis
 
+
 .. code-block:: shell
    :caption: Expected Output
     
@@ -34,55 +35,82 @@ Load the solosis module.
       Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
          cellgen/irods 
 
-.. _environment:
+.. _setup:
 
-Environment setup
+Setup
 =================
 
-.. _environment_Docker:
+.. _setup_samplefile:
 
-**CURRENTLY NO ENVIRONMENTS TO BE INSTALLED MANUALLY**
 
-Follow these Environment Setup instructions using conda, Docker or manually installing the required components to run sc-analysis-nf.
+Follow these Setup instructions populate input files to successfully run the solosis CLI.
 
-Using Docker
------------
-**If you have Docker installed locally:**
-- Open the Docker application on your device before running the pipeline.
-If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:
-
-.. code-block:: shell
-   :caption: Input
-
-   docker version
-
-.. code-block:: shell
-   :caption: Output
-
-   Client: Docker Engine - Community
-   ...
-
-**If you do not have Docker installed locally:** 
-Follow the `official Docker Install guide`_.
-
-.. _environment_conda:
-
-Using conda (optional)
+Populating samplefile
 -----------
 
-If you have `conda`_ or `mamba`_ already installed then you can use the ``environment.yaml`` file included in the sc-analysis-nf release to create the environment.
+This is the input file is a text file ``.txt`` and is currently required to exceute the following commands:
 
-.. code-block:: shell
-   :caption: Input
+- pull-processed 
+- Scanpy (notebook)
+- merge_h5ad
 
-   conda create -n nextflow_env -f environment.yaml
+**NOTE:** this input file can include any number of columns, so long as:
 
-Then make sure you activate the ``environment`` environment before you use the pipeline.
+- column1 - *sample_id*
+- column2 - *sample_name*
+- final column - *irods_path*
 
-.. code-block:: shell
-   :caption: Input
+.. list-table:: 
+    :widths: 10 15 10 10
+    :header-rows: 1
 
-   conda activate environment 
+    * - sample_id
+      - sample_name
+      - ...
+      - irods_path
+    * - pBCN14634207
+      - BK18-BLD-3-SC-1a_G
+      - ...
+      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
+    * - pBCN14634303
+      - BK18-BLD-3-SC-1a_C
+      - ...
+      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
+       
 
+.. _setup_cellrangerARC:
+
+CellrangerARC  
+-----------
+
+CellrangerARC has two inputs that are required both of which a *comma-separated variable* ``csv`` formatted files.
+
+1. csv file ``libraries.csv`` which includes library type of each sample (e.g. GEX or ATAC)
+
+.. list-table:: 
+    :widths: 10 15 10 
+    :header-rows: 1
+
+    * - fastqs
+      - sample
+      - library_type
+    * - /lustre/scratch126/cellgen/team298/tmp/HCA_rFSKI14910984
+      - HCA_rFSKI14910984
+      - Gene Expression
+    * - /lustre/scratch126/cellgen/team298/tmp/HCA_rFSKI14910888
+      - HCA_rFSKI14910888
+      - Chromatin Accessibility    
+
+2. csv file of sample IDs ``samples.csv``
+
+**NOTE: This file is also required when running cellranger, STARsolo and pull-fastqs.**
+
+.. list-table:: 
+    :widths: 10 
+    :header-rows: 1
+
+    * - samples
+    * - HCA_rFSKI14910984
+    * - HCA_rFSKI14910888
 
 .. _environment_manual:

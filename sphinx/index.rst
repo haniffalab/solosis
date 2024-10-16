@@ -34,7 +34,7 @@ This tool is made to work with farm22.
    :glob:
 
    installation
-   configuration
+   configuration (REMOVE?)
    run
    testing
    visualise

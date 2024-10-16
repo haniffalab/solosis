@@ -1,10 +1,13 @@
 .. _run:
 
-Running
+Run
 =======
- 
 
-ADD SOME TYPE OF DESCRIPTION HERE 
+The solosis command-line tool requires very few commands to achieve many data analysis processes.
+Getting started is simple, see below:
+
+Getting started
+---------------
 
 **To get started**
 
@@ -31,9 +34,12 @@ ADD SOME TYPE OF DESCRIPTION HERE
    pull-processed  Downloads processed irods data or any folder from irods...
    starsolo        STARsolo aligns sc-rna seq reads...
 
-**To run cellranger**
+Cellranger execution
+---------------
 
-Type ``solosis-cli cellranger --help`` for required inputs 
+To run cellranger, execute the following command:
+
+**Note:** Type ``solosis-cli cellranger --help`` for required inputs and addition parameters. 
 
 .. code-block:: shell
    :caption: Input
@@ -46,9 +52,18 @@ Type ``solosis-cli cellranger --help`` for required inputs
    ** See avaiable options using: cellranger -h
    Job <JOBID> is submitted to queue <normal>.
 
-To run cellrangerARC
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
 
-Type ``solosis-cli cellrangerARC --help`` for required inputs 
+Command results will be found at ``/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/cellranger-hl``
+
+CellrangerARC execution
+---------------
+
+To run cellrangerARC, execute the following command:
+
+**Note:** Type ``solosis-cli cellrangerARC --help`` for required inputs and addition parameters. 
 
 .. code-block:: shell
    :caption: Input
@@ -61,9 +76,18 @@ Type ``solosis-cli cellrangerARC --help`` for required inputs
    ** See avaiable options using: cellranger -h
    Job <JOBID> is submitted to queue <normal>.
 
-**To run STARsolo**
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
 
-Type ``solosis-cli starsolo --help`` for required inputs 
+Command results will be found at ``/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/cellrangerARC-hl``
+
+STARsolo execution
+---------------
+
+To run STARsolo, execute the following command:
+
+**Note:** Type ``solosis-cli starsolo --help`` for required inputs and addition parameters. 
 
 .. code-block:: shell
    :caption: Input
@@ -75,10 +99,19 @@ Type ``solosis-cli starsolo --help`` for required inputs
 
    Job <JOBID> is submitted to queue <normal>.
 
-**To pull processed (cellranger) data from iRODS**
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
 
-Type ``solosis-cli pull-processed --help`` for required inputs 
+Command results will be found at ``/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/starsolo-hl``
 
+Pull cellranger outputs (irods)
+---------------
+
+To pull processed (cellranger) data from iRODS, execute the following command:
+
+**Note:** Type ``solosis-cli pull-processed --help`` for required inputs and addition parameters. 
+ 
 .. code-block:: shell
    :caption: Input
 
@@ -87,11 +120,19 @@ Type ``solosis-cli pull-processed --help`` for required inputs
 .. code-block:: shell
    :caption: Expected Output
 
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
 
+Command results will be found at ``/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/pulled-processed`` 
+and will also be sym-linked to the execution directory (where you executed the command).
 
-**To pull sequencing data (fastq) from iRODS**
+Pull fastqs (irods)
+---------------
 
-Type ``solosis-cli pull-fastqs --help`` for required inputs 
+To pull sequencing data (fastq) from iRODS, execute the following command:
+
+**Note:** Type ``solosis-cli pull-fastqs --help`` for required inputs and addition parameters. 
 
 .. code-block:: shell
    :caption: Input
@@ -103,7 +144,15 @@ Type ``solosis-cli pull-fastqs --help`` for required inputs
 
    Job <JOBID> is submitted to queue <normal>.
 
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
+
+Command results will be found at ``/lustre/scratch126/cellgen/team298/tmp/SAMPLE_ID``
+
+**NOTE: all samples will be removed from this tmp/ dir after 60 days**
+
 Further reading
 ---------------
 
-For more information about the computational utilities ... `conda <https://www.nextflow.io/docs/latest/conda.html>`__.
+For more information about the computational utilities ... `insert link to index.rst` 
