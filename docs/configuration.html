@@ -9,7 +9,7 @@
   <title>Configuration &mdash; Solosis 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=c68618ea" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -19,9 +19,7 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Running" href="run.html" />
-    <link rel="prev" title="Installation" href="installation.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,17 +42,10 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#i-am-leaving-this-in-for-now-so-that-i-canrefer-back-to-this-at-a-later-date">I am leaving this in for now, so that I canrefer back to this at a later date.</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#project">Project</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run.html">Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#setup">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualise.html">Visualising</a></li>
 </ul>
@@ -117,34 +108,27 @@
 Each project item is defined by the following keys:</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 40.0%" />
-<col style="width: 60.0%" />
+<col style="width: 28.6%" />
+<col style="width: 42.9%" />
+<col style="width: 28.6%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>key</p></th>
-<th class="head"><p>value</p></th>
+<tr class="row-odd"><th class="head"><p>sample_id</p></th>
+<th class="head"><p>sample_name</p></th>
+<th class="head"><p>irods_path</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">project</span></code></p></td>
-<td><p>a unique project name/id</p></td>
+<tr class="row-even"><td><p>pBCN14634207</p></td>
+<td><p>BK18-BLD-3-SC-1a_G</p></td>
+<td><p>/seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">datasets</span></code></p></td>
-<td><p>a list of dataset items.</p>
-<p>See <a href="#id3"><span class="problematic" id="id4">`dataset`_</span></a>.</p>
-</td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">args</span></code></p></td>
-<td><p><cite>optional</cite> map of arguments per data type to set as default for all files within the project.</p>
-<p>Supersedes global <code class="docutils literal notranslate"><span class="pre">args</span></code>.</p>
-</td>
+<tr class="row-odd"><td><p>pBCN14634303</p></td>
+<td><p>BK18-BLD-3-SC-1a_C</p></td>
+<td><p>/seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443</p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note</strong> that the pipeline does not check for the existence of these
-metadata within the AnnData object. It is written directly to the Vitessce
-config file. If they’re incorrectly specified then an error will occur when
-Vitessce tries to load the data.</p>
 </section>
 </section>
 </section>
@@ -152,10 +136,7 @@ Vitessce tries to load the data.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="run.html" class="btn btn-neutral float-right" title="Running" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

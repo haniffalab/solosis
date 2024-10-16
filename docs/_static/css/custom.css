@@ -34,4 +34,9 @@ code.docutils.literal.notranslate {
   color: #2e7546;
 }
 
+table.docutils th {
+  background-color: #bfbfbf;  /* Change this to your desired color */
+  color: #000000;  /* Change text color if needed */
+}
+
 /* initial colour- background: #6ab0de;*/

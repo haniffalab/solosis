@@ -39,25 +39,20 @@ Multiple projects can be defined in a single parameters file, and each can defin
 Each project item is defined by the following keys:
 
 .. list-table:: 
-    :widths: 10 15
+    :widths: 10 15 10
     :header-rows: 1
 
-    * - key
-      - value 
-    * - ``project``
-      - a unique project name/id
-    * - ``datasets``
-      - a list of dataset items.
+    * - sample_id
+      - sample_name
+      - irods_path
+    * - pBCN14634207
+      - BK18-BLD-3-SC-1a_G
+      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
+    * - pBCN14634303
+      - BK18-BLD-3-SC-1a_C
+      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
         
-        See `dataset`_.
-    * - ``args``
-      - `optional` map of arguments per data type to set as default for all files within the project.
-        
-        Supersedes global ``args``. 
 
 
 
-**Note** that the pipeline does not check for the existence of these
-metadata within the AnnData object. It is written directly to the Vitessce
-config file. If they're incorrectly specified then an error will occur when
-Vitessce tries to load the data.
+

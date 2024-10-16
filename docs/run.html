@@ -6,10 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running &mdash; Solosis 0.1.0 documentation</title>
+  <title>Run &mdash; Solosis 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=c68618ea" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Testing" href="testing.html" />
-    <link rel="prev" title="Configuration" href="configuration.html" /> 
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,9 +46,14 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html#environment-setup">Environment setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Running</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#setup">Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cellranger-execution">Cellranger execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cellrangerarc-execution">CellrangerARC execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starsolo-execution">STARsolo execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-cellranger-outputs-irods">Pull cellranger outputs (irods)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-fastqs-irods">Pull fastqs (irods)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
 </ul>
 </li>
@@ -76,7 +81,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Running</li>
+      <li class="breadcrumb-item active">Run</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/run.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -86,18 +91,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="running">
-<span id="run"></span><h1>Running<a class="headerlink" href="#running" title="Link to this heading"></a></h1>
-<p>ADD SOME TYPE OF DESCRIPTION HERE</p>
+  <section id="run">
+<span id="id1"></span><h1>Run<a class="headerlink" href="#run" title="Link to this heading"></a></h1>
+<p>The solosis command-line tool requires very few commands to achieve many data analysis processes.
+Getting started is simple, see below:</p>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
 <p><strong>To get started</strong></p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>--help
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>solosis-cli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
 Command<span class="w"> </span>line<span class="w"> </span>utility<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Cellular<span class="w"> </span>Genetics<span class="w"> </span>programme<span class="w"> </span>at<span class="w"> </span>the<span class="w"> </span>Wellcome
@@ -115,81 +123,119 @@ starsolo<span class="w">        </span>STARsolo<span class="w"> </span>aligns<sp
 </pre></div>
 </div>
 </div>
-<p><strong>To run cellranger</strong></p>
-<p>Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">cellranger</span> <span class="pre">--help</span></code> for required inputs</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+</section>
+<section id="cellranger-execution">
+<h2>Cellranger execution<a class="headerlink" href="#cellranger-execution" title="Link to this heading"></a></h2>
+<p>To run cellranger, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">cellranger</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>cellranger<span class="w"> </span>--samplefile<span class="w"> </span>path/to/file
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>See<span class="w"> </span>avaiable<span class="w"> </span>options<span class="w"> </span>using:<span class="w"> </span>cellranger<span class="w"> </span>-h
 Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
 </pre></div>
 </div>
 </div>
-<p>To run cellrangerARC</p>
-<p>Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">cellrangerARC</span> <span class="pre">--help</span></code> for required inputs</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+<p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/cellranger-hl</span></code></p>
+</section>
+<section id="cellrangerarc-execution">
+<h2>CellrangerARC execution<a class="headerlink" href="#cellrangerarc-execution" title="Link to this heading"></a></h2>
+<p>To run cellrangerARC, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">cellrangerARC</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>cellrangerARC<span class="w">  </span>--samplefile<span class="w"> </span>path/to/file
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>See<span class="w"> </span>avaiable<span class="w"> </span>options<span class="w"> </span>using:<span class="w"> </span>cellranger<span class="w"> </span>-h
 Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
 </pre></div>
 </div>
 </div>
-<p><strong>To run STARsolo</strong></p>
-<p>Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">starsolo</span> <span class="pre">--help</span></code> for required inputs</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+<p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/cellrangerARC-hl</span></code></p>
+</section>
+<section id="starsolo-execution">
+<h2>STARsolo execution<a class="headerlink" href="#starsolo-execution" title="Link to this heading"></a></h2>
+<p>To run STARsolo, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">starsolo</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>starsolo<span class="w"> </span>--samplefile<span class="w"> </span>path/to/file
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
 </pre></div>
 </div>
 </div>
-<p><strong>To pull processed (cellranger) data from iRODS</strong></p>
-<p>Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">pull-processed</span> <span class="pre">--help</span></code> for required inputs</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+<p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/starsolo-hl</span></code></p>
+</section>
+<section id="pull-cellranger-outputs-irods">
+<h2>Pull cellranger outputs (irods)<a class="headerlink" href="#pull-cellranger-outputs-irods" title="Link to this heading"></a></h2>
+<p>To pull processed (cellranger) data from iRODS, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">pull-processed</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>pull-processed<span class="w">  </span>--samplefile<span class="w"> </span>path/to/file
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
-<p><strong>To pull sequencing data (fastq) from iRODS</strong></p>
-<p>Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">pull-fastqs</span> <span class="pre">--help</span></code> for required inputs</p>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+<p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/sample_data/SAMPLE_ID/pulled-processed</span></code>
+and will also be sym-linked to the execution directory (where you executed the command).</p>
+</section>
+<section id="pull-fastqs-irods">
+<h2>Pull fastqs (irods)<a class="headerlink" href="#pull-fastqs-irods" title="Link to this heading"></a></h2>
+<p>To pull sequencing data (fastq) from iRODS, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">pull-fastqs</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>pull-fastqs<span class="w">  </span>--samplefile<span class="w"> </span>path/to/file
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
 </pre></div>
 </div>
 </div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+<p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/tmp/SAMPLE_ID</span></code></p>
+<p><strong>NOTE: all samples will be removed from this tmp/ dir after 60 days</strong></p>
+</section>
 <section id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
-<p>For more information about the computational utilities … <a class="reference external" href="https://www.nextflow.io/docs/latest/conda.html">conda</a>.</p>
+<p>For more information about the computational utilities … <cite>insert link to index.rst</cite></p>
 </section>
 </section>
 
@@ -197,7 +243,7 @@ Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="testing.html" class="btn btn-neutral float-right" title="Testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
