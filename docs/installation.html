@@ -6,10 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sc-analysis-nf 0.1.0 documentation</title>
+  <title>Installation &mdash; Solosis 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9a3156ca" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=c68618ea" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Configuration" href="configuration.html" />
-    <link rel="prev" title="sc-analysis-nf" href="index.html" /> 
+    <link rel="prev" title="Solosis" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +33,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            sc-analysis-nf
+            Solosis
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -49,7 +49,6 @@
 <li class="toctree-l1"><a class="reference internal" href="#environment-setup">Environment setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-docker">Using Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-conda-optional">Using conda (optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#manual-setup">Manual setup</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -60,8 +59,8 @@
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf">Source Code</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf/issues">Issue Tracker</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis/issues">Issue Tracker</a></li>
 </ul>
 
         </div>
@@ -70,7 +69,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sc-analysis-nf</a>
+          <a href="index.html">Solosis</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -90,64 +89,51 @@
              
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<p>Download the sc-analysis-nf Pipeline release. You can look for previous <a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf">releases on GitHub</a>.</p>
+<p>Loading the Solosis tool onto Farm22. You can look for previous <a class="reference external" href="https://github.com/haniffalab/solosis">releases on GitHub</a>.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:haniffalab/sc-analysis-nf.git
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>use<span class="w"> </span>append<span class="w"> </span>/software/cellgen/team298/shared/solosis/modulefiles
 </pre></div>
 </div>
 </div>
+<p>Load the solosis module.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Resolving<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span>...<span class="w"> </span><span class="m">140</span>.82.121.3
-Connecting<span class="w"> </span>to<span class="w"> </span>github.com<span class="w"> </span><span class="o">(</span>github.com<span class="o">)</span><span class="p">|</span><span class="m">140</span>.82.121.3<span class="p">|</span>:443...<span class="w"> </span>connected.
-<span class="w">         </span>...<span class="w"> </span>THIS<span class="w"> </span>WILL<span class="w"> </span>NEED<span class="w"> </span>TO<span class="w"> </span>BE<span class="w"> </span>CHANGED
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>solosis
 </pre></div>
 </div>
 </div>
-<p>Change directory into the new repo.</p>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>sc-analysis-nf
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sc-analysis-nf/
-sc-analysis-nf/README.md/
-...
-...
-sc-analysis-nf/envs/cellrank.yaml
-sc-analysis-nf/input/filtered_gene_bc_matrices/barcodes.tsv
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Welcome to Solosis, Module loaded&#39;</span>
+**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Type solosis to get started&#39;</span>
+
+Loading<span class="w"> </span>solosis/0.1.0
+<span class="w">   </span>Loading<span class="w"> </span>requirement:<span class="w"> </span>cellgen/conda<span class="w"> </span>/software/modules/ISG/experimental/irods/4.2.11
+<span class="w">      </span>cellgen/irods
 </pre></div>
 </div>
 </div>
 </section>
 <section id="environment-setup">
 <span id="environment"></span><h1>Environment setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h1>
-<p id="environment-docker">Follow these Environment Setup instructions using conda, Docker or manually installing the required components to run sc-analysis-nf.</p>
+<p id="environment-docker"><strong>CURRENTLY NO ENVIRONMENTS TO BE INSTALLED MANUALLY</strong></p>
+<p>Follow these Environment Setup instructions using conda, Docker or manually installing the required components to run sc-analysis-nf.</p>
 <section id="using-docker">
 <h2>Using Docker<a class="headerlink" href="#using-docker" title="Link to this heading"></a></h2>
 <p><strong>If you have Docker installed locally:</strong>
 - Open the Docker application on your device before running the pipeline.
 If you want to use Docker, make sure Docker Engine 20.10 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>version
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Client:<span class="w"> </span>Docker<span class="w"> </span>Engine<span class="w"> </span>-<span class="w"> </span>Community
-Version:<span class="w">           </span><span class="m">23</span>.0.4
-API<span class="w"> </span>version:<span class="w">       </span><span class="m">1</span>.42
-Go<span class="w"> </span>version:<span class="w">        </span>go1.19.8
-Git<span class="w"> </span>commit:<span class="w">        </span>f480fb1
-Built:<span class="w">             </span>Fri<span class="w"> </span>Apr<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">10</span>:32:23<span class="w"> </span><span class="m">2023</span>
-OS/Arch:<span class="w">           </span>linux/amd64
-Context:<span class="w">           </span>default
+...
 </pre></div>
 </div>
 </div>
@@ -157,94 +143,27 @@ Follow the <a class="reference external" href="https://docs.docker.com/engine/in
 <section id="using-conda-optional">
 <span id="environment-conda"></span><h2>Using conda (optional)<a class="headerlink" href="#using-conda-optional" title="Link to this heading"></a></h2>
 <p>If you have <a class="reference external" href="https://docs.conda.io/projects/miniconda/en/latest/">conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/mamba-installation.html">mamba</a> already installed then you can use the <code class="docutils literal notranslate"><span class="pre">environment.yaml</span></code> file included in the sc-analysis-nf release to create the environment.</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>nextflow_env<span class="w"> </span>-f<span class="w"> </span>environment.yaml
 </pre></div>
 </div>
 </div>
 <p>Then make sure you activate the <code class="docutils literal notranslate"><span class="pre">environment</span></code> environment before you use the pipeline.</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>environment
 </pre></div>
 </div>
 </div>
-</section>
-<section id="manual-setup">
-<span id="environment-manual"></span><h2>Manual setup<a class="headerlink" href="#manual-setup" title="Link to this heading"></a></h2>
-<p><strong>#1. Check git is installed</strong></p>
-<p>Make sure git 2.17 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>version<span class="w"> </span><span class="m">2</span>.25.1
-</pre></div>
-</div>
-</div>
-<p>If Git is missing you will have to follow the <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Getting Started Installing Git guide</a>.</p>
-<p><strong>#2. Check java is installed</strong></p>
-<p>Make sure Java 11 or later is installed on your computer by using the command:</p>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-version
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openjdk<span class="w"> </span>version<span class="w"> </span><span class="s2">&quot;11.0.18&quot;</span><span class="w"> </span><span class="m">2023</span>-01-17
-OpenJDK<span class="w"> </span>Runtime<span class="w"> </span>Environment<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1<span class="o">)</span>
-OpenJDK<span class="w"> </span><span class="m">64</span>-Bit<span class="w"> </span>Server<span class="w"> </span>VM<span class="w"> </span><span class="o">(</span>build<span class="w"> </span><span class="m">11</span>.0.18+10-post-Ubuntu-0ubuntu120.04.1,<span class="w"> </span>mixed<span class="w"> </span>mode,<span class="w"> </span>sharing<span class="o">)</span>
-</pre></div>
-</div>
-</div>
-<p>If not installed, <a class="reference external" href="https://www.java.com/en/download/manual.jsp">download and install Java</a>.</p>
-<p><strong>#3. Install Nextflow</strong></p>
-<p>Enter the following command in your terminal to install nextflow in the current directory:</p>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-s<span class="w"> </span>https://get.nextflow.io<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
-<span class="c1"># Add Nextflow binary to your user&#39;s PATH:</span>
-mv<span class="w"> </span>nextflow<span class="w"> </span>~/bin/
-<span class="c1"># OR system-wide installation:</span>
-<span class="c1"># sudo mv nextflow /usr/local/bin</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-text">Output</span><a class="headerlink" href="#id15" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>org.apache.ivy:ivy:jar:2.5.1
-...
-CAPSULE:<span class="w"> </span>Downloading<span class="w"> </span>dependency<span class="w"> </span>io.nextflow:nf-commons:jar:23.04.1
-
-<span class="w">      </span>N<span class="w"> </span>E<span class="w"> </span>X<span class="w"> </span>T<span class="w"> </span>F<span class="w"> </span>L<span class="w"> </span>O<span class="w"> </span>W
-<span class="w">      </span>version<span class="w"> </span><span class="m">23</span>.04.1<span class="w"> </span>build<span class="w"> </span><span class="m">5866</span>
-<span class="w">      </span>created<span class="w"> </span><span class="m">15</span>-04-2023<span class="w"> </span><span class="m">06</span>:51<span class="w"> </span>UTC<span class="w"> </span><span class="o">(</span><span class="m">07</span>:51<span class="w"> </span>BST<span class="o">)</span>
-<span class="w">      </span>cite<span class="w"> </span>doi:10.1038/nbt.3820
-<span class="w">      </span>http://nextflow.io
-
-
-Nextflow<span class="w"> </span>installation<span class="w"> </span>completed.<span class="w"> </span>Please<span class="w"> </span>note:
--<span class="w"> </span>the<span class="w"> </span>executable<span class="w"> </span>file<span class="w"> </span><span class="sb">`</span>nextflow<span class="sb">`</span><span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>created<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>folder:<span class="w"> </span>./sc-analysis-nf
--<span class="w"> </span>you<span class="w"> </span>may<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>installation<span class="w"> </span>by<span class="w"> </span>moving<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>directory<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span><span class="nv">$PATH</span>
-</pre></div>
-</div>
-</div>
-<p>You can read more about how to install nextflow in the <a class="reference external" href="https://www.nextflow.io/index.html#GetStarted">official nextflow documentation</a>.</p>
-</section>
+<span class="target" id="environment-manual"></span></section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="sc-analysis-nf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Solosis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

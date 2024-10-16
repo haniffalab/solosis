@@ -6,10 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sc-analysis-nf &mdash; sc-analysis-nf 0.1.0 documentation</title>
+  <title>Solosis &mdash; Solosis 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9a3156ca" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=c68618ea" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -32,7 +32,7 @@
           
           
           <a href="#" class="icon icon-home">
-            sc-analysis-nf
+            Solosis
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -54,8 +54,8 @@
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citation</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf">Source Code</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf/issues">Issue Tracker</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis/issues">Issue Tracker</a></li>
 </ul>
 
         </div>
@@ -64,7 +64,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">sc-analysis-nf</a>
+          <a href="#">Solosis</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -72,7 +72,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">sc-analysis-nf</li>
+      <li class="breadcrumb-item active">Solosis</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,15 +82,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p><a class="reference external" href="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml"><img alt="Tests" src="https://github.com/haniffalab/webatlas-pipeline/actions/workflows/tests-python.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/haniffalab/sc-analysis-nf/actions/workflows/deploy-sphinx.yml"><img alt="Sphinx" src="https://github.com/haniffalab/sc-analysis-nf/actions/workflows/deploy-sphinx.yml/badge.svg" /></a> <a class="reference external" href="https://app.codecov.io/gh/haniffalab/webatlas-pipeline"><img alt="Coverage" src="https://codecov.io/gh/haniffalab/webatlas-pipeline/branch/main/graph/badge.svg?token=7HQVFH08WJ" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.7405818"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg" /></a></p>
-<section id="sc-analysis-nf">
-<h1>sc-analysis-nf<a class="headerlink" href="#sc-analysis-nf" title="Link to this heading"></a></h1>
-<p>This Nextflow pipeline processes single-cell data and carries out an initial QC workflow.
-The pipeline also generates a series of plots uncovering the results of the QC process.</p>
-<p><strong>This QC anaylsis pipeline follows this basic workflow:</strong>
-- <a class="reference external" href="https://github.com/constantAmateur/SoupX">SoupX</a> R based tool to remove ambient RNA.
-- <a class="reference external" href="https://github.com/swolock/scrublet">scrublet</a> Python-based tool to remove doublets.
-- <a class="reference external" href="https://scanpy.readthedocs.io/en/stable/">scanpy</a> python-based tool to analyse sc-RNA seq data (incl. Count transformation, feature selection, dimensionality reduction, batch correction or integration.)</p>
+  <p><a class="reference external" href="https://github.com/haniffalab/solosis/actions/workflows/tests-python.yml"><img alt="Tests" src="https://github.com/haniffalab/solosis/actions/workflows/tests-python.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/haniffalab/solosis/actions/workflows/deploy-sphinx.yml"><img alt="Sphinx" src="https://github.com/haniffalab/solosis/actions/workflows/deploy-sphinx.yml/badge.svg" /></a> <a class="reference external" href="https://codecov.io/github/haniffalab/solosis"><img alt="Coverage" src="https://codecov.io/github/haniffalab/solosis/graph/badge.svg?token=V80FDINJOD" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.7405818"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg" /></a></p>
+<section id="solosis">
+<h1>Solosis<a class="headerlink" href="#solosis" title="Link to this heading"></a></h1>
+<p>CLI tool including common computational utilities for single-cell sequencing data analysis used by the Haniffa Lab.
+This tool is made to work with farm22.</p>
+<p><strong>Common computational utilities:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.10xgenomics.com/support/software/cell-ranger/latest">Cellranger</a> A set of analysis pipelines that perform sample demultiplexing, barcode processing, single cell 3’ and 5’ gene counting, V(D)J transcript sequence assembly and annotation, and Feature Barcode analysis from single cell data.</p></li>
+<li><p><a class="reference external" href="https://www.10xgenomics.com/support/software/cell-ranger-arc/latest">CellrangerARC</a> Cell Ranger ARC is an advanced analytical suite designed for the Chromium Single Cell Multiome ATAC + Gene Expression sequencing.</p></li>
+<li><p><a class="reference external" href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARsolo</a> a turnkey solution for analyzing droplet single cell RNA sequencing data (e.g. 10X Genomics Chromium).</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>

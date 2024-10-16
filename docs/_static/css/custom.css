@@ -3,7 +3,7 @@
   font-weight: 700;
   display: block;
   color: #fff;
-  background: #742e75;
+  background: #2e7546;
   padding: 6px 12px;
 }
 .rst-content div[class^="highlight"] {
@@ -27,7 +27,11 @@ code.docutils.literal.notranslate {
   white-space: nowrap;
 }
 .wy-side-nav-search, .wy-nav-top {
-  background: #6F1270;
+  background: #2e7546;
+}
+
+.wy-menu > .caption > span.caption-text {
+  color: #2e7546;
 }
 
 /* initial colour- background: #6ab0de;*/
