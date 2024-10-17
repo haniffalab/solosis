@@ -54,6 +54,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#starsolo-execution">STARsolo execution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pull-cellranger-outputs-irods">Pull cellranger outputs (irods)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pull-fastqs-irods">Pull fastqs (irods)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cellbender">Cellbender</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scanpy-workflow">Scanpy Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merge-h5ad-objects">Merge h5ad Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
 </ul>
 </li>
@@ -232,6 +235,66 @@ using <code class="docutils literal notranslate"><span class="pre">bjobs</span><
 files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
 <p>Command results will be found at <code class="docutils literal notranslate"><span class="pre">/lustre/scratch126/cellgen/team298/tmp/SAMPLE_ID</span></code></p>
 <p><strong>NOTE: all samples will be removed from this tmp/ dir after 60 days</strong></p>
+</section>
+<section id="cellbender">
+<h2>Cellbender<a class="headerlink" href="#cellbender" title="Link to this heading"></a></h2>
+<p>To run cellbender to remove RNA artifacts, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">cellbender</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>cellbender<span class="w"> </span>--samplefile<span class="w"> </span>path/to/file.txt<span class="w"> </span>--total_droplets_included<span class="w"> </span>VALUE
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id15" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+</section>
+<section id="scanpy-workflow">
+<h2>Scanpy Workflow<a class="headerlink" href="#scanpy-workflow" title="Link to this heading"></a></h2>
+<p>To run a basic scanpy workflow and generate a .ipynb, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">scanpy</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id16" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>scanpy<span class="w">  </span>--samplefile<span class="w"> </span>path/to/file.txt
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id17" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
+</section>
+<section id="merge-h5ad-objects">
+<h2>Merge h5ad Objects<a class="headerlink" href="#merge-h5ad-objects" title="Link to this heading"></a></h2>
+<p>To pull merge h5ad objects together, execute the following command:</p>
+<p><strong>Note:</strong> Type <code class="docutils literal notranslate"><span class="pre">solosis-cli</span> <span class="pre">merge-h5ad</span> <span class="pre">--help</span></code> for required inputs and addition parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id18" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>merge-h5ad<span class="w">  </span>--samplefile<span class="w"> </span>path/to/file.txt<span class="w"> </span>--merged_filename<span class="w"> </span>example-merge.h5ad
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id19" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Job<span class="w"> </span>&lt;JOBID&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>After the job &lt;JOBID&gt; has been submitted to the queue &lt;NORMAL&gt; , you can check the status of the queue
+using <code class="docutils literal notranslate"><span class="pre">bjobs</span></code> command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).</p>
 </section>
 <section id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
