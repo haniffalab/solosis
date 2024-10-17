@@ -152,6 +152,69 @@ Command results will be found at ``/lustre/scratch126/cellgen/team298/tmp/SAMPLE
 
 **NOTE: all samples will be removed from this tmp/ dir after 60 days**
 
+Cellbender
+---------------
+
+To run cellbender to remove RNA artifacts, execute the following command:
+
+**Note:** Type ``solosis-cli cellbender --help`` for required inputs and addition parameters. 
+
+.. code-block:: shell
+   :caption: Input
+
+   solosis-cli cellbender --samplefile path/to/file.txt --total_droplets_included VALUE
+
+.. code-block:: shell
+   :caption: Expected Output
+
+   Job <JOBID> is submitted to queue <normal>.
+
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
+
+Scanpy Workflow
+---------------
+
+To run a basic scanpy workflow and generate a .ipynb, execute the following command:
+
+**Note:** Type ``solosis-cli scanpy --help`` for required inputs and addition parameters. 
+
+.. code-block:: shell
+   :caption: Input
+
+   solosis-cli scanpy  --samplefile path/to/file.txt
+
+.. code-block:: shell
+   :caption: Expected Output
+
+   Job <JOBID> is submitted to queue <normal>.
+
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
+
+Merge h5ad Objects
+---------------
+
+To pull merge h5ad objects together, execute the following command:
+
+**Note:** Type ``solosis-cli merge-h5ad --help`` for required inputs and addition parameters. 
+
+.. code-block:: shell
+   :caption: Input
+
+   solosis-cli merge-h5ad  --samplefile path/to/file.txt --merged_filename example-merge.h5ad
+
+.. code-block:: shell
+   :caption: Expected Output
+
+   Job <JOBID> is submitted to queue <normal>.
+
+After the job <JOBID> has been submitted to the queue <NORMAL> , you can check the status of the queue 
+using ``bjobs`` command. This can be a quick way to identify whether you have populated the input
+files correctly, as well as, check whether job are actively running (RUN) or in the queue (PEND).
+
 Further reading
 ---------------
 

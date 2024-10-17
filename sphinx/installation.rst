@@ -29,7 +29,7 @@ Load the solosis module.
    :caption: Expected Output
     
    ** INFO: 'Welcome to Solosis, Module loaded'
-   ** INFO: 'Type solosis to get started'
+   ** INFO: 'Type solosis-cli to get started'
 
    Loading solosis/0.1.0
       Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
