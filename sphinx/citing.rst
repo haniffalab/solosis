@@ -11,4 +11,4 @@ Citation
 
 If you use this software in a scientific publication, please cite using the following Zenodo reference. 
 
-**Grimble, Louise, Horsfall, David, Basurto-Lozada, Daniela (2024). Solosis (v0.1.0).
+**Grimble, Louise, Baskar, Vijaya, Basurto-Lozada, Daniela, Horsfall, David (2024). Solosis (v0.1.0).
