@@ -95,7 +95,25 @@
 <span id="id1"></span><h1>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h1>
 <section id="python-testing">
 <h2>Python testing<a class="headerlink" href="#python-testing" title="Link to this heading"></a></h2>
-<p>Testing of python scripts uses <a class="reference external" href="https://docs.pytest.org/en/7.1.x/">pytest</a>.</p>
+<p><strong>Development</strong></p>
+<p>For Github Actions to pass, will need to ensure <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> are implemented.</p>
+<p>Create virtual environment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+<span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Install dev dependencies and install pre-commit hooks, this is automated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Manually checking <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">black</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">isort</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p><strong>Testing of python scripts uses `pytest`_.</strong></p>
 <p>Set the <code class="code docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> environment variable to the <code class="code docutils literal notranslate"><span class="pre">bin</span></code> directory where the scripts are stored, and then run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">q</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_class</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
