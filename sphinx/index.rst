@@ -27,7 +27,7 @@ This tool is made to work with farm22.
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Contributing
+   :caption: More
   
    configuration
    visualise
