@@ -6,7 +6,7 @@
 # Solosis
 
 [![docs](https://img.shields.io/badge/Documentation-online-blue)](https://haniffalab.github.io/solosis)
-[![doi](https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg)](https://doi.org/10.5281/zenodo.7405818)
+[![doi](https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg)](https://doi.org/10.5281/zenodo.13950124)
 
 A plug and play pipeline for the lab
 This suite is made to work with farm22. The instructions below are to be performed in farm unless otherwise stated.

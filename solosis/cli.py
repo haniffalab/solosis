@@ -1,3 +1,9 @@
+"""
+process_merscope.py
+====================================
+Processes MERSCOPE output
+"""
+
 from importlib.metadata import version as pkg_version
 
 import click

@@ -38,7 +38,7 @@ Load the solosis module.
 .. _setup:
 
 Setup
-=================
+*****
 
 .. _setup_samplefile:
 

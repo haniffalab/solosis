@@ -34,24 +34,25 @@ This tool is made to work with farm22.
    :glob:
 
    installation
-   configuration (REMOVE?)
+   commands
+   examples
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Contributing
+  
+   configuration
+   visualise
    run
    testing
    visualise
-
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :caption: Project Links
   
-   citing
+   citations
    Source Code <https://github.com/haniffalab/solosis>
    Issue Tracker <https://github.com/haniffalab/solosis/issues>
-

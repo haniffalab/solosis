@@ -3,7 +3,7 @@ type: software
 message: "If you use this repo, please cite it"
 title: "Solosis"
 url: "https://github.com/haniffalab/solosis"
-doi: 10.5281/zenodo.7405818
+doi: 10.5281/zenodo.13950124
 authors:
   - family-names: "Horsfall"
     given-names: "David"
