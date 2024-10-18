@@ -48,16 +48,22 @@
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Commands</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cli">cli</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#cli-cellranger">cellranger</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cli-cellbender">cellbender</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sample-id-list-of-samples-csv-file-format-needed-and-header-as-samples">sample_ID: list of samples, CSV file format needed and header as ‘samples’</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-cellranger">cellranger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">sample_ID: list of samples, CSV file format needed and header as ‘samples’</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#cli-cellrangerarc">cellrangerARC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-merge-h5ad">merge-h5ad</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cli-pull-fastqs">pull-fastqs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cli-pull-processed">pull-processed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-scanpy">scanpy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cli-starsolo">starsolo</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#starsolo-aligns-sc-rna-seq-reads">STARsolo aligns sc-rna seq reads…</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">sample_ID: list of samples, CSV file format needed and header as ‘samples’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">sample_ID: list of samples, CSV file format needed and header as ‘samples’</a></li>
 </ul>
 </li>
 </ul>
@@ -121,6 +127,35 @@ programme at the Wellcome Sanger Institute</p>
 <dd><p>Show the version and exit.</p>
 </dd></dl>
 
+<section id="cli-cellbender">
+<h3>cellbender<a class="headerlink" href="#cli-cellbender" title="Link to this heading"></a></h3>
+<p>Cellbender Removes droplets and ambient RNA from scRNA seq data.</p>
+<hr class="docutils" />
+<blockquote>
+<div><p>[ C E L L B E N D E R ]</p>
+</div></blockquote>
+<p>Cellbender Removes droplets and ambient RNA from scRNA seq data.
+Version:0.3.0.</p>
+<section id="sample-id-list-of-samples-csv-file-format-needed-and-header-as-samples">
+<h4>sample_ID: list of samples, CSV file format needed and header as ‘samples’<a class="headerlink" href="#sample-id-list-of-samples-csv-file-format-needed-and-header-as-samples" title="Link to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>cellbender<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-cellbender-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-cli-cellbender-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-cellbender-total_droplets_included">
+<span class="sig-name descname"><span class="pre">--total_droplets_included</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;total_droplets_included&gt;</span></span><a class="headerlink" href="#cmdoption-cli-cellbender-total_droplets_included" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> total_droplets_included</p>
+</dd></dl>
+
+</section>
+</section>
 <section id="cli-cellranger">
 <h3>cellranger<a class="headerlink" href="#cli-cellranger" title="Link to this heading"></a></h3>
 <p>Cellranger aligns sc-rna seq reads…</p>
@@ -130,8 +165,8 @@ programme at the Wellcome Sanger Institute</p>
 </div></blockquote>
 <p>Cellranger sample demultiplexing, barcode processing, single cell 3’ &amp; 5’ gene counting, V(D)J transcript sequence assembly</p>
 <p>Version:7.2.0.</p>
-<section id="sample-id-list-of-samples-csv-file-format-needed-and-header-as-samples">
-<h4>sample_ID: list of samples, CSV file format needed and header as ‘samples’<a class="headerlink" href="#sample-id-list-of-samples-csv-file-format-needed-and-header-as-samples" title="Link to this heading"></a></h4>
+<section id="id1">
+<h4>sample_ID: list of samples, CSV file format needed and header as ‘samples’<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>cellranger<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -179,10 +214,40 @@ libraries: standard input for cellranger arc CSV file format
 </dd></dl>
 
 </section>
+<section id="cli-merge-h5ad">
+<h3>merge-h5ad<a class="headerlink" href="#cli-merge-h5ad" title="Link to this heading"></a></h3>
+<p>Merging multiple h5ads objects…
+Please run <cite>rna scanpy –samplefile …</cite> command first.</p>
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns
+1st column: sanger_id
+2nd column: sample_name
+LAST column: irods path
+You can have any column in between</p>
+<p>pBCN14844712 BK31_1 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844713 BK31_2 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844714 BK31_3 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844715 BK31_4 /seq/illumina/runs/49/…./cellranger710multi….</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>merge-h5ad<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-merge-h5ad-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-cli-merge-h5ad-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-merge-h5ad-merged_filename">
+<span class="sig-name descname"><span class="pre">--merged_filename</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;merged_filename&gt;</span></span><a class="headerlink" href="#cmdoption-cli-merge-h5ad-merged_filename" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Output file name: Eg. merged.h5ad</p>
+</dd></dl>
+
+</section>
 <section id="cli-pull-fastqs">
 <h3>pull-fastqs<a class="headerlink" href="#cli-pull-fastqs" title="Link to this heading"></a></h3>
-<p>Downloads processed irods data or any folder from irods
-and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
+<p>Downloading fastqs from iRODS…
 Requires a sample file.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>pull-fastqs<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
@@ -238,6 +303,36 @@ Remove columns to match required format.</p>
 </dd></dl>
 
 </section>
+<section id="cli-scanpy">
+<h3>scanpy<a class="headerlink" href="#cli-scanpy" title="Link to this heading"></a></h3>
+<p>Basic scanpy workflow, generates .ipynb …</p>
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns
+1st column: sanger_id
+2nd column: sample_name
+LAST column: irods path
+You can have any column in between</p>
+<p>pBCN14844712 BK31_1 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844713 BK31_2 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844714 BK31_3 /seq/illumina/runs/49/…./cellranger710multi….
+pBCN14844715 BK31_4 /seq/illumina/runs/49/…./cellranger710multi….</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>scanpy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-scanpy-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-cli-scanpy-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cli-scanpy-sample_basedir">
+<span class="sig-name descname"><span class="pre">--sample_basedir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample_basedir&gt;</span></span><a class="headerlink" href="#cmdoption-cli-scanpy-sample_basedir" title="Link to this definition"></a></dt>
+<dd><p>sample database folder</p>
+</dd></dl>
+
+</section>
 <section id="cli-starsolo">
 <h3>starsolo<a class="headerlink" href="#cli-starsolo" title="Link to this heading"></a></h3>
 <section id="starsolo-aligns-sc-rna-seq-reads">
@@ -248,8 +343,8 @@ Remove columns to match required format.</p>
 <p>STARsolo …
 Version:2.7.11b</p>
 </section>
-<section id="id1">
-<h4>sample_ID: list of samples, CSV file format needed and header as ‘samples’<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<section id="id2">
+<h4>sample_ID: list of samples, CSV file format needed and header as ‘samples’<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>starsolo<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
