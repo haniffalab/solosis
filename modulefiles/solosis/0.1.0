@@ -12,7 +12,7 @@ module-whatis "This module add Solosis to your path\n"
 
 if {[module-info mode load]} {
 	puts stderr "** INFO: 'Welcome to Solosis, Module loaded'"
-        puts stderr "** INFO: 'Type solosis to get started'"
+        puts stderr "** INFO: 'Type solosis-cli to get started'"
 }
 
 module load cellgen/conda

@@ -7,7 +7,7 @@
 env/
 venv/
 .venv/
-env*
+# env*
 dist/
 build/
 *.egg
@@ -29,6 +29,7 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+coverage.xml
 
 # Sphinx
 sphinx/_build

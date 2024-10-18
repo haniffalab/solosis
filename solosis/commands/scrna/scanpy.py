@@ -4,22 +4,18 @@ import subprocess
 
 import click
 
-from ..helpers import *
 
-SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
-HL_IRODS_DOWNLOAD = os.environ["HL_IRODS_DOWNLOAD"]
-
-
-@click.command("merge_h5ad")
+@click.command("scanpy")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
-    "--merged_filename", required=True, help="Output file name: Eg. merged.h5ad"
+    "--sample_basedir",
+    required=False,
+    default="/lustre/scratch126/cellgen/team298/sample_data/",
+    help="sample database folder",
 )
-@farm
-def merge_h5ad(samplefile, merged_filename, **kwargs):
+def cmd(samplefile, sample_basedir):
     """
-    Merging multiple h5ads.
-    You should have run `rna scanpy --samplefile ...` command first.
+    Basic scanpy workflow, generates .ipynb ...
 
     Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
     Input file should have 3 mandatory columns
@@ -36,9 +32,12 @@ def merge_h5ad(samplefile, merged_filename, **kwargs):
     ----------------------
     Use the same sample file you used for irods/pull-processed
     """
-    shell_script = os.path.join(SHELL_SCRIPT_BASE, "rna..merge")
+    shell_script = os.path.join(
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/scrna/scanpy/submit.sh",
+    )
     result = subprocess.run(
-        [shell_script, samplefile, merged_filename], capture_output=True, text=True
+        [shell_script, sample_basedir, samplefile], capture_output=True, text=True
     )
     click.echo(result.stdout)
     click.echo(result.stderr)

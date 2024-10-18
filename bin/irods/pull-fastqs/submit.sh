@@ -19,9 +19,9 @@ export PATH="/software/singularity/v3.10.0/bin:$PATH"
 #input file, CSV with irods metadata
 META=$1
 
-cmd="NXF_FILE_ROOT=$VOY_TMP nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
-    --meta \"${META}\" \
-    -resume"
+NXF_FILE_ROOT=$VOY_TMP nextflow run /lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/main.nf \
+    --meta "${META}" \
+    -resume
 #META="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/examples/samples.csv"
 
 usage() {
@@ -45,4 +45,4 @@ fi
 #     --publish_dir $NF_PUBLISH_DIR
 #     "
 # echo $cmd
-exec $cmd
+

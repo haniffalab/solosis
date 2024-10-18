@@ -8,15 +8,15 @@ import click
 @click.option("--samplefile", required=True, help="Sample file text file")
 def cmd(samplefile):
     """
-    Downloads processed irods data or any folder from irods
-    and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
+    Downloading fastqs from iRODS...
     Requires a sample file.
     """
-    print("Using irods to download data")
+    print("Using iRODS to download data")
     print("If you have a large set of files, this command will take a while to run")
 
     shell_script_fq = os.path.join(
-        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/irods/pull-fastqs/submit.sh"
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/irods/pull-fastqs/submit.sh",
     )
 
     result_fq = subprocess.run(

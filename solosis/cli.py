@@ -1,9 +1,16 @@
+"""
+process_merscope.py
+====================================
+Processes MERSCOPE output
+"""
+
 from importlib.metadata import version as pkg_version
 
 import click
 
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
+from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
 VERSION = "0.1.0"
 
@@ -25,8 +32,10 @@ cli.add_command(starsolo.cmd)
 cli.add_command(pull_fastqs.cmd)
 cli.add_command(pull_cellranger.cmd)
 
-# RNA
-# cli.add_command(rna.cmd)
+# scrna
+cli.add_command(cellbender.cmd)
+cli.add_command(scanpy.cmd)
+cli.add_command(merge_h5ad.cmd)
 
 if __name__ == "__main__":
     cli()

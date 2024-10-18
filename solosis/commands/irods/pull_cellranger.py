@@ -54,12 +54,15 @@ def cmd(samplefile, retainbam, overwrite):
     print("If you have a large set of files, this command will take a while to run")
 
     shell_cellranger_script = os.path.join(
-        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/irods/pull-cellranger/submit.sh"
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/irods/pull-cellranger/submit.sh",
     )
     overwrite = str(overwrite * 1)
     retainbam = str(retainbam * 1)
     result = subprocess.run(
-        [shell_cellranger_script, samplefile, retainbam, overwrite], capture_output=True, text=True
+        [shell_cellranger_script, samplefile, retainbam, overwrite],
+        capture_output=True,
+        text=True,
     )
     click.echo(result.stdout)
     click.echo(result.stderr)
