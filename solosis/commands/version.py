@@ -4,7 +4,7 @@ import subprocess
 import click
 
 
-@click.command("pull-processed")
+@click.command("version")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
     "--retainbam",

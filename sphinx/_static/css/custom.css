@@ -1,0 +1,42 @@
+.rst-content .code-block-caption {
+  text-align: left;
+  font-weight: 700;
+  display: block;
+  color: #fff;
+  background: #2e7546;
+  padding: 6px 12px;
+}
+.rst-content div[class^="highlight"] {
+  margin-top: 0;
+}
+.admonition.shell-output {
+  font-size: 85%;
+  line-height: 1;
+}
+.admonition.shell-output .admonition-title:before {
+  content: None;
+}
+.admonition.shell-output .admonition-title {
+  font-style: italic;
+}
+.citation {
+  font-weight: bold;
+  font-style: italic;
+}
+code.docutils.literal.notranslate {
+  white-space: nowrap;
+}
+.wy-side-nav-search, .wy-nav-top {
+  background: #2e7546;
+}
+
+.wy-menu > .caption > span.caption-text {
+  color: #2e7546;
+}
+
+table.docutils th {
+  background-color: #bfbfbf;  /* Change this to your desired color */
+  color: #000000;  /* Change text color if needed */
+}
+
+/* initial colour- background: #6ab0de;*/
