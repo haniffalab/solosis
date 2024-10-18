@@ -42,7 +42,8 @@ os.environ["RUN_TOKEN"] = RUN_TOKEN
 os.environ["CWD"] = CWD
 #### Create options that can common to all ####
 
-@click.group(context_settings={'show_default': True})
+
+@click.group(context_settings={"show_default": True})
 def cli():
     """
     Command line suite for HaniffaLab
@@ -71,6 +72,7 @@ def test():
     """
     pass
 
+
 @cli.group()
 @helpers.history
 def rna():
@@ -80,6 +82,7 @@ def rna():
     alignment, demultiplexing, removal of ambient RNA & doublets.
     """
     pass
+
 
 @cli.group()
 @helpers.history
