@@ -2,8 +2,5 @@
 Modules
 =======
 
-.. automodule:: read_data
-    :members:
-
-.. automodule:: preprocess
+.. automodule:: solosis
     :members:
