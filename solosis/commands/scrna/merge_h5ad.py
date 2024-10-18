@@ -4,10 +4,12 @@ import subprocess
 
 import click
 
+
 @click.command("merge-h5ad")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--merged_filename", required=True, help="Output file name: Eg. merged.h5ad")
-
+@click.option(
+    "--merged_filename", required=True, help="Output file name: Eg. merged.h5ad"
+)
 def cmd(samplefile, merged_filename, **kwargs):
     """
     Merging multiple h5ads objects...
@@ -28,7 +30,10 @@ def cmd(samplefile, merged_filename, **kwargs):
     ----------------------
     Use the same sample file you used for irods/pull-processed
     """
-    shell_script = os.path.join(os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/scrna/merge-h5ad/submit.sh")
+    shell_script = os.path.join(
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/scrna/merge-h5ad/submit.sh",
+    )
     result = subprocess.run(
         [shell_script, samplefile, merged_filename], capture_output=True, text=True
     )

@@ -4,6 +4,7 @@ import subprocess
 
 import click
 
+
 @click.command("scanpy")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
@@ -31,7 +32,10 @@ def cmd(samplefile, sample_basedir):
     ----------------------
     Use the same sample file you used for irods/pull-processed
     """
-    shell_script = os.path.join(os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/scrna/scanpy/submit.sh")
+    shell_script = os.path.join(
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/scrna/scanpy/submit.sh",
+    )
     result = subprocess.run(
         [shell_script, sample_basedir, samplefile], capture_output=True, text=True
     )

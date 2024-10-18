@@ -10,9 +10,10 @@ import click
 
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
-from solosis.commands.scrna import cellbender, scanpy, merge_h5ad
+from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
 VERSION = "0.1.0"
+
 
 @click.group()
 @click.version_option(version=VERSION)

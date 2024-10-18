@@ -8,7 +8,9 @@ import click
 
 @click.command("cellbender")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--total_droplets_included", required=True, help="total_droplets_included")
+@click.option(
+    "--total_droplets_included", required=True, help="total_droplets_included"
+)
 def cmd(samplefile, total_droplets_included, **kwargs):
     """
     Cellbender Removes droplets and ambient RNA from scRNA seq data. \n
@@ -22,7 +24,8 @@ def cmd(samplefile, total_droplets_included, **kwargs):
     ---------------------------------
     """
     shell_cellbender_script = os.path.join(
-        os.getcwd(), "/software/cellgen/team298/shared/solosis/bin/scrna/cellbender/submit.sh"
+        os.getcwd(),
+        "/software/cellgen/team298/shared/solosis/bin/scrna/cellbender/submit.sh",
     )
     result_CB = subprocess.run(
         [shell_cellbender_script, samplefile, total_droplets_included],

@@ -8,7 +8,7 @@ import click
 @click.option("--samplefile", required=True, help="Sample file text file")
 def cmd(samplefile):
     """
-    Downloading fastqs from iRODS... 
+    Downloading fastqs from iRODS...
     Requires a sample file.
     """
     print("Using iRODS to download data")
