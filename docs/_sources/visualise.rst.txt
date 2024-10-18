@@ -3,6 +3,20 @@
 Visualising
 ===========
 
+
+**Common computational utilities:**
+
+- `Cellranger`_ A set of analysis pipelines that perform sample demultiplexing, barcode processing, single cell 3' and 5' gene counting, V(D)J transcript sequence assembly and annotation, and Feature Barcode analysis from single cell data.
+
+- `CellrangerARC`_ Cell Ranger ARC is an advanced analytical suite designed for the Chromium Single Cell Multiome ATAC + Gene Expression sequencing.
+
+- `STARsolo`_ a turnkey solution for analyzing droplet single cell RNA sequencing data (e.g. 10X Genomics Chromium).
+
+
+.. _Cellranger: https://www.10xgenomics.com/support/software/cell-ranger/latest
+.. _CellrangerARC: https://www.10xgenomics.com/support/software/cell-ranger-arc/latest
+.. _STARsolo: https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md
+
 The module generates a number of outputs, these are mainly intermediate files that allow 
 for further data analysis within solosis and beyond.
 
