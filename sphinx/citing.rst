@@ -6,9 +6,9 @@ Citation
 
 |DOI|
 
-.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7405818.svg
-   :target: https://doi.org/10.5281/zenodo.7405818
+.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg
+   :target: https://doi.org/10.5281/zenodo.13950124
 
 If you use this software in a scientific publication, please cite using the following Zenodo reference. 
 
-**Grimble, Louise, Baskar, Vijaya, Basurto-Lozada, Daniela, Horsfall, David (2024). Solosis (v0.1.0).
+Awaiting Zenodo citation details
