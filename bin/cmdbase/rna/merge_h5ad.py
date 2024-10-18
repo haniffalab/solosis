@@ -3,6 +3,7 @@ import os
 import subprocess
 
 import click
+
 from ..helpers import *
 
 SHELL_SCRIPT_BASE = os.environ["SHELL_SCRIPT_BASE"]
@@ -11,7 +12,9 @@ HL_IRODS_DOWNLOAD = os.environ["HL_IRODS_DOWNLOAD"]
 
 @click.command("merge_h5ad")
 @click.option("--samplefile", required=True, help="Sample file text file")
-@click.option("--merged_filename", required=True, help="Output file name: Eg. merged.h5ad")
+@click.option(
+    "--merged_filename", required=True, help="Output file name: Eg. merged.h5ad"
+)
 @farm
 def merge_h5ad(samplefile, merged_filename, **kwargs):
     """
