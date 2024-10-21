@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fixed GitHub repository URL
+# GitHub repository URL
 GITHUB_REPO_URL="https://github.com/haniffalab/solosis"
 
 # Ensure DEPLOY_DIR environment variable is set
@@ -28,20 +28,22 @@ else
   echo "Deploying specific release: $RELEASE_TAG"
 fi
 
+# Step 2: Download the release package from GitHub
 TAR_FILE="release.tar.gz"
-
-# Step 2: Remove old contents from the deployment directory, if any
-echo "Cleaning up old release files in $DEPLOY_DIR..."
-rm -rf $DEPLOY_DIR/*
-
-# Step 3: Download the release package from GitHub
 echo "Downloading release from GitHub..."
 wget -q -O $TAR_FILE $DOWNLOAD_URL
 
-# Step 4: Extract the tarball directly to the deployment directory, stripping the top-level directory
+# Step 3: Remove old contents from the deployment directory
+echo "Cleaning up old release files in $DEPLOY_DIR/$RELEASE_TAG..."
+rm -rf $DEPLOY_DIR/$RELEASE_TAG/*
+
+# Step 4: Extract the tarball to the deployment directory
 echo "Extracting the tarball..."
-mkdir -p $DEPLOY_DIR
-tar --strip-components=1 -xzf $TAR_FILE -C $DEPLOY_DIR
+mkdir -p $DEPLOY_DIR/$RELEASE_TAG
+tar --strip-components=1 -xzf $TAR_FILE -C $DEPLOY_DIR/$RELEASE_TAG
+
+# Step 5: Symlink the Modulefile
+
 
 # Step 5: Clean up the downloaded tarball
 echo "Cleaning up..."
