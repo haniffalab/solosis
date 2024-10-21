@@ -12,13 +12,10 @@ def cmd(samplefile, libraries):  ##will need to add 'includebam'
     """
     CellrangerARC aligns GEX & ATAC seq reads... \n
     --------------------------------- \n
-        [ CELLRANGER ARC ]
+    Cell RangerARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
 
-    CellrangerARC sample demultiplexing... ADD MORE \n
-    Version: 2.0.2
-
-    samplefile: list of samples, CSV file format needed and header as 'samples'
-    libraries: standard input for cellranger arc CSV file format
+    :param samplefile: Input file (.txt)
+    :param libraries: Standard input for cellranger ARC (.csv)
     ---------------------------------
     """
     shell_cellrangerARC_script = os.path.join(
