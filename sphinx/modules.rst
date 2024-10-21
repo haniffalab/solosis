@@ -2,8 +2,9 @@
 Modules
 =======
 
-.. automodule:: read_data
+.. automodule:: solosis
     :members:
 
-.. automodule:: preprocess
-    :members:
+.. click:: solosis:cli
+  :prog: solosis
+  :nested: full
