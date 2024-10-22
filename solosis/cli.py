@@ -1,9 +1,3 @@
-"""
-process_merscope.py
-====================================
-Processes MERSCOPE output
-"""
-
 from importlib.metadata import version as pkg_version
 
 import click
@@ -12,7 +6,7 @@ from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 
 
 @click.group()
