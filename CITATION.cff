@@ -1,18 +1,19 @@
-cff-version: 0.2.2
+cff-version: 0.2.3
 type: software
 message: "If you use this repo, please cite it"
 title: "Solosis"
 url: "https://github.com/haniffalab/solosis"
 doi: 10.5281/zenodo.13950124
 authors:
-  - family-names: "Horsfall"
-    given-names: "David"
-    orcid: "https://orcid.org/0000-0002-8086-812X"
-  - family-names: "Basurto-Lozada"
-    given-names: "Daniela"
-    orcid: "https://orcid.org/0000-0003-3943-8424"
+  - family-names: "Baskar Mahalingam Shanmugiah"
+    given-names: "Vijaya"
+    orcid: "https://orcid.org/0000-0002-5559-9394"
   - family-names: "Grimble"
     given-names: "Louise"
     orcid: "https://orcid.org/0000-0003-0479-9641"
-  - family-names: "Baskar"
-    given-names: "Vijaya"
+  - family-names: "Basurto-Lozada"
+    given-names: "Daniela"
+    orcid: "https://orcid.org/0000-0003-3943-8424"
+  - family-names: "Horsfall"
+    given-names: "David"
+    orcid: "https://orcid.org/0000-0002-8086-812X"
