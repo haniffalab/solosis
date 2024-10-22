@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="solosis",
-    version="0.2.1",
+    version="0.2.2",
     packages=find_packages(),
     install_requires=[
         "click",

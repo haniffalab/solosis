@@ -2,7 +2,7 @@
 
 export LSB_DEFAULT_USERGROUP=team298
 
-conda_env="/software/cellgen/team298/shared/envs/hl-conda/hl_scanpy_v0.2.1"
+conda_env="/software/cellgen/team298/shared/envs/hl-conda/hl_scanpy_v0.2.2"
 if [ $# -ne 2 ]; then
 	echo "$0 samples_database sample_sheet.tsv"
 	echo "This is a follow up of irods/pull-processed. If you have not run it, do so"
