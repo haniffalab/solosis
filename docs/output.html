@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modules &mdash; Solosis 0.2.2 documentation</title>
+  <title>Output Data &mdash; Solosis 0.2.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
@@ -14,12 +14,14 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=000c92bf"></script>
+      <script src="_static/documentation_options.js?v=a47416a6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development" href="development.html" />
+    <link rel="prev" title="Input File" href="input.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,16 +50,14 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualise.html">Visualising</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualise.html">Visualising</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="citations.html">Citation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/haniffalab/solosis/issues">Issue Tracker</a></li>
 </ul>
@@ -76,9 +76,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Modules</li>
+      <li class="breadcrumb-item active">Output Data</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/output.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -86,19 +86,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-solosis">
-<span id="modules"></span><h1>Modules<a class="headerlink" href="#module-solosis" title="Link to this heading"></a></h1>
+  <section id="output-data">
+<span id="output"></span><h1>Output Data<a class="headerlink" href="#output-data" title="Link to this heading"></a></h1>
+<p>The module generates a number of outputs, these are mainly intermediate files that allow
+for further data analysis within solosis and beyond.</p>
+<p>Would like to add to tree diagram of farm /lustre output dirs</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/.../team298/
+<span class="p">|</span>
+<span class="p">|</span>--<span class="w"> </span>sample_data
+<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellrangerARC
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellranger-hl
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>starsolo-hl
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>processed_sanger
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>rna_scanpy
+<span class="p">|</span>
+<span class="p">|</span>--<span class="w"> </span>tmp
+<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R1.fastq
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R2.fastq
+</pre></div>
+</div>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="input.html" class="btn btn-neutral float-left" title="Input File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Haniffa Lab.</p>
+    <p>&#169; Copyright 2024, Haniffa Lab.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
