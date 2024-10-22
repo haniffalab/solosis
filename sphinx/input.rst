@@ -4,10 +4,10 @@
 .. _conda: https://docs.conda.io/projects/miniconda/en/latest/
 .. _mamba: https://mamba.readthedocs.io/en/latest/mamba-installation.html
 
-.. _installation:
+.. _input:
 
-Installation
-============
+Input File
+==========
 
 Loading the Solosis tool onto Farm22. You can look for previous `releases on GitHub`_.
 
@@ -31,7 +31,7 @@ Load the solosis module.
    ** INFO: 'Welcome to Solosis, Module loaded'
    ** INFO: 'Type solosis-cli to get started'
 
-   Loading solosis/0.2.2
+   Loading solosis/0.2.3
       Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
          cellgen/irods 
 
