@@ -16,12 +16,12 @@ def cmd(samplefile, includebam):
     """
     Cellranger aligns sc-rna seq reads... \n
     --------------------------------- \n
-        [ C E L L R A N G E R]
+    Cellranger (7.2.0.) Sample demultiplexing, barcode processing, single cell 3' & 5' gene counting,
+    V(D)J transcript sequence assembly.
 
-    Cellranger sample demultiplexing, barcode processing, single cell 3' & 5' gene counting, V(D)J transcript sequence assembly \n
-    Version:7.2.0.
+    :param samplefile: Input file (.txt)
+    :param includebam: Include BAM files in cellranger output
 
-    sample_ID: list of samples, CSV file format needed and header as 'samples'
     ---------------------------------
     """
     shell_cellranger_script = os.path.join(

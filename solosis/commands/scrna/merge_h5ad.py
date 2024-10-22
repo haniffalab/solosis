@@ -13,22 +13,19 @@ import click
 def cmd(samplefile, merged_filename, **kwargs):
     """
     Merging multiple h5ads objects...
+    ---------------------------------
     Please run `rna scanpy --samplefile ...` command first.
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-    Input file should have 3 mandatory columns
-    1st column: sanger_id
-    2nd column: sample_name
-    LAST column: irods path
-    You can have any column in between
+    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt \n
+    Input file should have 3 mandatory columns \n
+    1st column: sanger_id \n
+    2nd column: sample_name \n
+    LAST column: irods path \n
 
-    pBCN14844712 BK31_1 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844713 BK31_2 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844714 BK31_3 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844715 BK31_4 /seq/illumina/runs/49/..../cellranger710multi....
+    :param samplefile: Input file (.txt)
+    :param merged_filename: Name for the output file (.h5ad)
 
     ----------------------
-    Use the same sample file you used for irods/pull-processed
     """
     shell_script = os.path.join(
         os.getcwd(),

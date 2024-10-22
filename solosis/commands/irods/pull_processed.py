@@ -22,32 +22,19 @@ import click
 )
 def cmd(samplefile, retainbam, overwrite):
     """
-    Downloads processed irods data or any folder from irods
-    and saves it to $HL_IRODS_DOWNLOAD. This is set when you load module
-    Requires a sample file.
-
+    Downloads processed iRODS data or any folder from iRODS
     -----------------------
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-    Input file should have 3 mandatory columns
-    1st column: sanger_id
-    2nd column: sample_name
-    LAST column: irods path
-    You can have any column in between
+    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt \n
+    Input file should have 3 mandatory columns \n
+    1st column: sanger_id \n
+    2nd column: sample_name \n
+    LAST column: irods path \n
 
-    pBCN14844712 BK31_1 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844713 BK31_2 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844714 BK31_3 /seq/illumina/runs/49/..../cellranger710multi....
-    pBCN14844715 BK31_4 /seq/illumina/runs/49/..../cellranger710multi....
-
-
-
-
+    :params samplefile: Input file (.txt)
+    :params retainbam: Inldue BAM files in download
+    :params overwrite: Overwrite existing download
     ----------------------
-
-    Suggested way. Open Haniffa sample tracker excel file.
-    Copy/paste your project sample rows to a local excel file.
-    Remove columns to match required format.
 
     """
     print("Using irods to download data")
