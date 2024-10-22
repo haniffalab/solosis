@@ -25,16 +25,13 @@ def cmd(samplefile, retainbam, overwrite):
     Downloads processed iRODS data or any folder from iRODS
     -----------------------
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt \n
-    Input file should have 3 mandatory columns \n
-    1st column: sanger_id \n
-    2nd column: sample_name \n
-    LAST column: irods path \n
+    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+    Input file should have 3 mandatory columns:
+    1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
 
-    :params samplefile: Input file (.txt)
-    :params retainbam: Inldue BAM files in download
-    :params overwrite: Overwrite existing download
-    ----------------------
+    :param samplefile: Input file (.txt)
+    :param retainbam: Inldue BAM files in download
+    :param overwrite: Overwrite existing download
 
     """
     print("Using irods to download data")
