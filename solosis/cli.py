@@ -12,7 +12,7 @@ from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 
 @click.group()
