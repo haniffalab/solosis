@@ -29,17 +29,15 @@ This tool is made to work with farm22.
    :hidden:
    :caption: More
   
-   configuration
-   visualise
+   input
+   output
+   development
    run
-   testing
-   visualise
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :caption: Project Links
   
-   citations
    Source Code <https://github.com/haniffalab/solosis>
    Issue Tracker <https://github.com/haniffalab/solosis/issues>

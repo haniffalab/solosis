@@ -19,11 +19,11 @@ sys.path.insert(0, os.path.abspath("../solosis"))
 # -- Project information -----------------------------------------------------
 
 project = "Solosis"
-copyright = "2023, Haniffa Lab"
+copyright = "2024, Haniffa Lab"
 author = "Haniffa Lab"
 
 # The full version, including alpha/beta/rc tags
-release = "0.2.2"
+release = "0.2.3"
 
 # -- General configuration ---------------------------------------------------
 
