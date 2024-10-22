@@ -14,7 +14,7 @@ Loading the Solosis tool onto Farm22. You can look for previous `releases on Git
 .. code-block:: shell
    :caption: Input
 
-   module use append /software/cellgen/team298/shared/solosis/modulefiles
+  module use append /software/cellgen/team298/shared/modulefiles
 
 
 Load the solosis module.
@@ -31,7 +31,7 @@ Load the solosis module.
    ** INFO: 'Welcome to Solosis, Module loaded'
    ** INFO: 'Type solosis-cli to get started'
 
-   Loading solosis/0.2.1
+   Loading solosis/0.2.2
       Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
          cellgen/irods 
 

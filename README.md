@@ -16,7 +16,7 @@ This suite is made to work with farm22. The instructions below are to be perform
 1. Setup and run
 
 ```
-module use append /software/cellgen/team298/shared/solosis/modulefiles
+module use append /software/cellgen/team298/shared/modulefiles
 module load solosis
 solosis-cli --help
 ```
