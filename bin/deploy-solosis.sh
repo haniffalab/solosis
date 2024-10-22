@@ -1,11 +1,20 @@
 #!/bin/bash
 
+# export DEPLOY_DIR="/software/cellgen/team298/shared/solosis"
+# export MODULEFILES_DIR="/software/cellgen/team298/shared/modulefiles"
+
 # GitHub repository URL
 GITHUB_REPO_URL="https://github.com/haniffalab/solosis"
 
 # Ensure DEPLOY_DIR environment variable is set
 if [ -z "$DEPLOY_DIR" ]; then
-  echo "Error: Please set the DEPLOY_DIR environment variable."
+  echo "Error: Please set the DEPLOY_DIR environment variable"
+  exit 1
+fi
+
+# Ensure MODULEFILES_DIR environment variable is set
+if [ -z "$MODULEFILES_DIR" ]; then
+  echo "Error: Please set the MODULEFILES_DIR environment variable for symlinking"
   exit 1
 fi
 
@@ -20,10 +29,14 @@ if [ -z "$RELEASE_TAG" ]; then
   DOWNLOAD_URL=$(echo "$RELEASE_INFO" | grep "tarball_url" | cut -d '"' -f 4)
   RELEASE_TAG=$(echo "$RELEASE_INFO" | grep '"tag_name"' | cut -d '"' -f 4)
   
+  # Strip the 'v' from the release tag if present
+  RELEASE_TAG=${RELEASE_TAG#v}
+  
   echo "Deploying latest release: $RELEASE_TAG"
 else
   echo "Fetching release tag: $RELEASE_TAG..."
-  DOWNLOAD_URL="https://github.com/haniffalab/solosis/archive/refs/tags/$RELEASE_TAG.tar.gz"
+  RELEASE_TAG=${RELEASE_TAG#v}
+  DOWNLOAD_URL="https://github.com/haniffalab/solosis/archive/refs/tags/v$RELEASE_TAG.tar.gz"
   
   echo "Deploying specific release: $RELEASE_TAG"
 fi
@@ -43,15 +56,22 @@ mkdir -p $DEPLOY_DIR/$RELEASE_TAG
 tar --strip-components=1 -xzf $TAR_FILE -C $DEPLOY_DIR/$RELEASE_TAG
 
 # Step 5: Symlink the Modulefile
+MODULE_FILE="$DEPLOY_DIR/$RELEASE_TAG/modulefiles/solosis/$RELEASE_TAG"
+if [ -f "$MODULE_FILE" ]; then
+  echo "Creating symlink for Modulefile..."
+  mkdir -p $MODULEFILES_DIR/solosis
+  ln -sf "$MODULE_FILE" "$MODULEFILES_DIR/solosis/$RELEASE_TAG"
+else
+  echo "Warning: Modulefile not found in $DEPLOY_DIR/$RELEASE_TAG/modulefiles/solosis/$RELEASE_TAG"
+fi
 
-
-# Step 5: Clean up the downloaded tarball
+# Step 6: Clean up the downloaded tarball
 echo "Cleaning up..."
 rm $TAR_FILE
 
-# Step 6: Set permissions
+# Step 7: Set permissions
 echo "Setting permissions..."
 chmod -R -f g+ws $DEPLOY_DIR  # Set group write and setgid permissions
 
-# Step 7: Deployment complete
+# Step 8: Deployment complete
 echo "Deployment of release $RELEASE_TAG complete!"
