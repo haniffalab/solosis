@@ -2,7 +2,7 @@
 
 export LSB_DEFAULT_USERGROUP=team298
 
-conda_env="/software/cellgen/team298/shared/envs/hl-conda/hl_scanpy_v0.2.0"
+conda_env="/software/cellgen/team298/shared/envs/hl-conda/hl_scanpy_v0.2.1"
 if [ $# -ne 2 ]; then
 	echo "$0 sample_sheet.tsv merged_filename"
 	echo "sample_table: sampletable.tsv"
