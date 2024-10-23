@@ -29,10 +29,6 @@ def cmd(samplefile, retainbam, overwrite):
     Input file should have 3 mandatory columns:
     1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
 
-    :param samplefile: Input file (.txt)
-    :param retainbam: Inldue BAM files in download
-    :param overwrite: Overwrite existing download
-
     """
     print("Using irods to download data")
     print("If you have a large set of files, this command will take a while to run")

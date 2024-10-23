@@ -13,8 +13,6 @@ def cmd(samplefile):
     STARsolo (2.7.11b) Aligner processes scRNA seq data to generate GEX matrices & identify
     cell-specific transcripts.
 
-    :param samplefile: Input file (.txt)
-    ---------------------------------
     """
     shell_starsolo_script = os.path.join(
         os.getcwd(),

@@ -19,10 +19,6 @@ def cmd(samplefile, includebam):
     Cellranger (7.2.0.) Sample demultiplexing, barcode processing, single cell 3' & 5' gene counting,
     V(D)J transcript sequence assembly.
 
-    :param samplefile: Input file (.txt)
-    :param includebam: Include BAM files in cellranger output
-
-    ---------------------------------
     """
     shell_cellranger_script = os.path.join(
         os.getcwd(),

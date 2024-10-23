@@ -16,9 +16,6 @@ def cmd(samplefile, total_droplets_included, **kwargs):
     Cellbender (0.3.0.) Removes droplets & ambient RNA from scRNA seq data. \n
     --------------------------------- \n
 
-    :params samplefile: Input file (.txt)
-    :params total_droplets_included: Total number of droplets
-    ---------------------------------
     """
     shell_cellbender_script = os.path.join(
         os.getcwd(),
