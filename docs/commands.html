@@ -134,15 +134,6 @@ programme at the Wellcome Sanger Institute</p>
 <h3>cellbender<a class="headerlink" href="#cli-cellbender" title="Link to this heading"></a></h3>
 <p>Cellbender (0.3.0.) Removes droplets &amp; ambient RNA from scRNA seq data.</p>
 <hr class="docutils" />
-<dl class="field-list simple">
-<dt class="field-odd">params samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">params total_droplets_included<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total number of droplets</p>
-</dd>
-</dl>
-<hr class="docutils" />
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>cellbender<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -166,15 +157,6 @@ programme at the Wellcome Sanger Institute</p>
 <hr class="docutils" />
 <p>Cellranger (7.2.0.) Sample demultiplexing, barcode processing, single cell 3’ &amp; 5’ gene counting,
 V(D)J transcript sequence assembly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">param includebam<span class="colon">:</span></dt>
-<dd class="field-even"><p>Include BAM files in cellranger output</p>
-</dd>
-</dl>
-<hr class="docutils" />
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>cellranger<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -197,15 +179,6 @@ V(D)J transcript sequence assembly.</p>
 <p>CellrangerARC aligns GEX &amp; ATAC seq reads…</p>
 <hr class="docutils" />
 <p>Cell RangerARC (2.0.2) Software suite designed for analysing &amp; interpreting scRNA seq data, including multi-omics data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">param libraries<span class="colon">:</span></dt>
-<dd class="field-even"><p>Standard input for cellranger ARC (.csv)</p>
-</dd>
-</dl>
-<hr class="docutils" />
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>cellrangerARC<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -228,20 +201,9 @@ V(D)J transcript sequence assembly.</p>
 <section id="merging-multiple-h5ads-objects">
 <h4>Merging multiple h5ads objects…<a class="headerlink" href="#merging-multiple-h5ads-objects" title="Link to this heading"></a></h4>
 <p>Please run <cite>rna scanpy –samplefile …</cite> command first.</p>
-<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt</p>
-<p>Input file should have 3 mandatory columns</p>
-<p>1st column: sanger_id</p>
-<p>2nd column: sample_name</p>
-<p>LAST column: irods path</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">param merged_filename<span class="colon">:</span></dt>
-<dd class="field-even"><p>Name for the output file (.h5ad)</p>
-</dd>
-</dl>
-<hr class="docutils" />
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns:
+1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>merge-h5ad<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -264,17 +226,9 @@ V(D)J transcript sequence assembly.</p>
 <h3>pull-fastqs<a class="headerlink" href="#cli-pull-fastqs" title="Link to this heading"></a></h3>
 <section id="downloading-fastqs-from-irods">
 <h4>Downloading fastqs from iRODS…<a class="headerlink" href="#downloading-fastqs-from-irods" title="Link to this heading"></a></h4>
-<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt</p>
-<p>Input file should have 3 mandatory columns</p>
-<p>1st column: sanger_id</p>
-<p>2nd column: sample_name</p>
-<p>LAST column: irods path</p>
-<dl class="field-list simple">
-<dt class="field-odd">params samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-</dl>
-<hr class="docutils" />
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns:
+1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>pull-fastqs<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -294,17 +248,6 @@ V(D)J transcript sequence assembly.</p>
 <p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
 Input file should have 3 mandatory columns:
 1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">param retainbam<span class="colon">:</span></dt>
-<dd class="field-even"><p>Inldue BAM files in download</p>
-</dd>
-<dt class="field-odd">param overwrite<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Overwrite existing download</p>
-</dd>
-</dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>pull-processed<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -333,20 +276,9 @@ Input file should have 3 mandatory columns:
 <h3>scanpy<a class="headerlink" href="#cli-scanpy" title="Link to this heading"></a></h3>
 <section id="basic-scanpy-workflow-for-scrna-seq-data-generates-jupyter-notebook">
 <h4>Basic Scanpy workflow for scRNA seq data, generates Jupyter Notebook …<a class="headerlink" href="#basic-scanpy-workflow-for-scrna-seq-data-generates-jupyter-notebook" title="Link to this heading"></a></h4>
-<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt</p>
-<p>Input file should have 3 mandatory columns</p>
-<p>1st column: sanger_id</p>
-<p>2nd column: sample_name</p>
-<p>LAST column: irods path</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-<dt class="field-even">param sample_basedir<span class="colon">:</span></dt>
-<dd class="field-even"><p>Path to base directory</p>
-</dd>
-</dl>
-<hr class="docutils" />
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns:
+1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>scanpy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -371,12 +303,6 @@ Input file should have 3 mandatory columns:
 <h4>STARsolo aligns sc-rna seq reads…<a class="headerlink" href="#starsolo-aligns-sc-rna-seq-reads" title="Link to this heading"></a></h4>
 <p>STARsolo (2.7.11b) Aligner processes scRNA seq data to generate GEX matrices &amp; identify
 cell-specific transcripts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">param samplefile<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Input file (.txt)</p>
-</dd>
-</dl>
-<hr class="docutils" />
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>starsolo<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
