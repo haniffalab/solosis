@@ -34,7 +34,7 @@ tail -n +2 $samples_file | while IFS=, read -r sample; do
   if [ "$include_bam_flag" -eq "1" ]; then
     bam_flag=""  # No --no-bam flag if --includebam is passed
   fi
-  echo "mkdir -p $VOY_DATA/$sample/cellranger-hl | cellranger count --id=$sample --fastqs=$VOY_TMP/$sample --transcriptome=$REF --sample=$sample --localcores=16 --localmem=60 --output-dir=$VOY_DATA/$sample/cellranger-hl $bam_flag" >> $commands_file
+  echo "mkdir -p $VOY_DATA/$sample/cellranger | cellranger count --id=$sample --fastqs=$VOY_TMP/$sample --transcriptome=$REF --sample=$sample --localcores=16 --localmem=60 --output-dir=$VOY_DATA/$sample/cellranger $bam_flag" >> $commands_file
 done
 
 # Get the total number of jobs

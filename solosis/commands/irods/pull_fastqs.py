@@ -21,7 +21,7 @@ def cmd(samplefile):
 
     shell_script_fq = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/irods/pull-fastqs/submit.sh",
+        "bin/irods/pull-fastqs/submit.sh",
     )
 
     result_fq = subprocess.run(

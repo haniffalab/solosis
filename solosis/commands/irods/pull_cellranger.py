@@ -35,7 +35,7 @@ def cmd(samplefile, retainbam, overwrite):
 
     shell_cellranger_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/irods/pull-cellranger/submit.sh",
+        "bin/irods/pull-cellranger/submit.sh",
     )
     overwrite = str(overwrite * 1)
     retainbam = str(retainbam * 1)

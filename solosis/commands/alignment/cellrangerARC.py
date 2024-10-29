@@ -17,7 +17,7 @@ def cmd(samplefile, libraries):  ##will need to add 'includebam'
     """
     shell_cellrangerARC_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/aligners/cellrangerARC/submit.sh",
+        "bin/aligners/cellrangerARC/submit.sh",
     )
 
     # Pass the includebam flag as an argument to the bash script

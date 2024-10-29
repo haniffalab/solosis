@@ -25,7 +25,7 @@ def cmd(samplefile, sample_basedir):
     """
     shell_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/scrna/scanpy/submit.sh",
+        "bin/scrna/scanpy/submit.sh",
     )
     result = subprocess.run(
         [shell_script, sample_basedir, samplefile], capture_output=True, text=True

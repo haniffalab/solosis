@@ -23,7 +23,7 @@ def cmd(samplefile, merged_filename, **kwargs):
     """
     shell_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/scrna/merge-h5ad/submit.sh",
+        "bin/scrna/merge-h5ad/submit.sh",
     )
     result = subprocess.run(
         [shell_script, samplefile, merged_filename], capture_output=True, text=True

@@ -16,7 +16,7 @@ def cmd(samplefile):
     """
     shell_starsolo_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/aligners/starsolo/submit.sh",
+        "bin/aligners/starsolo/submit.sh",
     )
     # can we change script base to sc-voyage dir
     result_STAR = subprocess.run(

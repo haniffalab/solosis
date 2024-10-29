@@ -22,7 +22,7 @@ def cmd(samplefile, includebam):
     """
     shell_cellranger_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/aligners/cellranger/submit.sh",
+        "bin/aligners/cellranger/submit.sh",
     )
 
     # Pass the includebam flag as an argument to the bash script
