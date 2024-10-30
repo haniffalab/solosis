@@ -103,6 +103,9 @@ def cmd(sample, samplefile, create_bam):
     if not create_bam:
         cmd.append("--no-bam")
 
+    # Print the command being executed for debugging
+    click.echo(f"Executing command: {' '.join(cmd)}")
+
     # Execute the command for all valid samples
     click.echo(f"Starting Cell Ranger for samples: {sample_ids}...")
     try:
@@ -115,7 +118,9 @@ def cmd(sample, samplefile, create_bam):
         )
         click.echo(f"Cell Ranger completed successfully:\n{result.stdout}")
     except subprocess.CalledProcessError as e:
+        # Log the stderr and return code
         click.echo(f"Error during Cell Ranger execution: {e.stderr}")
+        click.echo(f"Return code: {e.returncode}")
 
     click.echo("Cell Ranger processing complete")
 
