@@ -1,7 +1,7 @@
 #!/bin/bash
 # LSF Array job script for Cell Ranger processing
 
-# Load Cell Ranger module (adjust for your environment)
+# Load Cell Ranger module
 module load cellgen/cellranger
 
 # Set job parameters
@@ -45,6 +45,9 @@ sample=\$(sed -n "\$((LSB_JOBINDEX + 1))p" "$samples_file" | cut -d',' -f1)
 
 # Run Cell Ranger for the sample
 mkdir -p "$VOY_DATA/\$sample/cellranger"
-cellranger count --id="\$sample" --fastqs="$VOY_TMP/\$sample" --transcriptome="$REF" \\
-  --sample="\$sample" --localcores=$CPU --localmem=$((MEM / 1000)) --output-dir="$VOY_DATA/\$sample/cellranger" $bam_flag
+if ! cellranger count --id="\$sample" --fastqs="$VOY_TMP/\$sample" --transcriptome="$REF" \
+    --sample="\$sample" --localcores=$CPU --localmem=$((MEM / 1000)) --output-dir="$VOY_DATA/\$sample/cellranger" $bam_flag; then
+    echo "Error during Cell Ranger execution for sample \$sample" >> "$VOY_CODE/logs/\$sample_cellranger_error.log"
+    exit 1
+fi
 EOF
