@@ -10,12 +10,12 @@ CPU=16
 MEM=64000
 Q="normal"
 REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2020-A"
-samples_file=$1
-include_bam_flag=$2
+samples_list=$1      # Comma-separated list of sample IDs
+include_bam_flag=$2  # BAM inclusion flag
 
-# Check if sample file exists
-if [[ ! -f "$samples_file" ]]; then
-  echo "Error: Sample file '$samples_file' not found." >&2
+# Check if sample list is empty
+if [[ -z "$samples_list" ]]; then
+  echo "Error: No samples provided." >&2
   exit 1
 fi
 
@@ -25,8 +25,11 @@ if [[ "$include_bam_flag" -eq "1" ]]; then
   bam_flag=""  # Remove flag if --includebam is specified
 fi
 
-# Get the total number of samples (excluding header)
-total_jobs=$(($(wc -l < "$samples_file") - 1))
+# Convert the comma-separated list into an array
+IFS=',' read -r -a samples_array <<< "$samples_list"
+
+# Get the total number of samples
+total_jobs=${#samples_array[@]}
 
 # Submit the array job
 bsub <<EOF
@@ -41,7 +44,7 @@ bsub <<EOF
 #BSUB -q $Q
 
 # Retrieve the sample ID corresponding to this job index
-sample=\$(sed -n "\$((LSB_JOBINDEX + 1))p" "$samples_file" | cut -d',' -f1)
+sample=\${samples_array[\$((LSB_JOBINDEX - 1))]}  # Adjust for zero-based indexing
 
 # Run Cell Ranger for the sample
 mkdir -p "$VOY_DATA/\$sample/cellranger"
