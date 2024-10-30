@@ -2,35 +2,112 @@ import os
 import subprocess
 
 import click
+import pandas as pd
 
 
 @click.command("cellranger")
-@click.option("--samplefile", required=True, help="Sample file text file")
+@click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
-    "--includebam",
+    "--samplefile",
+    type=click.Path(exists=True),
+    help="Path to a CSV or TSV file containing sample IDs",
+)
+@click.option(
+    "--create-bam",
     is_flag=True,
     default=False,
-    help="Include BAM files (removes --no-bam from cellranger)",
+    help="Generate BAM files for each sample",
 )
-def cmd(samplefile, includebam):
+def cmd(sample, samplefile, create_bam):
     """
-    Cellranger aligns sc-rna seq reads... \n
-    --------------------------------- \n
-    Cellranger (7.2.0.) Sample demultiplexing, barcode processing, single cell 3' & 5' gene counting,
-    V(D)J transcript sequence assembly.
+    Run Cell Ranger for single-cell RNA sequencing alignment and analysis
 
+    Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
+    and gene counting for single-cell 3' and 5' RNA-seq data, as well as
+    V(D)J transcript sequence assembly
     """
-    shell_cellranger_script = os.path.join(
-        os.getcwd(),
-        "bin/aligners/cellranger/submit.sh",
-    )
+    samples = []
 
-    # Pass the includebam flag as an argument to the bash script
-    includebam = str(includebam * 1)
-    includebam_str = "1" if includebam else "0"
-    result_CR = subprocess.run(
-        [shell_cellranger_script, samplefile, includebam],
-        capture_output=True,
-        text=True,
-    )
-    click.echo(result_CR.stdout)
+    # Collect sample IDs from the provided options
+    if sample:
+        samples.append(sample)
+
+    # Read sample IDs from a file if provided
+    if samplefile:
+        try:
+            sep = (
+                ","
+                if samplefile.endswith(".csv")
+                else "\t" if samplefile.endswith(".tsv") else None
+            )
+            if sep is None:
+                click.echo(
+                    "Error: Unsupported file format. Please provide a .csv or .tsv file"
+                )
+                return
+
+            df = pd.read_csv(samplefile, sep=sep)
+
+            if "sample_id" in df.columns:
+                samples.extend(df["sample_id"].dropna().astype(str).tolist())
+            else:
+                click.echo('Error: File must contain a "sample_id" column')
+                return
+        except Exception as e:
+            click.echo(f"Error reading sample file: {e}")
+            return
+
+    if not samples:
+        click.echo("Error: No samples provided. Use --sample or --samplefile")
+        return
+
+    # Define the FASTQ base path and validate each sample
+    voy_tmp_base = os.getenv("VOY_TMP", "/lustre/scratch126/cellgen/team298/tmp")
+    valid_samples = []
+    for sample in samples:
+        fastq_path = os.path.join(voy_tmp_base, sample)
+
+        # Check if FASTQ files exist in the directory
+        if os.path.exists(fastq_path) and any(
+            f.endswith(".fastq") or f.endswith(".fq") for f in os.listdir(fastq_path)
+        ):
+            valid_samples.append(sample)
+        else:
+            click.echo(
+                f"Warning: No FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample"
+            )
+
+    if not valid_samples:
+        click.echo("Error: No valid samples found with FASTQ files. Exiting")
+        return
+
+    # Join all valid sample IDs into a single string, separated by commas
+    sample_ids = ",".join(valid_samples)
+
+    # Path to the Cell Ranger submission script
+    cellranger_submit_script = os.path.abspath("./bin/alignment/cellranger/submit.sh")
+
+    # Construct the command with optional BAM flag
+    cmd = [cellranger_submit_script, sample_ids]
+    if not create_bam:
+        cmd.append("--no-bam")
+
+    # Execute the command for all valid samples
+    click.echo(f"Running Cell Ranger for samples: {sample_ids}")
+    try:
+        result = subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        click.echo(f"Output:\n{result.stdout}")
+    except subprocess.CalledProcessError as e:
+        click.echo(f"Error running Cell Ranger: {e.stderr}")
+
+    click.echo("Cell Ranger processing complete")
+
+
+if __name__ == "__main__":
+    cmd()
