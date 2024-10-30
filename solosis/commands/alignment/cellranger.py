@@ -61,15 +61,16 @@ def cmd(sample, samplefile, create_bam):
         click.echo("Error: No samples provided. Use --sample or --samplefile")
         return
 
-    # Define the FASTQ base path and validate each sample
-    voy_tmp_base = os.getenv("VOY_TMP", "/lustre/scratch126/cellgen/team298/tmp")
+    # Define the FASTQ path and validate each sample
+    data_tmp = os.getenv("DATA_TMP", "/lustre/scratch126/cellgen/team298/tmp")
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(voy_tmp_base, sample)
+        fastq_path = os.path.join(data_tmp, sample)
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(
-            f.endswith(".fastq") or f.endswith(".fq") for f in os.listdir(fastq_path)
+            f.endswith(".fastq") or f.endswith(".fastq.gz")
+            for f in os.listdir(fastq_path)
         ):
             valid_samples.append(sample)
         else:
