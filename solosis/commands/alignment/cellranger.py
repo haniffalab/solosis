@@ -20,7 +20,13 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default=False,
     help="Generate BAM files for each sample",
 )
-def cmd(sample, samplefile, create_bam):
+@click.option(
+    "--version",
+    type=str,
+    default="7.2.0",  # Set a default version
+    help="Cell Ranger version to use (e.g., '7.2.0')",
+)
+def cmd(sample, samplefile, create_bam, version):
     """
     Run Cell Ranger for single-cell RNA sequencing alignment and analysis
 
@@ -99,7 +105,11 @@ def cmd(sample, samplefile, create_bam):
     cellranger_submit_script = os.path.abspath("./bin/alignment/cellranger/submit.sh")
 
     # Construct the command with optional BAM flag
-    cmd = [cellranger_submit_script, sample_ids]
+    cmd = [
+        cellranger_submit_script,
+        sample_ids,
+        version,
+    ]  # Pass version to the submit script
     if not create_bam:
         cmd.append("--no-bam")
 
