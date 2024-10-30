@@ -120,7 +120,6 @@ def cmd(sample, samplefile, create_bam):
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         click.echo(f"Error during Cell Ranger execution: {e.stderr}")
-        click.echo(f"Return code: {e.returncode}")
 
     click.echo("Cell Ranger processing complete")
 

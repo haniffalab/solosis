@@ -15,7 +15,7 @@ include_bam_flag=$2
 
 # Check if sample file exists
 if [[ ! -f "$samples_file" ]]; then
-  echo "Error: Sample file '$samples_file' not found."
+  echo "Error: Sample file '$samples_file' not found." >&2
   exit 1
 fi
 
@@ -47,7 +47,7 @@ sample=\$(sed -n "\$((LSB_JOBINDEX + 1))p" "$samples_file" | cut -d',' -f1)
 mkdir -p "$VOY_DATA/\$sample/cellranger"
 if ! cellranger count --id="\$sample" --fastqs="$VOY_TMP/\$sample" --transcriptome="$REF" \
     --sample="\$sample" --localcores=$CPU --localmem=$((MEM / 1000)) --output-dir="$VOY_DATA/\$sample/cellranger" $bam_flag; then
-    echo "Error during Cell Ranger execution for sample \$sample" >> "$VOY_CODE/logs/\$sample_cellranger_error.log"
+    echo "Error during Cell Ranger execution for sample \$sample" >&2 >> "$VOY_CODE/logs/\$sample_cellranger_error.log"
     exit 1
 fi
 EOF
