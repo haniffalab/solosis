@@ -4,6 +4,8 @@ import subprocess
 import click
 import pandas as pd
 
+FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
+
 
 @click.command("cellranger")
 @click.option("--sample", type=str, help="Sample ID (string)")
@@ -62,15 +64,23 @@ def cmd(sample, samplefile, create_bam):
         return
 
     # Define the FASTQ path and validate each sample
-    data_tmp = os.getenv("DATA_TMP", "/lustre/scratch126/cellgen/team298/tmp")
+    team_tmp_data_dir = os.getenv(
+        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/tmp"
+    )
+
+    if not os.path.isdir(team_tmp_data_dir):
+        click.echo(
+            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+        )
+        return
+
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(data_tmp, sample)
+        fastq_path = os.path.join(team_tmp_data_dir, sample)
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(
-            f.endswith(".fastq") or f.endswith(".fastq.gz")
-            for f in os.listdir(fastq_path)
+            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
             valid_samples.append(sample)
         else:
@@ -94,7 +104,7 @@ def cmd(sample, samplefile, create_bam):
         cmd.append("--no-bam")
 
     # Execute the command for all valid samples
-    click.echo(f"Running Cell Ranger for samples: {sample_ids}")
+    click.echo(f"Starting Cell Ranger for samples: {sample_ids}...")
     try:
         result = subprocess.run(
             cmd,
@@ -103,9 +113,9 @@ def cmd(sample, samplefile, create_bam):
             stderr=subprocess.PIPE,
             text=True,
         )
-        click.echo(f"Output:\n{result.stdout}")
+        click.echo(f"Cell Ranger completed successfully:\n{result.stdout}")
     except subprocess.CalledProcessError as e:
-        click.echo(f"Error running Cell Ranger: {e.stderr}")
+        click.echo(f"Error during Cell Ranger execution: {e.stderr}")
 
     click.echo("Cell Ranger processing complete")
 
