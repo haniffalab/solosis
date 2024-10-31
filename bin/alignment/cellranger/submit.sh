@@ -10,6 +10,7 @@ fi
 # Set temporary VOY environment variables
 export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data"
 export TEAM_TMP_DATA_DIR="/lustre/scratch126/cellgen/team298/tmp"
+mkdir -p "$HOME/logs"
 
 # Set job parameters
 GROUP="team298"
@@ -29,7 +30,7 @@ fi
 # Determine BAM inclusion flag
 bam_flag="--no-bam"
 if [[ "$include_bam_flag" -eq "1" ]]; then
-  bam_flag=""  # Remove flag if --includebam is specified
+  bam_flag="" # Remove flag if --includebam is specified
 fi
 
 # Convert the comma-separated list into an array
