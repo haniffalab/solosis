@@ -10,7 +10,6 @@ fi
 # Set temporary VOY environment variables
 export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data"
 export TEAM_TMP_DATA_DIR="/lustre/scratch126/cellgen/team298/tmp"
-mkdir -p "$HOME/logs"
 
 # Set job parameters
 GROUP="team298"
@@ -58,7 +57,7 @@ sample=\${samples_array[\$((LSB_JOBINDEX - 1))]}  # Adjust for zero-based indexi
 mkdir -p "$TEAM_SAMPLE_DATA_DIR/\$sample/cellranger"
 if ! cellranger count --id="\$sample" --fastqs="$TEAM_TMP_DATA_DIR/\$sample" --transcriptome="$REF" \
     --sample="\$sample" --localcores=$CPU --localmem=$((MEM / 1000)) --output-dir="$TEAM_SAMPLE_DATA_DIR/\$sample/cellranger" $bam_flag; then
-    echo "Error during Cell Ranger execution for sample \$sample" >&2"
+    echo "Error during Cell Ranger execution for sample \$sample" >&2
     exit 1
 fi
 EOF
