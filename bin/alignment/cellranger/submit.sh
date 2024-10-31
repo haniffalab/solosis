@@ -35,8 +35,9 @@ if ! module load cellgen/cellranger/$2; then
 fi
 
 # Set environment variables for data directories (temporary and sample data)
-export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples/"
-export TEAM_TMP_DATA_DIR="/lustre/scratch126/cellgen/team298/data/tmp"
+export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+export TEAM_TMP_DATA_DIR="/lustre/scratch126/cellgen/team298/tmp"
+mkdir -p "$HOME/logs"
 
 # Define job parameters for the LSF job submission
 GROUP="team298"                          # User group for the job
