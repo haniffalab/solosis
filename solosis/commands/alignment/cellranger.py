@@ -104,7 +104,7 @@ def cmd(sample, samplefile, create_bam, version):
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     cellranger_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../bin/alignment/cellranger/submit.sh")
+        os.path.join(script_dir, "../../bin/alignment/cellranger/submit.sh")
     )
 
     # Construct the command with optional BAM flag
