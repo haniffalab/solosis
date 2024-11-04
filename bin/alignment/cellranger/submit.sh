@@ -76,6 +76,18 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger/$VERSION"
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
+# Check if Cell Ranger lock already exists for the sample
+if [ -f "\${OUTPUT_DIR}/_lock" ]; then
+  echo "Cell Ranger job is currently running or was interrupted for sample \${SAMPLE} in \${OUTPUT_DIR}." >&2
+  exit 0
+fi
+
+# Check if Cell Ranger output already exists for the sample
+if [ -f "\$OUTPUT_DIR/_invocation" ]; then
+  echo "Cell Ranger output already exists for sample \${SAMPLE}. Skipping job." >&2
+  exit 0
+fi
+
 # Run Cell Ranger 'count' for the sample
 cellranger count \
     --id="\$SAMPLE" \
