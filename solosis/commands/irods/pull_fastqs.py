@@ -2,30 +2,130 @@ import os
 import subprocess
 
 import click
+import pandas as pd
+
+FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
 @click.command("pull-fastqs")
-@click.option("--samplefile", required=True, help="Sample file text file")
-def cmd(samplefile):
+@click.option("--sample", type=str, help="Sample ID (string)")
+@click.option(
+    "--samplefile",
+    type=click.Path(exists=True),
+    help="Path to a CSV or TSV file containing sample IDs",
+)
+def cmd(sample, samplefile):
     """
     Downloading fastqs from iRODS...
-    -----------------------
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-    Input file should have 3 mandatory columns:
-    1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
+    Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
+    Pulled directly from Github repo- up-to-date.
 
     """
     print("Using iRODS to download data")
     print("If you have a large set of files, this command will take a while to run")
 
-    shell_script_fq = os.path.join(
-        os.getcwd(),
-        "bin/irods/pull-fastqs/submit.sh",
+    samples = []
+
+    # Collect sample IDs from the provided options
+    if sample:
+        samples.append(sample)
+
+    # Read sample IDs from a file if provided
+    if samplefile:
+        try:
+            sep = (
+                ","
+                if samplefile.endswith(".csv")
+                else "\t" if samplefile.endswith(".tsv") else None
+            )
+            if sep is None:
+                click.echo(
+                    "Error: Unsupported file format. Please provide a .csv or .tsv file"
+                )
+                return
+
+            df = pd.read_csv(samplefile, sep=sep)
+
+            if "sample_id" in df.columns:
+                samples.extend(df["sample_id"].dropna().astype(str).tolist())
+            else:
+                click.echo('Error: File must contain a "sample_id" column')
+                return
+        except Exception as e:
+            click.echo(f"Error reading sample file: {e}")
+            return
+
+    if not samples:
+        click.echo("Error: No samples provided. Use --sample or --samplefile")
+        return
+
+    # Define the FASTQ path and validate each sample
+    team_tmp_data_dir = os.getenv(
+        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/data/samples"
     )
 
-    result_fq = subprocess.run(
-        [shell_script_fq, samplefile], capture_output=True, text=True
+    if not os.path.isdir(team_tmp_data_dir):
+        click.echo(
+            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+        )
+        return
+
+    ###################### likely to cause problems ####################
+    valid_samples = []
+    for sample in samples:
+        fastq_path = os.path.join(team_tmp_data_dir, sample, "fastq")
+
+        # Check if FASTQ files exist in the directory
+        if os.path.exists(fastq_path) and any(
+            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
+        ):
+            click.echo(
+                f"Warning: FASTQ files were found for sample {sample} in {fastq_path}. Skipping this sample"
+            )
+        else:
+            valid_samples.append(sample)
+
+    if valid_samples:
+        click.echo("Error: Valid samples were found with FASTQ files. Exiting")
+        return
+    #########################################################
+
+    # Join all valid sample IDs into a single string, separated by commas
+    sample_ids = ",".join(valid_samples)
+
+    # Path to the Cell Ranger submission script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pullfastq_submit_script = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/irods/pull-fastqs/submit.sh")
     )
-    click.echo(result_fq.stdout)
-    click.echo(result_fq.stderr)
+
+    # Construct the command with optional BAM flag
+    cmd = [
+        pullfastq_submit_script,
+        sample_ids,
+    ]
+
+    # Print the command being executed for debugging
+    click.echo(f"Executing command: {' '.join(cmd)}")
+
+    # Execute the command for all valid samples
+    click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
+    try:
+        result = subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        click.echo(f"pull-fastq completed successfully:\n{result.stdout}")
+    except subprocess.CalledProcessError as e:
+        # Log the stderr and return code
+        click.echo(f"Error during Cell Ranger execution: {e.stderr}")
+
+    click.echo("pull-fastq processing complete")
+
+
+if __name__ == "__main__":
+    cmd()
