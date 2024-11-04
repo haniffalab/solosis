@@ -67,7 +67,7 @@ bsub -J "cellranger_array[1-$NUM_SAMPLES]" <<EOF
 
 # Determine the sample for the current task
 SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=\${SAMPLES[\$SAMPLE_INDEX]}
+SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 
 # Define paths for the current sample
 FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
@@ -83,7 +83,7 @@ cellranger count \
     --transcriptome="$REF" \
     --sample="\$SAMPLE" \
     --localcores=$CPU \
-    --localmem=\$((MEM / 1000)) \
+    --localmem=$((MEM / 1000)) \
     --output-dir="\$OUTPUT_DIR" \
     $BAM_FLAG
 EOF
