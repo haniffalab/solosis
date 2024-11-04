@@ -88,6 +88,9 @@ if [ -f "\$OUTPUT_DIR/_invocation" ]; then
   exit 0
 fi
 
+# Change to the output directory to ensure all outputs are generated here
+cd "\$OUTPUT_DIR"
+
 # Run Cell Ranger 'count' for the sample
 cellranger count \
     --id="\$SAMPLE" \
