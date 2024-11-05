@@ -20,7 +20,6 @@ def cmd(sample, samplefile):
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
-
     """
     print("Using iRODS to download data")
     print("If you have a large set of files, this command will take a while to run")
@@ -71,9 +70,8 @@ def cmd(sample, samplefile):
         )
         return
 
-    ###################### likely to cause problems ####################
-    samples_to_download = []
     # Check each sample
+    samples_to_download = []
     for sample in samples:
         fastq_path = os.path.join(team_tmp_data_dir, sample, "fastq")
 
@@ -85,21 +83,16 @@ def cmd(sample, samplefile):
                 f"Warning: FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download."
             )
         else:
-            # Add sample to the download list if no FASTQ files are found
             samples_to_download.append(sample)
 
     # Inform if there are samples that need FASTQ downloads
     if samples_to_download:
         click.echo(f"Samples without FASTQ files: {samples_to_download}")
-        # Proceed to call Nextflow pipeline or bash script here
-        # e.g., run_nextflow_pipeline(samples_to_download)
     else:
         click.echo(
             "All provided samples already have FASTQ files. No downloads required."
         )
-
-    return samples_to_download
-    #########################################################
+        return  # Exit if no samples need downloading
 
     # Join all sample to download IDs into a single string, separated by commas
     sample_ids = ",".join(samples_to_download)
