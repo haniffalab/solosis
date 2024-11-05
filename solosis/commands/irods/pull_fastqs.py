@@ -75,6 +75,9 @@ def cmd(sample, samplefile):
     for sample in samples:
         fastq_path = os.path.join(team_tmp_data_dir, "fastq")
 
+        # Print out the fastq_path
+        print(f"fastq_path: {fastq_path}")
+
         # Check if FASTQ files are already in the directory
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
