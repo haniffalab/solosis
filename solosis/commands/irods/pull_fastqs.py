@@ -73,7 +73,7 @@ def cmd(sample, samplefile):
     # Check each sample
     samples_to_download = []
     for sample in samples:
-        fastq_path = os.path.join(team_tmp_data_dir, sample, "fastq")
+        fastq_path = os.path.join(team_tmp_data_dir, "fastq")
 
         # Check if FASTQ files are already in the directory
         if os.path.exists(fastq_path) and any(
