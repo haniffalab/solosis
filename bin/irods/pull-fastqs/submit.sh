@@ -60,12 +60,12 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
 # Create output directory if it does not exist
 mkdir -p "$OUTPUT_DIR"
 
+cd "$OUTPUT_DIR"
 # Run pull-fastq Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
     --findmeta "$SAMPLE_FILE" \
     --cram2fastq \
-    --publish_dir "$OUTPUT_DIR"
 
 # Clean up the temporary sample file after Nextflow completes
 rm -f "$SAMPLE_FILE"
