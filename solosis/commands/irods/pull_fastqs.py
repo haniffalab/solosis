@@ -72,27 +72,37 @@ def cmd(sample, samplefile):
         return
 
     ###################### likely to cause problems ####################
-    valid_samples = []
+    samples_to_download = []
+    # Check each sample
     for sample in samples:
         fastq_path = os.path.join(team_tmp_data_dir, sample, "fastq")
 
-        # Check if FASTQ files exist in the directory
+        # Check if FASTQ files are already in the directory
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
             click.echo(
-                f"Warning: FASTQ files were found for sample {sample} in {fastq_path}. Skipping this sample"
+                f"Warning: FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download."
             )
         else:
-            valid_samples.append(sample)
+            # Add sample to the download list if no FASTQ files are found
+            samples_to_download.append(sample)
 
-    if valid_samples:
-        click.echo("Error: Valid samples were found with FASTQ files. Exiting")
-        return
+    # Inform if there are samples that need FASTQ downloads
+    if samples_to_download:
+        click.echo(f"Samples without FASTQ files: {samples_to_download}")
+        # Proceed to call Nextflow pipeline or bash script here
+        # e.g., run_nextflow_pipeline(samples_to_download)
+    else:
+        click.echo(
+            "All provided samples already have FASTQ files. No downloads required."
+        )
+
+    return samples_to_download
     #########################################################
 
-    # Join all valid sample IDs into a single string, separated by commas
-    sample_ids = ",".join(valid_samples)
+    # Join all sample to download IDs into a single string, separated by commas
+    sample_ids = ",".join(samples_to_download)
 
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
