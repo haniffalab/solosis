@@ -25,6 +25,15 @@ if [ -z "$SAMPLE_IDS" ]; then
   exit 1
 fi
 
+# Create a temporary file for sample IDs in CSV format
+SAMPLE_FILE=$(mktemp /tmp/sample_ids.XXXXXX.csv)
+
+# Convert comma-separated list to a file with one sample ID per line
+IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+for SAMPLE in "${SAMPLES[@]}"; do
+  echo "$SAMPLE" >> "$SAMPLE_FILE"
+done
+
 # Load necessary modules
 MODULES=("irods" "conda" "nextflow" "singularity")
 for MODULE in "${MODULES[@]}"; do
@@ -51,11 +60,14 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
 # Create output directory if it does not exist
 mkdir -p "$OUTPUT_DIR"
 
-# Run pull-fastq Nextflow process with the sample list
-echo "Running Nextflow process for samples: $SAMPLE_IDS"
+# Run pull-fastq Nextflow process with the sample file
+echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
-    --findmeta "$SAMPLE_IDS" \
+    --findmeta "$SAMPLE_FILE" \
     --cram2fastq \
     --publish_dir "$OUTPUT_DIR"
+
+# Clean up the temporary sample file after Nextflow completes
+rm -f "$SAMPLE_FILE"
 
 echo "All samples processed with Nextflow."
