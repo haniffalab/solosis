@@ -118,6 +118,7 @@ def cmd(sample, samplefile):
     # Execute the command for all valid samples
     click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
     try:
+        seen_lines = set()  # Track previously seen lines
         with subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         ) as process:
