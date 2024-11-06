@@ -44,7 +44,7 @@ for MODULE in "${MODULES[@]}"; do
 done
 
 # Configure paths and environment variables
-export NXF_WORK="$HOME/work"
+export NXF_WORK="/lustre/scratch126/cellgen/team298/pipelines/nf-irods-to-fastq/work"
 export LSB_DEFAULT_USERGROUP="team298"
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
 
