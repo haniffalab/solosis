@@ -73,7 +73,7 @@ rm -f "$SAMPLE_FILE"
 
 #re-adding structure to outputs
 KK=`ls *fastq.gz | sed "s/_S/\t/" | cut -f1 | sort | uniq`
-mkdir $KK 
+mkdir -p $KK 
 
 for i in $KK
 do
