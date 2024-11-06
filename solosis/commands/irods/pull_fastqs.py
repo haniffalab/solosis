@@ -119,7 +119,7 @@ def cmd(sample, samplefile):
     click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
     try:
         with subprocess.Popen(
-            cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         ) as process:
             for line in process.stdout:
                 print(line, end="")  # Print stdout line by line as it appears
