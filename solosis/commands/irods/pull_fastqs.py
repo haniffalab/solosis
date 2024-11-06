@@ -118,14 +118,16 @@ def cmd(sample, samplefile):
     # Execute the command for all valid samples
     click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
     try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        click.echo(f"pull-fastq completed successfully:\n{result.stdout}")
+        with subprocess.Popen(
+            cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        ) as process:
+            for line in process.stdout:
+                print(line, end="")  # Print stdout line by line as it appears
+            stderr = process.communicate()[1]
+            if process.returncode != 0:
+                click.echo(f"Error during Cell Ranger execution: {stderr}")
+            else:
+                click.echo("pull-fastq completed successfully.")
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         click.echo(f"Error during Cell Ranger execution: {e.stderr}")
