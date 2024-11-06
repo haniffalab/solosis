@@ -123,6 +123,7 @@ def cmd(sample, samplefile):
         ) as process:
             for line in process.stdout:
                 print(line, end="")  # Print stdout line by line as it appears
+                seen_lines.add(line)
             stderr = process.communicate()[1]
             if process.returncode != 0:
                 click.echo(f"Error during Cell Ranger execution: {stderr}")
