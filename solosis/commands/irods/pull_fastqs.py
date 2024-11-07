@@ -114,19 +114,21 @@ def cmd(sample, samplefile):
 
     # Execute the command for all valid samples
     click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
+    try:
+        with subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        ) as process:
+            stderr = process.communicate()[1]
+            if process.returncode != 0:
+                click.echo(f"Error during pull-fastq execution: {stderr}")
+            else:
+                click.echo("pull-fastq completed successfully.")
+    except subprocess.CalledProcessError as e:
+        # Log the stderr and return code
+        click.echo(f"Error during pull-fastq execution: {e.stderr}")
 
+    click.echo("pull-fastq processing complete")
 
-try:
-    result = subprocess.run(
-        cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
-    # Display the complete stdout output upon successful completion
-    click.echo(f"pull-fastq completed successfully:\n{result.stdout}")
-except subprocess.CalledProcessError as e:
-    # Log the stderr if there's an error during execution
-    click.echo(f"Error during pull-fastq execution: {e.stderr}")
-
-click.echo("pull-fastq processing complete")
 
 if __name__ == "__main__":
     cmd()
