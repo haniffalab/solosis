@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 
 import click
 import pandas as pd
@@ -21,8 +22,10 @@ def cmd(sample, samplefile):
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
-    print("Using iRODS to download data")
-    print("If you have a large set of files, this command will take a while to run")
+    click.echo("Using iRODS to download data")
+    click.echo(
+        "If you have a large set of files, this command will take a while to run"
+    )
 
     samples = []
 
@@ -94,7 +97,7 @@ def cmd(sample, samplefile):
         )
         return  # Exit if no samples need downloading
 
-    # Join all sample to download IDs into a single string, separated by commas
+    # Join all sample IDs into a single string, separated by commas
     sample_ids = ",".join(samples_to_download)
 
     # Path to the Cell Ranger submission script
@@ -112,24 +115,46 @@ def cmd(sample, samplefile):
     # Print the command being executed for debugging
     click.echo(f"Executing command: {' '.join(cmd)}")
 
-    # Execute the command for all valid samples
-    click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
+    # Define simulated pipeline stages for progress bar
+    pipeline_stages = [
+        "findCrams",
+        "getMetadata",
+        "parseMetadata",
+        "combineMetadata",
+        "downloadCram",
+        "cramToFastq",
+        "calculateReadLength",
+        "renameATAC",
+        "saveMetaToJson",
+        "updateMetadata",
+    ]
+
+    # Start subprocess for Nextflow
     try:
-        seen_lines = set()  # Track previously seen lines
         with subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         ) as process:
-            for line in process.stdout:
-                print(line, end="")  # Print stdout line by line as it appears
-                seen_lines.add(line)
-            stderr = process.communicate()[1]
+            label_text = "Running Nextflow Pipeline..."
+            with click.progressbar(pipeline_stages, label=label_text) as stages:
+                for stage in stages:
+                    # Read and print Nextflow output if available
+                    output = process.stdout.readline()
+                    if output:
+                        print(output.strip())  # Print output line-by-line
+                    time.sleep(1)  # Simulate processing time per stage
+
+                    # Check if Nextflow pipeline has finished
+                    if process.poll() is not None:
+                        break
+
+            # Capture any remaining stdout and stderr
+            stdout, stderr = process.communicate()
             if process.returncode != 0:
-                click.echo(f"Error during Cell Ranger execution: {stderr}")
+                click.echo(f"Error during pull-fastq execution: {stderr}")
             else:
                 click.echo("pull-fastq completed successfully.")
     except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        click.echo(f"Error during Cell Ranger execution: {e.stderr}")
+        click.echo(f"Error during pull-fastq execution: {e.stderr}")
 
     click.echo("pull-fastq processing complete")
 
