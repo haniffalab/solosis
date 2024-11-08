@@ -72,13 +72,4 @@ nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
 # Clean up the temporary sample file after Nextflow completes
 rm -f "$SAMPLE_FILE"
 
-# Re-adding structure to outputs
-KK=$(ls *fastq.gz | sed "s/_S[0-9]\+.*//" | sort | uniq)
-mkdir -p $KK 
-
-for i in $KK
-do
-  mv ${i}*fastq.gz $i
-done
-
 echo "All samples processed with Nextflow."
