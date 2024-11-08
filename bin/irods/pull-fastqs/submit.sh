@@ -26,7 +26,7 @@ if [ -z "$SAMPLE_IDS" ]; then
 fi
 
 # Create a temporary file for sample IDs in CSV format
-TMP_SAMPLE_FILE=$(mktemp "/tmp/sample_ids.$(date +%Y%m%d%H%M%S).csv")
+TMP_SAMPLE_FILE=$(mktemp /tmp/sample_ids.XXXXXX.csv)
 
 # Convert comma-separated list to a file with one sample ID per line
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
