@@ -1,10 +1,20 @@
 import os
 import subprocess
+import sys
+import time
 
 import click
 import pandas as pd
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
+
+
+def spinner():
+    """Generator for spinner animation in the terminal."""
+    spinner_frames = ["|", "/", "-", "\\"]
+    while True:
+        for frame in spinner_frames:
+            yield frame
 
 
 @click.command("pull-fastqs")
@@ -113,22 +123,36 @@ def cmd(sample, samplefile):
     # Print the command being executed for debugging
     click.echo(f"Executing command: {' '.join(cmd)}")
 
-    # Execute the command for all valid samples
-    click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
+    # Create the spinner generator
+    spin = spinner()
+
+    # Execute the command with an active spinner
+    click.echo(f"Starting process for samples: {sample_ids}...")
     try:
         with subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         ) as process:
-            stderr = process.communicate()[1]
+            # While the command runs, show the spinner animation
+            while True:
+                # Check if the process has finished
+                retcode = process.poll()
+                if retcode is not None:  # Process has finished
+                    break
+                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
+                sys.stdout.flush()  # Force output to the terminal
+                time.sleep(0.1)  # Delay between spinner updates
+
+            # Capture the output
+            stdout, stderr = process.communicate()
             if process.returncode != 0:
-                click.echo(f"Error during pull-fastq execution: {stderr}")
+                click.echo(f"Error during execution: {stderr}")
             else:
-                click.echo("pull-fastq completed successfully.")
+                click.echo(f"Process completed successfully:\n{stdout}")
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
-        click.echo(f"Error during pull-fastq execution: {e.stderr}")
+        click.echo(f"Error during execution: {e.stderr}")
 
-    click.echo("pull-fastq processing complete")
+    click.echo("Processing complete")
 
 
 if __name__ == "__main__":
