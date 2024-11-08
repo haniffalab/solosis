@@ -60,22 +60,23 @@ def cmd(sample, samplefile):
         return
 
     # Define the FASTQ path and validate each sample
-    team_tmp_data_dir = os.getenv(
-        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/data/samples"
+    team_sample_data_dir = os.getenv(
+        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
     )
 
-    if not os.path.isdir(team_tmp_data_dir):
+    if not os.path.isdir(team_sample_data_dir):
         click.echo(
-            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+            f"Error: The temporary data directory '{team_sample_data_dir}' does not exist."
         )
         return
 
     # Check each sample
     samples_to_download = []
     for sample in samples:
-        fastq_path = os.path.join(team_tmp_data_dir, "fastq")
+        # Path where FASTQ files are expected for each sample
+        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
 
-        # Check if FASTQ files are already in the directory
+        # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
@@ -97,15 +98,15 @@ def cmd(sample, samplefile):
     # Join all sample to download IDs into a single string, separated by commas
     sample_ids = ",".join(samples_to_download)
 
-    # Path to the Cell Ranger submission script
+    # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    pullfastq_submit_script = os.path.abspath(
+    irods_to_fastq_script = os.path.abspath(
         os.path.join(script_dir, "../../../bin/irods/pull-fastqs/submit.sh")
     )
 
     # Construct the command with optional BAM flag
     cmd = [
-        pullfastq_submit_script,
+        irods_to_fastq_script,
         sample_ids,
     ]
 

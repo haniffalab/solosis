@@ -70,19 +70,19 @@ def cmd(sample, samplefile, create_bam, version):
         return
 
     # Define the FASTQ path and validate each sample
-    team_tmp_data_dir = os.getenv(
-        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/tmp"
+    team_sample_data_dir = os.getenv(
+        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
     )
 
-    if not os.path.isdir(team_tmp_data_dir):
+    if not os.path.isdir(team_sample_data_dir):
         click.echo(
-            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+            f"Error: The sample data directory '{team_sample_data_dir}' does not exist."
         )
         return
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(team_tmp_data_dir, sample)
+        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(

@@ -26,12 +26,12 @@ if [ -z "$SAMPLE_IDS" ]; then
 fi
 
 # Create a temporary file for sample IDs in CSV format
-SAMPLE_FILE=$(mktemp /tmp/sample_ids.XXXXXX.csv)
+TMP_SAMPLE_FILE=$(mktemp "/tmp/sample_ids.$(date +%Y%m%d%H%M%S).csv")
 
 # Convert comma-separated list to a file with one sample ID per line
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 for SAMPLE in "${SAMPLES[@]}"; do
-  echo "$SAMPLE" >> "$SAMPLE_FILE"
+  echo "$SAMPLE" >> "$TMP_SAMPLE_FILE"
 done
 
 # Load necessary modules
@@ -62,14 +62,39 @@ mkdir -p "$OUTPUT_DIR"
 
 cd "$OUTPUT_DIR"
 # Run pull-fastq Nextflow process with the sample file
-echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
+echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
-    --findmeta "$SAMPLE_FILE" \
+    --findmeta "$TMP_SAMPLE_FILE" \
     --cram2fastq \
     --publish_dir "$OUTPUT_DIR" \
-	-resume
+    --resume
+
+# Loop through each sample and move the FASTQ files to their respective directories
+for SAMPLE in "${SAMPLES[@]}"; do
+  SAMPLE_DIR="${TEAM_SAMPLE_DATA_DIR}/${SAMPLE}/fastq"
+  
+  # Create the sample directory if it does not exist
+  mkdir -p "$SAMPLE_DIR"
+  
+  # Assumption: The FASTQ files for each sample are named with the sample ID as the prefix.
+  # For example: 
+  # Sample ID: HCA_SkO13919076
+  # Associated FASTQ files would be named as:
+  # HCA_SkO13919076_S1_L001_R1_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_R2_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_I1_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_I2_001.fastq.gz
+  #
+  # Where:
+  # - The filename starts with the sample ID (e.g., HCA_SkO13919076).
+  # - The filenames follow the CellRanger convention, with S (sample), L (lane), R (read), and I (index) information.
+
+  # Move FASTQ files into the respective sample directory
+  echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
+  mv ${OUTPUT_DIR}/${SAMPLE}* "$SAMPLE_DIR"/
+done
 
 # Clean up the temporary sample file after Nextflow completes
-rm -f "$SAMPLE_FILE"
+rm -f "$TMP_SAMPLE_FILE"
 
-echo "All samples processed with Nextflow."
+echo "All samples processed and FASTQ files moved to respective directories."
