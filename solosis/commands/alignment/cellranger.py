@@ -115,6 +115,10 @@ def cmd(sample, samplefile, create_bam, version):
         ):
             valid_samples.append(sample)
         else:
+            echo_message(
+                f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
+                "warn",
+            )
             click.echo(
                 click.style(
                     f"Warning: No FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
@@ -123,12 +127,9 @@ def cmd(sample, samplefile, create_bam, version):
             )
 
     if not valid_samples:
-        click.echo(
-            click.style(
-                "Error: No valid samples found with FASTQ files. Exiting",
-                fg="red",
-                bold=True,
-            )
+        echo_message(
+            f"No valid samples found with FASTQ files. Exiting",
+            "error",
         )
         return
 
