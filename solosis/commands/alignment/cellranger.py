@@ -87,12 +87,9 @@ def cmd(sample, samplefile, create_bam, version):
             return
 
     if not samples:
-        click.echo(
-            click.style(
-                "Error: No samples provided. Use --sample or --samplefile",
-                fg="red",
-                bold=True,
-            )
+        echo_message(
+            f"no samples provided. Use --sample or --samplefile",
+            "error",
         )
         return
 
