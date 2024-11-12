@@ -58,12 +58,9 @@ def cmd(sample, samplefile, create_bam, version):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                click.echo(
-                    click.style(
-                        "Error: Unsupported file format. Please provide a .csv or .tsv file",
-                        fg="red",
-                        bold=True,
-                    )
+                echo_message(
+                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    "error",
                 )
                 return
 
