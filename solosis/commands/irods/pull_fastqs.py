@@ -92,8 +92,9 @@ def cmd(sample, samplefile):
     )
 
     if not os.path.isdir(team_sample_data_dir):
-        click.echo(
-            f"Error: The temporary data directory '{team_sample_data_dir}' does not exist."
+        echo_message(
+            f"sample data directory '{team_sample_data_dir}' does not exist",
+            "error",
         )
         return
 
@@ -107,8 +108,9 @@ def cmd(sample, samplefile):
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
-            click.echo(
-                f"Warning: FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download."
+            echo_message(
+                f"FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download.",
+                "warn",
             )
         else:
             samples_to_download.append(sample)
@@ -117,8 +119,9 @@ def cmd(sample, samplefile):
     if samples_to_download:
         click.echo(f"Samples without FASTQ files: {samples_to_download}")
     else:
-        click.echo(
-            "All provided samples already have FASTQ files. No downloads required."
+        echo_message(
+            f"All provided samples already have FASTQ files. No downloads required.",
+            "warn",
         )
         return  # Exit if no samples need downloading
 
