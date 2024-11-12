@@ -8,12 +8,19 @@ from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
 VERSION = "0.2.3"
 
+# Styled output for the module name and version
+module_name = click.style(f"{'SOLOSIS':^11}", bg="blue", fg="white", bold=True)
+version_info = click.style(f"  ~  version {VERSION}")
+
 
 @click.group()
 @click.version_option(version=VERSION)
 def cli():
     """Command line utility for the Cellular Genetics
     programme at the Wellcome Sanger Institute"""
+
+    # Print a welcome message when the CLI tool is invoked
+    click.echo(click.echo(f"{module_name}{version_info}"))
     pass
 
 
