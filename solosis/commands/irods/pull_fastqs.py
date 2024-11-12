@@ -67,7 +67,10 @@ def cmd(sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                click.echo('Error: File must contain a "sample_id" column')
+                echo_message(
+                    f"file must contain a 'sample_id' column",
+                    "error",
+                )
                 return
         except Exception as e:
             click.echo(f"Error reading sample file: {e}")
