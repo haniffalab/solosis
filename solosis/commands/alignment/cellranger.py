@@ -116,7 +116,7 @@ def cmd(sample, samplefile, create_bam, version):
             valid_samples.append(sample)
         else:
             echo_message(
-                f"no FASTQ files found for sample {click.style({sample}, bold=True, underline=True)} in {fastq_path}. Skipping this sample",
+                f"no FASTQ files found for sample {click.style({sample}, bold=True, underline=True)} in {click.style({fastq_path}, bold=True, underline=True)}. Skipping this sample",
                 "warn",
             )
 
