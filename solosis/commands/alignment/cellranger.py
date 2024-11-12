@@ -75,8 +75,9 @@ def cmd(sample, samplefile, create_bam, version):
                 )
                 return
         except Exception as e:
-            click.echo(
-                click.style(f"Error reading sample file: {e}", fg="red", bold=True)
+            echo_message(
+                f"error reading sample file: {e}",
+                "error",
             )
             return
 

@@ -8,6 +8,8 @@ import pandas as pd
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
+from solosis.utils import echo_message
+
 
 def spinner():
     """Generator for spinner animation in the terminal."""
@@ -49,8 +51,9 @@ def cmd(sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                click.echo(
-                    "Error: Unsupported file format. Please provide a .csv or .tsv file"
+                echo_message(
+                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    "error",
                 )
                 return
 
