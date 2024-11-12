@@ -33,8 +33,13 @@ def cmd(sample, samplefile):
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
-    print("Using iRODS to download data")
-    print("If you have a large set of files, this command will take a while to run")
+    echo_message(
+        f"using iRODS to download data",
+        "info",
+    )
+    echo_message(
+        f"if you have a large set of files, this command will take a while to run"
+    )
 
     samples = []
 
