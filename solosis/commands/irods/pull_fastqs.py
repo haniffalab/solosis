@@ -165,12 +165,18 @@ def cmd(sample, samplefile):
             # Capture the output
             stdout, stderr = process.communicate()
             if process.returncode != 0:
-                click.echo(f"Error during execution: {stderr}")
+                echo_message(
+                    f"error during execution: {stderr}",
+                    "warn",
+                )
             else:
                 click.echo(f"Process completed successfully:\n{stdout}")
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
-        click.echo(f"Error during execution: {e.stderr}")
+        echo_message(
+            f"error during execution: {e.stderr}",
+            "warn",
+        )
 
     click.echo("Processing complete")
 
