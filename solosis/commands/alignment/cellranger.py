@@ -69,12 +69,9 @@ def cmd(sample, samplefile, create_bam, version):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                click.echo(
-                    click.style(
-                        'Error: File must contain a "sample_id" column',
-                        fg="red",
-                        bold=True,
-                    )
+                echo_message(
+                    f"file must contain a 'sample_id' column",
+                    "error",
                 )
                 return
         except Exception as e:
