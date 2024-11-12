@@ -73,11 +73,17 @@ def cmd(sample, samplefile):
                 )
                 return
         except Exception as e:
-            click.echo(f"Error reading sample file: {e}")
+            echo_message(
+                f"error reading sample file: {e}",
+                "error",
+            )
             return
 
     if not samples:
-        click.echo("Error: No samples provided. Use --sample or --samplefile")
+        echo_message(
+            f"no samples provided. Use --sample or --samplefile",
+            "error",
+        )
         return
 
     # Define the FASTQ path and validate each sample
