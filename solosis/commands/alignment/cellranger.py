@@ -4,6 +4,8 @@ import subprocess
 import click
 import pandas as pd
 
+from solosis.utils import echo_message
+
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
@@ -34,6 +36,13 @@ def cmd(sample, samplefile, create_bam, version):
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
     V(D)J transcript sequence assembly
     """
+    # Print a clear introductory message
+    echo_message(
+        f"launching: {click.style('cellranger', bold=True, underline=True)}",
+        "info",
+    )
+    echo_message(f"loading Cell Ranger version {version}")
+
     samples = []
 
     # Collect sample IDs from the provided options
@@ -49,8 +58,9 @@ def cmd(sample, samplefile, create_bam, version):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                click.echo(
-                    "Error: Unsupported file format. Please provide a .csv or .tsv file"
+                echo_message(
+                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    "error",
                 )
                 return
 
@@ -59,30 +69,40 @@ def cmd(sample, samplefile, create_bam, version):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                click.echo('Error: File must contain a "sample_id" column')
+                echo_message(
+                    f"file must contain a 'sample_id' column",
+                    "error",
+                )
                 return
         except Exception as e:
-            click.echo(f"Error reading sample file: {e}")
+            echo_message(
+                f"error reading sample file: {e}",
+                "error",
+            )
             return
 
     if not samples:
-        click.echo("Error: No samples provided. Use --sample or --samplefile")
+        echo_message(
+            f"no samples provided. Use --sample or --samplefile",
+            "error",
+        )
         return
 
     # Define the FASTQ path and validate each sample
-    team_tmp_data_dir = os.getenv(
-        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/tmp"
+    team_sample_data_dir = os.getenv(
+        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
     )
 
-    if not os.path.isdir(team_tmp_data_dir):
-        click.echo(
-            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+    if not os.path.isdir(team_sample_data_dir):
+        echo_message(
+            f"sample data directory '{team_sample_data_dir}' does not exist",
+            "error",
         )
         return
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(team_tmp_data_dir, sample)
+        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(
@@ -90,12 +110,16 @@ def cmd(sample, samplefile, create_bam, version):
         ):
             valid_samples.append(sample)
         else:
-            click.echo(
-                f"Warning: No FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample"
+            echo_message(
+                f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
+                "warn",
             )
 
     if not valid_samples:
-        click.echo("Error: No valid samples found with FASTQ files. Exiting")
+        echo_message(
+            f"no valid samples found with FASTQ files. Exiting",
+            "error",
+        )
         return
 
     # Join all valid sample IDs into a single string, separated by commas
@@ -117,10 +141,14 @@ def cmd(sample, samplefile, create_bam, version):
         cmd.append("--no-bam")
 
     # Print the command being executed for debugging
-    click.echo(f"Executing command: {' '.join(cmd)}")
+    click.echo(click.style(f"Executing command: {' '.join(cmd)}", fg="cyan"))
 
     # Execute the command for all valid samples
-    click.echo(f"Starting Cell Ranger for samples: {sample_ids}...")
+    click.echo(
+        click.style(
+            f"Starting Cell Ranger for samples: {sample_ids}...", fg="green", bold=True
+        )
+    )
     try:
         result = subprocess.run(
             cmd,
@@ -129,12 +157,19 @@ def cmd(sample, samplefile, create_bam, version):
             stderr=subprocess.PIPE,
             text=True,
         )
-        click.echo(f"Cell Ranger completed successfully:\n{result.stdout}")
+        click.echo(
+            click.style(
+                f"Cell Ranger completed successfully:\n{result.stdout}", fg="green"
+            )
+        )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
-        click.echo(f"Error during Cell Ranger execution: {e.stderr}")
+        echo_message(
+            f"Error during Cell Ranger execution: {e.stderr}",
+            "warn",
+        )
 
-    click.echo("Cell Ranger processing complete")
+    click.echo(click.style("Cell Ranger processing complete", fg="green"))
 
 
 if __name__ == "__main__":

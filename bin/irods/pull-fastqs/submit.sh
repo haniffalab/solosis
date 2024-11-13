@@ -1,5 +1,5 @@
 #!/bin/bash
-# submit.sh - Array job submission for pull-fastq using LSF
+# submit.sh - Environment setup for pull-fastq processing using Nextflow
 
 # Usage:
 #   ./submit.sh <sample_ids>
@@ -10,13 +10,13 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Ensure at least 1 argument is provided
+# Ensure at least one argument is provided
 if [ "$#" -lt 1 ]; then
   echo "Usage: $0 <sample_ids>" >&2
   exit 1
 fi
 
-# Assign command-line arguments to variables
+# Assign command-line argument to variable
 SAMPLE_IDS="$1"
 
 # Verify that the sample list is not empty
@@ -25,81 +25,76 @@ if [ -z "$SAMPLE_IDS" ]; then
   exit 1
 fi
 
-# Load irods module
-if ! module load cellgen/irods; then
-  echo "Error: Failed to load irods version " >&2
-  exit 1
-fi
-# Load conda module
-if ! module load cellgen/conda; then
-  echo "Error: Failed to load conda version " >&2
-  exit 1
-fi
-# Load nextflow module
-if ! module load cellgen/nextflow; then
-  echo "Error: Failed to load nextflow version " >&2
-  exit 1
-fi
-# Load singularity module
-if ! module load cellgen/singularity; then
-  echo "Error: Failed to load singularity version " >&2
-  exit 1
-fi
-# Configure paths and job parameters
-export NXF_WORK=$HOME
-export LSB_DEFAULT_USERGROUP=team298
+# Create a temporary file for sample IDs in CSV format
+TMP_SAMPLE_FILE=$(mktemp /tmp/sample_ids.XXXXXX.csv)
+
+# Convert comma-separated list to a file with one sample ID per line
+IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+for SAMPLE in "${SAMPLES[@]}"; do
+  echo "$SAMPLE" >> "$TMP_SAMPLE_FILE"
+done
+
+# Load necessary modules
+MODULES=("irods" "conda" "nextflow" "singularity")
+for MODULE in "${MODULES[@]}"; do
+  if ! module load cellgen/"$MODULE"; then
+    echo "Error: Failed to load $MODULE module" >&2
+    exit 1
+  fi
+done
+
+# Configure paths and environment variables
+export NXF_WORK="/lustre/scratch126/cellgen/team298/data/tmp"
+export LSB_DEFAULT_USERGROUP="team298"
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
+
 TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
 TEAM_LOGS_DIR="$HOME/logs"
-CPU=16
-MEM=64000
-QUEUE="normal"
-GROUP="team298"
 
 # Ensure logs directory exists
 mkdir -p "$TEAM_LOGS_DIR"
 
-# Convert comma-separated sample IDs into an array
-IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
-NUM_SAMPLES=${#SAMPLES[@]}
-
-# Submit an array job to LSF, with each task handling a specific sample
-bsub -J "pullfastq_array[1-$NUM_SAMPLES]" <<EOF
-#!/bin/bash
-#BSUB -o "$TEAM_LOGS_DIR/pullfastq_%J_%I.out"   # Standard output with array job index
-#BSUB -e "$TEAM_LOGS_DIR/pullfastq_%J_%I.err"   # Standard error with array job index
-#BSUB -n $CPU                                    # Number of CPU cores
-#BSUB -M $MEM                                    # Memory limit in MB
-#BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
-#BSUB -q $QUEUE     
-
-# Determine the sample for the current task
-SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
-
-# Define paths for the current sample
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
+# Define the output directory for Nextflow
+OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
 
 # Create output directory if it does not exist
-mkdir -p "\$OUTPUT_DIR"
+mkdir -p "$OUTPUT_DIR"
 
-### do I still need to valid this if it's validated in pull-fastq.py?
-# Check if FASTQ files already exists for the sample
-if [ -f "\${OUTPUT_DIR}/*fastq.gz" ]; then
-  echo "FASTQ files already exist  for sample \${SAMPLE} in \${OUTPUT_DIR}." >&2
-  exit 0
-fi
-
-# Change to the output directory to ensure all outputs are generated here
-cd "\$OUTPUT_DIR"
-
-# Run pull-fastq for the sample
+cd "$OUTPUT_DIR"
+# Run pull-fastq Nextflow process with the sample file
+echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
-	--findmeta "\$SAMPLE" \
-	--cram2fastq \
-	--publish_dir "\$OUTPUT_DIR"
-EOF
+    --findmeta "$TMP_SAMPLE_FILE" \
+    --cram2fastq \
+    --publish_dir "$OUTPUT_DIR" \
+    --resume
 
-echo "Submitted array job for $NUM_SAMPLES samples."
+# Loop through each sample and move the FASTQ files to their respective directories
+for SAMPLE in "${SAMPLES[@]}"; do
+  SAMPLE_DIR="${TEAM_SAMPLE_DATA_DIR}/${SAMPLE}/fastq"
+  
+  # Create the sample directory if it does not exist
+  mkdir -p "$SAMPLE_DIR"
+  
+  # Assumption: The FASTQ files for each sample are named with the sample ID as the prefix.
+  # For example: 
+  # Sample ID: HCA_SkO13919076
+  # Associated FASTQ files would be named as:
+  # HCA_SkO13919076_S1_L001_R1_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_R2_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_I1_001.fastq.gz
+  # HCA_SkO13919076_S1_L001_I2_001.fastq.gz
+  #
+  # Where:
+  # - The filename starts with the sample ID (e.g., HCA_SkO13919076).
+  # - The filenames follow the CellRanger convention, with S (sample), L (lane), R (read), and I (index) information.
 
+  # Move FASTQ files into the respective sample directory
+  echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
+  mv ${OUTPUT_DIR}/${SAMPLE}* "$SAMPLE_DIR"/
+done
+
+# Clean up the temporary sample file after Nextflow completes
+rm -f "$TMP_SAMPLE_FILE"
+
+echo "All samples processed and FASTQ files moved to respective directories."

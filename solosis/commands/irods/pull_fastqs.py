@@ -1,10 +1,22 @@
 import os
 import subprocess
+import sys
+import time
 
 import click
 import pandas as pd
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
+
+from solosis.utils import echo_message
+
+
+def spinner():
+    """Generator for spinner animation in the terminal."""
+    spinner_frames = ["|", "/", "-", "\\"]
+    while True:
+        for frame in spinner_frames:
+            yield frame
 
 
 @click.command("pull-fastqs")
@@ -20,10 +32,14 @@ def cmd(sample, samplefile):
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
-
     """
-    print("Using iRODS to download data")
-    print("If you have a large set of files, this command will take a while to run")
+    echo_message(
+        f"using iRODS to download data",
+        "info",
+    )
+    echo_message(
+        f"if you have a large set of files, this command will take a while to run"
+    )
 
     samples = []
 
@@ -40,8 +56,9 @@ def cmd(sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                click.echo(
-                    "Error: Unsupported file format. Please provide a .csv or .tsv file"
+                echo_message(
+                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    "error",
                 )
                 return
 
@@ -50,81 +67,118 @@ def cmd(sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                click.echo('Error: File must contain a "sample_id" column')
+                echo_message(
+                    f"file must contain a 'sample_id' column",
+                    "error",
+                )
                 return
         except Exception as e:
-            click.echo(f"Error reading sample file: {e}")
+            echo_message(
+                f"error reading sample file: {e}",
+                "error",
+            )
             return
 
     if not samples:
-        click.echo("Error: No samples provided. Use --sample or --samplefile")
-        return
-
-    # Define the FASTQ path and validate each sample
-    team_tmp_data_dir = os.getenv(
-        "TEAM_TMP_DATA_DIR", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
-
-    if not os.path.isdir(team_tmp_data_dir):
-        click.echo(
-            f"Error: The temporary data directory '{team_tmp_data_dir}' does not exist."
+        echo_message(
+            f"no samples provided. Use --sample or --samplefile",
+            "error",
         )
         return
 
-    ###################### likely to cause problems ####################
-    valid_samples = []
-    for sample in samples:
-        fastq_path = os.path.join(team_tmp_data_dir, sample, "fastq")
+    # Define the FASTQ path and validate each sample
+    team_sample_data_dir = os.getenv(
+        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
+    )
 
-        # Check if FASTQ files exist in the directory
+    if not os.path.isdir(team_sample_data_dir):
+        echo_message(
+            f"sample data directory '{team_sample_data_dir}' does not exist",
+            "error",
+        )
+        return
+
+    # Check each sample
+    samples_to_download = []
+    for sample in samples:
+        # Path where FASTQ files are expected for each sample
+        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
+
+        # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
-            click.echo(
-                f"Warning: FASTQ files were found for sample {sample} in {fastq_path}. Skipping this sample"
+            echo_message(
+                f"FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download.",
+                "warn",
             )
         else:
-            valid_samples.append(sample)
+            samples_to_download.append(sample)
 
-    if valid_samples:
-        click.echo("Error: Valid samples were found with FASTQ files. Exiting")
-        return
-    #########################################################
+    # Inform if there are samples that need FASTQ downloads
+    if samples_to_download:
+        click.echo(f"Samples without FASTQ files: {samples_to_download}")
+    else:
+        echo_message(
+            f"All provided samples already have FASTQ files. No downloads required.",
+            "warn",
+        )
+        return  # Exit if no samples need downloading
 
-    # Join all valid sample IDs into a single string, separated by commas
-    sample_ids = ",".join(valid_samples)
+    # Join all sample to download IDs into a single string, separated by commas
+    sample_ids = ",".join(samples_to_download)
 
-    # Path to the Cell Ranger submission script
+    # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    pullfastq_submit_script = os.path.abspath(
+    irods_to_fastq_script = os.path.abspath(
         os.path.join(script_dir, "../../../bin/irods/pull-fastqs/submit.sh")
     )
 
     # Construct the command with optional BAM flag
     cmd = [
-        pullfastq_submit_script,
+        irods_to_fastq_script,
         sample_ids,
     ]
 
     # Print the command being executed for debugging
     click.echo(f"Executing command: {' '.join(cmd)}")
 
-    # Execute the command for all valid samples
-    click.echo(f"Starting pull-fastq for samples: {sample_ids}...")
+    # Create the spinner generator
+    spin = spinner()
+
+    # Execute the command with an active spinner
+    click.echo(f"Starting process for samples: {sample_ids}...")
     try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        click.echo(f"pull-fastq completed successfully:\n{result.stdout}")
+        with subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        ) as process:
+            # While the command runs, show the spinner animation
+            while True:
+                # Check if the process has finished
+                retcode = process.poll()
+                if retcode is not None:  # Process has finished
+                    break
+                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
+                sys.stdout.flush()  # Force output to the terminal
+                time.sleep(0.1)  # Delay between spinner updates
+
+            # Capture the output
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                echo_message(
+                    f"error during execution: {stderr}",
+                    "warn",
+                )
+            else:
+                click.echo(f"Process completed successfully:\n{stdout}")
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
-        click.echo(f"Error during Cell Ranger execution: {e.stderr}")
+        echo_message(
+            f"error during execution: {e.stderr}",
+            "warn",
+        )
 
-    click.echo("pull-fastq processing complete")
+    click.echo("Processing complete")
 
 
 if __name__ == "__main__":
