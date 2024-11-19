@@ -99,7 +99,6 @@ cellranger count \
     --sample="\$SAMPLE" \
     --localcores=$CPU \
     --localmem=$((MEM / 1000)) \
-    --output-dir="\$OUTPUT_DIR" \
     $BAM_FLAG
 EOF
 
