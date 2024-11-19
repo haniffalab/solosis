@@ -171,7 +171,7 @@ def cmd(sample, samplefile, create_bam, version):
         )
 
     echo_message(
-        f"cellranger submission complete. run  bjobs -w  for progress.",
+        f"cellranger submission complete. run `bjobs -w`  for progress.",
         "success",
     )
 
