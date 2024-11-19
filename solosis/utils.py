@@ -16,7 +16,7 @@ def echo_message(message, type="info", bold=False):
         "error": "red",  # Error messages will be red
         "warn": "yellow",  # Warning messages will be yellow
         "success": "green",  # Success messages will be green
-        "progress": "white",  # Progress messages will be white
+        "action": "cyan",  # Progress messages will be white
     }
 
     # Default to 'info' type and blue color if an unrecognized type is passed
