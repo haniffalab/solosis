@@ -25,16 +25,9 @@ def cmd(samplefile, retainbam, overwrite):
     Downloads processed iRODS data or any folder from iRODS
     -----------------------
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt \n
-    Input file should have 3 mandatory columns \n
-    1st column: sanger_id \n
-    2nd column: sample_name \n
-    LAST column: irods path \n
-
-    :params samplefile: Input file (.txt)
-    :params retainbam: Inldue BAM files in download
-    :params overwrite: Overwrite existing download
-    ----------------------
+    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+    Input file should have 3 mandatory columns:
+    1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
 
     """
     print("Using irods to download data")
@@ -42,7 +35,7 @@ def cmd(samplefile, retainbam, overwrite):
 
     shell_cellranger_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/irods/pull-cellranger/submit.sh",
+        "bin/irods/pull-cellranger/submit.sh",
     )
     overwrite = str(overwrite * 1)
     retainbam = str(retainbam * 1)

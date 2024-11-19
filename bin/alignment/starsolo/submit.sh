@@ -25,7 +25,7 @@ rm -f $commands_file #this isn't working?
 
 # Read the sample file and prepare commands for each sample
 tail -n +2 $samples_file | while IFS=, read -r sample; do
-  echo "$VOY_CODE/starsolo/starsolo_10x_auto.sh $VOY_TMP/$sample $sample $VOY_DATA/$sample/starsolo-hl" >> $commands_file
+  echo "$VOY_CODE/starsolo/starsolo_10x_auto.sh $VOY_TMP/$sample $sample $VOY_DATA/$sample/starsolo" >> $commands_file
 done
 
 # Get the total number of jobs

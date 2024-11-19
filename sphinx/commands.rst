@@ -4,4 +4,4 @@ Commands
 
 .. click:: solosis.cli:cli
   :prog: cli
-  :nested: full
+  :show-nested:
