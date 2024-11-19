@@ -41,10 +41,6 @@ def cmd(sample, samplefile):
         f"if you have a large set of files, this command will take a while to run",
         "info",
     )
-    echo_message(
-        f"try using solosis-cli pull-fastqs --help",
-        "info",
-    )
 
     samples = []
 
@@ -88,6 +84,10 @@ def cmd(sample, samplefile):
         echo_message(
             f"no samples provided. Use --sample or --samplefile",
             "error",
+        )
+        echo_message(
+            f"try using solosis-cli pull-fastqs --help",
+            "info",
         )
         return
 
