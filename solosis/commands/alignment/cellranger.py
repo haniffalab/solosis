@@ -147,11 +147,6 @@ def cmd(sample, samplefile, create_bam, version):
     )
 
     # Execute the command for all valid samples
-    click.echo(
-        click.style(
-            f"Starting Cell Ranger for samples: {sample_ids}...", fg="green", bold=True
-        )
-    )
     echo_message(
         f"starting Cell Ranger for samples: {sample_ids}...",
         "progress",
@@ -164,10 +159,9 @@ def cmd(sample, samplefile, create_bam, version):
             stderr=subprocess.PIPE,
             text=True,
         )
-        click.echo(
-            click.style(
-                f"Cell Ranger completed successfully:\n{result.stdout}", fg="green"
-            )
+        echo_message(
+            f"Cell Ranger submitted successfully:\n{result.stdout}",
+            "progress",
         )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
@@ -177,6 +171,10 @@ def cmd(sample, samplefile, create_bam, version):
         )
 
     click.echo(click.style("Cell Ranger processing complete", fg="green"))
+    echo_message(
+        f"cellranger submission complete. run bjobs -w for progress.",
+        "success",
+    )
 
 
 if __name__ == "__main__":
