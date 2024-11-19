@@ -152,6 +152,10 @@ def cmd(sample, samplefile, create_bam, version):
             f"Starting Cell Ranger for samples: {sample_ids}...", fg="green", bold=True
         )
     )
+    echo_message(
+        f"starting Cell Ranger for samples: {sample_ids}...",
+        "progress",
+    )
     try:
         result = subprocess.run(
             cmd,
