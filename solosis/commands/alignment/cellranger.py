@@ -141,7 +141,10 @@ def cmd(sample, samplefile, create_bam, version):
         cmd.append("--no-bam")
 
     # Print the command being executed for debugging
-    click.echo(click.style(f"Executing command: {' '.join(cmd)}", fg="cyan"))
+    echo_message(
+        f"executing command: {' '.join(cmd)}",
+        "action",
+    )
 
     # Execute the command for all valid samples
     click.echo(
