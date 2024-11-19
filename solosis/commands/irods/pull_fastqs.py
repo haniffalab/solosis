@@ -196,10 +196,10 @@ def cmd(sample, samplefile):
             "warn",
         )
 
-    echo_message(
-        f"processing complete",
-        "success",
-    )
+    # echo_message(
+    #    f"processing complete",
+    #    "success",
+    # )
 
 
 if __name__ == "__main__":
