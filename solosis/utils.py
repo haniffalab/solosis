@@ -15,6 +15,7 @@ def echo_message(message, type="info", bold=False):
         "debug": "purple",  # Debug messages will be purple
         "error": "red",  # Error messages will be red
         "warn": "yellow",  # Warning messages will be yellow
+        "success": "green",  # Warning messages will be yellow
     }
 
     # Default to 'info' type and blue color if an unrecognized type is passed
