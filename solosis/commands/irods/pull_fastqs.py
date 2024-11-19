@@ -124,7 +124,7 @@ def cmd(sample, samplefile):
     if samples_to_download:
         echo_message(
             f"samples without FASTQ files: {samples_to_download}",
-            "action",
+            "progress",
         )
     else:
         echo_message(
@@ -151,7 +151,7 @@ def cmd(sample, samplefile):
     # Print the command being executed for debugging
     echo_message(
         f"executing command: {' '.join(cmd)}",
-        "action",
+        "progress",
     )
 
     # Create the spinner generator
@@ -161,7 +161,7 @@ def cmd(sample, samplefile):
 
     echo_message(
         f"starting process for samples: {sample_ids}...",
-        "action",
+        "progress",
     )
     try:
         with subprocess.Popen(
