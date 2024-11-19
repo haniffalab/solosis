@@ -170,7 +170,6 @@ def cmd(sample, samplefile, create_bam, version):
             "warn",
         )
 
-    click.echo(click.style("Cell Ranger processing complete", fg="green"))
     echo_message(
         f"cellranger submission complete. run bjobs -w for progress.",
         "success",
