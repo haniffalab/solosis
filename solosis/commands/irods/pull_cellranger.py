@@ -130,7 +130,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(cellranger_path):
             echo_message(
-                f"Cellrnager outputs already downloaded for sample '{sample}' in {fastq_path}. Skipping download.",
+                f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
                 "warn",
             )
         else:
