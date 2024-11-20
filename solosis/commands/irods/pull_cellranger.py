@@ -103,7 +103,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         )
         echo_message(
             f"try using solosis-cli pull-cellranger --help",
-            "info",
+            "warn",
         )
         return
 
