@@ -104,6 +104,10 @@ num_paths=$(wc -l irods_path.csv)
 echo "Saved $num_paths matching path(s) to irods_path.csv."
 echo "Selected path: $filtered"
 
+echo "SAMPLE_IDS: $SAMPLE_IDS"
+echo "Collections command: imeta qu -C -z /seq/illumina sample = $SAMPLE"
+echo "Collections output: $collections"
+echo "Filtered output: $filtered"
 
 # Check if outputs already present
 if [ "$(ls -A "$OUTPUT_DIR")" ]; then
@@ -121,5 +125,7 @@ done < irods_path.csv
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "$OUTPUT_DIR"
 EOF
+
+
 
 #unsure about confirmation message..
