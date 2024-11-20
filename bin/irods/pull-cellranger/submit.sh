@@ -66,9 +66,9 @@ SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
 # Create output directory if it does not exist
-mkdir -p "$OUTPUT_DIR"
+mkdir -p "\$OUTPUT_DIR"
 
-cd "$OUTPUT_DIR"
+cd "\$OUTPUT_DIR"
 
 ##### insert command here #####
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
