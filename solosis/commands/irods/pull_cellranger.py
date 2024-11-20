@@ -1,11 +1,32 @@
 import os
 import subprocess
+import sys
+import time
 
 import click
+import pandas as pd
+
+FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]  # remove?
+
+from solosis.utils import echo_message
 
 
+def spinner():
+    """Generator for spinner animation in the terminal."""
+    spinner_frames = ["|", "/", "-", "\\"]
+    while True:
+        for frame in spinner_frames:
+            yield frame
+
+
+# change to pull-cellranger
 @click.command("pull-processed")
-@click.option("--samplefile", required=True, help="Sample file text file")
+@click.option("--sample", type=str, help="Sample ID (string)")
+@click.option(
+    "--samplefile",
+    type=click.Path(exists=True),
+    help="Path to a CSV or TSV file containing sample IDs",
+)
 @click.option(
     "--retainbam",
     default=False,
@@ -20,29 +41,182 @@ import click
     required=False,
     help="Overwrite existing folder contents",
 )
-def cmd(samplefile, retainbam, overwrite):
+def cmd(sample, samplefile, retainbam, overwrite):
     """
-    Downloads processed iRODS data or any folder from iRODS
-    -----------------------
+    Downloading cellranger output(s) from iRODS..
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-    Input file should have 3 mandatory columns:
-    1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
+    [insert additional text here]
 
     """
-    print("Using irods to download data")
-    print("If you have a large set of files, this command will take a while to run")
 
-    shell_cellranger_script = os.path.join(
-        os.getcwd(),
-        "bin/irods/pull-cellranger/submit.sh",
+    echo_message(
+        f"using iRODS to download data",
+        "info",
     )
-    overwrite = str(overwrite * 1)
-    retainbam = str(retainbam * 1)
-    result = subprocess.run(
-        [shell_cellranger_script, samplefile, retainbam, overwrite],
-        capture_output=True,
-        text=True,
+    echo_message(
+        f"if you have a large set of files, this command will take a while to run",
+        "info",
     )
-    click.echo(result.stdout)
-    click.echo(result.stderr)
+
+    samples = []
+
+    # Collect sample IDs from the provided options
+    if sample:
+        samples.append(sample)
+
+    # Read sample IDs from a file if provided
+    if samplefile:
+        try:
+            sep = (
+                ","
+                if samplefile.endswith(".csv")
+                else "\t" if samplefile.endswith(".tsv") else None
+            )
+            if sep is None:
+                echo_message(
+                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    "error",
+                )
+                return
+
+            df = pd.read_csv(samplefile, sep=sep)
+
+            if "sample_id" in df.columns:
+                samples.extend(df["sample_id"].dropna().astype(str).tolist())
+            else:
+                echo_message(
+                    f"file must contain a 'sample_id' column",
+                    "error",
+                )
+                return
+        except Exception as e:
+            echo_message(
+                f"error reading sample file: {e}",
+                "error",
+            )
+            return
+
+    if not samples:
+        echo_message(
+            f"no samples provided. Use --sample or --samplefile",
+            "error",
+        )
+        echo_message(
+            f"try using solosis-cli pull-cellranger --help",
+            "info",
+        )
+        return
+
+    # Define the FASTQ path and validate each sample
+    team_sample_data_dir = os.getenv(
+        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
+    )
+
+    if not os.path.isdir(team_sample_data_dir):
+        echo_message(
+            f"sample data directory '{team_sample_data_dir}' does not exist",
+            "error",
+        )
+        return
+
+    # Check each sample
+    samples_to_download = []
+    for sample in samples:
+        # Path where cellranger outputs are expected for each sample
+        cellranger_path = os.path.join(
+            team_sample_data_dir, sample, "sanger-cellranger"
+        )
+
+        # Check if FASTQ files exist in the directory for the sample
+        if os.path.exists(cellranger_path):
+            echo_message(
+                f"Cellrnager outputs already downloaded for sample '{sample}' in {fastq_path}. Skipping download.",
+                "warn",
+            )
+        else:
+            samples_to_download.append(sample)
+
+    # Inform if there are samples that need FASTQ downloads
+    if samples_to_download:
+        echo_message(
+            f"samples for cellranger output download: {samples_to_download}",
+            "progress",
+        )
+    else:
+        echo_message(
+            f"all provided samples already have sanger processed cellranger outputs. No downloads required.",
+            "warn",
+        )
+        return  # Exit if no samples need downloading
+
+    # Join all sample to download IDs into a single string, separated by commas
+    sample_ids = ",".join(samples_to_download)
+
+    # Path to the script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pull_cellranger_script = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/irods/pull-cellranger/submit.sh")
+    )
+
+    # Construct the command with optional BAM flag
+    cmd = [
+        pull_cellranger_script,
+        sample_ids,
+    ]
+
+    # Print the command being executed for debugging
+    echo_message(
+        f"executing command: {' '.join(cmd)}",
+        "progress",
+    )
+
+    # Create the spinner generator
+    spin = spinner()
+
+    # Execute the command with an active spinner
+
+    echo_message(
+        f"starting process for samples: {sample_ids}...",
+        "progress",
+    )
+    try:
+        with subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        ) as process:
+            # While the command runs, show the spinner animation
+            while True:
+                # Check if the process has finished
+                retcode = process.poll()
+                if retcode is not None:  # Process has finished
+                    break
+                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
+                sys.stdout.flush()  # Force output to the terminal
+                time.sleep(0.1)  # Delay between spinner updates
+
+            # Capture the output
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                echo_message(
+                    f"error during execution: {stderr}",
+                    "warn",
+                )
+            else:
+                echo_message(
+                    f"process completed successfully:\n{stdout}",
+                    "success",
+                )
+    except subprocess.CalledProcessError as e:
+        # Log the stderr and return code
+        echo_message(
+            f"error during execution: {e.stderr}",
+            "warn",
+        )
+
+    # echo_message(
+    #    f"processing complete",
+    #    "success",
+    # )
+
+
+if __name__ == "__main__":
+    cmd()
