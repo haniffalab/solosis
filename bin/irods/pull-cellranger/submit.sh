@@ -73,10 +73,10 @@ cd "\$OUTPUT_DIR"
 imeta --help
 ##### insert command here #####
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
-collections=$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
+collections=\$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
 
 # Filter, sort, and prioritize matches
-filtered=$(echo "$collections" | grep -E "cellranger[0-9]+_count" | \
+filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
     awk '
     {
         # Extract cellranger version, count number, and optional extra identifier
@@ -93,34 +93,34 @@ filtered=$(echo "$collections" | grep -E "cellranger[0-9]+_count" | \
     }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f4-)
 
 # Check if a match was found
-if [ -z "$filtered" ]; then
+if [ -z "\$filtered" ]; then
     echo "No matching paths found for sample \$SAMPLE."
     exit 1
 fi
 
 # Save the filtered path to CSV
-echo "$filtered" > irods_path.csv
+echo "\$filtered" > irods_path.csv
 # Confirm the saved output
-num_paths=$(wc -l irods_path.csv)
-echo "Saved $num_paths matching path(s) to irods_path.csv."
-echo "Selected path: $filtered"
+num_paths=\$(wc -l irods_path.csv)
+echo "Saved \$num_paths matching path(s) to irods_path.csv."
+echo "Selected path: \$filtered"
 
 
 # Check if outputs already present
-if [ "$(ls -A "$OUTPUT_DIR")" ]; then
-    echo "Output directory '$OUTPUT_DIR' already contains cellranger outputs. Exiting"
+if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
     exit 0
 fi
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
-    echo "Retrieving $irods_path to $OUTPUT_DIR"
-    iget -KVf --progress -r "$irods_path" "$OUTPUT_DIR"
+    echo "Retrieving \$irods_path to \$OUTPUT_DIR"
+    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
 done < irods_path.csv
 
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
-echo "$OUTPUT_DIR"
+echo "\$OUTPUT_DIR"
 EOF
 
 
