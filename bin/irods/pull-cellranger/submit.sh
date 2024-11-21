@@ -70,6 +70,7 @@ mkdir -p "\$OUTPUT_DIR"
 
 cd "\$OUTPUT_DIR"
 
+imeta --help
 ##### insert command here #####
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
 collections=$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
