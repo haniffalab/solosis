@@ -74,6 +74,10 @@ cd "\$OUTPUT_DIR"
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
 collections=$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
 
+if [[ -z "$collections" ]]; then
+    echo "No collections found for sample: $SAMPLE"
+fi
+
 # Filter, sort, and prioritize matches
 filtered=$(echo $collections | grep -E "cellranger[0-9]+_count" | \
     awk '
