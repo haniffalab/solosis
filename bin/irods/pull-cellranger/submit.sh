@@ -8,7 +8,7 @@
 #   <sample_ids> - Comma-separated list of sample IDs to process.
 
 # Exit immediately if a command exits with a non-zero status
-set -e
+set -ex
 
 # Ensure at least one argument is provided
 if [ "$#" -lt 1 ]; then
@@ -74,12 +74,8 @@ cd "\$OUTPUT_DIR"
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
 collections=$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
 
-if [[ -z "$collections" ]]; then
-    echo "No collections found for sample: $SAMPLE"
-fi
-
 # Filter, sort, and prioritize matches
-filtered=$(echo $collections | grep -E "cellranger[0-9]+_count" | \
+filtered=$(echo "$collections" | grep -E "cellranger[0-9]+_count" | \
     awk '
     {
         # Extract cellranger version, count number, and optional extra identifier
@@ -96,22 +92,18 @@ filtered=$(echo $collections | grep -E "cellranger[0-9]+_count" | \
     }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f4-)
 
 # Check if a match was found
-if [ -z $filtered ]; then
+if [ -z "$filtered" ]; then
     echo "No matching paths found for sample \$SAMPLE."
     exit 1
 fi
 
 # Save the filtered path to CSV
-echo $filtered > irods_path.csv
+echo "$filtered" > irods_path.csv
 # Confirm the saved output
 num_paths=$(wc -l irods_path.csv)
 echo "Saved $num_paths matching path(s) to irods_path.csv."
 echo "Selected path: $filtered"
 
-echo "SAMPLE_IDS: $SAMPLE_IDS"
-echo "Collections command: imeta qu -C -z /seq/illumina sample = $SAMPLE"
-echo "Collections output: $collections"
-echo "Filtered output: $filtered"
 
 # Check if outputs already present
 if [ "$(ls -A "$OUTPUT_DIR")" ]; then
