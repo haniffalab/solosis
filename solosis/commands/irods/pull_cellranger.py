@@ -202,8 +202,16 @@ def cmd(sample, samplefile, retainbam, overwrite):
                 )
             else:
                 echo_message(
-                    f"process completed successfully:\n{stdout}",
+                    f"LSF job submitted successfully:\n{stdout}",
                     "success",
+                )
+                echo_message(
+                    f"use `bjobs` to monitor job completion. view logs at $HOME/logs",
+                    "info",
+                )
+                echo_message(
+                    f"view job success at $HOME/logs",
+                    "info",
                 )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
