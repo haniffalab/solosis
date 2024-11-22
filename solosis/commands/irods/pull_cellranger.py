@@ -206,7 +206,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
                     "success",
                 )
                 echo_message(
-                    f"use `bjobs` to monitor job completion. view logs at $HOME/logs",
+                    f"use `bjobs` to monitor job completion",
                     "info",
                 )
                 echo_message(
