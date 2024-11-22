@@ -49,7 +49,7 @@ IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 NUM_SAMPLES=${#SAMPLES[@]}
 
 # Submit an array job to LSF, with each task handling a specific sample
-bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
+bsub -J "pull_cellranger_array[1-\$NUM_SAMPLES]" <<EOF
 #!/bin/bash
 #BSUB -o "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.out"   # Standard output with array job index
 #BSUB -e "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.err"   # Standard error with array job index
@@ -61,7 +61,7 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 
 # Determine the sample for the current task
 SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=\${SAMPLES[$SAMPLE_INDEX]}
+SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
