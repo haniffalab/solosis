@@ -8,7 +8,7 @@
 #   <sample_ids> - Comma-separated list of sample IDs to process.
 
 # Exit immediately if a command exits with a non-zero status
-set -ex
+set -e
 
 # Ensure at least one argument is provided
 if [ "$#" -lt 1 ]; then
@@ -70,7 +70,6 @@ mkdir -p "\$OUTPUT_DIR"
 
 cd "\$OUTPUT_DIR"
 
-imeta --help
 ##### insert command here #####
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
 collections=\$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
@@ -99,19 +98,18 @@ if [ -z "\$filtered" ]; then
     exit 1
 fi
 
+# Check if outputs already present
+if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
+    exit 0
+fi
+
 # Save the filtered path to CSV
 echo "\$filtered" > irods_path.csv
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
 echo "Saved \$num_paths matching path(s) to irods_path.csv."
 echo "Selected path: \$filtered"
-
-
-# Check if outputs already present
-if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
-    exit 0
-fi
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
