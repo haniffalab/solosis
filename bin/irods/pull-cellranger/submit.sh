@@ -61,7 +61,7 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 
 # Determine the sample for the current task
 SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
+SAMPLE=\${SAMPLES[\$SAMPLE_INDEX]}
 
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
