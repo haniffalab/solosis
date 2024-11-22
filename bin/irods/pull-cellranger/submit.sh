@@ -80,7 +80,7 @@ filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
     awk '
     {
         # Extract cellranger version, count number, and optional extra identifier
-        match($0, /cellranger([0-9]+)_count_([0-9]+)_?([^_]+)?/, matches);
+        match(\$0, /cellranger([0-9]+)_count_([0-9]+)_?([^_]+)?/, matches);
         version = matches[1];
         count = matches[2];
         extra = matches[3];
@@ -89,8 +89,9 @@ filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
         extra_value = (extra ~ /^[0-9]+$/ ? extra : -1);
 
         # Print fields for sorting: version, count, extra_value, full path
-        print version, count, extra_value, $0;
+        print version, count, extra_value, \$0;
     }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f4-)
+
 
 # Check if a match was found
 if [ -z "\$filtered" ]; then
