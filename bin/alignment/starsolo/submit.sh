@@ -71,9 +71,8 @@ mkdir -p "\$OUTPUT_DIR"
 # Check if starsolo .h5 file already exists for the sample
 if [ -f "\${OUTPUT_DIR}/*.h5" ]; then
   echo " for sample \${SAMPLE} in \${OUTPUT_DIR}." >&2
-fi
   exit 0
-
+fi
 # Change to the output directory to ensure all outputs are generated here
 cd "\$OUTPUT_DIR"
 
