@@ -1,3 +1,4 @@
+import datetime
 import logging
 import math
 import os
@@ -5,30 +6,32 @@ import subprocess
 
 import pandas as pd
 import paramiko
+from google.auth.transport import requests
+from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-# CSV file path
-csv_path = "audit.csv"
+# Google Sheets API details
+CREDENTIALS_PATH = (
+    "sanger-development-1004c2b78a53.json"  # Path to your service account credentials
+)
+SPREADSHEET_ID = (
+    "1UAaedFI3aE_M1iDMar6gCrzAHB_ZUoJcsB3Z15p45gc"  # Replace with your Google Sheet ID
+)
+RANGE_NAME = (
+    "BSU Audit - Sequencing Runs!A2:Z3"  # Adjust range based on your sheet's data
+)
 
 # SFTP server details
 SFTP_HOST = "bsu.ncl.ac.uk"
 SFTP_PORT = 22
 SFTP_USER = os.getenv("FTP_USER")  # Fetch SFTP username from environment variable
 SFTP_PASS = os.getenv("FTP_PASS")  # Fetch SFTP password from environment variable
-
-# Google Sheets API credentials and setup
-CREDENTIALS_PATH = (
-    "sanger-development-1004c2b78a53.json"  # Path to your credentials file
-)
-SPREADSHEET_ID = (
-    "1q5ieL4YBfHnpnsOplXzSjD7aw13osnrCUEQwMHij9FM"  # Replace with your Google Sheet ID
-)
-RANGE_NAME = "Sheet1!A2:E"  # Range where the data is located (adjust as needed)
 
 
 def human_readable_size(size_bytes):
@@ -105,62 +108,77 @@ def compare_files(ftp_files, irods_files):
     return only_in_ftp, only_in_irods, common_files
 
 
-def get_google_sheets_data():
-    """Fetch data from Google Sheets."""
-    try:
-        creds = Credentials.from_service_account_file(
-            CREDENTIALS_PATH,
-            scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
-        )
-        service = build("sheets", "v4", credentials=creds)
-        logger.info("Successfully authenticated with Google Sheets API.")
+def authenticate_google_sheets():
+    """Authenticate using a service account and return the Google Sheets service."""
+    creds = Credentials.from_service_account_file(
+        CREDENTIALS_PATH,
+        scopes=["https://www.googleapis.com/auth/spreadsheets"],
+    )
+    service = build("sheets", "v4", credentials=creds)
+    return service
 
+
+def update_google_sheet(service, sheet_id, range_name, values):
+    """Update the Google Sheet with the new values (including timestamp)."""
+    try:
+        body = {"values": values}
+        result = (
+            service.spreadsheets()
+            .values()
+            .update(
+                spreadsheetId=sheet_id,
+                range=range_name,
+                body=body,
+                valueInputOption="RAW",
+            )
+            .execute()
+        )
+        logger.info(f"{result.get('updatedCells')} cells updated.")
+    except HttpError as err:
+        logger.error(f"Error updating sheet: {err}")
+
+
+def main():
+    # Authenticate with Google Sheets API
+    service = authenticate_google_sheets()
+    logger.info("Successfully authenticated with Google Sheets API.")
+
+    # Fetch data from Google Sheets
+    try:
         sheet = (
             service.spreadsheets()
             .values()
             .get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME)
             .execute()
         )
-        logger.info("Fetched data from Google Sheets.")
-        return sheet.get("values", [])
+        rows = sheet.get("values", [])
+    except HttpError as err:
+        logger.error(f"Error fetching data from Google Sheets: {err}")
+        return
 
-    except Exception as e:
-        logger.error(f"Error fetching data from Google Sheets: {e}")
-        return []
-
-
-def main():
-    # Fetch data from Google Sheets
-    logger.info("Fetching data from Google Sheets...")
-    sheet_data = get_google_sheets_data()
-    if not sheet_data:
+    if not rows:
         logger.error("No data found in the Google Sheets.")
         return
 
-    # Load the CSV file
-    df = pd.read_csv(csv_path)
-    logger.info("CSV file loaded successfully.")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Process the first two rows
-    for index, row in df.head(2).iterrows():  # This will loop over the first two rows
+    # Process the rows
+    updated_values = []
+    for row in rows:
+        if len(row) < 5:
+            logger.warning("Skipping row with insufficient data.")
+            continue  # Skip rows with insufficient data
+
         # Get the SFTP and iRODS paths from the current row, with safety checks for missing/invalid data
-        sftp_path = row["FTP Path FASTQs"]
-        irods_path = row.get("iRods Path (FASTQs)", None)
+        sftp_path = row[0].strip() if row[0] else None
+        irods_path = row[1].strip() if row[1] else None
 
-        if sftp_path and isinstance(sftp_path, str):
-            sftp_path = sftp_path.strip()
-        else:
-            logger.warning(f"Invalid or missing SFTP path at row {index+1}. Skipping.")
-            continue  # Skip this row if the iRODS path is not valid
-
-        if irods_path and isinstance(irods_path, str):
-            irods_path = irods_path.strip()
-        else:
-            logger.warning(f"Invalid or missing iRODS path at row {index+1}. Skipping.")
-            continue  # Skip this row if the iRODS path is not valid
+        if not sftp_path or not irods_path:
+            logger.warning(f"Skipping row with missing paths.")
+            continue
 
         logger.info(
-            f"Processing row {index+1}: SFTP Path - {sftp_path}, iRODS Path - {irods_path}"
+            f"Processing row: SFTP Path - {sftp_path}, iRODS Path - {irods_path}"
         )
 
         # Set up SFTP connection
@@ -214,6 +232,13 @@ def main():
                 logger.info(f"Common: {file}")
         else:
             logger.warning("No common files found between FTP and iRODS.")
+
+        # Append timestamp to the row
+        row.append(timestamp)
+        updated_values.append(row)
+
+    # Update the Google Sheet with the new values (including timestamp)
+    update_google_sheet(service, SPREADSHEET_ID, RANGE_NAME, updated_values)
 
 
 if __name__ == "__main__":
