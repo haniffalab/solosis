@@ -11,7 +11,11 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 @click.command("starsolo")
 @click.option("--sample", type=str, help="Sample ID (string)")
-@click.option("--samplefile", required=True, help="Sample text file")
+@click.option(
+    "--samplefile",
+    type=click.Path(exists=True),
+    help="Path to a CSV or TSV file containing sample IDs",
+)
 def cmd(sample, samplefile):
     """
     STARsolo aligns single-cell RNA sequencing  reads...
