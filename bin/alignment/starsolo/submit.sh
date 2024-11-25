@@ -69,10 +69,10 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/starsolo"
 mkdir -p "\$OUTPUT_DIR"
 
 # Check if starsolo .h5 file already exists for the sample
-if [ -f "\${OUTPUT_DIR}/*.h5" ]; then
-  echo " for sample \${SAMPLE} in \${OUTPUT_DIR}." >&2
-  exit 0
+#if [ -f "\${OUTPUT_DIR}/*.h5" ]; then
+#  echo " for sample \${SAMPLE} in \${OUTPUT_DIR}." >&2
 fi
+#  exit 0
 
 # Change to the output directory to ensure all outputs are generated here
 cd "\$OUTPUT_DIR"
