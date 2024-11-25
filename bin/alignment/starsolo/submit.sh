@@ -2,7 +2,7 @@
 # submit.sh - Array job submission for Cell Ranger using LSF
 
 # Usage:
-#   ./submit.sh <sample_ids> <version> [--no-bam]
+#   ./submit.sh <sample_ids>
 #
 # Parameters:
 #   <sample_ids> - Comma-separated list of sample IDs to process.
@@ -12,7 +12,7 @@ set -e
 
 # Ensure at least two arguments are provided
 if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <sample_ids> <version> [--no-bam]" >&2
+  echo "Usage: $0 <sample_ids>" >&2
   exit 1
 fi
 
