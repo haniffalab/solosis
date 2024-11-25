@@ -143,12 +143,40 @@ def main():
     service = authenticate_google_sheets()
     logger.info("Successfully authenticated with Google Sheets API.")
 
-    # Fetch data from Google Sheets
+    # Fetch headers to find the "Migrator Last Run" column index
     try:
         sheet = (
             service.spreadsheets()
             .values()
-            .get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME)
+            .get(
+                spreadsheetId=SPREADSHEET_ID, range="BSU Audit - Sequencing Runs!A1:Z1"
+            )
+            .execute()
+        )
+        headers = sheet.get("values", [])[0]  # Get the first row as headers
+    except HttpError as err:
+        logger.error(f"Error fetching data from Google Sheets: {err}")
+        return
+
+    if not headers:
+        logger.error("No headers found in the Google Sheets.")
+        return
+
+    # Find the index of the "Migrator Last Run" column
+    try:
+        migrator_last_run_index = headers.index("Migrator Last Run")
+    except ValueError:
+        logger.error('"Migrator Last Run" column not found.')
+        return
+
+    # Fetch the rows to process
+    try:
+        sheet = (
+            service.spreadsheets()
+            .values()
+            .get(
+                spreadsheetId=SPREADSHEET_ID, range="BSU Audit - Sequencing Runs!A2:Z3"
+            )
             .execute()
         )
         rows = sheet.get("values", [])
@@ -165,13 +193,21 @@ def main():
     # Process the rows
     updated_values = []
     for row in rows:
-        if len(row) < 5:
-            logger.warning("Skipping row with insufficient data.")
-            continue  # Skip rows with insufficient data
+        # if len(row) < len(headers):
+        #     logger.warning("Skipping row with insufficient data.")
+        #     continue  # Skip rows with insufficient data
 
-        # Get the SFTP and iRODS paths from the current row, with safety checks for missing/invalid data
-        sftp_path = row[0].strip() if row[0] else None
-        irods_path = row[1].strip() if row[1] else None
+        # Get the SFTP and iRODS paths from the current row
+        sftp_path = (
+            row[headers.index("FTP Path FASTQs")].strip()
+            if row[headers.index("FTP Path FASTQs")]
+            else None
+        )
+        irods_path = (
+            row[headers.index("iRods Path (FASTQs)")].strip()
+            if row[headers.index("iRods Path (FASTQs)")]
+            else None
+        )
 
         if not sftp_path or not irods_path:
             logger.warning(f"Skipping row with missing paths.")
@@ -207,37 +243,20 @@ def main():
 
         # List files in the iRODS directory
         irods_files = list_irods_files(irods_path)
-        logger.info(f"Files in iRODS path {irods_path}:")
-        for file_name in irods_files:
-            logger.info(f"- {file_name}")
+        logger.info(f"Files in iRODS path {irods_path}: {irods_files}")
 
-            # Retrieve metadata for each iRODS file
-            metadata = get_irods_metadata(file_name, irods_path)
-            logger.info(f"Metadata for {file_name}: {metadata}")
-
-        # Compare files between FTP and iRODS
+        # Compare files
         only_in_ftp, only_in_irods, common_files = compare_files(ftp_files, irods_files)
+        logger.info(f"Files only in FTP: {only_in_ftp}")
+        logger.info(f"Files only in iRODS: {only_in_irods}")
+        logger.info(f"Files in both FTP and iRODS: {common_files}")
 
-        if only_in_ftp:
-            logger.warning("Files found in FTP but not in iRODS:")
-            for file in only_in_ftp:
-                logger.warning(f"FTP only: {file}")
-        if only_in_irods:
-            logger.warning("Files found in iRODS but not in FTP:")
-            for file in only_in_irods:
-                logger.warning(f"iRODS only: {file}")
-        if common_files:
-            logger.info("Common files between FTP and iRODS:")
-            for file in common_files:
-                logger.info(f"Common: {file}")
-        else:
-            logger.warning("No common files found between FTP and iRODS.")
+        # Add the timestamp to the row's "Migrator Last Run" column
+        row[migrator_last_run_index] = timestamp
 
-        # Append timestamp to the row
-        row.append(timestamp)
         updated_values.append(row)
 
-    # Update the Google Sheet with the new values (including timestamp)
+    # Update the Google Sheet with the new data
     update_google_sheet(service, SPREADSHEET_ID, RANGE_NAME, updated_values)
 
 
