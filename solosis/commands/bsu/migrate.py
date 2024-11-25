@@ -5,6 +5,8 @@ import subprocess
 
 import pandas as pd
 import paramiko
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +20,15 @@ SFTP_HOST = "bsu.ncl.ac.uk"
 SFTP_PORT = 22
 SFTP_USER = os.getenv("FTP_USER")  # Fetch SFTP username from environment variable
 SFTP_PASS = os.getenv("FTP_PASS")  # Fetch SFTP password from environment variable
+
+# Google Sheets API credentials and setup
+CREDENTIALS_PATH = (
+    "sanger-development-1004c2b78a53.json"  # Path to your credentials file
+)
+SPREADSHEET_ID = (
+    "1q5ieL4YBfHnpnsOplXzSjD7aw13osnrCUEQwMHij9FM"  # Replace with your Google Sheet ID
+)
+RANGE_NAME = "Sheet1!A2:E"  # Range where the data is located (adjust as needed)
 
 
 def human_readable_size(size_bytes):
@@ -94,15 +105,59 @@ def compare_files(ftp_files, irods_files):
     return only_in_ftp, only_in_irods, common_files
 
 
+def get_google_sheets_data():
+    """Fetch data from Google Sheets."""
+    try:
+        creds = Credentials.from_service_account_file(
+            CREDENTIALS_PATH,
+            scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
+        )
+        service = build("sheets", "v4", credentials=creds)
+        logger.info("Successfully authenticated with Google Sheets API.")
+
+        sheet = (
+            service.spreadsheets()
+            .values()
+            .get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME)
+            .execute()
+        )
+        logger.info("Fetched data from Google Sheets.")
+        return sheet.get("values", [])
+
+    except Exception as e:
+        logger.error(f"Error fetching data from Google Sheets: {e}")
+        return []
+
+
 def main():
+    # Fetch data from Google Sheets
+    logger.info("Fetching data from Google Sheets...")
+    sheet_data = get_google_sheets_data()
+    if not sheet_data:
+        logger.error("No data found in the Google Sheets.")
+        return
+
     # Load the CSV file
     df = pd.read_csv(csv_path)
+    logger.info("CSV file loaded successfully.")
 
     # Process the first two rows
     for index, row in df.head(2).iterrows():  # This will loop over the first two rows
-        # Get the SFTP and iRODS paths from the current row
-        sftp_path = row["FTP Path FASTQs"].strip()
-        irods_path = row["iRods Path (FASTQs)"].strip()
+        # Get the SFTP and iRODS paths from the current row, with safety checks for missing/invalid data
+        sftp_path = row["FTP Path FASTQs"]
+        irods_path = row.get("iRods Path (FASTQs)", None)
+
+        if sftp_path and isinstance(sftp_path, str):
+            sftp_path = sftp_path.strip()
+        else:
+            logger.warning(f"Invalid or missing SFTP path at row {index+1}. Skipping.")
+            continue  # Skip this row if the iRODS path is not valid
+
+        if irods_path and isinstance(irods_path, str):
+            irods_path = irods_path.strip()
+        else:
+            logger.warning(f"Invalid or missing iRODS path at row {index+1}. Skipping.")
+            continue  # Skip this row if the iRODS path is not valid
 
         logger.info(
             f"Processing row {index+1}: SFTP Path - {sftp_path}, iRODS Path - {irods_path}"
