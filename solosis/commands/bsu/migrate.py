@@ -24,7 +24,7 @@ SPREADSHEET_ID = (
     "1UAaedFI3aE_M1iDMar6gCrzAHB_ZUoJcsB3Z15p45gc"  # Replace with your Google Sheet ID
 )
 RANGE_NAME = (
-    "BSU Audit - Sequencing Runs!A2:Z3"  # Adjust range based on your sheet's data
+    "BSU Audit - Sequencing Runs!A2:Z20"  # Adjust range based on your sheet's data
 )
 
 # SFTP server details
@@ -77,25 +77,6 @@ def list_irods_files(path):
         return []
 
 
-def get_irods_metadata(file_path, irods_base_path):
-    """Retrieve and return metadata for a file in iRODS."""
-    # Strip spaces and remove multiple spaces within the path
-    full_path = os.path.join(irods_base_path, file_path).strip()
-    try:
-        result = subprocess.run(
-            ["imeta", "ls", "-d", full_path], capture_output=True, text=True, check=True
-        )
-        metadata = result.stdout.strip()
-        if metadata:
-            logger.debug(f"Metadata for {full_path}: {metadata}")
-        else:
-            logger.debug(f"No metadata found for {full_path}")
-        return metadata
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Error retrieving metadata for {full_path}: {e}")
-        return None
-
-
 def compare_files(ftp_files, irods_files):
     """Compare files between FTP and iRODS."""
     ftp_file_names = {f[0] for f in ftp_files}
@@ -143,7 +124,7 @@ def main():
     service = authenticate_google_sheets()
     logger.info("Successfully authenticated with Google Sheets API.")
 
-    # Fetch headers to find the "Migrator Last Run" and "Migrator FTP Size" column indices
+    # Fetch headers to find the "Migrator Last Run", "Migrator FTP Size", and "Migrator FASTQs Map" column indices
     try:
         sheet = (
             service.spreadsheets()
@@ -162,12 +143,15 @@ def main():
         logger.error("No headers found in the Google Sheets.")
         return
 
-    # Find the index of the "Migrator Last Run" and "Migrator FTP Size" columns
+    # Find the index of the "Migrator Last Run", "Migrator FTP Size", and "Migrator FASTQs Map" columns
     try:
         migrator_last_run_index = headers.index("Migrator Last Run")
         migrator_ftp_size_index = headers.index("Migrator FTP Size")
+        migrator_fastqs_map_index = headers.index("Migrator FASTQs Map")
     except ValueError:
-        logger.error('"Migrator Last Run" or "Migrator FTP Size" column not found.')
+        logger.error(
+            '"Migrator Last Run", "Migrator FTP Size", or "Migrator FASTQs Map" column not found.'
+        )
         return
 
     # Fetch the rows to process
@@ -255,6 +239,12 @@ def main():
         logger.info(f"Files only in FTP: {only_in_ftp}")
         logger.info(f"Files only in iRODS: {only_in_irods}")
         logger.info(f"Files in both FTP and iRODS: {common_files}")
+
+        # Check if files match exactly
+        if only_in_ftp or only_in_irods:
+            row[migrator_fastqs_map_index] = "No"
+        else:
+            row[migrator_fastqs_map_index] = "Yes"
 
         # Add the timestamp and FTP size to the row
         row[migrator_last_run_index] = timestamp
