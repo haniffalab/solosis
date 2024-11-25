@@ -49,7 +49,6 @@ def list_sftp_files_and_size(sftp, path):
 
 def list_irods_files(path):
     """List files in an iRODS directory using the 'ils' command."""
-    path = path.strip()  # Ensure no extra spaces
     logger.debug(f"Running 'ils' on path: {path}")
     try:
         result = subprocess.run(
@@ -66,9 +65,8 @@ def list_irods_files(path):
 
 def get_irods_metadata(file_path, irods_base_path):
     """Retrieve and return metadata for a file in iRODS."""
-    full_path = os.path.join(
-        irods_base_path, file_path
-    ).strip()  # Combine base path with file name and strip spaces
+    # Strip spaces and remove multiple spaces within the path
+    full_path = os.path.join(irods_base_path, file_path).strip()
     try:
         result = subprocess.run(
             ["imeta", "ls", "-d", full_path], capture_output=True, text=True, check=True
@@ -103,8 +101,8 @@ def main():
     # Process the first two rows
     for index, row in df.head(2).iterrows():  # This will loop over the first two rows
         # Get the SFTP and iRODS paths from the current row
-        sftp_path = row["FTP Path FASTQs"]
-        irods_path = row["iRods Path (FASTQs)"]
+        sftp_path = row["FTP Path FASTQs"].strip()
+        irods_path = row["iRods Path (FASTQs)"].strip()
 
         logger.info(
             f"Processing row {index+1}: SFTP Path - {sftp_path}, iRODS Path - {irods_path}"
