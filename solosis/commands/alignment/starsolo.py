@@ -160,13 +160,3 @@ def cmd(sample, samplefile):
 
 if __name__ == "__main__":
     cmd()
-    #########################
-    shell_starsolo_script = os.path.join(
-        os.getcwd(),
-        "bin/aligners/starsolo/submit.sh",
-    )
-    # can we change script base to sc-voyage dir
-    result_STAR = subprocess.run(
-        [shell_starsolo_script, samplefile], capture_output=True, text=True
-    )
-    click.echo(result_STAR.stdout)
