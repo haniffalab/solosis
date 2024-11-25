@@ -143,7 +143,7 @@ def main():
     service = authenticate_google_sheets()
     logger.info("Successfully authenticated with Google Sheets API.")
 
-    # Fetch headers to find the "Migrator Last Run" column index
+    # Fetch headers to find the "Migrator Last Run" and "Migrator FTP Size" column indices
     try:
         sheet = (
             service.spreadsheets()
@@ -162,11 +162,12 @@ def main():
         logger.error("No headers found in the Google Sheets.")
         return
 
-    # Find the index of the "Migrator Last Run" column
+    # Find the index of the "Migrator Last Run" and "Migrator FTP Size" columns
     try:
         migrator_last_run_index = headers.index("Migrator Last Run")
+        migrator_ftp_size_index = headers.index("Migrator FTP Size")
     except ValueError:
-        logger.error('"Migrator Last Run" column not found.')
+        logger.error('"Migrator Last Run" or "Migrator FTP Size" column not found.')
         return
 
     # Fetch the rows to process
@@ -193,9 +194,13 @@ def main():
     # Process the rows
     updated_values = []
     for row in rows:
-        # if len(row) < len(headers):
-        #     logger.warning("Skipping row with insufficient data.")
-        #     continue  # Skip rows with insufficient data
+        if len(row) < len(headers):
+            logger.warning(
+                f"Row has {len(row)} columns, but the header has {len(headers)} columns. Padding the row."
+            )
+            row.extend(
+                [""] * (len(headers) - len(row))
+            )  # Pad the row with empty values if it has fewer columns
 
         # Get the SFTP and iRODS paths from the current row
         sftp_path = (
@@ -251,8 +256,9 @@ def main():
         logger.info(f"Files only in iRODS: {only_in_irods}")
         logger.info(f"Files in both FTP and iRODS: {common_files}")
 
-        # Add the timestamp to the row's "Migrator Last Run" column
+        # Add the timestamp and FTP size to the row
         row[migrator_last_run_index] = timestamp
+        row[migrator_ftp_size_index] = human_readable_size(ftp_total_size)
 
         updated_values.append(row)
 
