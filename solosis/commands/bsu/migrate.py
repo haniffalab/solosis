@@ -57,7 +57,7 @@ def list_sftp_files_and_size(sftp, path):
             file_list.append((file_name, file_size))
         return file_list, total_size
     except Exception as e:
-        logger.error(f"Error listing files in FTP path {path}: {e}")
+        logger.error(f"Error listing files in SFTP path {path}: {e}")
         return [], 0
 
 
@@ -69,7 +69,7 @@ def list_irods_files(path):
             ["ils", path], capture_output=True, text=True, check=True
         )
         lines = result.stdout.strip().split("\n")
-        files = [line.strip() for line in lines if not line.strip().endswith(":")]
+        files = [line.strip() for line in lines]
         logger.debug(f"Files from iRODS: {files}")
         return files
     except subprocess.CalledProcessError as e:
@@ -124,7 +124,7 @@ def main():
     service = authenticate_google_sheets()
     logger.info("Successfully authenticated with Google Sheets API.")
 
-    # Fetch headers to find the "Migrator Last Run", "Migrator FTP Size", and "Migrator FASTQs Map" column indices
+    # Fetch headers to find the relevant column indices
     try:
         sheet = (
             service.spreadsheets()
@@ -143,18 +143,21 @@ def main():
         logger.error("No headers found in the Google Sheets.")
         return
 
-    # Find the index of the "Migrator Last Run", "Migrator FTP Size", and "Migrator FASTQs Map" columns
+    # Find column indices
     try:
         migrator_last_run_index = headers.index("Migrator Last Run")
         migrator_ftp_size_index = headers.index("Migrator FTP Size")
         migrator_fastqs_map_index = headers.index("Migrator FASTQs Map")
-    except ValueError:
+
+        migrator_cr_ftp_size_index = headers.index("CellRanger FTP Size")
+        migrator_cr_files_map_index = headers.index("CellRanger Files Map")
+    except ValueError as e:
         logger.error(
-            '"Migrator Last Run", "Migrator FTP Size", or "Migrator FASTQs Map" column not found.'
+            '"Migrator" or "CellRanger" columns not found. Check the sheet headers.'
         )
         return
 
-    # Fetch the rows to process
+    # Fetch rows to process
     try:
         sheet = (
             service.spreadsheets()
@@ -175,84 +178,95 @@ def main():
 
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Process the rows
     updated_values = []
     for row in rows:
         if len(row) < len(headers):
-            logger.warning(
-                f"Row has {len(row)} columns, but the header has {len(headers)} columns. Padding the row."
-            )
-            row.extend(
-                [""] * (len(headers) - len(row))
-            )  # Pad the row with empty values if it has fewer columns
+            row.extend([""] * (len(headers) - len(row)))  # Pad the row
 
-        # Get the SFTP and iRODS paths from the current row
-        sftp_path = (
-            row[headers.index("FTP Path FASTQs")].strip()
-            if row[headers.index("FTP Path FASTQs")]
-            else None
-        )
-        irods_path = (
-            row[headers.index("iRods Path (FASTQs)")].strip()
-            if row[headers.index("iRods Path (FASTQs)")]
-            else None
-        )
+        logger.info(f"Row Data: {row}")
 
-        if not sftp_path or not irods_path:
-            logger.warning(f"Skipping row with missing paths.")
+        # FASTQ Paths
+        sftp_path_fastq = row[headers.index("FTP Path FASTQs")].strip()
+        irods_path_fastq = row[headers.index("iRods Path (FASTQs)")].strip()
+
+        # CellRanger Paths
+        sftp_path_cr = row[headers.index("FTP Path CellRanger")].strip()
+        irods_path_cr = row[headers.index("iRods Path (CellRanger)")].strip()
+
+        if not sftp_path_fastq or not irods_path_fastq:
+            logger.warning(f"Skipping row with missing FASTQ paths.")
             continue
 
-        logger.info(
-            f"Processing row: SFTP Path - {sftp_path}, iRODS Path - {irods_path}"
-        )
-
-        # Set up SFTP connection
+        # Handle FASTQ Comparison
+        ftp_fastq_files, ftp_fastq_size = [], 0
         try:
-            logger.info(f"Connecting to SFTP server: {SFTP_HOST}")
             transport = paramiko.Transport((SFTP_HOST, SFTP_PORT))
             transport.connect(username=SFTP_USER, password=SFTP_PASS)
             sftp = paramiko.SFTPClient.from_transport(transport)
-            logger.info("Connected to SFTP server successfully.")
-        except Exception as e:
-            logger.error(f"Failed to connect to SFTP server: {e}")
-            continue  # Skip this row if connection fails
 
-        # List files in the SFTP directory and calculate total size
-        ftp_files, ftp_total_size = list_sftp_files_and_size(sftp, sftp_path)
-        logger.info(f"Files in FTP path {sftp_path}:")
-        for file_name, file_size in ftp_files:
-            logger.info(f"- {file_name} ({human_readable_size(file_size)})")
-        logger.info(
-            f"Total size of FTP directory {sftp_path}: {human_readable_size(ftp_total_size)}"
+            ftp_fastq_files, ftp_fastq_size = list_sftp_files_and_size(
+                sftp, sftp_path_fastq
+            )
+            logger.debug(f"ftp_fastq_files: {ftp_fastq_files}")
+            sftp.close()
+            transport.close()
+        except Exception as e:
+            logger.error(f"Failed to connect to SFTP server for FASTQs: {e}")
+
+        irods_fastq_files = list_irods_files(irods_path_fastq)
+        only_in_ftp_fastq, only_in_irods_fastq, common_fastq_files = compare_files(
+            ftp_fastq_files, irods_fastq_files
         )
 
-        # Close SFTP connection
-        sftp.close()
-        transport.close()
+        logger.info("Files on FTP:")
+        for file in sorted(ftp_fastq_files):
+            logger.info(f"  - {file}")
 
-        # List files in the iRODS directory
-        irods_files = list_irods_files(irods_path)
-        logger.info(f"Files in iRODS path {irods_path}: {irods_files}")
+        logger.info("Files on iRODS:")
+        for file in sorted(irods_fastq_files):
+            logger.info(f"  - {file}")
 
-        # Compare files
-        only_in_ftp, only_in_irods, common_files = compare_files(ftp_files, irods_files)
-        logger.info(f"Files only in FTP: {only_in_ftp}")
-        logger.info(f"Files only in iRODS: {only_in_irods}")
-        logger.info(f"Files in both FTP and iRODS: {common_files}")
-
-        # Check if files match exactly
-        if only_in_ftp or only_in_irods:
-            row[migrator_fastqs_map_index] = "No"
-        else:
-            row[migrator_fastqs_map_index] = "Yes"
-
-        # Add the timestamp and FTP size to the row
+        row[migrator_fastqs_map_index] = (
+            "No" if only_in_ftp_fastq or only_in_irods_fastq else "Yes"
+        )
         row[migrator_last_run_index] = timestamp
-        row[migrator_ftp_size_index] = human_readable_size(ftp_total_size)
+        row[migrator_ftp_size_index] = human_readable_size(ftp_fastq_size)
+
+        # Handle CellRanger Comparison (if paths exist)
+        if sftp_path_cr and irods_path_cr:
+            ftp_cr_files, ftp_cr_size = [], 0
+            try:
+                transport = paramiko.Transport((SFTP_HOST, SFTP_PORT))
+                transport.connect(username=SFTP_USER, password=SFTP_PASS)
+                sftp = paramiko.SFTPClient.from_transport(transport)
+
+                ftp_cr_files, ftp_cr_size = list_sftp_files_and_size(sftp, sftp_path_cr)
+                sftp.close()
+                transport.close()
+            except Exception as e:
+                logger.error(f"Failed to connect to SFTP server for CellRanger: {e}")
+
+            irods_cr_files = list_irods_files(irods_path_cr)
+            only_in_ftp_cr, only_in_irods_cr, common_cr_files = compare_files(
+                ftp_cr_files, irods_cr_files
+            )
+
+            logger.info("CellRanger on FTP:")
+            for file in sorted(ftp_cr_files):
+                logger.info(f"  - {file}")
+
+            logger.info("CellRanger on iRODS:")
+            for file in sorted(irods_cr_files):
+                logger.info(f"  - {file}")
+
+            row[migrator_cr_files_map_index] = (
+                "No" if only_in_ftp_cr or only_in_irods_cr else "Yes"
+            )
+            row[migrator_cr_ftp_size_index] = human_readable_size(ftp_cr_size)
 
         updated_values.append(row)
 
-    # Update the Google Sheet with the new data
+    # Update Google Sheet
     update_google_sheet(service, SPREADSHEET_ID, RANGE_NAME, updated_values)
 
 
