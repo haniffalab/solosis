@@ -20,7 +20,7 @@ def spinner():
 
 
 # change to pull-cellranger
-@click.command("pull-processed")
+@click.command("pull-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
