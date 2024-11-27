@@ -6,8 +6,6 @@ import time
 import click
 import pandas as pd
 
-FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]  # remove?
-
 from solosis.utils import echo_message
 
 
@@ -180,43 +178,29 @@ def cmd(sample, samplefile, retainbam, overwrite):
         "progress",
     )
     try:
-        with subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        ) as process:
-            # While the command runs, show the spinner animation
-            while True:
-                # Check if the process has finished
-                retcode = process.poll()
-                if retcode is not None:  # Process has finished
-                    break
-                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
-                sys.stdout.flush()  # Force output to the terminal
-                time.sleep(0.1)  # Delay between spinner updates
-
-            # Capture the output
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                echo_message(
-                    f"error during execution: {stderr}",
-                    "warn",
-                )
-            else:
-                echo_message(
-                    f"LSF job submitted successfully:\n{stdout}",
-                    "success",
-                )
-                echo_message(
-                    f"use `bjobs` to monitor job completion",
-                    "info",
-                )
-                echo_message(
-                    f"view job success at $HOME/logs",
-                    "info",
-                )
+        result = subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        echo_message(
+            f"LSF job submitted successfully:\n{result.stdout}",
+            "success",
+        )
+        echo_message(
+            "Use `bjobs` to monitor job completion",
+            "info",
+        )
+        echo_message(
+            "View job success at $HOME/logs",
+            "info",
+        )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
-            f"error during execution: {e.stderr}",
+            f"Error during execution: {e.stderr}",
             "warn",
         )
 
