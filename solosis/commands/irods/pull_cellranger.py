@@ -9,14 +9,6 @@ import pandas as pd
 from solosis.utils import echo_message
 
 
-def spinner():
-    """Generator for spinner animation in the terminal."""
-    spinner_frames = ["|", "/", "-", "\\"]
-    while True:
-        for frame in spinner_frames:
-            yield frame
-
-
 # change to pull-cellranger
 @click.command("pull-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string)")
@@ -167,9 +159,6 @@ def cmd(sample, samplefile, retainbam, overwrite):
         f"executing command: {' '.join(cmd)}",
         "progress",
     )
-
-    # Create the spinner generator
-    spin = spinner()
 
     # Execute the command with an active spinner
 
