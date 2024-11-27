@@ -151,7 +151,6 @@ def cmd(sample, samplefile, retainbam, overwrite):
             samples_to_download.append(sample)
 
     ##############################################################
-
     # Inform if there are samples that need FASTQ downloads
     if samples_to_download:
         echo_message(
