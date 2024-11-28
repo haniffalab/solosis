@@ -1,2 +1,0 @@
-sample	cram_path	fastq_prefix	sample_supplier_name	library_type	total_reads	md5
-HCA_SkO13919077	/seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram	HCA_SkO13919077_S1_L001	Jun23_SkO_D31_GEX_2	Chromium single cell 3 prime v3	1020474014	58fb74a9dc71d1f5624e4fc0a4818820
