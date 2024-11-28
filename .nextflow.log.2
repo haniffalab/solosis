@@ -1,0 +1,151 @@
+Nov-05 13:30:42.465 [main] DEBUG nextflow.cli.Launcher - $> nextflow run cellgeni/nf-irods-to-fastq -r main main.nf --findmeta /tmp/sample_ids.K8H2az.csv --cram2fastq --publish_dir /lustre/scratch126/cellgen/team298/data/samples/fastq
+Nov-05 13:30:42.655 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 24.04.4
+Nov-05 13:30:42.693 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/nfs/users/nfs_l/lg28/.nextflow/plugins; core-plugins: nf-amazon@2.5.3,nf-azure@1.6.1,nf-cloudcache@0.4.1,nf-codecommit@0.2.1,nf-console@1.1.3,nf-ga4gh@1.3.0,nf-google@1.13.2-patch1,nf-tower@1.9.1,nf-wave@1.4.2-patch1
+Nov-05 13:30:42.719 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Nov-05 13:30:42.721 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Nov-05 13:30:42.729 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Nov-05 13:30:42.754 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Nov-05 13:30:42.773 [main] DEBUG nextflow.scm.ProviderConfig - Using SCM config path: /nfs/users/nfs_l/lg28/.nextflow/scm
+Nov-05 13:30:43.911 [main] DEBUG nextflow.scm.AssetManager - Git config: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/.git/config; branch: master; remote: origin; url: https://github.com/cellgeni/nf-irods-to-fastq.git
+Nov-05 13:30:43.961 [main] DEBUG nextflow.scm.RepositoryFactory - Found Git repository result: [RepositoryFactory]
+Nov-05 13:30:43.975 [main] DEBUG nextflow.scm.AssetManager - Git config: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/.git/config; branch: master; remote: origin; url: https://github.com/cellgeni/nf-irods-to-fastq.git
+Nov-05 13:30:44.771 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/nextflow.config
+Nov-05 13:30:44.775 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/nextflow.config
+Nov-05 13:30:44.794 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /nfs/users/nfs_l/lg28/.nextflow/secrets/store.json
+Nov-05 13:30:44.800 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@38fb50f8] - activable => nextflow.secret.LocalSecretsProvider@38fb50f8
+Nov-05 13:30:44.823 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Nov-05 13:30:44.999 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Nov-05 13:30:45.000 [main] DEBUG nextflow.cli.CmdRun - Launching `https://github.com/cellgeni/nf-irods-to-fastq` [special_feynman] DSL2 - revision: 0579112e1b [main]
+Nov-05 13:30:45.002 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Nov-05 13:30:45.002 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Nov-05 13:30:45.089 [main] DEBUG nextflow.Session - Session UUID: 43c986cd-f270-4352-9186-3b67285cfe92
+Nov-05 13:30:45.089 [main] DEBUG nextflow.Session - Run name: special_feynman
+Nov-05 13:30:45.090 [main] DEBUG nextflow.Session - Executor pool size: 64
+Nov-05 13:30:45.104 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Nov-05 13:30:45.116 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=192; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Nov-05 13:30:45.152 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 24.04.4 build 5917
+  Created: 01-08-2024 07:05 UTC (08:05 BST)
+  System: Linux 5.15.0-121-generic
+  Runtime: Groovy 4.0.21 on OpenJDK 64-Bit Server VM 11.0.24+8-post-Ubuntu-1ubuntu322.04
+  Encoding: UTF-8 (UTF-8)
+  Process: 1047540@farm22-head1 [10.160.8.96]
+  CPUs: 64 - Mem: 754.6 GB (236.4 GB) - Swap: 66.3 GB (61.2 GB)
+Nov-05 13:30:45.181 [main] DEBUG nextflow.Session - Work-dir: /nfs/users/nfs_l/lg28 [nfs]
+Nov-05 13:30:45.269 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[GoogleLifeSciencesExecutor, AwsBatchExecutor, GoogleBatchExecutor]
+Nov-05 13:30:45.290 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Nov-05 13:30:45.297 [main] DEBUG nextflow.Session - Observer factory: WaveFactory
+Nov-05 13:30:45.298 [main] DEBUG nextflow.Session - Observer factory: TowerFactory
+Nov-05 13:30:45.340 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Nov-05 13:30:45.366 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 65; maxThreads: 1000
+Nov-05 13:30:45.482 [main] DEBUG nextflow.Session - Session start
+Nov-05 13:30:46.199 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Nov-05 13:30:46.777 [main] WARN  nextflow.NextflowMeta$Preview - WORKFLOW OUTPUT DSL IS A PREVIEW FEATURE - SYNTAX AND FUNCTIONALITY CAN CHANGE IN FUTURE RELEASES
+Nov-05 13:30:47.050 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name findmeta:findCrams
+Nov-05 13:30:47.060 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.060 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.066 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Nov-05 13:30:47.074 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=64; memory=754.6 GB; capacity=64; pollInterval=100ms; dumpInterval=5m
+Nov-05 13:30:47.078 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Nov-05 13:30:47.174 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name findmeta:getMetadata
+Nov-05 13:30:47.182 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.182 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.212 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name findmeta:parseMetadata
+Nov-05 13:30:47.214 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.214 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.255 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name findmeta:combineMetadata
+Nov-05 13:30:47.258 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.258 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.274 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:normal` matches labels `normal` for process with name downloadcrams:downloadCram
+Nov-05 13:30:47.276 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: lsf
+Nov-05 13:30:47.276 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'lsf'
+Nov-05 13:30:47.284 [main] DEBUG nextflow.executor.Executor - [warm up] executor > lsf
+Nov-05 13:30:47.288 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'lsf' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Nov-05 13:30:47.290 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: lsf)
+Nov-05 13:30:47.292 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'lsf' > queue-stat-interval: 1m
+Nov-05 13:30:47.299 [main] DEBUG nextflow.executor.LsfExecutor - [LSF] Detected lsf.conf LSF_UNIT_FOR_LIMITS=MB
+Nov-05 13:30:47.316 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:normal` matches labels `normal` for process with name downloadcrams:cramToFastq
+Nov-05 13:30:47.320 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: lsf
+Nov-05 13:30:47.321 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'lsf'
+Nov-05 13:30:47.342 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:normal` matches labels `normal` for process with name downloadcrams:calculateReadLength
+Nov-05 13:30:47.344 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: lsf
+Nov-05 13:30:47.345 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'lsf'
+Nov-05 13:30:47.365 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name downloadcrams:renameATAC
+Nov-05 13:30:47.366 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.367 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.384 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name downloadcrams:saveMetaToJson
+Nov-05 13:30:47.386 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.386 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.394 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:local` matches labels `local` for process with name downloadcrams:updateMetadata
+Nov-05 13:30:47.396 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Nov-05 13:30:47.396 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-05 13:30:47.435 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: getMetadata, downloadcrams:updateMetadata, downloadcrams:saveMetaToJson, downloadcrams:renameATAC, downloadcrams:cramToFastq, findCrams, calculateReadLength, downloadcrams:downloadCram, downloadcrams:calculateReadLength, cramToFastq, downloadCram, updateMetadata, saveMetaToJson, renameATAC, findmeta:findCrams, concatFastqs, findmeta:getMetadata, findmeta:combineMetadata, uploadFTP, findmeta:parseMetadata, parseMetadata, combineMetadata
+Nov-05 13:30:47.436 [main] DEBUG nextflow.Session - Igniting dataflow network (11)
+Nov-05 13:30:47.447 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > findmeta:findCrams
+Nov-05 13:30:47.449 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > findmeta:getMetadata
+Nov-05 13:30:47.449 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > findmeta:parseMetadata
+Nov-05 13:30:47.450 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > findmeta:combineMetadata
+Nov-05 13:30:47.450 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:downloadCram
+Nov-05 13:30:47.451 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:cramToFastq
+Nov-05 13:30:47.451 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:calculateReadLength
+Nov-05 13:30:47.452 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:renameATAC
+Nov-05 13:30:47.452 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:saveMetaToJson
+Nov-05 13:30:47.453 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > downloadcrams:updateMetadata
+Nov-05 13:30:47.455 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_14578705ffc52c59: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/./modules/upload2ftp.nf
+  Script_5745e879b58ba523: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/./modules/getfiles.nf
+  Script_837af72cfbdb1352: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/main.nf
+  Script_a8b23561f1a651ac: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/./modules/metatable.nf
+Nov-05 13:30:47.455 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Nov-05 13:30:47.455 [main] DEBUG nextflow.Session - Session await
+Nov-05 13:30:47.646 [Actor Thread 34] DEBUG i.s.wave.plugin.config.WaveConfig - Wave strategy not specified - using default: [container, dockerfile, conda, spack]
+Nov-05 13:30:47.667 [Actor Thread 34] DEBUG io.seqera.wave.plugin.WaveClient - Wave config: WaveConfig(enabled:null, endpoint:https://wave.seqera.io, containerConfigUrl:[], tokensCacheMaxDuration:30m, condaOpts:CondaOpts(mambaImage=mambaorg/micromamba:1.5.8-lunar; basePackages=conda-forge::procps-ng, commands=null), spackOpts:SpackOpts(basePackages=null, commands=null), strategy:[container, dockerfile, conda, spack], bundleProjectResources:null, buildRepository:null, cacheRepository:null, retryOpts:RetryOpts(delay:450ms, maxDelay:1m 30s, maxAttempts:10, jitter:0.25), httpClientOpts:HttpOpts(), freezeMode:null, preserveFileTimestamp:null)
+Nov-05 13:30:48.107 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Nov-05 13:30:48.111 [Task submitter] INFO  nextflow.Session - [ec/4635e1] Submitted process > findmeta:findCrams (Searching files for sample HCA_SkO13919077)
+Nov-05 13:30:49.580 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: findmeta:findCrams (Searching files for sample HCA_SkO13919077); status: COMPLETED; exit: 0; error: -; workDir: /nfs/users/nfs_l/lg28/ec/4635e1a27d2bbf2cd98633a5575aaa]
+Nov-05 13:30:49.582 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=192; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Nov-05 13:30:49.638 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Nov-05 13:30:49.641 [Task submitter] INFO  nextflow.Session - [17/4d9b75] Submitted process > findmeta:getMetadata (Getting metadata for /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram)
+Nov-05 13:30:50.799 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: findmeta:getMetadata (Getting metadata for /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram); status: COMPLETED; exit: 0; error: -; workDir: /nfs/users/nfs_l/lg28/17/4d9b75a53ecc7fc9f9d35037d83069]
+Nov-05 13:30:50.855 [Actor Thread 51] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/bin/parser.py
+Nov-05 13:30:50.875 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Nov-05 13:30:50.876 [Task submitter] INFO  nextflow.Session - [1a/8f8a78] Submitted process > findmeta:parseMetadata (Parsing metadata for HCA_SkO13919077)
+Nov-05 13:30:50.943 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 3; name: findmeta:parseMetadata (Parsing metadata for HCA_SkO13919077); status: COMPLETED; exit: 0; error: -; workDir: /nfs/users/nfs_l/lg28/1a/8f8a788f410b46f9e1a43cac832ffa]
+Nov-05 13:30:50.959 [Actor Thread 62] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /nfs/users/nfs_l/lg28/.nextflow/assets/cellgeni/nf-irods-to-fastq/bin/combine_meta.py
+Nov-05 13:30:50.975 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Nov-05 13:30:50.976 [Task submitter] INFO  nextflow.Session - [be/b7bed1] Submitted process > findmeta:combineMetadata (Combining the metadata for all files to metadata.csv)
+Nov-05 13:30:51.065 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 4; name: findmeta:combineMetadata (Combining the metadata for all files to metadata.csv); status: COMPLETED; exit: 0; error: -; workDir: /nfs/users/nfs_l/lg28/be/b7bed155f0d2dbd355033760a03647]
+Nov-05 13:30:51.089 [TaskFinalizer-4] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=192; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Nov-05 13:30:51.328 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [LSF] submitted process downloadcrams:downloadCram (Loading /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram) > jobId: 232523; workDir: /nfs/users/nfs_l/lg28/38/3eaa298db31297ae7f67ab052d2de9
+Nov-05 13:30:51.328 [Task submitter] INFO  nextflow.Session - [38/3eaa29] Submitted process > downloadcrams:downloadCram (Loading /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram)
+Nov-05 13:35:47.297 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > No more task to compute -- The following nodes are still active:
+[process] downloadcrams:cramToFastq
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] downloadcrams:calculateReadLength
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] downloadcrams:renameATAC
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] downloadcrams:saveMetaToJson
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] downloadcrams:updateMetadata
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: input/*.json
+  port 1: (cntrl) -     ; channel: $
+
+Nov-05 13:35:52.305 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor lsf > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 232523; id: 5; name: downloadcrams:downloadCram (Loading /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram); status: RUNNING; exit: -; error: -; workDir: /nfs/users/nfs_l/lg28/38/3eaa298db31297ae7f67ab052d2de9 started: 1730813517353; exited: -; ]
+Nov-05 13:36:12.310 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 232523; id: 5; name: downloadcrams:downloadCram (Loading /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram); status: COMPLETED; exit: 0; error: -; workDir: /nfs/users/nfs_l/lg28/38/3eaa298db31297ae7f67ab052d2de9 started: 1730813517353; exited: 2024-11-05T13:35:41.763628Z; ]
+Nov-05 13:36:12.598 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [LSF] submitted process downloadcrams:cramToFastq (Converting cram to fastq: /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram) > jobId: 232556; workDir: /nfs/users/nfs_l/lg28/bf/aa59ab372f121336aaf5e8c85ed24a
+Nov-05 13:36:12.599 [Task submitter] INFO  nextflow.Session - [bf/aa59ab] Submitted process > downloadcrams:cramToFastq (Converting cram to fastq: /seq/illumina/runs/47/47737/lane1/plex6/47737_1#6.cram)
