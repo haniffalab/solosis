@@ -53,7 +53,7 @@ def cmd():
 
     # Run the cmd to calculate disk usage
     try:
-        echo_message(f"Calculating disk usage for...", "progress")
+        echo_message(f"Calculating disk usage for team298 ...", "progress")
         result = subprocess.run(
             cmd,
             check=True,
