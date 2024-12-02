@@ -28,12 +28,12 @@ def cmd():
     )
 
     # Ensure the base directory exists
-    if not os.path.isdir(team_workspace_dir):
-        echo_message(
-            f"Workspace directory '{team_workspace_dir}' does not exist.",
-            "error",
-        )
-        return
+    # if not os.path.isdir(team_workspace_dir):
+    #    echo_message(
+    #        f"Workspace directory '{team_workspace_dir}' does not exist.",
+    #        "error",
+    #    )
+    #    return
 
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
