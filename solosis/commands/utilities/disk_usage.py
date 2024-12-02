@@ -61,7 +61,7 @@ def cmd():
             stderr=subprocess.PIPE,
             text=True,
         )
-        echo_message(f"Disk usage for workspace: {result.stdout.strip()}", "success")
+        echo_message(f"Disk usage for workspace: {result.stdout.strip()}", "progress")
     except subprocess.CalledProcessError as e:
         echo_message(
             f"Error while calculating disk usage: {e.stderr.strip()}",
