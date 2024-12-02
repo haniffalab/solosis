@@ -27,7 +27,7 @@ size_num=$(echo "$lustre_size" | sed 's/[A-Za-z]//g')
 ####making used_value an integer
 used_int=${used_num%.*}
 size_int=${size_num%.*}
-lustre_avail=$(echo $((size_num - used_num))'T')
+lustre_avail=$(echo $((size_int - used_int))'T')
 lustre_percent=$(echo $((used_int*100/45))'%')
 # nfs
 #df -h /nfs/team298
