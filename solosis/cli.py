@@ -5,6 +5,7 @@ import click
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
+from solosis.commands.utilities import disk_usage
 
 VERSION = "0.2.3"
 
@@ -37,6 +38,9 @@ cli.add_command(pull_cellranger.cmd)
 cli.add_command(cellbender.cmd)
 cli.add_command(scanpy.cmd)
 cli.add_command(merge_h5ad.cmd)
+
+# utilities
+cli.add_command(disk_usage.cmd)
 
 if __name__ == "__main__":
     cli()
