@@ -19,4 +19,4 @@ set -e
 
 nfs_overall=$(df -h /nfs/team298)
 
-echo "$nfs_overall"
+echo " \n $nfs_overall"
