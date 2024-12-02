@@ -19,5 +19,5 @@ set -e
 
 nfs_overall=$(df -h /nfs/team298)
 
-echo "Disk usage for workspace"
+echo "Disk usage for workspace:"
 echo "$nfs_overall"
