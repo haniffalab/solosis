@@ -54,4 +54,4 @@ printf "%-12s %-6s %-6s %-6s %-6s\n" "--------" "-----" "-----" "-----" "-----"
 # Loop through data
 for row in "${data[@]}"; do
     printf "%-12s %-6s %-6s %-6s %-6s\n" $row
-doneß
+done
