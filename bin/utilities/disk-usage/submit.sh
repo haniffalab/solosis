@@ -48,10 +48,10 @@ data=("Lustre $lustre_size $lustre_used $lustre_avail $lustre_percent"
         "warehouse $wh_size $wh_used $wh_avail $wh_percent")
 
 # Define headers
-printf "%-12s %-6s %-6s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
-printf "%-12s %-6s %-6s %-6s %-6s\n" "--------" "-----" "-----" "-----" "-----"
+printf "%-12s %-6s %-10s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
+printf "%-12s %-6s %-10s %-6s %-6s\n" "--------" "-----" "-------" "-----" "-----"
 
 # Loop through data
 for row in "${data[@]}"; do
-    printf "%-12s %-6s %-6s %-6s %-6s\n" $row
+    printf "%-12s %-6s %-10s %-6s %-6s\n" $row
 done
