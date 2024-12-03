@@ -73,7 +73,7 @@ def cmd():
                 )
             else:
                 echo_message(
-                    f"\n{result.stdout.strip()}",
+                    f"\n{stdout.strip()}",
                     "progress",
                 )
 
