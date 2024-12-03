@@ -48,10 +48,6 @@ def cmd():
     # Create the spinner generator
     spin = spinner()
 
-    echo_message(
-        f"starting process for samples: {sample_ids}...",
-        "progress",
-    )
     try:
         with subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
