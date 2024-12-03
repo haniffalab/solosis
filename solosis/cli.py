@@ -41,7 +41,7 @@ cli.add_command(merge_h5ad.cmd)
 
 # utilities
 cli.add_command(disk_usage.cmd)
-cli.add_command(filecount.cmd)
+cli.add_command(file_count.cmd)
 
 if __name__ == "__main__":
     cli()
