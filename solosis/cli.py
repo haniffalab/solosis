@@ -5,7 +5,7 @@ import click
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
-from solosis.commands.utilities import disk_usage, filecount
+from solosis.commands.utilities import disk_usage, file_count
 
 VERSION = "0.2.3"
 
