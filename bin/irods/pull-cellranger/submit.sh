@@ -1,5 +1,5 @@
 #!/bin/bash
-# submit.sh - Environment setup for pull-fastq processing using Nextflow
+# submit.sh - Environment setup for pull-cellranger processing using Nextflow
 
 # Usage:
 #   ./submit.sh <sample_ids>
