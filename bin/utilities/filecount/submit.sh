@@ -29,7 +29,42 @@ data=("Lustre $file_count $file_limit "
 # Define headers
 printf "%-12s %-10s %-10s \n" "workspace" "filecount" "file-limit"
 printf "%-12s %-10s %-10s \n" "--------" "--------" "--------"
+
+
+# Configure paths and job parameters
+TEAM_LOGS_DIR="$HOME/logs"
+CPU=16
+MEM=64000
+QUEUE="normal"
+GROUP="team298"
+
+# Ensure logs directory exists
+mkdir -p "$TEAM_LOGS_DIR"
+
+bsub -J "filecount" <<EOF
+#!/bin/bash
+#BSUB -o "$TEAM_LOGS_DIR/filecount_%J_%I.out"   # Standard output with array job index
+#BSUB -e "$TEAM_LOGS_DIR/filecount_%J_%I.err"   # Standard error with array job index
+#BSUB -n $CPU                                    # Number of CPU cores
+#BSUB -M $MEM                                    # Memory limit in MB
+#BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
+#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -q $QUEUE                                  # Queue name
+
 # Loop through data
 for row in "${data[@]}"; do
     printf "%-12s %-10s %-10s\n" $row
 done
+
+table=row
+message="Dear User, \n 
+\n
+The filecount capacity for team298 is as follows: \n
+$table 
+\n
+Thank you"
+
+echo -e $message | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk
+EOF
+
+echo "Submitted LSF job for filecount command."
