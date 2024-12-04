@@ -38,7 +38,8 @@ def cmd(sample, samplefile):
         "info",
     )
     echo_message(
-        f"if you have a large set of files, this command will take a while to run"
+        f"if you have a large set of files, this command will take a while to run",
+        "info",
     )
 
     samples = []
@@ -84,6 +85,10 @@ def cmd(sample, samplefile):
             f"no samples provided. Use --sample or --samplefile",
             "error",
         )
+        echo_message(
+            f"try using solosis-cli pull-fastqs --help",
+            "info",
+        )
         return
 
     # Define the FASTQ path and validate each sample
@@ -117,10 +122,13 @@ def cmd(sample, samplefile):
 
     # Inform if there are samples that need FASTQ downloads
     if samples_to_download:
-        click.echo(f"Samples without FASTQ files: {samples_to_download}")
+        echo_message(
+            f"samples without FASTQ files: {samples_to_download}",
+            "progress",
+        )
     else:
         echo_message(
-            f"All provided samples already have FASTQ files. No downloads required.",
+            f"all provided samples already have FASTQ files. No downloads required.",
             "warn",
         )
         return  # Exit if no samples need downloading
@@ -141,13 +149,20 @@ def cmd(sample, samplefile):
     ]
 
     # Print the command being executed for debugging
-    click.echo(f"Executing command: {' '.join(cmd)}")
+    echo_message(
+        f"executing command: {' '.join(cmd)}",
+        "progress",
+    )
 
     # Create the spinner generator
     spin = spinner()
 
     # Execute the command with an active spinner
-    click.echo(f"Starting process for samples: {sample_ids}...")
+
+    echo_message(
+        f"starting process for samples: {sample_ids}...",
+        "progress",
+    )
     try:
         with subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
@@ -170,7 +185,10 @@ def cmd(sample, samplefile):
                     "warn",
                 )
             else:
-                click.echo(f"Process completed successfully:\n{stdout}")
+                echo_message(
+                    f"process completed successfully:\n{stdout}",
+                    "success",
+                )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
@@ -178,7 +196,10 @@ def cmd(sample, samplefile):
             "warn",
         )
 
-    click.echo("Processing complete")
+    # echo_message(
+    #    f"processing complete",
+    #    "success",
+    # )
 
 
 if __name__ == "__main__":
