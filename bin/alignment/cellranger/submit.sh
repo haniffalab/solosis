@@ -73,6 +73,9 @@ SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger/$VERSION"
 
+echo "DEBUG: SAMPLE_INDEX=\$SAMPLE_INDEX"
+echo "DEBUG: SAMPLE=\$SAMPLE"
+
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
