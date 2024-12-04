@@ -88,10 +88,15 @@ def cmd(sample, samplefile, create_bam, version):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
+    # Get the sample data directory from the environment variable
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
+        echo_message(
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
 
     if not os.path.isdir(team_sample_data_dir):
         echo_message(

@@ -91,10 +91,15 @@ def cmd(sample, samplefile):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
+    # Get the sample data directory from the environment variable
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
+        echo_message(
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
 
     if not os.path.isdir(team_sample_data_dir):
         echo_message(
@@ -172,8 +177,12 @@ def cmd(sample, samplefile):
                 # Check if the process has finished
                 retcode = process.poll()
                 if retcode is not None:  # Process has finished
+                    sys.stdout.write(
+                        "\r"
+                    )  # Only move the cursor to the beginning of the line
+                    sys.stdout.flush()  # Ensure the change is immediately shown
                     break
-                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
+                sys.stdout.write("\r" + next(spin))  # Display the spinner
                 sys.stdout.flush()  # Force output to the terminal
                 time.sleep(0.1)  # Delay between spinner updates
 
@@ -181,7 +190,7 @@ def cmd(sample, samplefile):
             stdout, stderr = process.communicate()
             if process.returncode != 0:
                 echo_message(
-                    f"error during execution: {stderr}",
+                    f"error during execution:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}",
                     "warn",
                 )
             else:
@@ -195,11 +204,6 @@ def cmd(sample, samplefile):
             f"error during execution: {e.stderr}",
             "warn",
         )
-
-    # echo_message(
-    #    f"processing complete",
-    #    "success",
-    # )
 
 
 if __name__ == "__main__":
