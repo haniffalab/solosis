@@ -1,6 +1,5 @@
-#!/software/cellgen/team298/shared/envs/hlb-conda/hl_minimal_v1.0.0/bin/python
+#!/software/cellgen/team298/shared/envs/solosis-env/bin/python
 
-# Import the CLI from the `cli.py` file
 from solosis.cli import cli
 
 if __name__ == "__main__":
