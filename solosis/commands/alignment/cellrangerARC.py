@@ -14,13 +14,10 @@ def cmd(samplefile, libraries):  ##will need to add 'includebam'
     --------------------------------- \n
     Cell RangerARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
 
-    :param samplefile: Input file (.txt)
-    :param libraries: Standard input for cellranger ARC (.csv)
-    ---------------------------------
     """
     shell_cellrangerARC_script = os.path.join(
         os.getcwd(),
-        "/software/cellgen/team298/shared/solosis/bin/aligners/cellrangerARC/submit.sh",
+        "bin/aligners/cellrangerARC/submit.sh",
     )
 
     # Pass the includebam flag as an argument to the bash script
