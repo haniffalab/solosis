@@ -3,10 +3,10 @@ from importlib.metadata import version as pkg_version
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
+from solosis.commands.filesystem import disk_usage
 from solosis.commands.irods import iget_cellranger, iget_fastqs
 from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
-from solosis.commands.utilities import disk_usage
 
 VERSION = "0.2.3"
 
@@ -35,6 +35,15 @@ def alignment():
 alignment.add_command(cellranger_count.cmd, name="cellranger-count")
 alignment.add_command(cellranger_arc.cmd, name="cellranger-arc")
 alignment.add_command(starsolo.cmd, name="starsolo")
+
+
+# Filesystem subgroup
+@cli.group()
+def filesystem():
+    """Commands for file and directory operations."""
+
+
+filesystem.add_command(disk_usage.cmd, name="disk-usage")
 
 
 # iRODS subgroup
@@ -66,9 +75,6 @@ sc_rna.add_command(cellbender.cmd, name="cellbender")
 sc_rna.add_command(scanpy.cmd, name="scanpy")
 sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
 
-
-# utilities
-cli.add_command(disk_usage.cmd)
 
 if __name__ == "__main__":
     cli()
