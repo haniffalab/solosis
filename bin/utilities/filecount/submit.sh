@@ -14,7 +14,7 @@ file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{pr
 
 # nfs
 # df -h /nfs/team298
-nfs_count=$(find /nfs/team298 -type f | wc -l)
+#nfs_count=$(find /nfs/team298 -type f | wc -l)
 
 #warehouse
 #df -h /warehouse/team298_wh01
@@ -23,7 +23,7 @@ wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
 
 # Array of data
 data=("Lustre $file_count $file_limit "
-        "nfs $nfs_count nfs_lim "
+        "nfs nfs_count nfs_lim "
         "warehouse $wh_count wh_lim ")
 
 # Define headers
@@ -55,6 +55,7 @@ bsub -J "filecount" <<EOF
 for row in "${data[@]}"; do
     printf "%-12s %-10s %-10s\n" $row
 done
+EOF
 
 table=row
 message="Dear User, \n 
@@ -65,6 +66,5 @@ $table
 Thank you"
 
 echo -e $message | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk
-EOF
 
 echo "Submitted LSF job for filecount command."
