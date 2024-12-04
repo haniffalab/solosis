@@ -2,8 +2,9 @@ from importlib.metadata import version as pkg_version
 
 import click
 
-from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
-from solosis.commands.irods import pull_cellranger, pull_fastqs
+from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
+from solosis.commands.irods import iget_cellranger, iget_fastqs
+from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
 VERSION = "0.2.3"
@@ -24,19 +25,46 @@ def cli():
     pass
 
 
-# Alignment
-cli.add_command(cellranger.cmd)
-cli.add_command(cellrangerARC.cmd)
-cli.add_command(starsolo.cmd)
+# Alignment subgroup
+@cli.group()
+def alignment():
+    """Commands for running alignment tools."""
 
-# iRods
-cli.add_command(pull_fastqs.cmd)
-cli.add_command(pull_cellranger.cmd)
 
-# scrna
-cli.add_command(cellbender.cmd)
-cli.add_command(scanpy.cmd)
-cli.add_command(merge_h5ad.cmd)
+alignment.add_command(cellranger_count.cmd, name="cellranger-count")
+alignment.add_command(cellranger_arc.cmd, name="cellranger-arc")
+alignment.add_command(starsolo.cmd, name="starsolo")
+
+
+# iRODS subgroup
+@cli.group()
+def irods():
+    """Commands for working with iRODS."""
+
+
+irods.add_command(iget_fastqs.cmd, name="iget-fastqs")
+irods.add_command(iget_cellranger.cmd, name="iget-cellranger")
+
+
+# NCL_BSU subgroup
+@cli.group()
+def ncl_bsu():
+    """Commands for Newcastle University BSU."""
+
+
+ncl_bsu.add_command(migrate.cmd, name="migrate")
+
+
+# scRNA subgroup
+@cli.group()
+def sc_rna():
+    """Commands for single-cell RNA-seq workflows."""
+
+
+sc_rna.add_command(cellbender.cmd, name="cellbender")
+sc_rna.add_command(scanpy.cmd, name="scanpy")
+sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
+
 
 if __name__ == "__main__":
     cli()
