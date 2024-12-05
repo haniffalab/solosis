@@ -65,7 +65,7 @@ $html_table
 EOF
 )
 recipients=("louiseegrimble@gmail.com" "nlg143@newcastle.ac.uk")
-#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm>
+#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac.uk")
 subject="filecount"
 # Message for the email
 {
@@ -79,4 +79,3 @@ subject="filecount"
 echo "Script completed. Email sent to ${recipients[@]}"
 EOF
 
-#echo "Submitted LSF job for filecount command."
