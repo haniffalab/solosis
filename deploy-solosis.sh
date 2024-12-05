@@ -3,6 +3,7 @@
 # export DEPLOY_DIR="/software/cellgen/team298/shared/solosis"
 # export MODULEFILES_DIR="/software/cellgen/team298/shared/modulefiles"
 # export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+# export TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/data/logs"
 
 # GitHub repository URL
 GITHUB_REPO_URL="https://github.com/haniffalab/solosis"

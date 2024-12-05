@@ -17,6 +17,7 @@ def log_command(ctx):
     # Determine the log file path
     log_dir = os.getenv("TEAM_LOGS_DIR", os.getcwd())
     log_file = os.path.join(log_dir, "history.csv")
+    os.makedirs(log_dir, exist_ok=True)
 
     fieldnames = [
         "timestamp",
