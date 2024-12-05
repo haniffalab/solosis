@@ -84,10 +84,6 @@ def cmd(sample, samplefile, retainbam, overwrite):
             f"No samples provided. Use --sample or --samplefile options",
             "error",
         )
-        echo_message(
-            f'For help, type: "solosis-cli iget-cellranger --help"',
-            "warn",
-        )
         return
 
     # Get the sample data directory from the environment variable
@@ -151,7 +147,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         )
         echo_message(
             f"Samples for download:\n{sample_list}",
-            "progress",
+            "info",
         )
     else:
         echo_message(
@@ -175,12 +171,6 @@ def cmd(sample, samplefile, retainbam, overwrite):
         sample_ids,
     ]
 
-    # Print the command being executed for debugging
-    # echo_message(
-    #     f"Executing command: {' '.join(cmd)}",
-    #     "progress",
-    # )
-
     try:
         result = subprocess.run(
             cmd,
@@ -193,7 +183,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
     except subprocess.CalledProcessError as e:
         echo_message(
             f"Error during execution: {e.stderr}",
-            "warn",
+            "error",
         )
 
 

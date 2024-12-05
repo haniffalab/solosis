@@ -1,3 +1,5 @@
+import re
+
 import click
 
 
@@ -17,7 +19,7 @@ def echo_message(message, type="info", bold=False):
         "warn": "yellow",  # Warning messages will be yellow
         "success": "green",  # Success messages will be green
         "progress": "white",  # Progress messages will be white
-        "action": "cyan",  # action messages will be cyan
+        "action": "cyan",  # Action messages will be cyan
     }
 
     # Default to 'info' type and blue color if an unrecognized type is passed
@@ -42,6 +44,15 @@ def echo_lsf_submission_message(job_stdout):
 
     job_stdout: The standard output message returned by the LSF submission command.
     """
-    echo_message(f"LSF job submitted successfully:\n{job_stdout}", "success")
+    match = re.search(r"Job <(\d+)> is submitted to queue <(\w+)>", job_stdout)
+    if match:
+        job_id, queue = match.groups()
+        echo_message(
+            f"LSF Job ID {job_id} submitted to '{queue}' queue.",
+            "success",
+        )
+    else:
+        echo_message(f"LSF job submitted successfully:\n{job_stdout}", "success")
+
     echo_message("Use `bjobs` to monitor job completion.", "info")
-    echo_message("View job success at $HOME/logs.", "info")
+    echo_message("View job logs at $HOME/logs.", "info")
