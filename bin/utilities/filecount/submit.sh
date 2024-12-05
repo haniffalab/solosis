@@ -9,9 +9,9 @@ if [ -z "$LSB_JOBID" ]; then
 #BSUB -J filecount_job      # Job name
 #BSUB -o filecount.out      # Standard output file
 #BSUB -e filecount.err      # Standard error file
-#BSUB -n 1                  # Number of cores
-#BSUB -q normal             # Queue name
-#BSUB -M 4000               # Memory limit in MB
+#BSUB -n 2                  # Number of cores
+#BSUB -q small             # Queue name
+#BSUB -M 3000               # Memory limit in MB
 #BSUB -u your_email@example.com  # Email for job updates
 #BSUB -B                    # Notify at the start of the job
 #BSUB -N                    # Notify at the end of the job
@@ -35,17 +35,29 @@ wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
 wh_limit="N/A" # Update with real limits if available
 
 # Define output file
-output_file="filecount_report.txt"
+#output_file="filecount_report.txt"
 
 # Write the table to the file
-{
-    printf "%-12s %-10s %-10s\n" "Workspace" "Filecount" "File-limit"
-    printf "%-12s %-10s %-10s\n" "---------" "---------" "----------"
-    printf "%-12s %-10s %-10s\n" "Lustre" "$file_count" "$file_limit"
-    printf "%-12s %-10s %-10s\n" "NFS" "$nfs_count" "$nfs_limit"
-    printf "%-12s %-10s %-10s\n" "Warehouse" "$wh_count" "$wh_limit"
-} > "$output_file"
+#{
+#    printf "%-12s %-10s %-10s\n" "Workspace" "Filecount" "File-limit"
+#    printf "%-12s %-10s %-10s\n" "---------" "---------" "----------"
+#    printf "%-12s %-10s %-10s\n" "Lustre" "$file_count" "$file_limit"
+#    printf "%-12s %-10s %-10s\n" "NFS" "$nfs_count" "$nfs_limit"
+#    printf "%-12s %-10s %-10s\n" "Warehouse" "$wh_count" "$wh_limit"
+#} > "$output_file"
+
+# email message 
+message = "Dear user,
+\n
+the file count for workspaces available to Team298 on Farm22 are as follows: \n
+[ INSERT TABLE HERE ]
+\n
+\n
+Thank you."
+
+
 
 # Email the report
 #mailx -s "Workspace Filecount Report" your_email@example.com 
-email -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
+#email -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
+echo -e $message | mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk
