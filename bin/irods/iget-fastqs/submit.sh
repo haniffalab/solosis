@@ -48,10 +48,11 @@ export NXF_WORK="/lustre/scratch126/cellgen/team298/data/tmp"
 export LSB_DEFAULT_USERGROUP="team298"
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
 
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
+# Configure paths
+TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
 
 # Ensure logs directory exists
+TEAM_LOGS_DIR="$HOME/logs"
 mkdir -p "$TEAM_LOGS_DIR"
 
 # Define the output directory for Nextflow
