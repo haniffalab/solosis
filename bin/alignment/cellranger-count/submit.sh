@@ -50,6 +50,7 @@ CPU=16
 MEM=64000
 QUEUE="normal"
 GROUP="team298"
+REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
