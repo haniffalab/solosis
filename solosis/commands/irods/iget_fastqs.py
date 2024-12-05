@@ -6,6 +6,8 @@ import time
 import click
 import pandas as pd
 
+from solosis.utils import log_command
+
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 from solosis.utils import echo_message
@@ -19,21 +21,22 @@ def spinner():
             yield frame
 
 
-@click.command("iget-cellranger")
+@click.command("iget-fastqs")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-def cmd(sample, samplefile):
+@click.pass_context
+def cmd(ctx, sample, samplefile):
     """
     Downloading fastqs from iRODS...
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
-    ctx = click.get_current_context()
+    log_command(ctx)
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",

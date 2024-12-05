@@ -1,4 +1,4 @@
-from importlib.metadata import version as pkg_version
+import uuid
 
 import click
 
@@ -10,6 +10,7 @@ from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
 VERSION = "0.2.3"
 
+
 # Styled output for the module name and version
 module_name = click.style(f"{'SOLOSIS':^11}", bg="blue", fg="white", bold=True)
 version_info = click.style(f"  ~  version {VERSION}")
@@ -17,13 +18,17 @@ version_info = click.style(f"  ~  version {VERSION}")
 
 @click.group()
 @click.version_option(version=VERSION)
-def cli():
-    """Command line utility for the Cellular Genetics
-    programme at the Wellcome Sanger Institute"""
-
+@click.pass_context
+def cli(ctx):
+    """Command line utility for the Cellular Genetics programme at the Wellcome Sanger Institute"""
     # Print a welcome message when the CLI tool is invoked
-    click.echo(click.echo(f"{module_name}{version_info}"))
-    pass
+    click.echo(f"{module_name}{version_info}")
+
+    # Access the execution_id from the context, or create a new one if not set
+    execution_id = getattr(ctx.obj, "execution_id", None)
+    if not execution_id:
+        execution_id = str(uuid.uuid4())
+        ctx.obj = {"execution_id": execution_id, "version": VERSION}
 
 
 # Alignment subgroup
