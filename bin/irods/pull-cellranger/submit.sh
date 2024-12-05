@@ -109,10 +109,10 @@ fi
 echo "\$filtered" > irods_cellranger.csv
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
-while IFS= read -r irods_path; do
-    echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
-done < irods_cellranger.csv
+# while IFS= read -r irods_path; do
+#     echo "Retrieving \$irods_path to \$OUTPUT_DIR"
+#     iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
+# done < irods_cellranger.csv
 
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"

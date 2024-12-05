@@ -34,3 +34,14 @@ def echo_message(message, type="info", bold=False):
             bold=bold,  # Make bold if specified
         )
     )
+
+
+def echo_lsf_submission_message(job_stdout):
+    """
+    Log a standardized success message for LSF job submission.
+
+    job_stdout: The standard output message returned by the LSF submission command.
+    """
+    echo_message(f"LSF job submitted successfully:\n{job_stdout}", "success")
+    echo_message("Use `bjobs` to monitor job completion.", "info")
+    echo_message("View job success at $HOME/logs.", "info")
