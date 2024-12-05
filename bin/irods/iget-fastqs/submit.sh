@@ -48,10 +48,11 @@ export NXF_WORK="/lustre/scratch126/cellgen/team298/data/tmp"
 export LSB_DEFAULT_USERGROUP="team298"
 export PATH="/software/singularity/v3.10.0/bin:$PATH"
 
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
+# Configure paths
+TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
 
 # Ensure logs directory exists
+TEAM_LOGS_DIR="$HOME/logs"
 mkdir -p "$TEAM_LOGS_DIR"
 
 # Define the output directory for Nextflow
@@ -61,7 +62,7 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
 mkdir -p "$OUTPUT_DIR"
 
 cd "$OUTPUT_DIR"
-# Run pull-fastq Nextflow process with the sample file
+# Run Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
     --findmeta "$TMP_SAMPLE_FILE" \

@@ -105,4 +105,3 @@ cellranger count \
     $BAM_FLAG
 EOF
 
-echo "Submitted array job for $NUM_SAMPLES samples."

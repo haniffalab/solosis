@@ -1,4 +1,54 @@
+import csv
+import os
+import re
+from datetime import datetime
+
 import click
+
+
+def log_command(ctx):
+    username = get_username()
+    command_path = " ".join(ctx.command_path.split())
+    command_args = " ".join(ctx.args)
+    command_params = [
+        f"--{key} {value}" for key, value in ctx.params.items() if value is not None
+    ]
+
+    # Determine the log file path
+    log_dir = os.getenv("TEAM_LOGS_DIR", os.getcwd())
+    log_file = os.path.join(log_dir, "history.csv")
+    os.makedirs(log_dir, exist_ok=True)
+
+    fieldnames = [
+        "timestamp",
+        "execution_id",
+        "username",
+        "solosis_version",
+        "command_path",
+        "command_args",
+        "command_params",
+    ]
+
+    # Open file and append new entry
+    with open(log_file, mode="a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        if os.stat(log_file).st_size == 0:
+            writer.writeheader()
+        writer.writerow(
+            {
+                "timestamp": datetime.now().isoformat(),
+                "execution_id": ctx.obj["execution_id"],
+                "username": username,
+                "solosis_version": ctx.obj["version"],
+                "command_path": command_path,
+                "command_args": command_args,
+                "command_params": command_params,
+            }
+        )
+
+
+def get_username():
+    return os.getenv("USER") or os.getenv("USERNAME") or "unknown_user"
 
 
 def echo_message(message, type="info", bold=False):
@@ -17,7 +67,7 @@ def echo_message(message, type="info", bold=False):
         "warn": "yellow",  # Warning messages will be yellow
         "success": "green",  # Success messages will be green
         "progress": "white",  # Progress messages will be white
-        "action": "cyan",  # action messages will be cyan
+        "action": "cyan",  # Action messages will be cyan
     }
 
     # Default to 'info' type and blue color if an unrecognized type is passed
@@ -34,3 +84,23 @@ def echo_message(message, type="info", bold=False):
             bold=bold,  # Make bold if specified
         )
     )
+
+
+def echo_lsf_submission_message(job_stdout):
+    """
+    Log a standardized success message for LSF job submission.
+
+    job_stdout: The standard output message returned by the LSF submission command.
+    """
+    match = re.search(r"Job <(\d+)> is submitted to queue <(\w+)>", job_stdout)
+    if match:
+        job_id, queue = match.groups()
+        echo_message(
+            f"LSF Job ID {click.style(job_id, bold=True, underline=True)} submitted to '{queue}' queue.",
+            "success",
+        )
+    else:
+        echo_message(f"LSF job submitted successfully:\n{job_stdout}", "success")
+
+    echo_message("Use `bjobs` to monitor job completion.", "info")
+    echo_message("View job logs at $HOME/logs.", "info")

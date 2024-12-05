@@ -9,7 +9,7 @@ from solosis.utils import echo_message
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@click.command("cellranger")
+@click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
@@ -36,9 +36,9 @@ def cmd(sample, samplefile, create_bam, version):
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
     V(D)J transcript sequence assembly
     """
-    # Print a clear introductory message
+    ctx = click.get_current_context()
     echo_message(
-        f"launching: {click.style('cellranger', bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
     echo_message(f"loading Cell Ranger version {version}")
@@ -88,10 +88,15 @@ def cmd(sample, samplefile, create_bam, version):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
+    # Get the sample data directory from the environment variable
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
+        echo_message(
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
 
     if not os.path.isdir(team_sample_data_dir):
         echo_message(
@@ -128,7 +133,7 @@ def cmd(sample, samplefile, create_bam, version):
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     cellranger_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/cellranger/submit.sh")
+        os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
     )
 
     # Construct the command with optional BAM flag

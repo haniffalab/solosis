@@ -3,6 +3,8 @@ import subprocess
 
 import click
 
+from solosis.utils import echo_message
+
 
 @click.command("starsolo")
 @click.option("--samplefile", required=True, help="Sample file text file")
@@ -14,6 +16,11 @@ def cmd(samplefile):
     cell-specific transcripts.
 
     """
+    ctx = click.get_current_context()
+    echo_message(
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
+        "info",
+    )
     shell_starsolo_script = os.path.join(
         os.getcwd(),
         "bin/aligners/starsolo/submit.sh",

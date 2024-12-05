@@ -15,9 +15,9 @@ def cmd():
     This command retrieves the disk usage for a given workspace directory
     across NFS, Lustre, or warehouse storage systems.
     """
-    # Print an introductory message
+    ctx = click.get_current_context()
     echo_message(
-        f"Launching: {click.style('disk-usage', bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 

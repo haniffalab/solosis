@@ -7,7 +7,6 @@
 env/
 venv/
 .venv/
-# env*
 dist/
 build/
 *.egg
@@ -36,3 +35,4 @@ sphinx/_build
 
 *ckpt.tar.gz
 .ipynb_checkpoints
+history.csv
