@@ -1,11 +1,4 @@
 #!/bin/bash
-# submit.sh - Environment setup for filecount of workspaces on Farm22
-
-# Usage:
-#   ./submit.sh 
-#
-# Parameters:
-#   <change-this> - NOTHING ESSENTIAL
 
 # Define a function to generate an HTML table
 generate_html_table() {
@@ -25,7 +18,9 @@ generate_html_table() {
     # End HTML table
     echo "</table>"
     echo "</body></html>"
+}
 
+# Main script execution
 # lustre
 #lfs quota -g team298 -h /lustre/scratch126
 file_count=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $5}')
@@ -42,7 +37,6 @@ nfs_lim=1500000
 wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
 wh_lim=150000
 
-# Array of data
 data=(
     "Lustre $file_count $file_limit"
     "nfs $nfs_count $nfs_lim"
@@ -65,7 +59,7 @@ $html_table
 EOF
 )
 recipients=("louiseegrimble@gmail.com" "nlg143@newcastle.ac.uk")
-#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac.uk")
+#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac>
 subject="filecount"
 # Message for the email
 {
@@ -76,6 +70,4 @@ subject="filecount"
     echo "$email_body"
 } | sendmail "${recipients[@]}"
 # Message to confirm email has been sent to email
-echo "Script completed. Email sent to ${recipients[@]}"
-EOF
-
+echo "Script completed. Email sent to nlg143@newcastle.ac.uk"
