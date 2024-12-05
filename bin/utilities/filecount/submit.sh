@@ -13,8 +13,8 @@ if [ -z "$LSB_JOBID" ]; then
     bsub <<EOF
 #!/bin/bash
 #BSUB -J filecount_job      # Job name
-#BSUB -o filecount.out      # Standard output file
-#BSUB -e filecount.err      # Standard error file
+#BSUB -o "$TEAM_LOGS_DIR/filecount.out"      # Standard output file
+#BSUB -e "$TEAM_LOGS_DIR/filecount.err"      # Standard error file
 #BSUB -n $CPU                  # Number of cores
 #BSUB -M $MEM               # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
@@ -46,13 +46,13 @@ wh_limit="N/A" # Update with real limits if available
 output_file="filecount_report.txt"
 
 # Write the table to the file
-#{
-#    printf "%-12s %-10s %-10s\n" "Workspace" "Filecount" "File-limit"
-#    printf "%-12s %-10s %-10s\n" "---------" "---------" "----------"
-#    printf "%-12s %-10s %-10s\n" "Lustre" "$file_count" "$file_limit"
-#    printf "%-12s %-10s %-10s\n" "NFS" "$nfs_count" "$nfs_limit"
-#    printf "%-12s %-10s %-10s\n" "Warehouse" "$wh_count" "$wh_limit"
-#} > "$output_file"
+{
+    printf "%-12s %-10s %-10s\n" "Workspace" "Filecount" "File-limit"
+    printf "%-12s %-10s %-10s\n" "---------" "---------" "----------"
+    printf "%-12s %-10s %-10s\n" "Lustre" "$file_count" "$file_limit"
+    printf "%-12s %-10s %-10s\n" "NFS" "$nfs_count" "$nfs_limit"
+    printf "%-12s %-10s %-10s\n" "Warehouse" "$wh_count" "$wh_limit"
+} > "$output_file"
 
 # email message 
 message = "Dear user,
@@ -67,5 +67,5 @@ Thank you."
 
 # Email the report
 #mailx -s "Workspace Filecount Report" your_email@example.com 
-#mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
-echo -e $message | mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk
+mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
+#echo -e $message | mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk
