@@ -1,6 +1,12 @@
 #!/bin/bash
 # integrated_submit.sh - Generate file count report and submit as LSF job
 
+TEAM_LOGS_DIR="$HOME/logs"
+CPU=2
+MEM=3000
+QUEUE="normal"
+GROUP="team298"
+
 # Check if the script is running inside an LSF job
 if [ -z "$LSB_JOBID" ]; then
     # If not running in LSF, submit itself as a job
@@ -9,10 +15,12 @@ if [ -z "$LSB_JOBID" ]; then
 #BSUB -J filecount_job      # Job name
 #BSUB -o filecount.out      # Standard output file
 #BSUB -e filecount.err      # Standard error file
-#BSUB -n 2                  # Number of cores
-#BSUB -q small             # Queue name
-#BSUB -M 3000               # Memory limit in MB
-#BSUB -u your_email@example.com  # Email for job updates
+#BSUB -n $CPU                  # Number of cores
+#BSUB -M $MEM               # Memory limit in MB
+#BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
+#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -q $QUEUE                                  # Queue name
+#BSUB -u nlg143@newcastle.ac.uk  # Email for job updates
 #BSUB -B                    # Notify at the start of the job
 #BSUB -N                    # Notify at the end of the job
 
@@ -35,7 +43,7 @@ wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
 wh_limit="N/A" # Update with real limits if available
 
 # Define output file
-#output_file="filecount_report.txt"
+output_file="filecount_report.txt"
 
 # Write the table to the file
 #{
@@ -59,5 +67,5 @@ Thank you."
 
 # Email the report
 #mailx -s "Workspace Filecount Report" your_email@example.com 
-#email -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
+#mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk < "$output_file"
 echo -e $message | mail -s "Workspace Filecount Report" nlg143@newcastle.ac.uk
