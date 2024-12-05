@@ -36,9 +36,9 @@ fi
 # Configure paths and job parameters
 TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
 TEAM_LOGS_DIR="$HOME/logs"
-CPU=16
-MEM=64000
-QUEUE="normal"
+CPU=2
+MEM=3000
+QUEUE="small"
 GROUP="team298"
 
 # Ensure logs directory exists
