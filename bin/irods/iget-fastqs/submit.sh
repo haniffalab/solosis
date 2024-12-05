@@ -61,7 +61,7 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
 mkdir -p "$OUTPUT_DIR"
 
 cd "$OUTPUT_DIR"
-# Run pull-fastq Nextflow process with the sample file
+# Run Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
     --findmeta "$TMP_SAMPLE_FILE" \

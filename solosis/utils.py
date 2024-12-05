@@ -48,7 +48,7 @@ def echo_lsf_submission_message(job_stdout):
     if match:
         job_id, queue = match.groups()
         echo_message(
-            f"LSF Job ID {job_id} submitted to '{queue}' queue.",
+            f"LSF Job ID {click.style(job_id, bold=True, underline=True)} submitted to '{queue}' queue.",
             "success",
         )
     else:

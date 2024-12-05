@@ -33,16 +33,18 @@ if ! module load cellgen/irods; then
   exit 1
 fi
 
-# Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+# Configure paths
+TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
+
+# Ensure logs directory exists
 TEAM_LOGS_DIR="$HOME/logs"
+mkdir -p "$TEAM_LOGS_DIR"
+
+# Configure job parameters
 CPU=16
 MEM=64000
 QUEUE="normal"
 GROUP="team298"
-
-# Ensure logs directory exists
-mkdir -p "$TEAM_LOGS_DIR"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
@@ -109,10 +111,10 @@ fi
 echo "\$filtered" > irods_cellranger.csv
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
-# while IFS= read -r irods_path; do
-#     echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-#     iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
-# done < irods_cellranger.csv
+while IFS= read -r irods_path; do
+    echo "Retrieving \$irods_path to \$OUTPUT_DIR"
+    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
+done < irods_cellranger.csv
 
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"

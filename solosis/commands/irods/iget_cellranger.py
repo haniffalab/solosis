@@ -10,7 +10,7 @@ from solosis.utils import echo_lsf_submission_message, echo_message
 
 
 # change to pull-cellranger
-@click.command("pull-cellranger")
+@click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
     "--samplefile",
@@ -35,9 +35,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
     """
     Downloads Cell Ranger outputs for the specified samples from iRODS.
     """
-
+    ctx = click.get_current_context()
     echo_message(
-        f"Starting Process: {click.style('iget-cellranger', bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
@@ -162,7 +162,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
     # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/pull-cellranger/submit.sh")
+        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
     )
 
     # Construct the command with optional BAM flag

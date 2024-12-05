@@ -19,7 +19,7 @@ def spinner():
             yield frame
 
 
-@click.command("pull-fastqs")
+@click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
@@ -33,12 +33,9 @@ def cmd(sample, samplefile):
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
+    ctx = click.get_current_context()
     echo_message(
-        f"using iRODS to download data",
-        "info",
-    )
-    echo_message(
-        f"if you have a large set of files, this command will take a while to run",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
@@ -144,7 +141,7 @@ def cmd(sample, samplefile):
     # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     irods_to_fastq_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/pull-fastqs/submit.sh")
+        os.path.join(script_dir, "../../../bin/irods/iget-fastqs/submit.sh")
     )
 
     # Construct the command with optional BAM flag
