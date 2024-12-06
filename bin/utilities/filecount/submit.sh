@@ -51,14 +51,14 @@ html_table=$(generate_html_table "${data[@]}")
 email_body=$(cat <<EOF
 <html>
 <body>
-<p>Dear user,</p>
+<p>Dear $USER,</p>
 <p>The file count for Team298 workspaces:</p>
 $html_table
 </body>
 </html>
 EOF
 )
-recipients=("louiseegrimble@gmail.com" "nlg143@newcastle.ac.uk")
+recipients=("louiseegrimble@gmail.com" "$USER@sanger.ac.uk")
 #recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac>
 subject="filecount"
 # Message for the email
