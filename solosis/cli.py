@@ -5,6 +5,7 @@ import click
 from solosis.commands.alignment import cellranger, cellrangerARC, starsolo
 from solosis.commands.irods import pull_cellranger, pull_fastqs
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
+from solosis.commands.farm import farm
 
 VERSION = "0.2.3"
 
@@ -24,6 +25,11 @@ def cli():
     pass
 
 
+@cli.group()
+def farm_cmds():
+    """Farm related commands"""
+    pass
+
 # Alignment
 cli.add_command(cellranger.cmd)
 cli.add_command(cellrangerARC.cmd)
@@ -37,6 +43,9 @@ cli.add_command(pull_cellranger.cmd)
 cli.add_command(cellbender.cmd)
 cli.add_command(scanpy.cmd)
 cli.add_command(merge_h5ad.cmd)
+
+# farm
+farm_cmds.add_command(farm.cmd)
 
 if __name__ == "__main__":
     cli()
