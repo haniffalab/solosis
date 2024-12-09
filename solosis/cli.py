@@ -3,7 +3,7 @@ import uuid
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
-from solosis.commands.filesystem import disk_usage
+from solosis.commands.filesystem import disk_usage, file_count
 from solosis.commands.irods import iget_cellranger, iget_fastqs
 from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
@@ -49,6 +49,7 @@ def filesystem():
 
 
 filesystem.add_command(disk_usage.cmd, name="disk-usage")
+filesystem.add_command(file_count.cmd, name="file-count")
 
 
 # iRODS subgroup
