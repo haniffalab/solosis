@@ -45,7 +45,7 @@ CPU=16
 MEM=64000
 QUEUE="normal"
 GROUP="team298"
-REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2020-A"
+REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
 
 # Ensure logs directory exists
 mkdir -p "$TEAM_LOGS_DIR"
@@ -73,6 +73,9 @@ SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger/$VERSION"
 
+echo "DEBUG: SAMPLE_INDEX=\$SAMPLE_INDEX"
+echo "DEBUG: SAMPLE=\$SAMPLE"
+
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
@@ -99,7 +102,6 @@ cellranger count \
     --sample="\$SAMPLE" \
     --localcores=$CPU \
     --localmem=$((MEM / 1000)) \
-    --output-dir="\$OUTPUT_DIR" \
     $BAM_FLAG
 EOF
 
