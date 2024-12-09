@@ -64,15 +64,15 @@ SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
 SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 
 # Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
+OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 
 ################################
 
 # Check if outputs already present
-if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
-    exit 0
-fi
+#if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+#    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
+#    exit 0
+#fi
 
 # Create the output dir
 mkdir -p "\$OUTPUT_DIR"
