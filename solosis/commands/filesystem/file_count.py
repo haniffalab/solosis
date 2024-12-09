@@ -42,7 +42,7 @@ def cmd():
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     filecount_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/utilities/filecount/submit.sh")
+        os.path.join(script_dir, "../../../bin/utilities/file-count/submit.sh")
     )
     # Construct the command with optional BAM flag
     cmd = [filecount_submit_script]

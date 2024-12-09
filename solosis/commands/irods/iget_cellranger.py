@@ -117,15 +117,32 @@ def cmd(sample, samplefile, retainbam, overwrite):
             team_sample_data_dir, sample, "sanger-cellranger"
         )
 
-        # Check if FASTQ files exist in the directory for the sample
+        ######## if statement added in for the --overwrite flag #######
         if os.path.exists(cellranger_path):
-            echo_message(
-                f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                "warn",
-            )
+            if overwrite:
+                echo_message(
+                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
+                    "warn",
+                )
+                try:
+                    # Remove the directory and its contents
+                    subprocess.run(["rm", "-rf", cellranger_path], check=True)
+                except subprocess.CalledProcessError as e:
+                    echo_message(
+                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
+                        "error",
+                    )
+                    return
+                samples_to_download.append(sample)
+            else:
+                echo_message(
+                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
+                    "warn",
+                )
         else:
             samples_to_download.append(sample)
 
+    ##############################################################
     # Inform if there are samples that need FASTQ downloads
     if samples_to_download:
         echo_message(
