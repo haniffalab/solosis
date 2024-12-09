@@ -59,69 +59,62 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -G $GROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
+# Define the samples array inside the job script
+################################################
+# The array is redefined here because the job scheduler environment does
+# not inherit the array from the parent script, so we re-split the 
+# SAMPLE_IDS string into an array in each individual job.
+IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+
 # Determine the sample for the current task
-SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
+SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
+
+# Debug: output sample for current task
+echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
-# Create output directory if it does not exist
-mkdir -p "\$OUTPUT_DIR"
 
+# Create the output directory if it doesn't exist
+mkdir -p "\$OUTPUT_DIR"
 cd "\$OUTPUT_DIR"
 
-##### insert command here #####
-# Extract collections and filter for cellranger collections ("collection:" prefix to path)
+# Skip processing if the output directory already contains files
+if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains files. Skipping."
+    exit 0
+fi
+
+# Fetch cellranger collections associated with the sample
 collections=\$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
 
-# Filter, sort, and prioritize matches
+# Identify the highest-priority collection by sorting
 filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
     awk '
     {
-        # Extract cellranger version, count number, and optional extra identifier
         match(\$0, /cellranger([0-9]+)_count_([0-9]+)_?([^_]+)?/, matches);
         version = matches[1];
         count = matches[2];
-        extra = matches[3];
+        extra = matches[3] ~ /^[0-9]+$/ ? matches[3] : -1;
+        print version, count, extra, \$0;
+    }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d" " -f4-)
 
-        # Convert "extra" to numeric if present, else set it to -1 for sorting
-        extra_value = (extra ~ /^[0-9]+$/ ? extra : -1);
-
-        # Print fields for sorting: version, count, extra_value, full path
-        print version, count, extra_value, \$0;
-    }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f4-)
-
-
-# Check if a match was found
+# Exit if no matching collections are found
 if [ -z "\$filtered" ]; then
     echo "No matching paths found for sample \$SAMPLE."
     exit 1
 fi
 
-# Check if outputs already present
-if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
-    exit 0
-fi
-
 # Save the filtered path to CSV
-echo "\$filtered" > \$OUTPUT_DIR/irods_path.csv
-# Confirm the saved output
-num_paths=\$(wc -l irods_path.csv)
-echo "Saved \$num_paths matching path(s) to irods_path.csv."
-echo "Selected path: \$filtered"
+echo "\$filtered" > irods_cellranger.csv
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
     echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-    iget -KVf --progress -r "\$OUTPUT_DIR/\$irods_path" "\$OUTPUT_DIR"
-done < \$OUTPUT_DIR/\$SAMPLE/irods_path.csv
+    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
+done < irods_cellranger.csv
 
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "\$OUTPUT_DIR"
 EOF
-
-
-
-#unsure about confirmation message..

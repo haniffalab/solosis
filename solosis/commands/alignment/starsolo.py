@@ -25,8 +25,9 @@ def cmd(sample, samplefile):
 
     """
     # Print a clear introductory message
+    ctx = click.get_current_context()
     echo_message(
-        f"launching: {click.style('starsolo', bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
     echo_message(f"loading starsolo")
