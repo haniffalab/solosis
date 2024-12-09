@@ -65,6 +65,7 @@ SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
+
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
@@ -72,31 +73,9 @@ cd "\$OUTPUT_DIR"
 
 ##### insert command here #####
 # Extract collections and filter for cellranger collections ("collection:" prefix to path)
-collections=\$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
-
-# Filter, sort, and prioritize matches
-filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
-    awk '
-    {
-        # Extract cellranger version, count number, and optional extra identifier
-        match(\$0, /cellranger([0-9]+)_count_([0-9]+)_?([^_]+)?/, matches);
-        version = matches[1];
-        count = matches[2];
-        extra = matches[3];
-
-        # Convert "extra" to numeric if present, else set it to -1 for sorting
-        extra_value = (extra ~ /^[0-9]+$/ ? extra : -1);
-
-        # Print fields for sorting: version, count, extra_value, full path
-        print version, count, extra_value, \$0;
-    }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f4-)
-
-
-# Check if a match was found
-if [ -z "\$filtered" ]; then
-    echo "No matching paths found for sample \$SAMPLE."
-    exit 1
-fi
+imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
+  grep "^collection: " | \
+  sed 's/^collection: //' > irods_path.csv
 
 # Check if outputs already present
 if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
@@ -104,12 +83,9 @@ if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
     exit 0
 fi
 
-# Save the filtered path to CSV
-echo "\$filtered" > \$OUTPUT_DIR/irods_path.csv
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
 echo "Saved \$num_paths matching path(s) to irods_path.csv."
-echo "Selected path: \$filtered"
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
