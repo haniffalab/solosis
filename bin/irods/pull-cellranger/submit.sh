@@ -90,7 +90,7 @@ echo "Saved \$num_paths matching path(s) to irods_path.csv."
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
     echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-    iget -KVf --progress -r "\$OUTPUT_DIR/\$irods_path" "\$OUTPUT_DIR"
+    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
 done < \$OUTPUT_DIR/\$SAMPLE/irods_path.csv
 
 # Confirmation message
