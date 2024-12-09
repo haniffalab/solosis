@@ -83,6 +83,10 @@ if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
     exit 0
 fi
 
+# Create output directory if it does not exist
+mkdir -p "\$OUTPUT_DIR"
+
+
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
 echo "Saved \$num_paths matching path(s) to irods_path.csv."
