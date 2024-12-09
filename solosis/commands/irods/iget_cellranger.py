@@ -113,9 +113,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
     samples_to_download = []
     for sample in samples:
         # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(
-            team_sample_data_dir, sample, "sanger-cellranger"
-        )
+        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
         ######## if statement added in for the --overwrite flag #######
         if os.path.exists(cellranger_path):
