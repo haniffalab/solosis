@@ -66,6 +66,12 @@ SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
 
+# Check if outputs already present
+if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
+    exit 0
+fi
+
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
@@ -76,16 +82,6 @@ cd "\$OUTPUT_DIR"
 imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
   grep "^collection: " | \
   sed 's/^collection: //' > irods_path.csv
-
-# Check if outputs already present
-if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
-    exit 0
-fi
-
-# Create output directory if it does not exist
-mkdir -p "\$OUTPUT_DIR"
-
 
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
