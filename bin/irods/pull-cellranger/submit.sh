@@ -68,6 +68,9 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
 
 ################################
 
+
+cd "\$OUTPUT_DIR"
+
 # Find the line that matches these values and output it in CSV format
 imeta qu -C -z /seq/illumina sample = \$sample_id | \
 grep "^collection: " | \
@@ -85,8 +88,6 @@ if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
     echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
     exit 0
 fi
-
-cd "\$OUTPUT_DIR"
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
