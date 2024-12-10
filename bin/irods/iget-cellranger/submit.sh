@@ -73,48 +73,44 @@ SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
 echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/sanger-cellranger"
+OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
+
+################################
+
+# Check if outputs already present
+#if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
+#    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
+#    exit 0
+#fi
+
+# Create the output dir
+mkdir -p "\$OUTPUT_DIR"
 
 # Create the output directory if it doesn't exist
 mkdir -p "\$OUTPUT_DIR"
 cd "\$OUTPUT_DIR"
 
-# Skip processing if the output directory already contains files
-if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains files. Skipping."
-    exit 0
-fi
+# Find the line that matches these values and output it in CSV format
+imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
+grep "^collection: " | \
+sed 's/^collection: //' > irods_path.csv
 
-# Fetch cellranger collections associated with the sample
-collections=\$(imeta qu -C -z /seq/illumina sample = \$SAMPLE | grep "^collection: " | sed 's/^collection: //')
-
-# Identify the highest-priority collection by sorting
-filtered=\$(echo "\$collections" | grep -E "cellranger[0-9]+_count" | \
-    awk '
-    {
-        match(\$0, /cellranger([0-9]+)_count_([0-9]+)_?([^_]+)?/, matches);
-        version = matches[1];
-        count = matches[2];
-        extra = matches[3] ~ /^[0-9]+$/ ? matches[3] : -1;
-        print version, count, extra, \$0;
-    }' | sort -k1,1nr -k2,2nr -k3,3nr | head -n 1 | cut -d" " -f4-)
-
-# Exit if no matching collections are found
-if [ -z "\$filtered" ]; then
-    echo "No matching paths found for sample \$SAMPLE."
-    exit 1
-fi
-
-# Save the filtered path to CSV
-echo "\$filtered" > irods_cellranger.csv
+# Confirm the saved output
+num_paths=\$(wc -l irods_path.csv)
+echo "Saved \$num_paths matching path(s) to irods_path.csv."
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
     echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-    iget -KVf --progress -r "\$irods_path" "\$OUTPUT_DIR"
-done < irods_cellranger.csv
+    iget -r "\$irods_path" "\$OUTPUT_DIR"
+done < irods_path.csv
 
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "\$OUTPUT_DIR"
+
 EOF
+
+
+
+#unsure about confirmation message..
