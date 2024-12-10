@@ -147,16 +147,16 @@ def cmd(sample, samplefile, retainbam, overwrite):
             f"Samples for download:\n{sample_list}",
             "info",
         )
-    else:
-        echo_message(
-            f"All provided samples already have outputs. Proceeding without downloads.",
-            "info",
-        )
-        # echo_message(
-        #    f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-        #    "warn",
-        # )
-        # return  # Exit if no samples need downloading
+    # else:
+    #    echo_message(
+    #        f"All provided samples already have outputs. Proceeding without downloads.",
+    #        "info",
+    #    )
+    # echo_message(
+    #    f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
+    #    "warn",
+    # )
+    # return  # Exit if no samples need downloading
 
     # Join all sample to download IDs into a single string, separated by commas
     sample_ids = ",".join(samples_to_download)
