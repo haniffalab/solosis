@@ -130,11 +130,11 @@ def cmd(sample, samplefile, retainbam, overwrite):
                     )
                     return
                 samples_to_download.append(sample)
-            else:
-                echo_message(
-                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                    "warn",
-                )
+            # else:
+            #    echo_message(
+            #        f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
+            #        "warn",
+            #    )
         else:
             samples_to_download.append(sample)
 
