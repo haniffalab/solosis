@@ -138,7 +138,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         else:
             samples_to_download.append(sample)
 
-    # Confirm samples to download
+        # Confirm samples to download
     if samples_to_download:
         sample_list = "\n".join(
             f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
@@ -147,45 +147,40 @@ def cmd(sample, samplefile, retainbam, overwrite):
             f"Samples for download:\n{sample_list}",
             "info",
         )
-    # else:
-    #    echo_message(
-    #        f"All provided samples already have outputs. Proceeding without downloads.",
-    #        "info",
-    #    )
-    # echo_message(
-    #    f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-    #    "warn",
-    # )
-    # return  # Exit if no samples need downloading
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
+        # Join all sample to download IDs into a single string, separated by commas
+        sample_ids = ",".join(samples_to_download)
 
-    # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
-    )
-
-    # Construct the command with optional BAM flag
-    cmd = [
-        pull_cellranger_script,
-        sample_ids,
-    ]
-
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
+        # Path to the script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        pull_cellranger_script = os.path.abspath(
+            os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
         )
-        echo_lsf_submission_message(result.stdout)
-    except subprocess.CalledProcessError as e:
+
+        # Construct the command with optional BAM flag
+        cmd = [
+            pull_cellranger_script,
+            sample_ids,
+        ]
+
+        try:
+            result = subprocess.run(
+                cmd,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            echo_lsf_submission_message(result.stdout)
+        except subprocess.CalledProcessError as e:
+            echo_message(
+                f"Error during execution: {e.stderr}",
+                "error",
+            )
+    else:
         echo_message(
-            f"Error during execution: {e.stderr}",
-            "error",
+            f"No samples to download. All provided samples already have outputs.",
+            "info",
         )
 
 
