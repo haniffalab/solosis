@@ -6,6 +6,8 @@ import time
 import click
 import pandas as pd
 
+from solosis.utils import log_command
+
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 from solosis.utils import echo_message
@@ -19,26 +21,24 @@ def spinner():
             yield frame
 
 
-@click.command("pull-fastqs")
+@click.command("iget-fastqs")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-def cmd(sample, samplefile):
+@click.pass_context
+def cmd(ctx, sample, samplefile):
     """
     Downloading fastqs from iRODS...
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
+    log_command(ctx)
     echo_message(
-        f"using iRODS to download data",
-        "info",
-    )
-    echo_message(
-        f"if you have a large set of files, this command will take a while to run",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
@@ -91,10 +91,15 @@ def cmd(sample, samplefile):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
+    # Get the sample data directory from the environment variable
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
+        echo_message(
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
 
     if not os.path.isdir(team_sample_data_dir):
         echo_message(
@@ -139,7 +144,7 @@ def cmd(sample, samplefile):
     # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     irods_to_fastq_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/pull-fastqs/submit.sh")
+        os.path.join(script_dir, "../../../bin/irods/iget-fastqs/submit.sh")
     )
 
     # Construct the command with optional BAM flag
@@ -172,8 +177,12 @@ def cmd(sample, samplefile):
                 # Check if the process has finished
                 retcode = process.poll()
                 if retcode is not None:  # Process has finished
+                    sys.stdout.write(
+                        "\r"
+                    )  # Only move the cursor to the beginning of the line
+                    sys.stdout.flush()  # Ensure the change is immediately shown
                     break
-                sys.stdout.write("\r" + next(spin))  # Overwrite the spinner
+                sys.stdout.write("\r" + next(spin))  # Display the spinner
                 sys.stdout.flush()  # Force output to the terminal
                 time.sleep(0.1)  # Delay between spinner updates
 
@@ -181,7 +190,7 @@ def cmd(sample, samplefile):
             stdout, stderr = process.communicate()
             if process.returncode != 0:
                 echo_message(
-                    f"error during execution: {stderr}",
+                    f"error during execution:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}",
                     "warn",
                 )
             else:
@@ -192,14 +201,9 @@ def cmd(sample, samplefile):
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
-            f"error during execution: {e.stderr}",
+            f"error during execution test: {e.stdout}\n{e.stderr}",
             "warn",
         )
-
-    # echo_message(
-    #    f"processing complete",
-    #    "success",
-    # )
 
 
 if __name__ == "__main__":

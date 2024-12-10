@@ -59,9 +59,18 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -G $GROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
+# Define the samples array inside the job script
+################################################
+# The array is redefined here because the job scheduler environment does
+# not inherit the array from the parent script, so we re-split the 
+# SAMPLE_IDS string into an array in each individual job.
+IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+
 # Determine the sample for the current task
-SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
+SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
+
+# Debug: output sample for current task
+echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
@@ -77,6 +86,8 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 # Create the output dir
 mkdir -p "\$OUTPUT_DIR"
 
+# Create the output directory if it doesn't exist
+mkdir -p "\$OUTPUT_DIR"
 cd "\$OUTPUT_DIR"
 
 # Find the line that matches these values and output it in CSV format
