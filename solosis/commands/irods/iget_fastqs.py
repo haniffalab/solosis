@@ -201,7 +201,7 @@ def cmd(ctx, sample, samplefile):
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
-            f"error during execution: test {e.stdout}\n{e.stderr}",
+            f"error during execution test: {e.stdout}\n{e.stderr}",
             "warn",
         )
 
