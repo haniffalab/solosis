@@ -62,7 +62,7 @@ def echo_message(message, type="info", bold=False):
     # Define the color for each message type
     colors = {
         "info": "blue",  # Info messages will be blue
-        "debug": "purple",  # Debug messages will be purple
+        "debug": "magenta",  # Debug messages will be purple
         "error": "red",  # Error messages will be red
         "warn": "yellow",  # Warning messages will be yellow
         "success": "green",  # Success messages will be green
