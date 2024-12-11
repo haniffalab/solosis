@@ -45,7 +45,8 @@ cli.add_command(scanpy.cmd)
 cli.add_command(merge_h5ad.cmd)
 
 # farm
-farm_cmds.add_command(farm.cmd)
+farm_cmds.add_command(farm.single_cmd)
+farm_cmds.add_command(farm.run_ipynb)
 
 if __name__ == "__main__":
     cli()

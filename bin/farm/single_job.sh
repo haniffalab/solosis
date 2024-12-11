@@ -9,46 +9,34 @@ set -e
 
 LOG_FOLDER=".solosis"
 
-# Check if the number of arguments is less than 4
-#if [ $# -lt 4 ]; then
-#  echo "Usage: $0 <job_name> <queue> <walltime> <ncores> <mem> <command>" >&2
-#  echo "job_name: str, name of job" >&2
-#  echo "queue: str, queue name" >&2
-#  echo "walltime: str, wall time for the job" >&2
-#  echo "ncores: int, number of cores" >&2
-#  echo "mem: int, memory required" >&2
-#  echo "command: str, command to execute" >&2
-#  exit 1
-#fi
-
-# Assign positional parameters to variables and shift them
-#job_name=$1; shift
-#queue=$1; shift
-#walltime=$1; shift
-#ncores=$1; shift
-#mem=$1; shift
-#command=$@
-
-#bash_submit(command, jobname="testing", queue=queue, time=time, cores=cores, mem=mem, command = "echo 'Hello, World!'")
-
 if [ ! -d $LOG_FOLDER/lsf ]; then
-  mkdir -p $LOG_FOLDER
+  mkdir -p $LOG_FOLDER/lsf
 fi
 
-bsub_file=$job_name.lsf
+# Creates an lsf folder in the current directory.
+# TODO: Append the solosis RUNID to this. 
+SOLOSIS_RUNID="solosis_runid"
+bsub_prefix="${job_name}-${SOLOSIS_RUNID}"
+bsub_file=$LOG_FOLDER/lsf/$bsub_prefix.lsf
 
-
+email="$USER@sanger.ac.uk"
 cat > $bsub_file <<eof
 #!/bin/bash
+#BSUB -J $job_name
+#BSUB -q $queue
+#BSUB -n $cores 
+#BSUB -M $mem
+#BSUB -R "select[mem>$mem] rusage[mem=$mem]"
+#BSUB -W $time
+#BSUB -o $LOG_FOLDER/lsf/$bsub_prefix.log
 set -euo pipefail
-#bsub -j $job_name
-#bsub -q $queue
-#bsub -o $LOG_FOLDER/lsf/$job_name.log
-#bsub -n $ncores 
-#bsub -m $mem
-#bsub -r "select[mem>$mem] rusage[mem=$mem]"
-#bsub -w $walltime
-eval \$command
+$command_to_exec
+status=\$?
+if [ \$status -eq 0 ]; then
+  echo "$command command was successful: Exit status: \$status" | mail -s "Job status: $job_name" $email
+else
+  echo "$cmd command failed: Exit status: \$status" | mail -s "Job status: $job_name" $email
+fi
 eof
 
 bsub < $bsub_file
