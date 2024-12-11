@@ -95,6 +95,15 @@ imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
 grep "^collection: " | \
 sed 's/^collection: //' > irods_path.csv
 
+# check if cellranger outputs for $SAMPLE have already been pulled, exit
+OUTS=\$(sed 's|.*/||' irods_path.csv)
+
+if [ "\$(ls -A "\$OUTPUT_DIR/\$OUTS")" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs from iRODS. Exiting"
+    exit 0
+fi
+
+
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
 echo "Saved \$num_paths matching path(s) to irods_path.csv."
