@@ -112,7 +112,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         # Always add the sample for download, regardless of existing outputs
         echo_message(
             f"ignoring existing outputs at '{cellranger_path}'.",
-            "warn",
+            "progress",
         )
         samples_to_download.append(sample)
 
