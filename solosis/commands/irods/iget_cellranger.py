@@ -109,33 +109,30 @@ def cmd(sample, samplefile, retainbam, overwrite):
         # Path where cellranger outputs are expected for each sample
         cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
-        # Check if output exists
+        # Debugging logs for the directory existence check
+        echo_message(
+            f"Checking sample '{sample}': path '{cellranger_path}' exists: {os.path.exists(cellranger_path)}",
+            "debug",
+        )
+
         if os.path.exists(cellranger_path):
             if overwrite:
                 echo_message(
                     f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
                     "warn",
                 )
-                try:
-                    # Remove the directory and its contents
-                    # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    echo_message(
-                        f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
-                        "info",
-                    )
-                except subprocess.CalledProcessError as e:
-                    echo_message(
-                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
-                        "error",
-                    )
-                    return
+                # Debug message for overwriting behavior
+                echo_message(
+                    f"Adding sample '{sample}' to download list (overwrite).", "debug"
+                )
                 samples_to_download.append(sample)
-            # else:
-            #    echo_message(
-            #        f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-            #        "warn",
-            #    )
+            else:
+                echo_message(
+                    f"Outputs already exist for sample '{sample}', skipping download.",
+                    "info",
+                )
         else:
+            echo_message(f"Adding sample '{sample}' to download list.", "debug")
             samples_to_download.append(sample)
 
         # Confirm samples to download
