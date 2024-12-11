@@ -109,31 +109,12 @@ def cmd(sample, samplefile, retainbam, overwrite):
         # Path where cellranger outputs are expected for each sample
         cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
-        # Debugging logs for the directory existence check
+        # Always add the sample for download, regardless of existing outputs
         echo_message(
-            f"Checking sample '{sample}': path '{cellranger_path}' exists: {os.path.exists(cellranger_path)}",
-            "debug",
+            f"Adding sample '{sample}' to download list, ignoring existing outputs at '{cellranger_path}'.",
+            "info",
         )
-
-        if os.path.exists(cellranger_path):
-            if overwrite:
-                echo_message(
-                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                    "warn",
-                )
-                # Debug message for overwriting behavior
-                echo_message(
-                    f"Adding sample '{sample}' to download list (overwrite).", "debug"
-                )
-                samples_to_download.append(sample)
-            else:
-                echo_message(
-                    f"Outputs already exist for sample '{sample}', skipping download.",
-                    "info",
-                )
-        else:
-            echo_message(f"Adding sample '{sample}' to download list.", "debug")
-            samples_to_download.append(sample)
+        samples_to_download.append(sample)
 
         # Confirm samples to download
     if samples_to_download:
