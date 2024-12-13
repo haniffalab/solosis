@@ -83,6 +83,15 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 #    exit 0
 #fi
 
+# check if cellranger outputs for $SAMPLE have already been pulled, exit
+#OUTS=\$(sed 's|.*/||' \$OUTPUT_DIR/irods_path.csv)
+
+[ -d "$OUTPUT_DIR/$OUTS" ]
+if [ -d "\$OUTPUT_DIR/\$OUTS" ]; then
+    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs from iRODS. Exiting"
+    exit 0
+fi
+
 # Create the output dir
 mkdir -p "\$OUTPUT_DIR"
 
@@ -98,15 +107,6 @@ sed 's/^collection: //' > irods_path.csv
 # Confirm the saved output
 num_paths=\$(wc -l irods_path.csv)
 echo "Saved \$num_paths matching path(s) to irods_path.csv."
-
-# check if cellranger outputs for $SAMPLE have already been pulled, exit
-#OUTS=\$(sed 's|.*/||' irods_path.csv)
-
-[ -d "$OUTPUT_DIR/$OUTS" ]
-if [ -d "\$OUTPUT_DIR/\$OUTS" ]; then
-    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs from iRODS. Exiting"
-    exit 0
-fi
 
 # Read each line from irods_path.csv and use iget to pull files to the output dir
 while IFS= read -r irods_path; do
