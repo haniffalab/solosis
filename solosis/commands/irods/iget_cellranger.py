@@ -87,7 +87,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SA7MPLE_DATA_DIR")
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
 
     if not team_sample_data_dir:
         echo_message(
