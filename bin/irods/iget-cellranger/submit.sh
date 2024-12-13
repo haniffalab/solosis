@@ -89,7 +89,7 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 [ -d "$OUTPUT_DIR/$OUTS" ]
 if [ -d "\$OUTPUT_DIR/\$OUTS" ]; then
     echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs from iRODS. Exiting"
-    exit 0
+    exit 2 
 fi
 
 # Create the output dir
