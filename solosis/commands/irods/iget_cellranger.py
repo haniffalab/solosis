@@ -151,10 +151,17 @@ def cmd(sample, samplefile, retainbam, overwrite):
             )
             echo_lsf_submission_message(result.stdout)
         except subprocess.CalledProcessError as e:
-            echo_message(
-                f"Error during execution: {e.stderr}",
-                "error",
-            )
+            # Check the return code to determine the specific error
+            if e.returncode == 2:
+                echo_message(
+                    "Output directory already contains cellranger outputs. No further action required.",
+                    "info",
+                )
+            else:
+                echo_message(
+                    f"Error during execution: {e.stderr.strip()}",
+                    "error",
+                )
     else:
         echo_message(
             f"No samples to download. All provided samples already have outputs.",
