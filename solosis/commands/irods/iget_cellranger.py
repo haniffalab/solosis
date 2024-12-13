@@ -152,10 +152,10 @@ def cmd(sample, samplefile, retainbam, overwrite):
             echo_lsf_submission_message(result.stdout)
         except subprocess.CalledProcessError as e:
             # Interpret exit codes for specific conditions
-            if e.returncode == 2:
+            if e.returncode == 0:
                 echo_message(
                     "Output directory already contains cellranger outputs. No further action required.",
-                    "info",
+                    "error",
                 )
             else:
                 echo_message(
