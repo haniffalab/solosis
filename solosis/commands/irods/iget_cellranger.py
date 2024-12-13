@@ -87,7 +87,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+    team_sample_data_dir = os.getenv("TEAM_SA7MPLE_DATA_DIR")
 
     if not team_sample_data_dir:
         echo_message(
@@ -102,6 +102,45 @@ def cmd(sample, samplefile, retainbam, overwrite):
             "error",
         )
         return
+
+    def check_existing_outputs(output_dir):
+        """
+        Checks if the output directory contains any existing Cell Ranger outputs.
+        If outputs are found, logs a message and exits the script.
+        """
+        # Path to the CSV file
+        csv_file_path = os.path.join(
+            team_sample_data_dir, sample, "cellranger", "irods_path.csv"
+        )
+
+        # Check if the file exists
+        if not os.path.exists(csv_file_path):
+            return False  # No outputs, continue processing
+
+        # Read the file and extract filenames
+        with open(csv_file_path, "r") as file:
+            outs = [os.path.basename(line.strip()) for line in file]
+
+        # If any outputs are found, log a message and exit
+        if outs:
+            echo_message(
+                "Output directory already contains cellranger outputs. No further action required.",
+                "info",
+            )
+            sys.exit(2)  # Exit code 2 for existing outputs
+
+        return False  # Continue processing if no outputs
+
+    # Example usage inside the main logic
+    for sample in samples_to_download:
+        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
+
+        # Check for existing outputs in the sample directory
+        if check_existing_outputs(cellranger_path):
+            continue  # Skip to the next sample if outputs exist
+
+        # Proceed with further processing (e.g., preparing and submitting jobs)
+        echo_message(f"Processing sample {sample}", "info")
 
     # Check each sample
     samples_to_download = []
