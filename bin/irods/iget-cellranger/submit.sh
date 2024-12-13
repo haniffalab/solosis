@@ -48,18 +48,6 @@ mkdir -p "$TEAM_LOGS_DIR"
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 NUM_SAMPLES=${#SAMPLES[@]}
 
-# Check if irods_path.csv exists
-if [ -f "\$OUTPUT_DIR/irods_path.csv" ]; then
-    # Extract base names from irods_path.csv
-    OUTS=\$(sed 's|.*/||' irods_path.csv)
-
-    # Check if cellranger outputs for $SAMPLE already exist
-    if [ -d "\$OUTPUT_DIR/\$OUTS" ]; then
-        echo "Output directory '\$OUTPUT_DIR/\$OUTS' already contains cellranger outputs for sample $SAMPLE. Skipping job submission."
-        exit 0
-    fi
-fi
-
 # Submit an array job to LSF, with each task handling a specific sample
 bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #!/bin/bash
