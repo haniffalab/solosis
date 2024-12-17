@@ -15,7 +15,11 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-@click.option("--libraries", required=True, help="libraries file CSV")
+@click.option(
+    "--libraries",
+    type=click.Path(exists=True),
+    help="Path to a CSV file containing libraries",
+)
 @click.option(
     "--version",
     type=str,
