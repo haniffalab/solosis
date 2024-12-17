@@ -143,19 +143,21 @@ def cmd(sample, samplefile, retainbam, overwrite):
         echo_message(f"Processing sample {sample}", "info")
 
     # Check each sample
-    samples_to_download = []
+    samples_to_download = []  # Initialize to avoid UnboundLocalError
+
+    # Check each sample
     for sample in samples:
         # Path where cellranger outputs are expected for each sample
         cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
         # Always add the sample for download, regardless of existing outputs
         echo_message(
-            f"ignoring existing outputs at '{cellranger_path}'.",
+            f"Ignoring existing outputs at '{cellranger_path}'.",
             "progress",
         )
         samples_to_download.append(sample)
 
-        # Confirm samples to download
+    # Confirm samples to download
     if samples_to_download:
         sample_list = "\n".join(
             f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
@@ -190,20 +192,13 @@ def cmd(sample, samplefile, retainbam, overwrite):
             )
             echo_lsf_submission_message(result.stdout)
         except subprocess.CalledProcessError as e:
-            # Interpret exit codes for specific conditions
-            if e.returncode == 0:
-                echo_message(
-                    "Output directory already contains cellranger outputs. No further action required.",
-                    "error",
-                )
-            else:
-                echo_message(
-                    f"An error occurred during execution: {e.stderr.strip()}",
-                    "error",
-                )
+            echo_message(
+                f"Error during execution: {e.stderr}",
+                "error",
+            )
     else:
         echo_message(
-            f"No samples to download. All provided samples already have outputs.",
+            f"No samples to download. All provided samples already have outputs or no valid samples found.",
             "info",
         )
 
