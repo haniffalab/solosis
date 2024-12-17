@@ -108,7 +108,7 @@ cd "\$OUTPUT_DIR"
 # Run cellranger 'arc' for the sample
 cellranger-arc count \
     --id=\$SAMPLE \
-    --libraries=\$LIBRARIES \
+    --libraries=$LIBRARIES \
     --reference=\$REF \
     --localcores=16 \
     --localmem=60
