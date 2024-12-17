@@ -2,6 +2,7 @@ import os
 import subprocess
 
 import click
+import pandas as pd
 
 from solosis.utils import echo_lsf_submission_message, echo_message
 
