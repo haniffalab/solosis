@@ -38,6 +38,7 @@ fi
 if ! module load cellgen/cellranger-arc/"$VERSION"; then
   echo "Error: Failed to load cellranger-arc version $VERSION" >&2
   exit
+fi
 
 # Configure paths
 TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
