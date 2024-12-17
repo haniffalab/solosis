@@ -111,5 +111,4 @@ cellranger-arc count \
     --reference=\$REF \
     --localcores=16 \
     --localmem=60
-#change 16 > $CPU ?
 EOF 
