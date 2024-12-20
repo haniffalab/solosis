@@ -38,40 +38,55 @@ if ! module load cellgen/cellranger/"$VERSION"; then
   exit 1
 fi
 
-# Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+# Configure paths
+TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
+
+# Ensure logs directory exists
 TEAM_LOGS_DIR="$HOME/logs"
+mkdir -p "$TEAM_LOGS_DIR"
+
+# Configure job parameters
 CPU=16
 MEM=64000
 QUEUE="normal"
 GROUP="team298"
-REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2020-A"
-
-# Ensure logs directory exists
-mkdir -p "$TEAM_LOGS_DIR"
+REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 NUM_SAMPLES=${#SAMPLES[@]}
 
 # Submit an array job to LSF, with each task handling a specific sample
-bsub -J "cellranger_array[1-$NUM_SAMPLES]" <<EOF
+bsub -J "cellranger_count_array[1-$NUM_SAMPLES]" <<EOF
 #!/bin/bash
-#BSUB -o "$TEAM_LOGS_DIR/cellranger_%J_%I.out"   # Standard output with array job index
-#BSUB -e "$TEAM_LOGS_DIR/cellranger_%J_%I.err"   # Standard error with array job index
+#BSUB -o "$TEAM_LOGS_DIR/cellranger_count_%J_%I.out"   # Standard output with array job index
+#BSUB -e "$TEAM_LOGS_DIR/cellranger_count_%J_%I.err"   # Standard error with array job index
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
 #BSUB -G $GROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
+# Define the samples array inside the job script
+################################################
+# The array is redefined here because the job scheduler environment does
+# not inherit the array from the parent script, so we re-split the 
+# SAMPLE_IDS string into an array in each individual job.
+IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+
 # Determine the sample for the current task
-SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
-SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
+SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
+
+# Debug: output sample for current task
+echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
+
 
 # Define paths for the current sample
 FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
 OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger/$VERSION"
+
+echo "DEBUG: SAMPLE_INDEX=\$SAMPLE_INDEX"
+echo "DEBUG: SAMPLE=\$SAMPLE"
 
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
@@ -102,4 +117,3 @@ cellranger count \
     $BAM_FLAG
 EOF
 
-echo "Submitted array job for $NUM_SAMPLES samples."

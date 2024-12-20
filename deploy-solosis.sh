@@ -2,6 +2,8 @@
 
 # export DEPLOY_DIR="/software/cellgen/team298/shared/solosis"
 # export MODULEFILES_DIR="/software/cellgen/team298/shared/modulefiles"
+# export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+# export TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/data/logs"
 
 # GitHub repository URL
 GITHUB_REPO_URL="https://github.com/haniffalab/solosis"
@@ -73,5 +75,37 @@ rm $TAR_FILE
 echo "Setting permissions..."
 chmod -R -f g+ws $DEPLOY_DIR  # Set group write and setgid permissions
 
-# Step 8: Deployment complete
+# # Step 8: Conda environment creation or update 
+# CONDA_ENV_NAME="solosis-env"
+# CONDA_ENV_PATH="/opt/conda/envs/$CONDA_ENV_NAME"
+# echo "Checking for Conda environment: $CONDA_ENV_NAME..."
+# if ! conda env list | grep -q "$CONDA_ENV_NAME"; then
+#   echo "Environment $CONDA_ENV_NAME not found. Creating it from environment.yml..."
+  
+#   # Ensure the environment.yml file exists
+#   if [ -f "$DEPLOY_DIR/$RELEASE_TAG/environment.yml" ]; then
+#     # Create the Conda environment from the environment.yml file at the shared location
+#     conda env create -f "$DEPLOY_DIR/$RELEASE_TAG/environment.yml" -p "$CONDA_ENV_PATH"
+#   else
+#     echo "Error: environment.yml not found in the release."
+#     exit 1
+#   fi
+# else
+#   echo "Environment $CONDA_ENV_NAME already exists. Updating it..."
+  
+#   # Ensure the environment.yml file exists
+#   if [ -f "$DEPLOY_DIR/$RELEASE_TAG/environment.yml" ]; then
+#     # Update the Conda environment with the environment.yml file at the shared location
+#     conda env update -p "$CONDA_ENV_PATH" -f "$DEPLOY_DIR/$RELEASE_TAG/environment.yml"
+#   else
+#     echo "Error: environment.yml not found in the release."
+#     exit 1
+#   fi
+# fi
+
+# # Step 9: Set permissions for the conda environment
+# echo "Setting permissions for the Conda environment at $CONDA_ENV_PATH..."
+# chmod -R -f g+ws "$CONDA_ENV_PATH"  # Set group write and setgid permissions
+
+# Step 10: Deployment complete
 echo "Deployment of release $RELEASE_TAG complete!"
