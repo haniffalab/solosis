@@ -26,27 +26,21 @@ def check_irods_initialized():
     # Path to cached iRODS credentials
     irods_auth_file = os.path.expanduser("~/.irods/.irodsA")
 
-    # Remove the cached credentials
+    # If credentials exist, remove them (forces re-authentication)
     if os.path.exists(irods_auth_file):
         try:
             os.remove(irods_auth_file)
             echo_message(
-                f"removed cached iRODS credentials at {irods_auth_file}", "info"
+                f"Removed cached iRODS credentials at {irods_auth_file}", "info"
             )
         except OSError as e:
             echo_message(
-                f"Failed to remove iRODS credentials: {e.strerror}",
+                f"Failed to remove cached credentials: {e.strerror}",
                 "error",
             )
-            sys.exit(1)  # Exit with an error code
-    else:
-        echo_message(
-            f"iRODS is not loaded. please run `module load cellgen/irods` then `iinit` before running this command again.",
-            "error",
-        )
-        sys.exit(1)  # Exit with an error code
+            sys.exit(1)
 
-    # Test command to check iRODS functionality
+    # Test command to check if iRODS is functional
     test_command = [
         "iget",
         "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
@@ -58,16 +52,26 @@ def check_irods_initialized():
             test_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        # Check for the "Enter your current iRODS password" message
+        # Check for the "Enter your current iRODS password" message in stderr
         if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "iRODS is not loaded. please run `iinit` before running this command again.",
+                "iRODS is not loaded. Please run `module load cellgen/irods` and then `iinit`.",
                 "error",
             )
-            sys.exit(1)  # Exit with an error code
+            sys.exit(1)
+        elif "CAT_NO_ACCESS" in result.stderr or "error" in result.stderr.lower():
+            echo_message(
+                "Access error. Ensure you have the correct permissions or re-run `iinit`.",
+                "error",
+            )
+            sys.exit(1)
+
+        # If no errors, assume iRODS is initialized
+        echo_message("iRODS is initialized and ready to use.", "success")
+
     except FileNotFoundError:
         echo_message(
-            "the 'iget' command was not found. ensure iRODS is installed and available in your PATH.",
+            "The 'iget' command was not found. Ensure iRODS is installed and available in your PATH.",
             "error",
         )
         sys.exit(1)
