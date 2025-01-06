@@ -21,15 +21,32 @@ def spinner():
             yield frame
 
 
-# check if irods has been loaded into current environment
 def check_irods_initialized():
-    """Check if iRODS is initialized by running an `iget` command."""
-    # Remove the cached credentials
+    """Check if iRODS is initialized by running an iget command."""
+    # Path to cached iRODS credentials
     irods_auth_file = os.path.expanduser("~/.irods/.irodsA")
-    if os.path.exists(irods_auth_file):
-        os.remove(irods_auth_file)
-        echo_message(f"removed cached iRODS credentials at {irods_auth_file}", "info")
 
+    # Remove the cached credentials
+    if os.path.exists(irods_auth_file):
+        try:
+            os.remove(irods_auth_file)
+            echo_message(
+                f"removed cached iRODS credentials at {irods_auth_file}", "info"
+            )
+        except OSError as e:
+            echo_message(
+                f"Failed to remove iRODS credentials: {e.strerror}",
+                "error",
+            )
+            sys.exit(1)  # Exit with an error code
+    else:
+        echo_message(
+            f"iRODS is not loaded. please run iinit before running this command again.",
+            "error",
+        )
+        sys.exit(1)  # Exit with an error code
+
+    # Test command to check iRODS functionality
     test_command = [
         "iget",
         "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
@@ -44,7 +61,7 @@ def check_irods_initialized():
         # Check for the "Enter your current iRODS password" message
         if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "iRODS is not loaded. please run `iinit` before running this command again.",
+                "iRODS is not loaded. please run iinit before running this command again.",
                 "error",
             )
             sys.exit(1)  # Exit with an error code
