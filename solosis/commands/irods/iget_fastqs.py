@@ -21,6 +21,41 @@ def spinner():
             yield frame
 
 
+# check if irods has been loaded into current environment
+def check_irods_initialized():
+    """Check if iRODS is initialized by running an `iget` command."""
+    # Remove the cached credentials
+    irods_auth_file = os.path.expanduser("~/.irods/.irodsA")
+    if os.path.exists(irods_auth_file):
+        os.remove(irods_auth_file)
+        echo_message(f"removed cached iRODS credentials at {irods_auth_file}", "info")
+
+    test_command = [
+        "iget",
+        "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
+    ]
+
+    try:
+        # Run the test command
+        result = subprocess.run(
+            test_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Check for the "Enter your current iRODS password" message
+        if "Enter your current iRODS password" in result.stderr:
+            echo_message(
+                "iRODS is not loaded. please run `iinit` before running this command again.",
+                "error",
+            )
+            sys.exit(1)  # Exit with an error code
+    except FileNotFoundError:
+        echo_message(
+            "the 'iget' command was not found. ensure iRODS is installed and available in your PATH.",
+            "error",
+        )
+        sys.exit(1)
+
+
 @click.command("iget-fastqs")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -41,6 +76,9 @@ def cmd(ctx, sample, samplefile):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
+    # Step 1: Check iRODS initialization
+    check_irods_initialized()
 
     samples = []
 
