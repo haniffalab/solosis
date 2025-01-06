@@ -47,7 +47,7 @@ def execute_command():
 
     except FileNotFoundError:
         echo_message(
-            "Command not found. Ensure the necessary tools are installed and available in your PATH.",
+            "iRODS not loaded. please run `module load cellgen/irods` before running this solosis command again.",
             "error",
         )
         sys.exit(1)
