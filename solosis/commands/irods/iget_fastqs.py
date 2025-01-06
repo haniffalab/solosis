@@ -21,6 +21,15 @@ def spinner():
             yield frame
 
 
+import subprocess
+import sys
+
+
+def echo_message(message, level="info"):
+    """Utility function to print messages with a given level."""
+    print(f"[{level.upper()}] {message}")
+
+
 def execute_command():
     """Run a command and handle specific output conditions."""
     command = [
@@ -34,20 +43,23 @@ def execute_command():
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        # Check the command output (stderr in this case) for the specific message
-        if "Enter your current iRODS password:" in result.stderr:
+        # Debugging: Print the actual stderr output
+        print("DEBUG: stderr output from command:", result.stderr)
+
+        # Check for specific error message in stderr
+        if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "run `iinit` before running this solosis command again.",
+                "Run `iinit` before running this solosis command again.",
                 "error",
             )
             sys.exit(1)  # Exit with error status 1
 
-        # If no specific error output, the script can continue
-        echo_message("command executed successfully.", "success")
+        # If no error message, continue execution
+        echo_message("Command executed successfully.", "success")
 
     except FileNotFoundError:
         echo_message(
-            "command not found. ensure the iRODS are installed and available in your PATH.",
+            "Command not found. Ensure the necessary tools are installed and available in your PATH.",
             "error",
         )
         sys.exit(1)
