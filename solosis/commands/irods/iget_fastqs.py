@@ -21,38 +21,40 @@ def spinner():
             yield frame
 
 
-def check_irods_initialized():
-    """Check if iRODS is initialized by running an `iget` command."""
-    # Remove the cached credentials
-    irods_auth_file = os.path.expanduser("~/.irods/.irodsA")
-    if os.path.exists(irods_auth_file):
-        os.remove(irods_auth_file)
-        echo_message(f"Removed cached iRODS credentials at {irods_auth_file}", "info")
-
-    test_command = [
+def execute_command():
+    """Run a command and handle specific output conditions."""
+    command = [
         "iget",
         "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
     ]
 
     try:
-        # Run the test command
+        # Run the command and capture stdout and stderr
         result = subprocess.run(
-            test_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        # Check for the "Enter your current iRODS password" message
+        # Check the command output (stderr in this case) for the specific message
         if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "iRODS is not initialized. Please run `iinit` before running this command again.",
+                "run `iinit` before running this solosis command again.",
                 "error",
             )
-            sys.exit(1)  # Exit with an error code
+            sys.exit(1)  # Exit with error status 1
+
+        # If no specific error output, the script can continue
+        echo_message("command executed successfully.", "success")
+
     except FileNotFoundError:
         echo_message(
-            "The 'iget' command was not found. Ensure iRODS is installed and available in your PATH.",
+            "command not found. ensure the iRODS are installed and available in your PATH.",
             "error",
         )
         sys.exit(1)
+
+
+# Call the function
+execute_command()
 
 
 @click.command("iget-fastqs")
@@ -75,9 +77,6 @@ def cmd(ctx, sample, samplefile):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-
-    # Step 1: Check iRODS initialization
-    check_irods_initialized()
 
     samples = []
 
