@@ -41,7 +41,7 @@ def check_irods_initialized():
             sys.exit(1)  # Exit with an error code
     else:
         echo_message(
-            f"iRODS is not loaded. please run iinit before running this command again.",
+            f"iRODS is not loaded. please run `module load cellgen/irods` then `iinit` before running this command again.",
             "error",
         )
         sys.exit(1)  # Exit with an error code
