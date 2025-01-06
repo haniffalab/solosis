@@ -35,7 +35,7 @@ def execute_command():
         )
 
         # Check the command output (stderr in this case) for the specific message
-        if "Enter your current iRODS password" in result.stderr:
+        if "Enter your current iRODS password:" in result.stderr:
             echo_message(
                 "run `iinit` before running this solosis command again.",
                 "error",
