@@ -22,29 +22,12 @@ def spinner():
 
 
 def check_irods_initialized():
-    """Check if iRODS is initialized by running an iget command."""
+    """Check if iRODS is initialized by running an `iget` command."""
     # Remove the cached credentials
     irods_auth_file = os.path.expanduser("~/.irods/.irodsA")
     if os.path.exists(irods_auth_file):
-        try:
-            os.remove(irods_auth_file)
-            echo_message(
-                f"removed cached iRODS credentials at {irods_auth_file}", "info"
-            )
-        except FileNotFoundError:
-            # Handle edge case where 'os.remove' fails but behaves like 'rm'
-            echo_message(
-                "iRODS is not loaded. please run `iinit` before running this command again.",
-                "error",
-            )
-            sys.exit(1)
-    else:
-        # Simulate 'rm' behavior for missing files
-        echo_message(
-            "iRODS is not loaded. please run iinit before running this command again.",
-            "error",
-        )
-        sys.exit(1)
+        os.remove(irods_auth_file)
+        echo_message(f"Removed cached iRODS credentials at {irods_auth_file}", "info")
 
     test_command = [
         "iget",
@@ -60,13 +43,13 @@ def check_irods_initialized():
         # Check for the "Enter your current iRODS password" message
         if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "iRODS is not loaded. please run iinit before running this command again.",
+                "iRODS is not initialized. Please run `iinit` before running this command again.",
                 "error",
             )
             sys.exit(1)  # Exit with an error code
     except FileNotFoundError:
         echo_message(
-            "the 'iget' command was not found. ensure iRODS is installed and available in your PATH.",
+            "The 'iget' command was not found. Ensure iRODS is installed and available in your PATH.",
             "error",
         )
         sys.exit(1)
