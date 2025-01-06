@@ -61,7 +61,7 @@ def check_irods_initialized():
         # Check for the "Enter your current iRODS password" message
         if "Enter your current iRODS password" in result.stderr:
             echo_message(
-                "iRODS is not loaded. please run iinit before running this command again.",
+                "iRODS is not loaded. please run `iinit` before running this command again.",
                 "error",
             )
             sys.exit(1)  # Exit with an error code
