@@ -34,7 +34,7 @@ def check_irods_initialized():
         except FileNotFoundError:
             # Handle edge case where 'os.remove' fails but behaves like 'rm'
             echo_message(
-                "iRODS is not loaded. please run iinit before running this command again.",
+                "iRODS is not loaded. please run `iinit` before running this command again.",
                 "error",
             )
             sys.exit(1)
