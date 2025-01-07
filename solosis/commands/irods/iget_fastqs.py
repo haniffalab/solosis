@@ -37,7 +37,7 @@ def execute_command():
         # Check for the specific error in stderr
         if "CAT_INVALID_AUTHENTICATION" in result.stderr:
             echo_message(
-                "Run `iinit` before running this solosis command again.",
+                "run `iinit` before running this solosis command again.",
                 "error",
             )
             sys.exit(1)  # Exit with error status 1
@@ -47,7 +47,7 @@ def execute_command():
 
     except FileNotFoundError:
         echo_message(
-            "iRODS not loaded. please run `module load cellgen/irods` before running this solosis command again.",
+            "iRODS not loaded. please run `module load cellgen/irods` and then `iinit` before running this solosis command again.",
             "error",
         )
         sys.exit(1)
