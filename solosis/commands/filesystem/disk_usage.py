@@ -38,7 +38,7 @@ def cmd():
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     diskusage_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/filesystem/disk-usage/submit.sh")
+        os.path.join(script_dir, "../../../bin/utilities/disk-usage/submit.sh")
     )
     # Construct the command with optional BAM flag
     cmd = [diskusage_submit_script]
