@@ -21,6 +21,13 @@ def spinner():
             yield frame
 
 
+@click.command("iget-fastqs")
+@click.option("--sample", type=str, help="Sample ID (string)")
+@click.option(
+    "--samplefile",
+    type=click.Path(exists=True),
+    help="Path to a CSV or TSV file containing sample IDs",
+)
 def irods_validation():
     """Run a command and handle specific output conditions."""
     command = [
@@ -60,13 +67,6 @@ def irods_validation():
 irods_validation()
 
 
-@click.command("iget-fastqs")
-@click.option("--sample", type=str, help="Sample ID (string)")
-@click.option(
-    "--samplefile",
-    type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing sample IDs",
-)
 @click.pass_context
 def cmd(ctx, sample, samplefile):
     """
