@@ -21,7 +21,7 @@ def spinner():
             yield frame
 
 
-def execute_command():
+def irods_validation():
     """Run a command and handle specific output conditions."""
     command = [
         "iget",
@@ -35,7 +35,10 @@ def execute_command():
         )
 
         # Check for the specific error in stderr
-        if "CAT_INVALID_AUTHENTICATION" in result.stderr:
+        if (
+            "CAT_INVALID_AUTHENTICATION" in result.stderr
+            or "-827000 CAT_INVALID_USER" in result.stderr
+        ):
             echo_message(
                 "run `iinit` before running this solosis command again.",
                 "error",
@@ -54,7 +57,7 @@ def execute_command():
 
 
 # Call the function
-execute_command()
+irods_validation()
 
 
 @click.command("iget-fastqs")
