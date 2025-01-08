@@ -40,7 +40,7 @@ def irods_validation():
             or "-827000 CAT_INVALID_USER" in result.stderr
         ):
             echo_message(
-                "run `iinit` before running this solosis command again.",
+                "run `iinit` before re-running this solosis command.",
                 "error",
             )
             sys.exit(1)  # Exit with error status 1
