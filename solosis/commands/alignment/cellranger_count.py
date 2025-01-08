@@ -9,28 +9,39 @@ from solosis.utils import echo_message
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@click.command("starsolo")
+@click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-def cmd(sample, samplefile):
+@click.option(
+    "--create-bam",
+    is_flag=True,
+    default=False,
+    help="Generate BAM files for each sample",
+)
+@click.option(
+    "--version",
+    type=str,
+    default="7.2.0",  # Set a default version
+    help="Cell Ranger version to use (e.g., '7.2.0')",
+)
+def cmd(sample, samplefile, create_bam, version):
     """
-    STARsolo aligns single-cell RNA sequencing  reads...
+    Run Cell Ranger for single-cell RNA sequencing alignment and analysis
 
-    STARsolo (2.7.11b) Aligner processes scRNA seq data to generate
-    GEX matrices & identify cell-specific transcripts.
-
+    Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
+    and gene counting for single-cell 3' and 5' RNA-seq data, as well as
+    V(D)J transcript sequence assembly
     """
-    # Print a clear introductory message
     ctx = click.get_current_context()
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading starsolo")
+    echo_message(f"loading Cell Ranger version {version}")
 
     samples = []
 
@@ -77,10 +88,15 @@ def cmd(sample, samplefile):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
+    # Get the sample data directory from the environment variable
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
+        echo_message(
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
 
     if not os.path.isdir(team_sample_data_dir):
         echo_message(
@@ -116,12 +132,18 @@ def cmd(sample, samplefile):
 
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    starsolo_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/starsolo/submit.sh")
+    cellranger_submit_script = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
     )
 
     # Construct the command with optional BAM flag
-    cmd = [starsolo_submit_script, sample_ids]  # Pass version to the submit script
+    cmd = [
+        cellranger_submit_script,
+        sample_ids,
+        version,
+    ]  # Pass version to the submit script
+    if not create_bam:
+        cmd.append("--no-bam")
 
     # Print the command being executed for debugging
     echo_message(
@@ -131,7 +153,7 @@ def cmd(sample, samplefile):
 
     # Execute the command for all valid samples
     echo_message(
-        f"starting starsolo for samples: {sample_ids}...",
+        f"starting Cell Ranger for samples: {sample_ids}...",
         "progress",
     )
     try:
@@ -143,18 +165,18 @@ def cmd(sample, samplefile):
             text=True,
         )
         echo_message(
-            f"starsolo submitted successfully:\n{result.stdout}",
+            f"Cell Ranger submitted successfully:\n{result.stdout}",
             "progress",
         )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
-            f"Error during starsolo execution: {e.stderr}",
+            f"Error during Cell Ranger execution: {e.stderr}",
             "warn",
         )
 
     echo_message(
-        f"starsolo submission complete. run `bjobs -w`  for progress.",
+        f"cellranger submission complete. run `bjobs -w`  for progress.",
         "success",
     )
 
