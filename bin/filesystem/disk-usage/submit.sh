@@ -19,8 +19,8 @@ set -e
 
 # lustre
 #lfs quota -g team298 -h /lustre/scratch126
-lustre_size=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $3}')
-lustre_used=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $1}')
+lustre_size=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $2}')
+lustre_used=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $4}')
 ####remove T from the values
 used_num=$(echo "$lustre_used" | sed 's/[A-Za-z]//g')
 size_num=$(echo "$lustre_size" | sed 's/[A-Za-z]//g')
