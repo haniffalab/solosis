@@ -121,11 +121,11 @@ def cmd(ctx, sample, samplefile):
 
     if not samples:
         echo_message(
-            f"no samples provided. Use --sample or --samplefile",
+            f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
         echo_message(
-            f"try using solosis-cli irods iget-fastqs --help",
+            f"try using `solosis-cli irods iget-fastqs --help`",
             "info",
         )
         return
