@@ -125,7 +125,7 @@ def cmd(ctx, sample, samplefile):
             "error",
         )
         echo_message(
-            f"try using solosis-cli pull-fastqs --help",
+            f"try using solosis-cli irods iget-fastqs --help",
             "info",
         )
         return
