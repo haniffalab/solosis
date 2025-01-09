@@ -70,4 +70,4 @@ subject="filecount"
     echo "$email_body"
 } | sendmail "${recipients[@]}"
 # Message to confirm email has been sent to email
-echo "Script completed. Email sent to nlg143@newcastle.ac.uk"
+echo "Script completed. Email sent to $USER@sanger.ac.uk"
