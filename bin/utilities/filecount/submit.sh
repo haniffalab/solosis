@@ -23,8 +23,8 @@ generate_html_table() {
 # Main script execution
 # lustre
 #lfs quota -g team298 -h /lustre/scratch126
-file_count=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $5}')
-file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $7}')
+file_count=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $6}')
+file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $8}')
 
 # nfs
 # df -h /nfs/team298
