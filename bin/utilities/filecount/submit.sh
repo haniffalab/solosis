@@ -30,12 +30,12 @@ file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratc
 # df -h /nfs/team298
 #nfs_count=$(find /nfs/team298 -type f | wc -l)
 nfs_count=345678
-nfs_lim=1500000
+nfs_lim=N/A
 
 #warehouse
 #df -h /warehouse/team298_wh01
 wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
-wh_lim=150000
+wh_lim=N/A
 
 data=(
     "Lustre $file_count $file_limit"
