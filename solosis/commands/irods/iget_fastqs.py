@@ -56,10 +56,6 @@ def irods_validation():
         sys.exit(1)
 
 
-# Call the function
-irods_validation()
-
-
 @click.command("iget-fastqs")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -80,6 +76,9 @@ def cmd(ctx, sample, samplefile):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
+    # Call the function
+    irods_validation()
 
     samples = []
 
