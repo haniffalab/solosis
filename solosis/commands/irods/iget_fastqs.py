@@ -42,9 +42,6 @@ def cmd(ctx, sample, samplefile):
         "info",
     )
 
-    # Step 1: Check iRODS initialization
-    check_irods_initialized()
-
     samples = []
 
     # Collect sample IDs from the provided options
