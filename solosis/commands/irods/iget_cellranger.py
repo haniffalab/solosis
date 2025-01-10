@@ -126,11 +126,11 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     if not samples:
         echo_message(
-            f"no samples provided. Use --sample or --samplefile",
+            f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
         echo_message(
-            f"try using solosis-cli pull-cellranger --help",
+            f"try using solosis-cli iget-cellranger `--help`",
             "warn",
         )
         return
