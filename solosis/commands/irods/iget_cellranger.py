@@ -9,6 +9,41 @@ import pandas as pd
 from solosis.utils import echo_message
 
 
+def irods_validation():
+    """Run a command and handle specific output conditions."""
+    command = [
+        "iget",
+        "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
+    ]
+
+    try:
+        # Run the command and capture stdout and stderr
+        result = subprocess.run(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Check for the specific error in stderr
+        if (
+            "CAT_INVALID_AUTHENTICATION" in result.stderr
+            or "-827000 CAT_INVALID_USER" in result.stderr
+        ):
+            echo_message(
+                "run `iinit` before re-running this solosis command.",
+                "error",
+            )
+            sys.exit(1)  # Exit with error status 1
+
+        # If no error, command executed successfully
+        echo_message("Command executed successfully.", "success")
+
+    except FileNotFoundError:
+        echo_message(
+            "iRODS not loaded. please run `module load cellgen/irods` before re-running this solosis command.",
+            "error",
+        )
+        sys.exit(1)
+
+
 # change to pull-cellranger
 @click.command("pull-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string)")
@@ -47,6 +82,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
         f"if you have a large set of files, this command will take a while to run",
         "info",
     )
+
+    # Call the function
+    irods_validation()
 
     samples = []
 
