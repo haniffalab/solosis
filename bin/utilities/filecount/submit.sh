@@ -58,8 +58,7 @@ $html_table
 </html>
 EOF
 )
-recipients=("louiseegrimble@gmail.com" "$USER@sanger.ac.uk")
-#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac>
+recipients="$USER@sanger.ac.uk"
 subject="filecount"
 # Message for the email
 {
