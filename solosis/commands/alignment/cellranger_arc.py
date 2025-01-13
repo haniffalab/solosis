@@ -25,7 +25,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     "--version",
     type=str,
     default="2.0.2",  # Set a default version
-    help="Cell Ranger version to use (e.g., '7.2.0')",
+    help="Cellranger-arc version to use (e.g., '2.0.2')",
 )
 # @click.option("--includebam", is_flag=True, default=False, help="Include BAM files",)
 def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam'
