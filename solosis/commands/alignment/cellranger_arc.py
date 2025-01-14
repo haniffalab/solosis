@@ -101,14 +101,24 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
 
             df = pd.read_csv(libraries, sep=sep)
 
-            if "fastqs" in df.columns:
-                libraries.extend(df["fastqs"].dropna().astype(str).tolist())
+            column_names = {"fastqs", "sample", "library_type"}
+
+            if column_names.issubset(df.columns):
+                # Extend the libraries list with data from required columns
+                libraries.extend(
+                    df["fastqs"].dropna().astype(str).tolist()
+                    + df["sample"].dropna().astype(str).tolist()
+                    + df["library_type"].dropna().astype(str).tolist()
+                )
             else:
+                # Identify missing columns
+                missing_columns = column_names - set(df.columns)
                 echo_message(
-                    f"file must contain a 'fastqs' column",
+                    f"file must contain the following missing columns: {', '.join(missing_columns)}",
                     "error",
                 )
                 return
+
             if "sample" in df.columns:
                 libraries.extend(df["sample"].dropna().astype(str).tolist())
             else:
