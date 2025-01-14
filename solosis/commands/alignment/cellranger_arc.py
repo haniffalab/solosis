@@ -102,7 +102,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
             df = pd.read_csv(libraries, sep=sep)
 
             if "library_type" in df.columns:
-                samples.extend(df["library_type"].dropna().astype(str).tolist())
+                libraries.extend(df["library_type"].dropna().astype(str).tolist())
             else:
                 echo_message(
                     f"file must contain a 'library_type' column",
