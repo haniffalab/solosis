@@ -6,7 +6,7 @@ import time
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message
+from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
 
 
 # change to pull-cellranger
