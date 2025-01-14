@@ -19,7 +19,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @click.option(
     "--libraries",
     type=click.Path(exists=True),
-    help="Path to a CSV file containing libraries. columns needed (fastqs,sample,library_type). library types (Chromatin Accessibility, Gene Expression).",
+    help="Path to a CSV file containing libraries. columns needed (fastqs|sample|library_type). library types (Chromatin Accessibility|Gene Expression).",
 )
 @click.option(
     "--version",
@@ -88,7 +88,40 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
         return
 
     ############################################
+    # Read libraries from a file if provided
+    if libraries:
+        try:
+            sep = "," if libraries.endswith(".csv") else None
+            if sep is None:
+                echo_message(
+                    f"unsupported file format. please provide a .csv file",
+                    "error",
+                )
+                return
 
+            df = pd.read_csv(libraries, sep=sep)
+
+            if "library_type" in df.columns:
+                samples.extend(df["library_type"].dropna().astype(str).tolist())
+            else:
+                echo_message(
+                    f"file must contain a 'library_type' column",
+                    "error",
+                )
+                return
+        except Exception as e:
+            echo_message(
+                f"error reading libraries file: {e}",
+                "error",
+            )
+            return
+
+    if not samples:
+        echo_message(
+            f"no libraries provided. Use `--libraries`",
+            "error",
+        )
+        return
     ############################################
 
     # Get the sample data directory from the environment variable
