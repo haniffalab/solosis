@@ -176,6 +176,10 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
         os.path.join(script_dir, "../../../bin/alignment/cellranger-arc/submit.sh")
     )
 
+    if not libraries:
+        echo_message(f"Libraries parameter is missing", "error")
+    return
+
     # Construct the command with optional BAM flag
     cmd = [
         cellranger_arc_submit_script,
