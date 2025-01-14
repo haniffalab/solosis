@@ -44,7 +44,7 @@ Set the :code:`PYTHONPATH` environment variable to the :code:`bin` directory whe
 
 ::
 
-    python -m pytest -q tests/test_class.py
+    python -m pytest -q tests/test_cli.py
 
 .. _pytest: https://docs.pytest.org/en/7.1.x/
 
