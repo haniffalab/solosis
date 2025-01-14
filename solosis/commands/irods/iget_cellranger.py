@@ -41,6 +41,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
         "info",
     )
 
+    # Call the function
+    irods_validation()
+
     samples = []
 
     # Collect sample IDs from the provided options
@@ -81,6 +84,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     if not samples:
         echo_message(
+            f"no samples provided. Use `--sample` or `--samplefile`",
             f"No samples provided. Use --sample or --samplefile options",
             "error",
         )
