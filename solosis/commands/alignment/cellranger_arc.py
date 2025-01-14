@@ -119,22 +119,6 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
                 )
                 return
 
-            if "sample" in df.columns:
-                libraries.extend(df["sample"].dropna().astype(str).tolist())
-            else:
-                echo_message(
-                    f"file must contain a 'sample' column",
-                    "error",
-                )
-                return
-            if "library_type" in df.columns:
-                libraries.extend(df["library_type"].dropna().astype(str).tolist())
-            else:
-                echo_message(
-                    f"file must contain a 'library_type' column",
-                    "error",
-                )
-                return
         except Exception as e:
             echo_message(
                 f"error reading libraries file: {e}",
