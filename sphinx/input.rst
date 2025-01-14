@@ -31,7 +31,7 @@ Load the solosis module.
    ** INFO: 'Welcome to Solosis, Module loaded'
    ** INFO: 'Type solosis-cli to get started'
 
-   Loading solosis/0.2.3
+   Loading solosis/0.3.0
       Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
          cellgen/irods 
 
