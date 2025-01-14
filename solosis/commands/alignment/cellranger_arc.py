@@ -19,9 +19,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @click.option(
     "--libraries",
     type=click.Path(exists=True),
-    help="Path to a CSV file containing libraries. \
-        columns needed (fastqs|sample|library_type). \
-        library types (Chromatin Accessibility|Gene Expression).",
+    help="Path to a CSV file containing libraries. \ columns needed (fastqs|sample|library_type). \ library types (Chromatin Accessibility|Gene Expression).",
 )
 @click.option(
     "--version",
