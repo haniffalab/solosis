@@ -101,6 +101,22 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
 
             df = pd.read_csv(libraries, sep=sep)
 
+            if "fastqs" in df.columns:
+                libraries.extend(df["fastqs"].dropna().astype(str).tolist())
+            else:
+                echo_message(
+                    f"file must contain a 'fastqs' column",
+                    "error",
+                )
+                return
+            if "sample" in df.columns:
+                libraries.extend(df["sample"].dropna().astype(str).tolist())
+            else:
+                echo_message(
+                    f"file must contain a 'sample' column",
+                    "error",
+                )
+                return
             if "library_type" in df.columns:
                 libraries.extend(df["library_type"].dropna().astype(str).tolist())
             else:
