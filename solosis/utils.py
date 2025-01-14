@@ -1,6 +1,8 @@
 import csv
 import os
 import re
+import subprocess
+import sys
 from datetime import datetime
 
 import click
@@ -104,3 +106,38 @@ def echo_lsf_submission_message(job_stdout):
 
     echo_message("Use `bjobs` to monitor job completion.", "info")
     echo_message("View job logs at $HOME/logs.", "info")
+
+
+def irods_validation():
+    """Run a command and handle specific output conditions."""
+    command = [
+        "iget",
+        "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
+    ]
+
+    try:
+        # Run the command and capture stdout and stderr
+        result = subprocess.run(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Check for the specific error in stderr
+        if (
+            "CAT_INVALID_AUTHENTICATION" in result.stderr
+            or "-827000 CAT_INVALID_USER" in result.stderr
+        ):
+            echo_message(
+                "run `iinit` before re-running this solosis command.",
+                "error",
+            )
+            sys.exit(1)  # Exit with error status 1
+
+        # If no error, command executed successfully
+        echo_message("Command executed successfully.", "success")
+
+    except FileNotFoundError:
+        echo_message(
+            "iRODS not loaded. please run `module load cellgen/irods` before re-running this solosis command.",
+            "error",
+        )
+        sys.exit(1)
