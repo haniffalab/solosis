@@ -113,6 +113,9 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
             else:
                 # Identify missing columns
                 missing_columns = column_names - set(df.columns)
+                # Maintain the original order of `column_names`
+                missing_columns = [col for col in column_names if col not in df.columns]
+
                 echo_message(
                     f"file must contain the following missing columns: {', '.join(missing_columns)}",
                     "error",
