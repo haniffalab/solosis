@@ -18,8 +18,9 @@ def test_help():
     assert "Show this message and exit" in result.output
 
 
-def test_cellranger():
+def test_cellranger_count():
     runner = CliRunner()
-    result = runner.invoke(cli, ["cellranger", "--help"])
+    result = runner.invoke(cli, ["alignment", "cellranger-count", "--help"])
+    print(result.output)
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output

@@ -23,19 +23,19 @@ generate_html_table() {
 # Main script execution
 # lustre
 #lfs quota -g team298 -h /lustre/scratch126
-file_count=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $5}')
-file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | sed -n '4p' | awk '{print $7}')
+file_count=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $6}')
+file_limit=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $8}')
 
 # nfs
 # df -h /nfs/team298
 #nfs_count=$(find /nfs/team298 -type f | wc -l)
 nfs_count=345678
-nfs_lim=1500000
+nfs_lim=N/A
 
 #warehouse
 #df -h /warehouse/team298_wh01
 wh_count=$(find /warehouse/team298_wh01 -type f | wc -l)
-wh_lim=150000
+wh_lim=N/A
 
 data=(
     "Lustre $file_count $file_limit"
@@ -58,8 +58,7 @@ $html_table
 </html>
 EOF
 )
-recipients=("louiseegrimble@gmail.com" "$USER@sanger.ac.uk")
-#recipients=("nlg143@newcastle.ac.uk" "daniela.basurto-lozada@newcastle.ac.uk" "Dave.Horsfall@newcastle.ac.uk" "vm11@sanger.ac>
+recipients="$USER@sanger.ac.uk"
 subject="filecount"
 # Message for the email
 {
@@ -70,4 +69,4 @@ subject="filecount"
     echo "$email_body"
 } | sendmail "${recipients[@]}"
 # Message to confirm email has been sent to email
-echo "Script completed. Email sent to nlg143@newcastle.ac.uk"
+echo "Script completed. Email sent to $USER@sanger.ac.uk"

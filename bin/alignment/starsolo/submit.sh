@@ -35,7 +35,7 @@ fi
 TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
 TEAM_LOGS_DIR="$HOME/logs"
 CPU=16
-MEM=64000
+MEM=70000
 QUEUE="normal"
 GROUP="team298"
 
