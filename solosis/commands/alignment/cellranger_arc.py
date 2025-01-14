@@ -30,9 +30,9 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 # @click.option("--includebam", is_flag=True, default=False, help="Include BAM files",)
 def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam'
     """
-    Cellranger-arc aligns GEX & ATAC seq reads... \n
+    cellranger-arc aligns GEX & ATAC seq reads... \n
     --------------------------------- \n
-    Cellranger-arc (2.0.2) Software suite designed for analysing & interpreting scRNA seq & Multiome data, including multi-omics data.
+    cellranger-arc (2.0.2) Software suite designed for analysing & interpreting scRNA seq & Multiome data, including multi-omics data.
 
     """
     ctx = click.get_current_context()
@@ -40,7 +40,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading Cellranger-arc version {version}")
+    echo_message(f"loading cellranger-arc version {version}")
 
     samples = []
 
@@ -58,7 +58,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
             )
             if sep is None:
                 echo_message(
-                    f"unsupported file format. Please provide a .csv or .tsv file",
+                    f"unsupported file format. please provide a .csv or .tsv file",
                     "error",
                 )
                 return
@@ -82,7 +82,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
 
     if not samples:
         echo_message(
-            f"no samples provided. Use --sample or --samplefile",
+            f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
         return
