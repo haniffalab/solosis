@@ -104,8 +104,8 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
             column_names = {"fastqs", "sample", "library_type"}
 
             if column_names.issubset(df.columns):
-                # Extend the libraries list with data from required columns
-                libraries.extend(
+                # Create a separate list to store the extracted data
+                library_data = (
                     df["fastqs"].dropna().astype(str).tolist()
                     + df["sample"].dropna().astype(str).tolist()
                     + df["library_type"].dropna().astype(str).tolist()
