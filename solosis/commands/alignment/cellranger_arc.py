@@ -117,11 +117,11 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
                 missing_columns = [col for col in column_names if col not in df.columns]
 
                 echo_message(
-                    f"file must contain the following missing columns: {', '.join(missing_columns)}",
+                    f"file must contain the following missing columns (check spelling): {', '.join(missing_columns)}",
                     "error",
                 )
                 echo_message(
-                    f"expected column order (check spelling): fastq, sample, library_type",
+                    f"expected column order: fastq, sample, library_type",
                     "warn",
                 )
                 return
