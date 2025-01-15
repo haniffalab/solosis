@@ -140,7 +140,7 @@
 </div>
 <section id="cli-alignment-cellranger-arc">
 <h4>cellranger-arc<a class="headerlink" href="#cli-alignment-cellranger-arc" title="Link to this heading"></a></h4>
-<p>CellrangerARC aligns GEX &amp; ATAC seq reads…</p>
+<p>Cell RangerARC aligns GEX &amp; ATAC seq reads…</p>
 <hr class="docutils" />
 <p>Cell RangerARC (2.0.2) Software suite designed for analysing &amp; interpreting scRNA seq data, including multi-omics data.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-arc<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
@@ -162,7 +162,8 @@
 </section>
 <section id="cli-alignment-cellranger-count">
 <h4>cellranger-count<a class="headerlink" href="#cli-alignment-cellranger-count" title="Link to this heading"></a></h4>
-<p>Run Cell Ranger for single-cell RNA sequencing alignment and analysis</p>
+<p>Cell Ranger  aligns and analyses sc-RNA seq data…</p>
+<hr class="docutils" />
 <p>Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
 and gene counting for single-cell 3’ and 5’ RNA-seq data, as well as
 V(D)J transcript sequence assembly</p>
@@ -198,6 +199,7 @@ V(D)J transcript sequence assembly</p>
 <section id="cli-alignment-starsolo">
 <h4>starsolo<a class="headerlink" href="#cli-alignment-starsolo" title="Link to this heading"></a></h4>
 <p>STARsolo aligns single-cell RNA sequencing  reads…</p>
+<hr class="docutils" />
 <p>STARsolo (2.7.11b) Aligner processes scRNA seq data to generate
 GEX matrices &amp; identify cell-specific transcripts.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>alignment<span class="w"> </span>starsolo<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
@@ -226,18 +228,18 @@ GEX matrices &amp; identify cell-specific transcripts.</p>
 </div>
 <section id="cli-filesystem-disk-usage">
 <h4>disk-usage<a class="headerlink" href="#cli-filesystem-disk-usage" title="Link to this heading"></a></h4>
-<p>Check disk usage for a specified workspace.</p>
-<p>This command retrieves the disk usage for a given workspace directory
-across NFS, Lustre, or warehouse storage systems.</p>
+<p>Check disk usage for Team298 workspaces.</p>
+<p>This command retrieves the disk usage for Team298 workspaces
+including NFS, Lustre, or warehouse storage systems.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>filesystem<span class="w"> </span>disk-usage<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="cli-filesystem-filecount">
 <h4>filecount<a class="headerlink" href="#cli-filesystem-filecount" title="Link to this heading"></a></h4>
-<p>Check disk usage for a specified workspace.</p>
-<p>This command retrieves the disk usage for a given workspace directory
-across NFS, Lustre, or warehouse storage systems.</p>
+<p>Check filecounts for Team298 workspaces.</p>
+<p>This command retrieves the filecounts for Team298 workspaces
+including NFS, Lustre, or warehouse storage systems.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>filesystem<span class="w"> </span>filecount<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -251,7 +253,7 @@ across NFS, Lustre, or warehouse storage systems.</p>
 </div>
 <section id="cli-irods-iget-cellranger">
 <h4>iget-cellranger<a class="headerlink" href="#cli-irods-iget-cellranger" title="Link to this heading"></a></h4>
-<p>Downloads Cell Ranger outputs for the specified samples from iRODS.</p>
+<p>Downloads cellranger outputs from iRODS…</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>irods<span class="w"> </span>iget-cellranger<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -283,7 +285,7 @@ across NFS, Lustre, or warehouse storage systems.</p>
 </section>
 <section id="cli-irods-iget-fastqs">
 <h4>iget-fastqs<a class="headerlink" href="#cli-irods-iget-fastqs" title="Link to this heading"></a></h4>
-<p>Downloading fastqs from iRODS…</p>
+<p>Downloads fastqs from iRODS…</p>
 <p>Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
 Pulled directly from Github repo- up-to-date.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>irods<span class="w"> </span>iget-fastqs<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
@@ -326,8 +328,9 @@ Pulled directly from Github repo- up-to-date.</p>
 </div>
 <section id="cli-sc-rna-cellbender">
 <h4>cellbender<a class="headerlink" href="#cli-sc-rna-cellbender" title="Link to this heading"></a></h4>
-<p>Cellbender (0.3.0.) Removes droplets &amp; ambient RNA from scRNA seq data.</p>
+<p>Removes droplets &amp; ambient RNA from scRNA-seq data…</p>
 <hr class="docutils" />
+<p>Cellbender (0.3.0.) Removes droplets &amp; ambient RNA from scRNA seq data.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cli<span class="w"> </span>sc-rna<span class="w"> </span>cellbender<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -347,9 +350,9 @@ Pulled directly from Github repo- up-to-date.</p>
 </section>
 <section id="cli-sc-rna-merge-h5ad">
 <h4>merge-h5ad<a class="headerlink" href="#cli-sc-rna-merge-h5ad" title="Link to this heading"></a></h4>
-<section id="merging-multiple-h5ads-objects">
-<h5>Merging multiple h5ads objects…<a class="headerlink" href="#merging-multiple-h5ads-objects" title="Link to this heading"></a></h5>
-<p>Please run <cite>rna scanpy –samplefile …</cite> command first.</p>
+<p>Merges multiple h5ads objects…</p>
+<hr class="docutils" />
+<p>Please run <cite>solosis-cli sc-rna scanpy –samplefile …</cite> command first.</p>
 <p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
 Input file should have 3 mandatory columns:
 1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
@@ -370,11 +373,10 @@ Input file should have 3 mandatory columns:
 </dd></dl>
 
 </section>
-</section>
 <section id="cli-sc-rna-scanpy">
 <h4>scanpy<a class="headerlink" href="#cli-sc-rna-scanpy" title="Link to this heading"></a></h4>
-<section id="basic-scanpy-workflow-for-scrna-seq-data-generates-jupyter-notebook">
-<h5>Basic Scanpy workflow for scRNA seq data, generates Jupyter Notebook …<a class="headerlink" href="#basic-scanpy-workflow-for-scrna-seq-data-generates-jupyter-notebook" title="Link to this heading"></a></h5>
+<p>Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook …</p>
+<hr class="docutils" />
 <p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
 Input file should have 3 mandatory columns:
 1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
@@ -394,7 +396,6 @@ Input file should have 3 mandatory columns:
 <dd><p>sample database folder</p>
 </dd></dl>
 
-</section>
 </section>
 </section>
 </section>
