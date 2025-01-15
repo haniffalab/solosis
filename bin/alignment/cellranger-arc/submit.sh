@@ -12,8 +12,8 @@
 set -e
 
 # Ensure at least two arguments are provided
-if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <sample_ids> <libraries> <version>" >&2
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <sample_ids> <libraries> <version> [--no-bam]" >&3
   exit 1
 fi
 
@@ -21,6 +21,10 @@ fi
 SAMPLE_IDS="$1"
 LIBRARIES="$2"
 VERSION="$3"
+BAM_FLAG=""
+if [ "$4" == "--no-bam" ]; then
+  BAM_FLAG="--no-bam"
+fi
 
 # Verify that the sample list is not empty
 if [ -z "$SAMPLE_IDS" ]; then
@@ -111,5 +115,6 @@ cellranger-arc count \
     --libraries="$LIBRARIES" \
     --reference="$REF" \
     --localcores=16 \
-    --localmem=60
+    --localmem=60 \
+    $BAM_FLAG
 EOF

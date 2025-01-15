@@ -27,8 +27,16 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="2.0.2",  # Set a default version
     help="Cellranger-arc version to use (e.g., '2.0.2')",
 )
+@click.option(
+    "--create-bam",
+    is_flag=True,
+    default=False,
+    help="Generate BAM files for each sample",
+)
 # @click.option("--includebam", is_flag=True, default=False, help="Include BAM files",)
-def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam'
+def cmd(
+    sample, samplefile, libraries, version, create_bam
+):  ##will need to add 'includebam'
     """
     cellranger-arc aligns GEX & ATAC seq reads... \n
     --------------------------------- \n
@@ -87,7 +95,6 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
         )
         return
 
-    ############################################
     # Read libraries from a file if provided
     if libraries:
         try:
@@ -139,7 +146,6 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
             "error",
         )
         return
-    ############################################
 
     # Get the sample data directory from the environment variable
     team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
@@ -200,7 +206,8 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
         libraries,
         version,
     ]  # Pass version to the submit script
-
+    if not create_bam:
+        cmd.append("--no-bam")
     # Print the command being executed for debugging
     echo_message(
         f"executing command: {' '.join(cmd)}",
@@ -227,7 +234,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
         echo_message(
-            f"Error during cellranger-arc execution: {e.stderr}",
+            f"error during cellranger-arc execution: {e.stderr}",
             "warn",
         )
 
