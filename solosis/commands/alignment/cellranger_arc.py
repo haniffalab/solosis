@@ -121,7 +121,7 @@ def cmd(sample, samplefile, libraries, version):  ##will need to add 'includebam
                     "error",
                 )
                 echo_message(
-                    f"expected column order: fastq, sample, library_type",
+                    f"expected column order (check spelling): fastq, sample, library_type",
                     "warn",
                 )
                 return
