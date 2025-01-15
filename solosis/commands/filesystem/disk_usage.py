@@ -10,10 +10,10 @@ from solosis.utils import echo_message
 # @click.option("--workspace", type=str, required=True, help="Name of the workspace to check disk usage.")
 def cmd():
     """
-    Check disk usage for a specified workspace.
+    Check disk usage for Team298 workspaces.
 
-    This command retrieves the disk usage for a given workspace directory
-    across NFS, Lustre, or warehouse storage systems.
+    This command retrieves the disk usage for Team298 workspaces
+    including NFS, Lustre, or warehouse storage systems.
     """
     ctx = click.get_current_context()
     echo_message(

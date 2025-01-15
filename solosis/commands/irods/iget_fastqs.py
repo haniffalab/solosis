@@ -31,7 +31,7 @@ def spinner():
 @click.pass_context
 def cmd(ctx, sample, samplefile):
     """
-    Downloading fastqs from iRODS...
+    Downloads fastqs from iRODS...
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
