@@ -15,7 +15,7 @@ import click
 )
 def cmd(samplefile, sample_basedir):
     """
-    Basic Scanpy workflow for scRNA seq data, generates Jupyter Notebook ...
+    Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook ...
     ----------------------
 
     Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
