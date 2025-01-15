@@ -20,10 +20,10 @@ def spinner():
 # @click.option("--workspace", type=str, required=True, help="Name of the workspace to check disk usage.")
 def cmd():
     """
-    Check disk usage for a specified workspace.
+    Check filecounts for Team298 workspaces.
 
-    This command retrieves the disk usage for a given workspace directory
-    across NFS, Lustre, or warehouse storage systems.
+    This command retrieves the filecounts for Team298 workspaces
+    including NFS, Lustre, or warehouse storage systems.
     """
     # Print an introductory message
     echo_message(
