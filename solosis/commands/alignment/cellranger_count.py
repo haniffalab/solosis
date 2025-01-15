@@ -30,8 +30,8 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 def cmd(sample, samplefile, create_bam, version):
     """
-    Cell Ranger  aligns and analyses sc-RNA seq data
-
+    Cell Ranger  aligns and analyses sc-RNA seq data...\n
+    --------------------------------- \n
     Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
     V(D)J transcript sequence assembly
