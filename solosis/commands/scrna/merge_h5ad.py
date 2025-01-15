@@ -12,8 +12,8 @@ import click
 )
 def cmd(samplefile, merged_filename, **kwargs):
     """
-    Merges multiple h5ads objects...
-    ---------------------------------
+    Merges multiple h5ads objects... \n
+    --------------------------------- \n
     Please run `solosis-cli sc-rna scanpy --samplefile ...` command first.
 
     Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
