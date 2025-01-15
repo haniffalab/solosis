@@ -33,7 +33,7 @@ from solosis.utils import echo_lsf_submission_message, echo_message, irods_valid
 )
 def cmd(sample, samplefile, retainbam, overwrite):
     """
-    Downloads cellranger outputs for the specified samples from iRODS.
+    Downloads cellranger outputs from iRODS.
     """
     ctx = click.get_current_context()
     echo_message(
