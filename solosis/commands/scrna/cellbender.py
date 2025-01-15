@@ -13,7 +13,7 @@ import click
 )
 def cmd(samplefile, total_droplets_included, **kwargs):
     """
-    Cellbender removes droplets & ambient RNA ... \n
+    Removes droplets & ambient RNA from scRNA-seq data \n
     --------------------------------- \n
     Cellbender (0.3.0.) Removes droplets & ambient RNA from scRNA seq data.
 
