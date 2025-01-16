@@ -3,5 +3,5 @@ Commands
 ========
 
 .. click:: solosis.cli:cli
-  :prog: cli
+  :prog: solosis-cli
   :show-nested:
