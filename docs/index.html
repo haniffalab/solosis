@@ -103,6 +103,67 @@ This tool is made to work with farm22.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
+<section id="quick-start">
+<h1>Quick-start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h1>
+<p>3 initial commands to start using solosis.</p>
+<ol class="arabic simple">
+<li><p>To use Solosis from the Wellcome Sanger Institute, add the module path.</p></li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>use<span class="w"> </span>append<span class="w"> </span>/software/cellgen/team298/shared/modulefiles
+</pre></div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Then load the Solosis module.</p></li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>solosis
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Welcome to Solosis, Module loaded&#39;</span>
+**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Type solosis-cli to get started&#39;</span>
+
+Loading<span class="w"> </span>solosis/0.3.0
+<span class="w">   </span>Loading<span class="w"> </span>requirement:<span class="w"> </span>cellgen/conda<span class="w"> </span>/software/modules/ISG/experimental/irods/4.2.11<span class="w"> </span>cellgen/irods
+</pre></div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Execute the main solosis command to view available tools &amp; commands.</p></li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>solosis-cli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w"> </span>Command<span class="w"> </span>line<span class="w"> </span>utility<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Cellular<span class="w"> </span>Genetics<span class="w"> </span>programme<span class="w"> </span>at<span class="w"> </span>the<span class="w"> </span>Wellcome
+<span class="w"> </span>Sanger<span class="w"> </span>Institute
+
+Options:
+<span class="w"> </span>--version<span class="w">  </span>Show<span class="w"> </span>the<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w"> </span>--help<span class="w">     </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w"> </span>alignment<span class="w">   </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>running<span class="w"> </span>alignment<span class="w"> </span>tools.
+<span class="w"> </span>filesystem<span class="w">  </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>file<span class="w"> </span>and<span class="w"> </span>directory<span class="w"> </span>operations.
+<span class="w"> </span>irods<span class="w">       </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>working<span class="w"> </span>with<span class="w"> </span>iRODS.
+<span class="w"> </span>ncl-bsu<span class="w">     </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>Newcastle<span class="w"> </span>University<span class="w"> </span>BSU.
+<span class="w"> </span>sc-rna<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>single-cell<span class="w"> </span>RNA-seq<span class="w"> </span>workflows.
+</pre></div>
+</div>
+</div>
+</section>
 
 
            </div>
