@@ -28,6 +28,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="7.2.0",  # Set a default version
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
+@click.pass_context
 def cmd(sample, samplefile, create_bam, version):
     """
     Run Cell Ranger for single-cell RNA sequencing alignment and analysis
@@ -36,11 +37,12 @@ def cmd(sample, samplefile, create_bam, version):
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
     V(D)J transcript sequence assembly
     """
-    ctx = click.get_current_context()
+    log_command(ctx)
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
     echo_message(f"loading Cell Ranger version {version}")
 
     samples = []
