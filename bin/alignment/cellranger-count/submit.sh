@@ -91,11 +91,7 @@ echo "DEBUG: SAMPLE=\$SAMPLE"
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
 
-# Check if Cell Ranger output already exists for the sample
-if [ -f "\$OUTPUT_DIR/outs" ]; then
-  echo "Cell Ranger output already exists for sample \${SAMPLE}. Skipping job." >&2
-  exit 0
-fi
+
 
 # Check if Cell Ranger lock already exists for the sample
 if [ -f "\${OUTPUT_DIR}/_lock" ]; then
