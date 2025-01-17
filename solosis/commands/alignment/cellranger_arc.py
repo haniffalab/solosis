@@ -186,10 +186,6 @@ def cmd(
         )
         return
 
-    ###########
-    # INSERT LOGIC FOR EXISTENCE OF LIBRARIES.CSV
-    ###########
-
     # Join all valid sample IDs into a single string, separated by commas
     sample_ids = ",".join(valid_samples)
 
