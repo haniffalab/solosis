@@ -35,7 +35,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
 
     Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
-    V(D)J transcript sequence assembly
+    V(D)J transcript sequence assembly.
     """
     log_command(ctx)
     echo_message(
