@@ -4,7 +4,7 @@ import subprocess
 import click
 import pandas as pd
 
-from solosis.utils import echo_message
+from solosis.utils import echo_message, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
