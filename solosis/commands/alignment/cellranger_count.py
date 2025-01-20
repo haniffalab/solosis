@@ -131,7 +131,6 @@ def cmd(ctx, sample, samplefile, create_bam, version):
                 f"cellranger-count output(s) already exist for sample {sample} in {existing_path}. Skipping this sample",
                 "warn",
             )
-            sys.exit(0)  # Exit with code 0
         else:
             valid_samples.append(sample)
 
