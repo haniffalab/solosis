@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 import click
 import pandas as pd
@@ -178,6 +179,18 @@ def cmd(
                 f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
                 "warn",
             )
+        existing_path = os.path.join(
+            team_sample_data_dir, sample, "cellranger-arc", version
+        )
+        # Check if cellranger output already exists in the directory
+        if os.path.exists(existing_path):
+            echo_message(
+                f"cellranger-arc output(s) already exist for sample {sample} in {existing_path}. Skipping this sample",
+                "warn",
+            )
+            sys.exit(0)  # Exit with code 0
+        else:
+            valid_samples.append(sample)
 
     if not valid_samples:
         echo_message(
