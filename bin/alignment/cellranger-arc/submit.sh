@@ -92,6 +92,7 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/cellranger-arc/$ID"
 
 echo "DEBUG: LIBRARY=\$LIBRARY"
 echo "DEBUG: ID=\$ID"
+echo "DEBUG: Output Directory \$OUTPUT_DIR"
 
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"
