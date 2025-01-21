@@ -5,227 +5,135 @@ import sys
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message
-
-FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
+from solosis.utils import echo_message, log_command
 
 
 @click.command("cellranger-arc")
-@click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
-    "--samplefile",
-    type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing sample IDs",
+    "--libraries", type=click.Path(exists=True), help="Path to a single libraries file"
 )
 @click.option(
-    "--libraries",
+    "--librariesfile",
     type=click.Path(exists=True),
-    help="Path to a CSV file containing libraries. columns needed (fastqs|sample|library_type). library types (Chromatin Accessibility|Gene Expression).",
-)
-@click.option(
-    "--version",
-    type=str,
-    default="2.0.2",  # Set a default version
-    help="Cellranger-arc version to use (e.g., '2.0.2')",
+    help="Path to a CSV containing paths to multiple library files",
 )
 @click.option(
     "--create-bam",
     is_flag=True,
     default=False,
-    help="Generate BAM files for each sample",
+    help="Generate BAM files for each library",
 )
-# @click.option("--includebam", is_flag=True, default=False, help="Include BAM files",)
-def cmd(
-    sample, samplefile, libraries, version, create_bam
-):  ##will need to add 'includebam'
+@click.option(
+    "--version",
+    type=str,
+    default="2.1.0",  # Set a default version for Cell Ranger ARC
+    help="Cell Ranger ARC version to use (e.g., '2.1.0')",
+)
+@click.pass_context
+def cmd(ctx, libraries, librariesfile, create_bam, version):
     """
-    cellranger-arc aligns GEX & ATAC seq reads... \n
-    --------------------------------- \n
-    cellranger-arc (2.0.2) Software suite designed for analysing & interpreting scRNA seq & Multiome data, including multi-omics data.
+    Run Cell Ranger ARC for multi-omics (ATAC + Gene Expression) analysis.
 
+    Cell Ranger ARC (2.1.0) performs sample demultiplexing, barcode processing,
+    and multi-modal data analysis for single-cell ATAC and gene expression data.
     """
-    ctx = click.get_current_context()
+    log_command(ctx)
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading cellranger-arc version {version}")
+    echo_message(f"loading Cell Ranger ARC Count version {version}")
 
-    samples = []
+    libraries_paths = []
 
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                echo_message(
-                    f"unsupported file format. please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                echo_message(
-                    f"file must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            echo_message(
-                f"error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        echo_message(
-            f"no samples provided. Use `--sample` or `--samplefile`",
-            "error",
-        )
-        return
-
-    # Read libraries from a file if provided
+    # Collect libraries file paths from the provided options
     if libraries:
+        libraries_paths.append(libraries)
+
+    if librariesfile:
         try:
-            sep = "," if libraries.endswith(".csv") else None
-            if sep is None:
-                echo_message(
-                    f"unsupported file format. please provide a .csv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(libraries, sep=sep)
-
-            column_names = {"fastqs", "sample", "library_type"}
-
-            if column_names.issubset(df.columns):
-                # Create a separate list to store the extracted data
-                library_data = (
-                    df["fastqs"].dropna().astype(str).tolist()
-                    + df["sample"].dropna().astype(str).tolist()
-                    + df["library_type"].dropna().astype(str).tolist()
-                )
-            else:
-                # Identify missing columns
-                missing_columns = column_names - set(df.columns)
-                # Maintain the original order of `column_names`
-                missing_columns = [col for col in column_names if col not in df.columns]
-
-                echo_message(
-                    f"file must contain the following missing columns (check spelling): {', '.join(missing_columns)}",
-                    "error",
-                )
-                echo_message(
-                    f"expected column order: fastq, sample, library_type",
-                    "warn",
-                )
-                return
-
+            with open(librariesfile, "r") as f:
+                libraries_paths.extend([line.strip() for line in f if line.strip()])
         except Exception as e:
             echo_message(
-                f"error reading libraries file: {e}",
+                f"Error reading libraries file: {e}",
                 "error",
             )
             return
 
-    if not libraries:
+    if not libraries_paths:
         echo_message(
-            f"no libraries provided. Use `--libraries`",
+            f"No libraries provided. Use --libraries or --librariesfile",
             "error",
         )
         return
 
-    # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+    valid_libraries = []
 
-    if not team_sample_data_dir:
-        echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    if not os.path.isdir(team_sample_data_dir):
-        echo_message(
-            f"sample data directory '{team_sample_data_dir}' does not exist",
-            "error",
-        )
-        return
-
-    valid_samples = []
-    for sample in samples:
-        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
-
-        # Check if FASTQ files exist in the directory
-        if os.path.exists(fastq_path) and any(
-            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
-        ):
-            valid_samples.append(sample)
-        else:
+    for lib_path in libraries_paths:
+        if not os.path.exists(lib_path):
             echo_message(
-                f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
+                f"Libraries file {lib_path} does not exist. Skipping this file",
                 "warn",
             )
-        existing_path = os.path.join(
-            team_sample_data_dir, sample, "cellranger-arc", version
-        )
-        # Check if cellranger output already exists in the directory
-        if os.path.exists(existing_path):
-            echo_message(
-                f"cellranger-arc output(s) already exist for sample {sample} in {existing_path}. Skipping this sample",
-                "warn",
-            )
-            sys.exit(0)  # Exit with code 0
-        else:
-            valid_samples.append(sample)
+            continue
 
-    if not valid_samples:
+        try:
+            df = pd.read_csv(lib_path)
+            required_columns = {"fastqs", "sample", "library_type"}
+
+            if not required_columns.issubset(df.columns):
+                echo_message(
+                    f"Libraries file {lib_path} is missing required columns: {', '.join(required_columns - set(df.columns))}",
+                    "error",
+                )
+                continue
+
+            if not all(
+                df["library_type"].isin(["Chromatin Accessibility", "Gene Expression"])
+            ):
+                echo_message(
+                    f"Libraries file {lib_path} contains invalid 'library_type' values. Must be 'Chromatin Accessibility' or 'Gene Expression'",
+                    "error",
+                )
+                continue
+
+            valid_libraries.append(lib_path)
+        except Exception as e:
+            echo_message(
+                f"Error validating libraries file {lib_path}: {e}",
+                "error",
+            )
+
+    if not valid_libraries:
         echo_message(
-            f"no valid samples found with FASTQ files. Exiting",
+            f"No valid libraries files found. Exiting",
             "error",
         )
         return
 
-    # Join all valid sample IDs into a single string, separated by commas
-    sample_ids = ",".join(valid_samples)
+    libraries_arg = ",".join(valid_libraries)
 
-    # Path to the Cellranger-arc submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    cellranger_arc_submit_script = os.path.abspath(
+    cellranger_submit_script = os.path.abspath(
         os.path.join(script_dir, "../../../bin/alignment/cellranger-arc/submit.sh")
     )
 
-    # Construct the command with optional BAM flag
     cmd = [
-        cellranger_arc_submit_script,
-        sample_ids,
-        libraries,
+        cellranger_submit_script,
+        libraries_arg,
         version,
-    ]  # Pass version to the submit script
+    ]
     if not create_bam:
         cmd.append("--no-bam")
-    # Print the command being executed for debugging
+
     echo_message(
-        f"executing command: {' '.join(cmd)}",
+        f"Executing command: {' '.join(cmd)}",
         "action",
     )
 
-    # Execute the command for all valid samples
     echo_message(
-        f"starting cellranger-arc for samples: {sample_ids}...",
+        f"Starting Cell Ranger ARC for libraries: {libraries_arg}...",
         "progress",
     )
     try:
@@ -237,18 +145,17 @@ def cmd(
             text=True,
         )
         echo_message(
-            f"cellranger-arc submitted successfully:\n{result.stdout}",
+            f"Cell Ranger ARC submitted successfully:\n{result.stdout}",
             "progress",
         )
     except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
         echo_message(
-            f"error during cellranger-arc execution: {e.stderr}",
+            f"Error during Cell Ranger ARC execution: {e.stderr}",
             "warn",
         )
 
     echo_message(
-        f"cellranger-arc submission complete. run `bjobs -w`  for progress.",
+        f"Cell Ranger ARC submission complete. Run `bjobs -w` for progress.",
         "success",
     )
 
