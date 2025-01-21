@@ -34,7 +34,7 @@ fi
 # Load Cell Ranger module
 if ! module load cellgen/cellranger-arc/"$VERSION"; then
   echo "Error: Failed to load cellranger-arc version $VERSION" >&2
-  exit
+  exit 1
 fi
 
 # Configure paths

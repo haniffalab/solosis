@@ -26,15 +26,15 @@ from solosis.utils import echo_message, log_command
 @click.option(
     "--version",
     type=str,
-    default="2.1.0",  # Set a default version for Cell Ranger ARC
-    help="Cell Ranger ARC version to use (e.g., '2.1.0')",
+    default="2.0.2",  # Set a default version for Cell Ranger ARC
+    help="Cell Ranger ARC version to use (e.g., '2.0.2')",
 )
 @click.pass_context
 def cmd(ctx, libraries, librariesfile, create_bam, version):
     """
     Run Cell Ranger ARC for multi-omics (ATAC + Gene Expression) analysis.
 
-    Cell Ranger ARC (2.1.0) performs sample demultiplexing, barcode processing,
+    Cell Ranger ARC (2.0.2) performs sample demultiplexing, barcode processing,
     and multi-modal data analysis for single-cell ATAC and gene expression data.
     """
     log_command(ctx)
