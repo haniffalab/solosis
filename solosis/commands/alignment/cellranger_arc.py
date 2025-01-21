@@ -1,6 +1,6 @@
 import os
 import subprocess
-import sys
+import tempfile
 
 import click
 import pandas as pd
@@ -42,6 +42,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
     echo_message(f"loading Cell Ranger ARC Count version {version}")
 
     libraries_paths = []
@@ -68,6 +69,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
         )
         return
 
+    # A list of valid libraries (with ID), where the path and contents has been validated.
     valid_libraries = []
 
     for lib_path in libraries_paths:
@@ -98,7 +100,12 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
                 )
                 continue
 
-            valid_libraries.append(lib_path)
+            # Generate ID (name of output directory) by concatenating sorted 'sample' values
+            sorted_samples = sorted(df["sample"].dropna().astype(str).tolist())
+            library_id = "_".join(sorted_samples)
+
+            # Append the validated details
+            valid_libraries.append((lib_path, library_id))
         except Exception as e:
             echo_message(
                 f"Error validating libraries file {lib_path}: {e}",
@@ -112,7 +119,13 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
         )
         return
 
-    libraries_arg = ",".join(valid_libraries)
+    # Create a temporary file to store library paths and IDs
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".txt"
+    ) as temp_file:
+        for lib_path, library_id in valid_libraries:
+            temp_file.write(f"{lib_path},{library_id}\n")
+        temp_file_path = temp_file.name
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     cellranger_submit_script = os.path.abspath(
@@ -121,7 +134,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
 
     cmd = [
         cellranger_submit_script,
-        libraries_arg,
+        temp_file_path,
         version,
     ]
     if not create_bam:
@@ -133,7 +146,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
     )
 
     echo_message(
-        f"Starting Cell Ranger ARC for libraries: {libraries_arg}...",
+        f"Starting Cell Ranger ARC for libraries listed in: {temp_file_path}...",
         "progress",
     )
     try:
@@ -153,6 +166,13 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             f"Error during Cell Ranger ARC execution: {e.stderr}",
             "warn",
         )
+
+    # Delete the temporary file after use
+    os.remove(temp_file_path)
+    echo_message(
+        f"Temporary file {temp_file_path} deleted.",
+        "info",
+    )
 
     echo_message(
         f"Cell Ranger ARC submission complete. Run `bjobs -w` for progress.",
