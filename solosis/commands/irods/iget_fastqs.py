@@ -171,42 +171,31 @@ def cmd(ctx, sample, samplefile):
         f"starting process for samples: {sample_ids}...",
         "progress",
     )
+    # Execute the command and stream the output
     try:
-        with subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        ) as process:
-            # While the command runs, show the spinner animation
-            while True:
-                # Check if the process has finished
-                retcode = process.poll()
-                if retcode is not None:  # Process has finished
-                    sys.stdout.write(
-                        "\r"
-                    )  # Only move the cursor to the beginning of the line
-                    sys.stdout.flush()  # Ensure the change is immediately shown
-                    break
-                sys.stdout.write("\r" + next(spin))  # Display the spinner
-                sys.stdout.flush()  # Force output to the terminal
-                time.sleep(0.1)  # Delay between spinner updates
-
-            # Capture the output
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                echo_message(
-                    f"error during execution:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}",
-                    "warn",
-                )
-            else:
-                echo_message(
-                    f"process completed successfully:\n{stdout}",
-                    "success",
-                )
-    except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        echo_message(
-            f"error during execution test: {e.stdout}\n{e.stderr}",
-            "warn",
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
         )
+        for line in process.stdout:
+            sys.stdout.write(line)  # Show stdout output in real-time
+            sys.stdout.flush()
+
+        for line in process.stderr:
+            sys.stderr.write(line)  # Show stderr output in real-time
+            sys.stderr.flush()
+
+        process.wait()
+        if process.returncode != 0:
+            echo_message(
+                f"error during execution. Return code: {process.returncode}", "error"
+            )
+        else:
+            echo_message("process completed successfully.", "success")
+    except Exception as e:
+        echo_message(f"error executing command: {e}", "error")
 
 
 if __name__ == "__main__":
