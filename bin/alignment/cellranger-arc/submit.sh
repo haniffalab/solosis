@@ -12,8 +12,8 @@
 set -e
 
 # Ensure at least two arguments are provided
-if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <sample_ids> <libraries> <version> [--no-bam]" >&3
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <libraries> <version> [--no-bam]" >&3
   exit 1
 fi
 
