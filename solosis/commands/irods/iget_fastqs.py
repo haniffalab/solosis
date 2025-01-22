@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 
 import click
 import pandas as pd
@@ -11,14 +12,6 @@ from solosis.utils import irods_validation, log_command
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 from solosis.utils import echo_message
-
-
-def spinner():
-    """Generator for spinner animation in the terminal."""
-    spinner_frames = ["|", "/", "-", "\\"]
-    while True:
-        for frame in spinner_frames:
-            yield frame
 
 
 @click.command("iget-fastqs")
@@ -162,51 +155,39 @@ def cmd(ctx, sample, samplefile):
         "progress",
     )
 
-    # Create the spinner generator
-    spin = spinner()
-
     # Execute the command with an active spinner
-
     echo_message(
         f"starting process for samples: {sample_ids}...",
         "progress",
     )
-    try:
-        with subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        ) as process:
-            # While the command runs, show the spinner animation
-            while True:
-                # Check if the process has finished
-                retcode = process.poll()
-                if retcode is not None:  # Process has finished
-                    sys.stdout.write(
-                        "\r"
-                    )  # Only move the cursor to the beginning of the line
-                    sys.stdout.flush()  # Ensure the change is immediately shown
-                    break
-                sys.stdout.write("\r" + next(spin))  # Display the spinner
-                sys.stdout.flush()  # Force output to the terminal
-                time.sleep(0.1)  # Delay between spinner updates
 
-            # Capture the output
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                echo_message(
-                    f"error during execution:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}",
-                    "warn",
-                )
-            else:
-                echo_message(
-                    f"process completed successfully:\n{stdout}",
-                    "success",
-                )
-    except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        echo_message(
-            f"error during execution test: {e.stdout}\n{e.stderr}",
-            "warn",
+    # Execute the command and stream the output
+    try:
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
         )
+        # Process stdout in real-time
+        for line in process.stdout:
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "progress")
+
+        # Process stderr in real-time
+        for line in process.stderr:
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "warn")
+
+        process.wait()
+        if process.returncode != 0:
+            echo_message(
+                f"error during execution. Return code: {process.returncode}", "error"
+            )
+        else:
+            echo_message("process completed successfully.", "success")
+    except Exception as e:
+        echo_message(f"error executing command: {e}", "error")
 
 
 if __name__ == "__main__":
