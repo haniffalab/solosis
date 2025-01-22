@@ -179,13 +179,15 @@ def cmd(ctx, sample, samplefile):
             stderr=subprocess.PIPE,
             text=True,
         )
+        # Process stdout in real-time
         for line in process.stdout:
-            sys.stdout.write(line)  # Show stdout output in real-time
-            sys.stdout.flush()
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "progress")
 
+        # Process stderr in real-time
         for line in process.stderr:
-            sys.stderr.write(line)  # Show stderr output in real-time
-            sys.stderr.flush()
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "warn")
 
         process.wait()
         if process.returncode != 0:
