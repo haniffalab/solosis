@@ -9,7 +9,7 @@ from solosis.commands.irods import iget_cellranger, iget_fastqs
 from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
-VERSION = "0.2.3"
+VERSION = "0.3.0"
 
 
 # Styled output for the module name and version

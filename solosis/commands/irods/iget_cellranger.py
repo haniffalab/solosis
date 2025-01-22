@@ -6,7 +6,7 @@ import time
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message
+from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
 
 
 # change to pull-cellranger
@@ -40,6 +40,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
+    # Call the function
+    irods_validation()
 
     samples = []
 
@@ -81,6 +84,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     if not samples:
         echo_message(
+            f"no samples provided. Use `--sample` or `--samplefile`",
             f"No samples provided. Use --sample or --samplefile options",
             "error",
         )

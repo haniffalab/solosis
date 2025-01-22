@@ -6,7 +6,7 @@ import time
 import click
 import pandas as pd
 
-from solosis.utils import log_command
+from solosis.utils import irods_validation, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
@@ -41,6 +41,9 @@ def cmd(ctx, sample, samplefile):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
+    # Call the function
+    irods_validation()
 
     samples = []
 
@@ -82,11 +85,11 @@ def cmd(ctx, sample, samplefile):
 
     if not samples:
         echo_message(
-            f"no samples provided. Use --sample or --samplefile",
+            f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
         echo_message(
-            f"try using solosis-cli pull-fastqs --help",
+            f"try using `solosis-cli irods iget-fastqs --help`",
             "info",
         )
         return
