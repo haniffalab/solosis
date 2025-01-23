@@ -12,9 +12,9 @@ from solosis.utils import echo_lsf_submission_message, echo_message
 # @click.option("--includebam", is_flag=True, default=False, help="Include BAM files",)
 def cmd(samplefile, libraries):  ##will need to add 'includebam'
     """
-    Cell RangerARC aligns GEX & ATAC seq reads... \n
+    Cell Ranger ARC aligns GEX & ATAC seq reads... \n
     --------------------------------- \n
-    Cell RangerARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
+    Cell Ranger ARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
 
     """
     ctx = click.get_current_context()
