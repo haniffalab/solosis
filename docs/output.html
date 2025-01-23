@@ -9,7 +9,7 @@
   <title>Output Data &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -46,7 +46,7 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -90,13 +91,20 @@
 <p>The module generates a number of outputs, these are mainly intermediate files that allow
 for further data analysis within solosis and beyond.</p>
 <p>Would like to add to tree diagram of farm /lustre output dirs</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/scratch126/cellgen/team298/
-├──<span class="w"> </span>data/samples/
-│<span class="w">       </span>└──<span class="w"> </span>SAMPLE_ID/
-│<span class="w">           </span>├──<span class="w"> </span>cellranger-arc/
-│<span class="w">           </span>├──<span class="w"> </span>fastq/
-│<span class="w">           </span>├──<span class="w"> </span>starsolo/
-<span class="p">|</span><span class="w">           </span>└──<span class="w"> </span>...
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/.../team298/
+<span class="p">|</span>
+<span class="p">|</span>--<span class="w"> </span>sample_data
+<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellrangerARC
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellranger-hl
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>starsolo-hl
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>processed_sanger
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>rna_scanpy
+<span class="p">|</span>
+<span class="p">|</span>--<span class="w"> </span>tmp
+<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R1.fastq
+<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R2.fastq
 </pre></div>
 </div>
 </section>
