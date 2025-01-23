@@ -7,6 +7,7 @@ from solosis.commands.filesystem import disk_usage, file_count
 from solosis.commands.irods import iget_cellranger, iget_fastqs
 from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
+from solosis.utils import validate_environment
 
 VERSION = "0.3.0"
 
@@ -23,6 +24,14 @@ def cli(ctx):
     """Command line utility for the Cellular Genetics programme at the Wellcome Sanger Institute"""
     # Print a welcome message when the CLI tool is invoked
     click.echo(f"{module_name}{version_info}")
+
+    # Validate environment variables
+    required_env_vars = [
+        "TEAM_DATA_DIR",
+        "TEAM_LOGS_DIR",
+        "LSB_DEFAULT_USERGROUP",
+    ]
+    validate_environment(required_env_vars)
 
     # Access the execution_id from the context, or create a new one if not set
     execution_id = getattr(ctx.obj, "execution_id", None)
