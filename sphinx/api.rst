@@ -1,6 +1,6 @@
 
-Commands
-========
+API
+====
 
 .. click:: solosis.cli:cli
   :prog: solosis-cli

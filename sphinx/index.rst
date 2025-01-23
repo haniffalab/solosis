@@ -21,7 +21,7 @@ This tool is made to work with farm22.
    :glob:
 
    setup
-   commands
+   api
    examples
 
 .. toctree::
@@ -32,7 +32,6 @@ This tool is made to work with farm22.
    input
    output
    development
-   run
 
 .. toctree::
    :maxdepth: 2
@@ -44,7 +43,7 @@ This tool is made to work with farm22.
 
 
 Quick-start
-========
+===========
 3 initial commands to start using solosis.
 
 1. To use Solosis from the Wellcome Sanger Institute, add the module path.
@@ -94,6 +93,7 @@ Quick-start
     --help     Show this message and exit.
 
    Commands:
+
     alignment   Commands for running alignment tools.
     filesystem  Commands for file and directory operations.
     irods       Commands for working with iRODS.
