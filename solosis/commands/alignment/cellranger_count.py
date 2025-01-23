@@ -92,25 +92,25 @@ def cmd(ctx, sample, samplefile, create_bam, version):
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    if not os.path.isdir(team_sample_data_dir):
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
         echo_message(
-            f"sample data directory '{team_sample_data_dir}' does not exist",
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
+        fastq_path = os.path.join(samples_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(
@@ -122,9 +122,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
                 f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
                 "warn",
             )
-        existing_path = os.path.join(
-            team_sample_data_dir, sample, "cellranger", version
-        )
+        existing_path = os.path.join(samples_dir, sample, "cellranger", version)
         # Check if cellranger output already exists in the directory
         if os.path.exists(existing_path):
             echo_message(

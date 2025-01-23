@@ -91,18 +91,18 @@ def cmd(sample, samplefile, retainbam, overwrite):
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    if not os.path.isdir(team_sample_data_dir):
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
         echo_message(
-            f"Sample data directory '{team_sample_data_dir}' does not exist",
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
@@ -111,7 +111,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
     samples_to_download = []
     for sample in samples:
         # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
+        cellranger_path = os.path.join(samples_dir, sample, "cellranger")
 
         # Check if output exists
         if os.path.exists(cellranger_path):

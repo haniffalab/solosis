@@ -2,8 +2,23 @@
 
 # export DEPLOY_DIR="/software/cellgen/team298/shared/solosis"
 # export MODULEFILES_DIR="/software/cellgen/team298/shared/modulefiles"
-# export TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-# export TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/data/logs"
+
+
+# export TEAM_DATA_DIR="/lustre/scratch126/cellgen/team298/data"
+# export TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/logs"
+# export LSB_DEFAULT_USERGROUP="team298"
+
+
+# tmp?
+#
+# Data stored in
+# All data relating to a single sample will be stored in TEAM_DATA_DIR/samples/$SAMPLE_ID/
+# Fastqs in TEAM_DATA_DIR/samples/$SAMPLE_ID/fastq
+# Cellranger generated in TEAM_DATA_DIR/samples/$SAMPLE_ID/cellranger/$VERSION/
+# Cellranger iget in TEAM_DATA_DIR/samples/$SAMPLE_ID/cellranger/$NAME/
+# NXF_WORK in TEAM_DATA_DIR/tmp/nxf
+# Temporaary fastqs in TEAM_DATA_DIR/tmp/fastq
+
 
 # GitHub repository URL
 GITHUB_REPO_URL="https://github.com/haniffalab/solosis"

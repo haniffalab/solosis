@@ -39,10 +39,11 @@ if ! module load cellgen/cellranger/"$VERSION"; then
 fi
 
 # Configure paths
-TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
-# Ensure logs directory exists
-TEAM_LOGS_DIR="$HOME/logs"
+# Ensure directories exists
+mkdir -p "$TEAM_DATA_DIR/samples"
 mkdir -p "$TEAM_LOGS_DIR"
 
 # Configure job parameters
@@ -82,8 +83,8 @@ echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 
 # Define paths for the current sample
-FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger/$VERSION"
+FASTQ_PATH="${TEAM_DATA_DIR}/samples/\$SAMPLE/fastq"
+OUTPUT_DIR="${TEAM_DATA_DIR}/samples/\$SAMPLE/cellranger/$VERSION"
 
 echo "DEBUG: SAMPLE_INDEX=\$SAMPLE_INDEX"
 echo "DEBUG: SAMPLE=\$SAMPLE"
