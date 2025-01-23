@@ -12,9 +12,9 @@ import click
 )
 def cmd(samplefile, merged_filename, **kwargs):
     """
-    Merging multiple h5ads objects...
-    ---------------------------------
-    Please run `rna scanpy --samplefile ...` command first.
+    Merges multiple h5ads objects... \n
+    --------------------------------- \n
+    Please run `solosis-cli sc-rna scanpy --samplefile ...` command first.
 
     Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
     Input file should have 3 mandatory columns:
