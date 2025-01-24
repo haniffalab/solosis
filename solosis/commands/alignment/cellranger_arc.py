@@ -118,9 +118,19 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
         )
         return
 
+    # Get the data directory from the environment variable
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
+        echo_message(
+            f"TEAM_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
+
     # Create a temporary file to store library paths and IDs
+    tmp_dir = os.path.join(team_data_dir, "tmp")
     with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".txt"
+        mode="w", delete=False, suffix=".txt", dir=tmp_dir
     ) as temp_file:
         for lib_path, library_id in valid_libraries:
             temp_file.write(f"{lib_path},{library_id}\n")
@@ -165,13 +175,6 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             f"Error during Cell Ranger ARC execution: {e.stderr}",
             "warn",
         )
-
-    # Delete the temporary file after use
-    os.remove(temp_file_path)
-    echo_message(
-        f"Temporary file {temp_file_path} deleted.",
-        "info",
-    )
 
     echo_message(
         f"Cell Ranger ARC submission complete. Run `bjobs -w` for progress.",
