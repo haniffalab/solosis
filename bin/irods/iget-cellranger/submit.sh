@@ -34,6 +34,7 @@ if ! module load cellgen/irods; then
 fi
 
 # Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
 TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
 TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
@@ -45,7 +46,6 @@ mkdir -p "$TEAM_LOGS_DIR"
 CPU=2
 MEM=3000
 QUEUE="small"
-GROUP="team298"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
@@ -59,7 +59,7 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
 # Define the samples array inside the job script

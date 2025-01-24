@@ -38,6 +38,7 @@ if ! module load cellgen/cellranger-arc/"$VERSION"; then
 fi
 
 # Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
 TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
 TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
@@ -49,7 +50,6 @@ mkdir -p "$TEAM_LOGS_DIR"
 CPU=16
 MEM=64000
 QUEUE="normal"
-GROUP="team298"
 REF="/software/cellgen/cellgeni/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"
 
 # Read the libraries file and count entries
@@ -70,16 +70,20 @@ bsub -J "cellranger_arc_array[1-$NUM_LIBRARIES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE     
 
-# Define the samples array inside the job script
+# Recreate the data inside the job script
 ################################################
-# The array is redefined here because the job scheduler environment does
-# not inherit the array from the parent script, so we re-split the 
-# SAMPLE_IDS string into an array in each individual job.
-LIBRARIES=("${LIBRARIES[@]}")
-IDS=("${IDS[@]}")
+# The arrays are recreated here by re-reading the TEMP_FILE directly within
+# each individual job. This ensures that the data is consistent and
+# avoids issues passing arrays from the parent script to the job scheduler.
+LIBRARIES=()
+IDS=()
+while IFS=',' read -r lib_path lib_id; do
+  LIBRARIES+=("\$lib_path")
+  IDS+=("\$lib_id")
+done < "$TEMP_FILE"
 
 # Get the library path and ID for the current task
 LIBRARY=\${LIBRARIES[\$((LSB_JOBINDEX - 1))]}

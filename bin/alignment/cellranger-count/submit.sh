@@ -39,6 +39,7 @@ if ! module load cellgen/cellranger/"$VERSION"; then
 fi
 
 # Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
 TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
 TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
@@ -50,7 +51,6 @@ mkdir -p "$TEAM_LOGS_DIR"
 CPU=16
 MEM=64000
 QUEUE="normal"
-GROUP="team298"
 REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
 
 # Convert comma-separated sample IDs into an array
@@ -65,7 +65,7 @@ bsub -J "cellranger_count_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
 # Define the samples array inside the job script
