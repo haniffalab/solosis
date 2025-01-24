@@ -1,3 +1,4 @@
+/* Style for code block captions */
 .rst-content .code-block-caption {
   text-align: left;
   font-weight: 700;
@@ -6,37 +7,78 @@
   background: #2e7546;
   padding: 6px 12px;
 }
+
+/* Remove unnecessary top margin for code blocks */
 .rst-content div[class^="highlight"] {
   margin-top: 0;
 }
-.admonition.shell-output {
-  font-size: 85%;
-  line-height: 1;
-}
-.admonition.shell-output .admonition-title:before {
-  content: None;
-}
-.admonition.shell-output .admonition-title {
-  font-style: italic;
-}
+
+/* Bold and italicize citations */
 .citation {
   font-weight: bold;
   font-style: italic;
 }
+
+/* Prevent wrapping for inline code snippets */
 code.docutils.literal.notranslate {
-  white-space: nowrap;
+  white-space: nowrap; /* Keeps code on a single line */
 }
-.wy-side-nav-search, .wy-nav-top {
+
+/* Background colour for side navigation and top bar */
+.wy-side-nav-search,
+.wy-nav-top {
   background: #2e7546;
 }
 
+/* Colour for navigation menu captions */
 .wy-menu > .caption > span.caption-text {
   color: #2e7546;
 }
 
-table.docutils th {
-  background-color: #bfbfbf;  /* Change this to your desired color */
-  color: #000000;  /* Change text color if needed */
+/* Add a label for command groups */
+#solosis-cli h3::before {
+  content: "Command\AGroup";
+  color: white;
+  font-size: 50%;
+  font-weight: bold;
+  text-align: right;
+  text-transform: uppercase;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: pre;
 }
 
-/* initial colour- background: #6ab0de;*/
+/* Add margin above command groups */
+#solosis-cli h3 {
+  position: relative;
+  margin-top: 80px;
+  display: block;
+  background-color: #2e7546;
+  color: white;
+  font-size: 2.4em;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* Add a label for individual commands */
+#solosis-cli h4::before {
+  content: "Command";
+  display: inline-block;
+  background-color: #6c757d;
+  color: white;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
+  text-transform: uppercase;
+}
+
+/* Add margin above individual commands */
+#solosis-cli h4 {
+  margin-top: 40px;
+}

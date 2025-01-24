@@ -9,7 +9,7 @@
   <title>Input File &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -46,22 +46,18 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Input File</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#populating-samplefile">Populating samplefile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cellrangerarc">CellrangerARC</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#populate-samplefile">Populate Samplefile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cell-rangerarc">Cell RangerARC</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -95,76 +91,39 @@
              
   <section id="input-file">
 <span id="input"></span><h1>Input File<a class="headerlink" href="#input-file" title="Link to this heading"></a></h1>
-<p>Loading the Solosis tool onto Farm22. You can look for previous <a class="reference external" href="https://github.com/haniffalab/solosis">releases on GitHub</a>.</p>
-<p>Load the solosis module.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>solosis
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Welcome to Solosis, Module loaded&#39;</span>
-**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Type solosis-cli to get started&#39;</span>
-
-Loading<span class="w"> </span>solosis/0.3.0
-<span class="w">   </span>Loading<span class="w"> </span>requirement:<span class="w"> </span>cellgen/conda<span class="w"> </span>/software/modules/ISG/experimental/irods/4.2.11
-<span class="w">      </span>cellgen/irods
-</pre></div>
-</div>
-</div>
-<section id="setup">
-<span id="id1"></span><h2>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h2>
-<p id="setup-samplefile">Follow these Setup instructions populate input files to successfully run the solosis CLI.</p>
-<section id="populating-samplefile">
-<h3>Populating samplefile<a class="headerlink" href="#populating-samplefile" title="Link to this heading"></a></h3>
-<p>This is the input file is a text file <code class="docutils literal notranslate"><span class="pre">.txt</span></code> and is currently required to exceute the following commands:</p>
+<p id="setup-samplefile">Follow these instructions to populate input files to successfully run the solosis CLI.</p>
+<section id="populate-samplefile">
+<h2>Populate Samplefile<a class="headerlink" href="#populate-samplefile" title="Link to this heading"></a></h2>
+<p>This is the input file can be a comma-separated variable <code class="docutils literal notranslate"><span class="pre">.csv</span></code> or tab-separated variable <code class="docutils literal notranslate"><span class="pre">.tsv</span></code> file:</p>
 <ul class="simple">
-<li><p>pull-processed</p></li>
-<li><p>Scanpy (notebook)</p></li>
-<li><p>merge_h5ad</p></li>
+<li><p><em>This input file is an expected input on any command using the</em> <code class="docutils literal notranslate"><span class="pre">--samplefile</span></code> <em>argument.</em></p></li>
 </ul>
 <p><strong>NOTE:</strong> this input file can include any number of columns, so long as:</p>
 <ul class="simple">
-<li><p>column1 - <em>sample_id</em></p></li>
-<li><p>column2 - <em>sample_name</em></p></li>
-<li><p>final column - <em>irods_path</em></p></li>
+<li><p>column1 = <em>sample_id</em></p></li>
 </ul>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 22.2%" />
-<col style="width: 33.3%" />
-<col style="width: 22.2%" />
-<col style="width: 22.2%" />
+<col style="width: 100.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>sample_id</p></th>
-<th class="head"><p>sample_name</p></th>
-<th class="head"><p>…</p></th>
-<th class="head"><p>irods_path</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>pBCN14634207</p></td>
-<td><p>BK18-BLD-3-SC-1a_G</p></td>
-<td><p>…</p></td>
-<td><p>/seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443</p></td>
 </tr>
 <tr class="row-odd"><td><p>pBCN14634303</p></td>
-<td><p>BK18-BLD-3-SC-1a_C</p></td>
-<td><p>…</p></td>
-<td><p>/seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="cellrangerarc">
-<span id="setup-cellrangerarc"></span><h3>CellrangerARC<a class="headerlink" href="#cellrangerarc" title="Link to this heading"></a></h3>
-<p>CellrangerARC has two inputs that are required both of which a <em>comma-separated variable</em> <code class="docutils literal notranslate"><span class="pre">csv</span></code> formatted files.</p>
-<ol class="arabic simple">
+<section id="cell-rangerarc">
+<span id="setup-cellrangerarc"></span><h2>Cell RangerARC<a class="headerlink" href="#cell-rangerarc" title="Link to this heading"></a></h2>
+<p>Cell RangerARC requires a different input file, a <code class="docutils literal notranslate"><span class="pre">libraries</span></code> file, which is a <em>comma-separated variable</em> <code class="docutils literal notranslate"><span class="pre">csv</span></code> file.</p>
+<ul class="simple">
 <li><p>csv file <code class="docutils literal notranslate"><span class="pre">libraries.csv</span></code> which includes library type of each sample (e.g. GEX or ATAC)</p></li>
-</ol>
+</ul>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 28.6%" />
@@ -188,27 +147,7 @@ Loading<span class="w"> </span>solosis/0.3.0
 </tr>
 </tbody>
 </table>
-<ol class="arabic simple" start="2">
-<li><p>csv file of sample IDs <code class="docutils literal notranslate"><span class="pre">samples.csv</span></code></p></li>
-</ol>
-<p><strong>NOTE: This file is also required when running cellranger, STARsolo and pull-fastqs.</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 100.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>samples</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>HCA_rFSKI14910984</p></td>
-</tr>
-<tr class="row-odd"><td><p>HCA_rFSKI14910888</p></td>
-</tr>
-</tbody>
-</table>
 <span class="target" id="environment-manual"></span></section>
-</section>
 </section>
 
 

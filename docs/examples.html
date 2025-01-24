@@ -9,7 +9,7 @@
   <title>Examples &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Input File" href="input.html" />
-    <link rel="prev" title="Commands" href="commands.html" /> 
+    <link rel="prev" title="API" href="api.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,7 +46,7 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -88,14 +87,266 @@
              
   <section id="examples">
 <span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
-<p>Add examples here</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>solosis-cli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w"> </span>Command<span class="w"> </span>line<span class="w"> </span>utility<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Cellular<span class="w"> </span>Genetics<span class="w"> </span>programme<span class="w"> </span>at<span class="w"> </span>the<span class="w"> </span>Wellcome
+<span class="w"> </span>Sanger<span class="w"> </span>Institute
+
+Options:
+<span class="w"> </span>--version<span class="w">  </span>Show<span class="w"> </span>the<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w"> </span>--help<span class="w">     </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w"> </span>alignment<span class="w">   </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>running<span class="w"> </span>alignment<span class="w"> </span>tools.
+<span class="w"> </span>filesystem<span class="w">  </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>file<span class="w"> </span>and<span class="w"> </span>directory<span class="w"> </span>operations.
+<span class="w"> </span>irods<span class="w">       </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>working<span class="w"> </span>with<span class="w"> </span>iRODS.
+<span class="w"> </span>ncl-bsu<span class="w">     </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>Newcastle<span class="w"> </span>University<span class="w"> </span>BSU.
+<span class="w"> </span>sc-rna<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>single-cell<span class="w"> </span>RNA-seq<span class="w"> </span>workflows.
+</pre></div>
+</div>
+</div>
+<p><strong>Alignment</strong></p>
+<p>Cell Ranger ARC example using <cite>–sample</cite></p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-arc<span class="w"> </span>--sample<span class="w"> </span>HCA_rFSKI14910984<span class="w"> </span>--libraries<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/libARC.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>cellranger-arc
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">192355</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>Cell Ranger ARC example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-arc<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/ARC.csv<span class="w"> </span>--libraries<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/libARC.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id9" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>cellranger-arc
+Job<span class="w"> </span>&lt;<span class="m">192355</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>Cell Ranger count example using <cite>–sample</cite></p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-count<span class="w"> </span>--sample<span class="w"> </span>HCA_SkO14189565
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>cellranger-count
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>loading<span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.2.0
+<span class="w"> </span><span class="o">[</span>action<span class="o">]</span><span class="w"> </span>executing<span class="w"> </span>command:<span class="w"> </span>/nfs/users/nfs_l/lg28/repos/solosis/bin/alignment/cellranger-count/submit.sh<span class="w"> </span>HCA_SkO14542036<span class="w"> </span><span class="m">7</span>.2.0<span class="w"> </span>--no-bam
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>starting<span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span><span class="k">for</span><span class="w"> </span>samples:<span class="w"> </span>HCA_SkO14542036...
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span>submitted<span class="w"> </span>successfully:
+<span class="w"> </span>**<span class="w"> </span>See<span class="w"> </span>avaiable<span class="w"> </span>options<span class="w"> </span>using:<span class="w"> </span>cellranger<span class="w"> </span>-h
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">199964</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>cellranger<span class="w"> </span>submission<span class="w"> </span>complete.<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bjobs<span class="w"> </span>-w<span class="sb">`</span><span class="w">  </span><span class="k">for</span><span class="w"> </span>progress.
+</pre></div>
+</div>
+</div>
+<p>Cell Ranger count example using <a href="#id2"><span class="problematic" id="id3">`</span></a>–samplefile `</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id12" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-count<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id13" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>cellranger-count
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>loading<span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span>version<span class="w"> </span><span class="m">7</span>.2.0
+<span class="w"> </span><span class="o">[</span>action<span class="o">]</span><span class="w"> </span>executing<span class="w"> </span>command:<span class="w"> </span>/nfs/users/nfs_l/lg28/repos/solosis/bin/alignment/cellranger-count/submit.sh<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036<span class="w"> </span><span class="m">7</span>.2.0<span class="w"> </span>--no-bam
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>starting<span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span><span class="k">for</span><span class="w"> </span>samples:<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036...
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>Cell<span class="w"> </span>Ranger<span class="w"> </span>submitted<span class="w"> </span>successfully:
+<span class="w"> </span>**<span class="w"> </span>See<span class="w"> </span>avaiable<span class="w"> </span>options<span class="w"> </span>using:<span class="w"> </span>cellranger<span class="w"> </span>-h
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">201312</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>cellranger<span class="w"> </span>submission<span class="w"> </span>complete.<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bjobs<span class="w"> </span>-w<span class="sb">`</span><span class="w">  </span><span class="k">for</span><span class="w"> </span>progress.
+</pre></div>
+</div>
+</div>
+<p>STARsolo example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id14" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>starsolo<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id15" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>starsolo
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>loading<span class="w"> </span>starsolo
+<span class="w"> </span><span class="o">[</span>action<span class="o">]</span><span class="w"> </span>executing<span class="w"> </span>command:<span class="w"> </span>/nfs/users/nfs_l/lg28/repos/solosis/bin/alignment/starsolo/submit.sh<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>starting<span class="w"> </span>starsolo<span class="w"> </span><span class="k">for</span><span class="w"> </span>samples:<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036...
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>starsolo<span class="w"> </span>submitted<span class="w"> </span>successfully:
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">201433</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+<span class="w"> </span>Submitted<span class="w"> </span>array<span class="w"> </span>LSF<span class="w"> </span>job<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>samples.
+
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>starsolo<span class="w"> </span>submission<span class="w"> </span>complete.<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bjobs<span class="w"> </span>-w<span class="sb">`</span><span class="w">  </span><span class="k">for</span><span class="w"> </span>progress.
+</pre></div>
+</div>
+</div>
+<p><strong>Filesystem</strong></p>
+<p>Disk-usage example</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id16" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span>disk-usage
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id17" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>disk-usage
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>Calculating<span class="w"> </span>disk<span class="w"> </span>usage<span class="w"> </span><span class="k">for</span><span class="w"> </span>team298<span class="w"> </span>...
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span>
+<span class="w"> </span>workspace<span class="w">    </span>size<span class="w">   </span>used<span class="w">     </span>avail<span class="w">  </span>use%
+<span class="w"> </span>---------<span class="w">    </span>-----<span class="w">  </span>------<span class="w">   </span>-----<span class="w">  </span>-----
+<span class="w"> </span>Lustre<span class="w">       </span>45T<span class="w">    </span><span class="m">41</span>.03T<span class="w">   </span>4T<span class="w">     </span><span class="m">91</span>%
+<span class="w"> </span>nfs<span class="w">          </span>60T<span class="w">    </span>49T<span class="w">      </span>12T<span class="w">    </span><span class="m">81</span>%
+<span class="w"> </span>warehouse<span class="w">    </span><span class="m">1</span>.0T<span class="w">   </span>769G<span class="w">     </span>256G<span class="w">   </span><span class="m">76</span>%
+</pre></div>
+</div>
+</div>
+<p>File-count example</p>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id18" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span>file-count
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id19" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Launching:<span class="w"> </span>filecount
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span>
+<span class="w"> </span>Script<span class="w"> </span>completed.<span class="w"> </span>Email<span class="w"> </span>sent<span class="w"> </span>to<span class="w"> </span>lg28@sanger.ac.uk
+</pre></div>
+</div>
+</div>
+<p><strong>irods</strong></p>
+<p>iget-cellranger example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id20" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>iget-cellranger<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id21">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id21" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>iget-cellranger
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>Command<span class="w"> </span>executed<span class="w"> </span>successfully.
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Samples<span class="w"> </span><span class="k">for</span><span class="w"> </span>download:
+<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>HCA_SkO14542035
+<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>HCA_SkO14542036
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>LSF<span class="w"> </span>Job<span class="w"> </span>ID<span class="w"> </span><span class="m">202652</span><span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span><span class="s1">&#39;small&#39;</span><span class="w"> </span>queue.
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Use<span class="w"> </span><span class="sb">`</span>bjobs<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>monitor<span class="w"> </span>job<span class="w"> </span>completion.
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>View<span class="w"> </span>job<span class="w"> </span>logs<span class="w"> </span>at<span class="w"> </span><span class="nv">$HOME</span>/logs.
+</pre></div>
+</div>
+</div>
+<p>iget-fastqs example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id22">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id22" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>iget-fastqs<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id23">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id23" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">[</span>info<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>Process:<span class="w"> </span>iget-fastqs
+<span class="w"> </span><span class="o">[</span>success<span class="o">]</span><span class="w"> </span>Command<span class="w"> </span>executed<span class="w"> </span>successfully.
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>samples<span class="w"> </span>without<span class="w"> </span>FASTQ<span class="w"> </span>files:<span class="w"> </span><span class="o">[</span><span class="s1">&#39;HCA_SkO14542035&#39;</span>,<span class="w"> </span><span class="s1">&#39;HCA_SkO14542036&#39;</span><span class="o">]</span>
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>executing<span class="w"> </span>command:<span class="w"> </span>/nfs/users/nfs_l/lg28/repos/solosis/bin/irods/iget-fastqs/submit.sh<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036
+<span class="w"> </span><span class="o">[</span>progress<span class="o">]</span><span class="w"> </span>starting<span class="w"> </span>process<span class="w"> </span><span class="k">for</span><span class="w"> </span>samples:<span class="w"> </span>HCA_SkO14542035,HCA_SkO14542036...
+<span class="w"> </span><span class="se">\ </span><span class="c1">#*spinner*</span>
+</pre></div>
+</div>
+</div>
+<p><strong>sc-rna</strong></p>
+<p>cellbender example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id24">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id24" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>cellbender<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv<span class="w"> </span>--total_droplets_included<span class="w"> </span><span class="m">30000</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id25">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id25" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0osis$
+<span class="w"> </span>**<span class="w"> </span>See<span class="w"> </span>avaiable<span class="w"> </span>options<span class="w"> </span>using:<span class="w"> </span>cellbender<span class="w"> </span>remove-background<span class="w"> </span>-h
+<span class="w"> </span>**<span class="w"> </span>Using<span class="w"> </span>custom<span class="w"> </span>python<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>environment
+<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10.12<span class="w"> </span><span class="nv">cellbender</span><span class="o">=</span><span class="m">0</span>.3.0<span class="w"> </span><span class="nv">torch</span><span class="o">=</span><span class="m">2</span>.3.1
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">203560</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>queue<span class="w"> </span>&lt;gpu-normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>merge-h5ad example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id26">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id26" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>merge-h5ad<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv<span class="w"> </span>--merged_filename<span class="w"> </span>merged.h5ad
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id27">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id27" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span>Your<span class="w"> </span>run<span class="w"> </span>token<span class="w"> </span>is:
+<span class="w"> </span>Generating<span class="w"> </span>a<span class="w"> </span>bsub<span class="w"> </span>script<span class="w"> </span>rna_merge_.bsub
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">205162</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>default<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
+<p>scanpy example using <cite>–samplefile</cite></p>
+<div class="literal-block-wrapper docutils container" id="id28">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id28" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>scanpy<span class="w"> </span>--samplefile<span class="w"> </span>/lustre/scratch126/cellgen/team298/lg28/irods_test/sol_input.csv
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id29">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id29" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>SOLOSIS<span class="w">    </span>~<span class="w">  </span>version<span class="w"> </span><span class="m">0</span>.3.0
+<span class="w"> </span><span class="o">(</span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="o">[</span>Info<span class="o">]</span><span class="w"> </span>_HCA_SkO14542035<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>processed<span class="w"> </span><span class="k">in</span><span class="w"> </span>/lustre/scratch126/cellgen/team298/sample_data//_HCA_SkO14542035/rna_scanpy/
+<span class="w"> </span><span class="o">(</span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">[</span>Info<span class="o">]</span><span class="w"> </span>_HCA_SkO14542036<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>processed<span class="w"> </span><span class="k">in</span><span class="w"> </span>/lustre/scratch126/cellgen/team298/sample_data//_HCA_SkO14542036/rna_scanpy/
+<span class="w"> </span><span class="o">[</span>Info<span class="o">]</span><span class="w"> </span>batch<span class="w"> </span>job<span class="w"> </span>submitted.<span class="w"> </span>check<span class="w"> </span>using<span class="w"> </span><span class="s1">&#39;bjobs -w&#39;</span><span class="w"> </span><span class="nb">command</span>
+<span class="w"> </span>Job<span class="w"> </span>&lt;<span class="m">205522</span>&gt;<span class="w"> </span>is<span class="w"> </span>submitted<span class="w"> </span>to<span class="w"> </span>default<span class="w"> </span>queue<span class="w"> </span>&lt;normal&gt;.
+</pre></div>
+</div>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="commands.html" class="btn btn-neutral float-left" title="Commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="input.html" class="btn btn-neutral float-right" title="Input File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

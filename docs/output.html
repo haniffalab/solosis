@@ -9,7 +9,7 @@
   <title>Output Data &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=512ce168" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -46,7 +46,7 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run.html">Run</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -88,23 +87,50 @@
              
   <section id="output-data">
 <span id="output"></span><h1>Output Data<a class="headerlink" href="#output-data" title="Link to this heading"></a></h1>
-<p>The module generates a number of outputs, these are mainly intermediate files that allow
-for further data analysis within solosis and beyond.</p>
-<p>Would like to add to tree diagram of farm /lustre output dirs</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/.../team298/
-<span class="p">|</span>
-<span class="p">|</span>--<span class="w"> </span>sample_data
-<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellrangerARC
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>cellranger-hl
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>starsolo-hl
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>processed_sanger
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>rna_scanpy
-<span class="p">|</span>
-<span class="p">|</span>--<span class="w"> </span>tmp
-<span class="p">|</span><span class="w">   </span>L__<span class="w"> </span>SAMPLE_ID
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R1.fastq
-<span class="p">|</span><span class="w">       </span>L__<span class="w"> </span>SAMPLE_ID_R2.fastq
+<p><strong>Solosis CLI generates a number different types of of outputs.</strong></p>
+<p>The commands listed below generate outputs in a common place:</p>
+<ul class="simple">
+<li><p>cellranger-count</p></li>
+<li><p>cellranger-arc</p></li>
+<li><p>starsolo</p></li>
+<li><p>iget-fastqs</p></li>
+<li><p>iget-cellranger</p></li>
+<li><p>cellbender</p></li>
+</ul>
+<p>The outputs for these commands will be found here:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/scratch126/cellgen/team298/data/samples/
+</pre></div>
+</div>
+<p>The output file should reflect the tool or command that was executed by solosis, like so:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Tree Diagram of some expected output files on Farm</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/scratch126/cellgen/team298/data/samples/
+│<span class="w">       </span>└──<span class="w"> </span>cellranger-arc/
+<span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>SAMPLE_ID/
+│<span class="w">           </span>├──<span class="w"> </span>cellranger/
+│<span class="w">           </span>├──<span class="w"> </span>fastq/
+│<span class="w">           </span>├──<span class="w"> </span>starsolo/
+│<span class="w">           </span>├──<span class="w"> </span>cellbender/
+<span class="p">|</span><span class="w">           </span>└──<span class="w"> </span>...
+</pre></div>
+</div>
+</div>
+<p><strong>Cell Ranger ARC</strong></p>
+<p>Cell Ranger ARC outputs will be found here:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/scratch126/cellgen/team298/data/cellranger-arc/
+</pre></div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Tree Diagram of Cell Ranger ARC outputs on Farm</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/lustre/scratch126/cellgen/team298/data/cellranger-arc/
+│<span class="w">       </span>└──<span class="w"> </span>SAMPLE_ID/
+│<span class="w">           </span>├──<span class="w"> </span>outs/
+</pre></div>
+</div>
+</div>
+<p><strong>Logs</strong></p>
+<p>STDOUT and STDERR for commands executed will be found here:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$HOME</span>/logs
 </pre></div>
 </div>
 </section>
