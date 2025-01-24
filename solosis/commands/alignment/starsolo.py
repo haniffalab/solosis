@@ -77,21 +77,26 @@ def cmd(sample, samplefile):
         )
         return
 
-    # Define the FASTQ path and validate each sample
-    team_sample_data_dir = os.getenv(
-        "team_sample_data_dir", "/lustre/scratch126/cellgen/team298/data/samples"
-    )
-
-    if not os.path.isdir(team_sample_data_dir):
+    # Get the sample data directory from the environment variable
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         echo_message(
-            f"sample data directory '{team_sample_data_dir}' does not exist",
+            f"TEAM_DATA_DIR environment variable is not set",
+            "error",
+        )
+        return
+
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
+        echo_message(
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
+        fastq_path = os.path.join(samples_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(

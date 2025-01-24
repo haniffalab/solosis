@@ -33,16 +33,19 @@ if ! module load cellgen/irods; then
   exit 1
 fi
 
-# Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
+# Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
+TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
+
+# Ensure directories exists
+mkdir -p "$TEAM_DATA_DIR"
+mkdir -p "$TEAM_LOGS_DIR"
+
+# Configure job parameters
 CPU=2
 MEM=3000
 QUEUE="small"
-GROUP="team298"
-
-# Ensure logs directory exists
-mkdir -p "$TEAM_LOGS_DIR"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
@@ -56,7 +59,7 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
 # Define the samples array inside the job script
@@ -73,7 +76,7 @@ SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
 echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
+OUTPUT_DIR="${TEAM_DATA_DIR}/samples/\$SAMPLE/cellranger"
 
 ################################
 
