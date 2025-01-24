@@ -43,7 +43,7 @@ This tool is made to work with farm22.
 
 
 Quick-start
-===========
+-----------
 3 initial commands to start using solosis.
 
 1. To use Solosis from the Wellcome Sanger Institute, add the module path.
