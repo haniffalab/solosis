@@ -32,10 +32,9 @@ from solosis.utils import echo_message, log_command
 @click.pass_context
 def cmd(ctx, libraries, librariesfile, create_bam, version):
     """
-    Run Cell Ranger ARC for multi-omics (ATAC + Gene Expression) analysis.
-
-    Cell Ranger ARC (2.0.2) performs sample demultiplexing, barcode processing,
-    and multi-modal data analysis for single-cell ATAC and gene expression data.
+    Cell Ranger ARC aligns GEX & ATAC seq reads... \n
+    --------------------------------- \n
+    Cell Ranger ARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
     """
     log_command(ctx)
     echo_message(

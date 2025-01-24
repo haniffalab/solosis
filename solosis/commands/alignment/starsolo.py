@@ -18,8 +18,8 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 def cmd(sample, samplefile):
     """
-    STARsolo aligns single-cell RNA sequencing  reads...
-
+    STARsolo aligns single-cell RNA sequencing  reads...\n
+    --------------------------------- \n
     STARsolo (2.7.11b) Aligner processes scRNA seq data to generate
     GEX matrices & identify cell-specific transcripts.
 
