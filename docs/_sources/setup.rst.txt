@@ -26,7 +26,10 @@ Then load environment variables
 .. code-block:: shell
    :caption: Input
 
-   export TEAM_SAMPLE_DATA_DIR=/lustre/scratch126/cellgen/team298/data/samples
+   export TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
+   
+   #change `<YOURGROUP>` to group id (e.g. team298)
+   export LSB_DEFAULT_USERGROUP=<YOURGROUP>
 
 
 
