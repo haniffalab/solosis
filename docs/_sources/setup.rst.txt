@@ -17,11 +17,35 @@ Then load the Solosis module
 
    module load solosis
 
-.. admonition:: Working with iRODS
 
-   If you're running commands that work with iRODS, please load the module and authenticate yourself.
 
-   .. code-block:: shell
+**Environment Variables**
 
-      module load cellgen/irods
-      iinit 
+Then load environment variables 
+
+.. code-block:: shell
+   :caption: Input
+
+   export TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
+   
+   #change `<YOURGROUP>` to group id (e.g. team298)
+   export LSB_DEFAULT_USERGROUP=<YOURGROUP>
+
+
+
+**iRODS**
+
+For commands using irods, Load the irods module 
+
+.. code-block:: shell
+   :caption: Input
+
+   module load cellgen/irods
+
+
+Then log into irods
+
+.. code-block:: shell
+   :caption: Input
+
+   iinit 
