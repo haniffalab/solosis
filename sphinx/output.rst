@@ -3,24 +3,64 @@
 Output Data
 ===========
 
-The module generates a number of outputs, these are mainly intermediate files that allow 
-for further data analysis within solosis and beyond.
+**Solosis CLI generates a number different types of of outputs.**
 
-Would like to add to tree diagram of farm /lustre output dirs
+
+The commands listed below generate outputs in a common place:
+
+- cellranger-count
+- cellranger-arc
+- starsolo
+- iget-fastqs
+- iget-cellranger
+- cellbender
+
+
+The outputs for these commands will be found here: 
 
 .. code-block:: shell
 
-    /lustre/.../team298/
-    |
-    |-- sample_data
-    |   L__ SAMPLE_ID
-    |       L__ cellrangerARC
-    |       L__ cellranger-hl
-    |       L__ starsolo-hl
-    |       L__ processed_sanger
-    |       L__ rna_scanpy
-    |       
-    |-- tmp
-    |   L__ SAMPLE_ID
-    |       L__ SAMPLE_ID_R1.fastq
-    |       L__ SAMPLE_ID_R2.fastq
+    /lustre/scratch126/cellgen/team298/data/samples/
+
+
+The output file should reflect the tool or command that was executed by solosis, like so:
+
+.. code-block:: shell
+    :caption: Tree Diagram of some expected output files on Farm 
+
+    /lustre/scratch126/cellgen/team298/data/samples/
+    │       └── cellranger-arc/
+    |       ├── SAMPLE_ID/
+    │           ├── cellranger/
+    │           ├── fastq/
+    │           ├── starsolo/
+    │           ├── cellbender/
+    |           └── ...
+
+
+**Cell Ranger ARC**
+
+Cell Ranger ARC outputs will be found here:
+
+.. code-block:: shell
+
+    /lustre/scratch126/cellgen/team298/data/cellranger-arc/
+
+
+.. code-block:: shell
+    :caption: Tree Diagram of Cell Ranger ARC outputs on Farm
+
+    /lustre/scratch126/cellgen/team298/data/cellranger-arc/
+    │       └── SAMPLE_ID/
+    │           ├── outs/
+
+
+**Logs** 
+
+STDOUT and STDERR for commands executed will be found here:
+
+.. code-block:: shell
+
+    $HOME/logs
+
+

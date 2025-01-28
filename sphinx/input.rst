@@ -9,83 +9,40 @@
 Input File
 ==========
 
-Loading the Solosis tool onto Farm22. You can look for previous `releases on GitHub`_.
-
-.. code-block:: shell
-   :caption: Input
-
-  module use append /software/cellgen/team298/shared/modulefiles
-
-
-Load the solosis module.
-
-.. code-block:: shell
-   :caption: Input
-
-   module load solosis
-
-
-.. code-block:: shell
-   :caption: Expected Output
-    
-   ** INFO: 'Welcome to Solosis, Module loaded'
-   ** INFO: 'Type solosis-cli to get started'
-
-   Loading solosis/0.3.0
-      Loading requirement: cellgen/conda /software/modules/ISG/experimental/irods/4.2.11
-         cellgen/irods 
-
-.. _setup:
-
-Setup
-*****
-
 .. _setup_samplefile:
 
 
-Follow these Setup instructions populate input files to successfully run the solosis CLI.
+Follow these instructions to populate input files to successfully run the solosis CLI.
 
-Populating samplefile
+Populate Samplefile
 -----------
 
-This is the input file is a text file ``.txt`` and is currently required to exceute the following commands:
+This is the input file can be a comma-separated variable ``.csv`` or tab-separated variable ``.tsv`` file:
 
-- pull-processed 
-- Scanpy (notebook)
-- merge_h5ad
+- *This input file is an expected input on any command using the* ``--samplefile`` *argument.*
 
 **NOTE:** this input file can include any number of columns, so long as:
 
-- column1 - *sample_id*
-- column2 - *sample_name*
-- final column - *irods_path*
+- column1 = *sample_id*
 
-.. list-table:: 
-    :widths: 10 15 10 10
+
+.. list-table::
+    :widths: 15
     :header-rows: 1
 
     * - sample_id
-      - sample_name
-      - ...
-      - irods_path
     * - pBCN14634207
-      - BK18-BLD-3-SC-1a_G
-      - ...
-      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
     * - pBCN14634303
-      - BK18-BLD-3-SC-1a_C
-      - ...
-      - /seq/illumina/runs/48/48776/cellranger/cellranger720_multi_74ed2e8890a887c021241bade6189443
        
 
 .. _setup_cellrangerARC:
 
-CellrangerARC  
+Cell RangerARC  
 -----------
 
-CellrangerARC has two inputs that are required both of which a *comma-separated variable* ``csv`` formatted files.
+Cell RangerARC requires a different input file, a ``libraries`` file, which is a *comma-separated variable* ``csv`` file.
 
-1. csv file ``libraries.csv`` which includes library type of each sample (e.g. GEX or ATAC)
+- csv file ``libraries.csv`` which includes library type of each sample (e.g. GEX or ATAC)
 
 .. list-table:: 
     :widths: 10 15 10 
@@ -101,16 +58,5 @@ CellrangerARC has two inputs that are required both of which a *comma-separated 
       - HCA_rFSKI14910888
       - Chromatin Accessibility    
 
-2. csv file of sample IDs ``samples.csv``
-
-**NOTE: This file is also required when running cellranger, STARsolo and pull-fastqs.**
-
-.. list-table:: 
-    :widths: 10 
-    :header-rows: 1
-
-    * - samples
-    * - HCA_rFSKI14910984
-    * - HCA_rFSKI14910888
 
 .. _environment_manual:
