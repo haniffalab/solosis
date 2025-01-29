@@ -81,7 +81,7 @@ if [ "$used_int" -gt "$warn_int" ]; then
 fi
 
 ###### nfs quota script ######
-warn_nfs=57
+warn_nfs=52
 
 nfs_message="Dear User, \n 
 \n
