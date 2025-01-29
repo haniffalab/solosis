@@ -21,9 +21,6 @@ set -e
 #lfs quota -g team298 -h /lustre/scratch126
 lustre_size=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $4}')
 lustre_used=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $2}')
-#remove T from the values
-used_num=$(echo "$lustre_used" | sed 's/[A-Za-z]//g')
-size_num=$(echo "$lustre_size" | sed 's/[A-Za-z]//g')
 #making used_value an integer
 used_int=${used_num%.*}
 size_int=${size_num%.*}
@@ -35,6 +32,12 @@ nfs_size=$(df -h /nfs/team298 | sed -n '2p' | awk '{print $2}')
 nfs_used=$(df -h /nfs/team298 | sed -n '2p' | awk '{print $3}')
 nfs_avail=$(df -h /nfs/team298 | sed -n '2p' | awk '{print $4}')
 nfs_percent=$(df -h /nfs/team298 | sed -n '2p' | awk '{print $5}')
+#nfs- remove the T from the values
+nfs_size_num=$(echo "$nfs_size" | sed 's/[A-Za-z]//g')
+nfs_used_num=$(echo "$nfs_used" | sed 's/[A-Za-z]//g')
+#nfs- making used_value an integer
+nfs_size_int=${nfs_size_num%.*}
+nfs_used_int=${nfs_used_num%.*}
 # warehouse
 #df -h /warehouse/team298_wh01
 wh_size=$(df -h /warehouse/team298_wh01 | sed -n '2p' | awk '{print $2}')
@@ -75,7 +78,7 @@ Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298),
 \n Thank you."
 
 #  this will change to if $used_value is more than 47.5T
-if [ "$used_int" -gt "$warn_int" ]; then
+if [ "$nfs_used_int" -gt "$warn_int" ]; then
     # Submit the email
     echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
 fi
