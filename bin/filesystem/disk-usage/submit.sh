@@ -56,7 +56,7 @@ for row in "${data[@]}"; do
     printf "%-12s %-6s %-8s %-6s %-6s\n" $row
 done
 
-####### including lustre quota script ######
+####### lustre quota script ######
 #warning limit
 warn_int=42
 
@@ -78,4 +78,23 @@ Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298),
 if [ "$used_int" -gt "$warn_int" ]; then
     # Submit the email
     echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
+fi
+
+###### nfs quota script ######
+warn_nfs=57
+
+nfs_message="Dear User, \n 
+\n
+The capacity for NFS (team298) is at $nfs_percent capacity: \n
+Amount used: $nfs_used ($nfs_percent) \n
+Amount available: $nfs_avail \n
+Total storage: $nfs_size \n
+\n
+Please review contents of NFS directory (/nfs/team298), and remove content that is no longer essential. \n
+\n NOTE:Items that should not be permanently deleted can be stored on iRODS for secure storage. Find Haniffa Lab (Team298) storage spa>
+\n Thank you."
+
+if [ "$nfs_used" -gt "$warn_nfs" ]; then
+    # Submit the email
+    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk #daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk
 fi
