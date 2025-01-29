@@ -55,3 +55,27 @@ printf "%-12s %-6s %-8s %-6s %-6s\n" "---------" "-----" "------" "-----" "-----
 for row in "${data[@]}"; do
     printf "%-12s %-6s %-8s %-6s %-6s\n" $row
 done
+
+####### including lustre quota script ######
+#warning limit
+warn_int=42
+
+#Percentage equation
+lustre_percentage=$(echo $((used_int*100/size_int))'%')
+
+## text of the email 
+message_lustre="Dear User, \n 
+\n
+The capacity for Lustre (team298) is at $lustre_percentage capacity: \n
+Amount used: $lustre_used ($lustre_percentage) \n
+Amount available: $lustre_size \n
+\n
+Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298), and remove content that is no longer essential. \n
+\n NOTE:Items that should not be permanently deleted can be stored on iRODS for secure storage. Find Haniffa Lab (Team298) storage space in /archive/team298 \n
+\n Thank you."
+
+#  this will change to if $used_value is more than 47.5T
+if [ "$used_int" -gt "$warn_int" ]; then
+    # Submit the email
+    echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
+fi
