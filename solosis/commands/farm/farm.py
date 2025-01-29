@@ -1,16 +1,14 @@
 import os
 import subprocess
-
 import click
-
 from .. import helpers
 
-# How are we factoring this variable?
-codebase = "/lustre/scratch126/cellgen/team298/vm11/PROJECTS/SOLOSIS/solosis/bin/farm/"
+
+# Script directory in the solosis package
+script_dir = os.path.dirname(os.path.abspath(__file__))  
+
 
 ## Functions supporting farm submission
-
-
 def bash_submit(command: str, **kwargs) -> None:
     """
     Runs a command. Command can be a bash command (du -hs ) or a script (test.sh)
@@ -33,7 +31,9 @@ def single_command(command_to_exec, job_name, queue, time, cores, mem, **kwargs)
     """
     Run a single command on the farm.
     """
-    job_runner = os.path.join(codebase, "single_job.sh")
+    job_runner = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
+        )
     command_to_exec = " ".join(command_to_exec)
     bash_submit(
         job_runner,
@@ -46,36 +46,12 @@ def single_command(command_to_exec, job_name, queue, time, cores, mem, **kwargs)
     )
 
 
-def array_cmd(
-    command_to_exec, job_name, queue, time, cores, mem, num_of_concurrrent=20, **kwargs
-):
-    """
-    Run a single command on the farm.
-    """
-    job_runner = os.path.join(codebase, "array_job.sh")
-    command_to_exec = " ".join(command_to_exec)
-    bash_submit(
-        job_runner,
-        command_to_exec=command_to_exec,
-        job_name=job_name,
-        queue=queue,
-        time=time,
-        cores=cores,
-        mem=mem,
-    )
 
 
 @click.command("command")
 @helpers.farm
 @click.argument("command_to_exec", nargs=-1, type=str)
-@click.option(
-    "-j",
-    "--job_name",
-    required=False,
-    type=str,
-    help="Name of the job",
-    default="random_val",
-)  # random val to be implemented (from import random)
+@click.option("-j", "--job_name", required=False, type=str, help="Name of the job", default="random_val")  # random val to be implemented (from import random)
 def single_cmd(command_to_exec, job_name, **kwargs):
     """
     Run a single command on the farm.
@@ -100,6 +76,8 @@ def single_cmd(command_to_exec, job_name, **kwargs):
     help="Name of the job",
     default="random_val",
 )  # random val to be implemented (from import random)
+
+
 def run_ipynb(notebook, job_name, **kwargs):
     """
     Run a jupyter notebook on the farm.
