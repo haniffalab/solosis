@@ -4,7 +4,7 @@ import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
 from solosis.commands.filesystem import disk_usage, file_count
-from solosis.commands.irods import iget_cellranger, iget_fastqs
+from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.ncl_bsu import migrate
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 
@@ -60,6 +60,7 @@ def irods():
 
 irods.add_command(iget_fastqs.cmd, name="iget-fastqs")
 irods.add_command(iget_cellranger.cmd, name="iget-cellranger")
+irods.add_command(imeta_report.cmd, name="imeta-report")
 
 
 # NCL_BSU subgroup
