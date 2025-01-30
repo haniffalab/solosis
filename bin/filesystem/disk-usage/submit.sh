@@ -21,6 +21,9 @@ set -e
 #lfs quota -g team298 -h /lustre/scratch126
 lustre_size=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $4}')
 lustre_used=$(lfs quota -g team298 -h /lustre/scratch126 | awk '/\/lustre\/scratch126/ {print $2}')
+#remove T from the values
+used_num=$(echo "$lustre_used" | sed 's/[A-Za-z]//g')
+size_num=$(echo "$lustre_size" | sed 's/[A-Za-z]//g')
 #making used_value an integer
 used_int=${used_num%.*}
 size_int=${size_num%.*}
@@ -97,7 +100,7 @@ Please review contents of NFS directory (/nfs/team298), and remove content that 
 \n NOTE:Items that should not be permanently deleted can be stored on iRODS for secure storage. Find Haniffa Lab (Team298) storage spa>
 \n Thank you."
 
-#if [ "$nfs_used" -gt "$warn_nfs" ]; then
-#    # Submit the email
-#    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
-#fi
+if [ "$nfs_used" -gt "$warn_nfs" ]; then
+    # Submit the email
+    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
+fi
