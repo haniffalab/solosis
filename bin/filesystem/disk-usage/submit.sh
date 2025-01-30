@@ -69,8 +69,8 @@ lustre_percentage=$(echo $((used_int*100/45))'%')
 ## text of the email 
 message_lustre="Dear User, \n 
 \n
-The capacity for Lustre (team298) is at $lustre_percentage capacity: \n
-Amount used: $lustre_used ($lustre_percentage) \n
+The capacity for Lustre (team298) is at $lustre_percent capacity: \n
+Amount used: $lustre_used ($lustre_percent) \n
 Amount available: $lustre_size \n
 \n
 Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298), and remove content that is no longer essential. \n
