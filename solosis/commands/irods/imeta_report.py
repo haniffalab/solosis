@@ -100,30 +100,10 @@ def cmd(sample, samplefile):
 
         # Check if output exists
         if os.path.exists(cellranger_path):
-            if overwrite:
-                echo_message(
-                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                    "warn",
-                )
-                try:
-                    # Remove the directory and its contents
-                    # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    echo_message(
-                        f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
-                        "info",
-                    )
-                except subprocess.CalledProcessError as e:
-                    echo_message(
-                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
-                        "error",
-                    )
-                    return
-                samples_to_download.append(sample)
-            else:
-                echo_message(
-                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                    "warn",
-                )
+            echo_message(
+                f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
+                "warn",
+            )
         else:
             samples_to_download.append(sample)
 
