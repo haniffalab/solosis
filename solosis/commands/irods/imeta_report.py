@@ -100,12 +100,12 @@ def cmd(sample, samplefile):
 
         # Check if output exists
         if os.path.exists(cellranger_path):
+            samples_to_download.append(sample)
+        else:
             echo_message(
                 f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
                 "warn",
             )
-        else:
-            samples_to_download.append(sample)
 
     # Confirm samples to download
     if samples_to_download:
