@@ -64,7 +64,7 @@ done
 
 ####### lustre quota script ######
 #warning limit
-warn_int=39
+warn_int=42
 
 #Percentage equation
 lustre_percent=$(echo $((used_int*100/size_int))'%')
@@ -87,7 +87,7 @@ if [ "$used_int" -gt "$warn_int" ]; then
 fi
 
 ###### nfs quota script ######
-warn_nfs=50
+warn_nfs=57
 
 nfs_message="Dear User, \n 
 \n
