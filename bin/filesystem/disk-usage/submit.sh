@@ -83,7 +83,7 @@ Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298),
 #  this will change to if $used_value is more than 47.5T
 if [ "$used_int" -gt "$warn_int" ]; then
     # Submit the email
-    echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk #daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
+    echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
 fi
 
 ###### nfs quota script ######
@@ -102,5 +102,5 @@ Please review contents of NFS directory (/nfs/team298), and remove content that 
 
 if [ "$nfs_used_int" -gt "$warn_nfs" ]; then
     # Submit the email
-    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
+    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
 fi
