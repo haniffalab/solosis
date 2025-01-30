@@ -8,7 +8,7 @@
   <title>Index &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a78a336b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -51,7 +51,6 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html#pytest">pytest</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -87,6 +86,7 @@
 
 <div class="genindex-jumpbox">
  <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#S"><strong>S</strong></a>
  
 </div>
@@ -94,10 +94,30 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
+    --cores
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-cores">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-cores">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+      <li>
     --create-bam
 
       <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-create-bam">solosis-cli-alignment-cellranger-arc command line option</a>
+</li>
         <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-count-create-bam">solosis-cli-alignment-cellranger-count command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --job_name
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-j">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-j">solosis-cli-farm-cmds-run_ipynb command line option</a>
 </li>
       </ul></li>
       <li>
@@ -108,6 +128,22 @@
 </li>
       </ul></li>
       <li>
+    --librariesfile
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-librariesfile">solosis-cli-alignment-cellranger-arc command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --mem
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-mem">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-mem">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+      <li>
     --merged_filename
 
       <ul>
@@ -115,10 +151,26 @@
 </li>
       </ul></li>
       <li>
+    --notebook
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-n">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+      <li>
     --overwrite
 
       <ul>
         <li><a href="api.html#cmdoption-solosis-cli-irods-iget-cellranger-overwrite">solosis-cli-irods-iget-cellranger command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --queue
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-queue">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-queue">solosis-cli-farm-cmds-run_ipynb command line option</a>
 </li>
       </ul></li>
       <li>
@@ -154,8 +206,6 @@
     --samplefile
 
       <ul>
-        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-samplefile">solosis-cli-alignment-cellranger-arc command line option</a>
-</li>
         <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-count-samplefile">solosis-cli-alignment-cellranger-count command line option</a>
 </li>
         <li><a href="api.html#cmdoption-solosis-cli-alignment-starsolo-samplefile">solosis-cli-alignment-starsolo command line option</a>
@@ -172,6 +222,15 @@
 </li>
       </ul></li>
       <li>
+    --time
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-time">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-time">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+      <li>
     --total_droplets_included
 
       <ul>
@@ -184,7 +243,38 @@
       <ul>
         <li><a href="api.html#cmdoption-solosis-cli-version">solosis-cli command line option</a>
 </li>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-version">solosis-cli-alignment-cellranger-arc command line option</a>
+</li>
         <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-count-version">solosis-cli-alignment-cellranger-count command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -j
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-j">solosis-cli-farm-cmds-command command line option</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-j">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -n
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-n">solosis-cli-farm-cmds-run_ipynb command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    COMMAND_TO_EXEC
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-arg-COMMAND_TO_EXEC">solosis-cli-farm-cmds-command command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -204,9 +294,13 @@
     solosis-cli-alignment-cellranger-arc command line option
 
       <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-create-bam">--create-bam</a>
+</li>
         <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-libraries">--libraries</a>
 </li>
-        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-samplefile">--samplefile</a>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-librariesfile">--librariesfile</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-alignment-cellranger-arc-version">--version</a>
 </li>
       </ul></li>
       <li>
@@ -232,6 +326,48 @@
 </li>
       </ul></li>
       <li>
+    solosis-cli-farm-cmds-command command line option
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-cores">--cores</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-j">--job_name</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-mem">--mem</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-queue">--queue</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-time">--time</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-j">-j</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-command-arg-COMMAND_TO_EXEC">COMMAND_TO_EXEC</a>
+</li>
+      </ul></li>
+      <li>
+    solosis-cli-farm-cmds-run_ipynb command line option
+
+      <ul>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-cores">--cores</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-j">--job_name</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-mem">--mem</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-n">--notebook</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-queue">--queue</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-time">--time</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-j">-j</a>
+</li>
+        <li><a href="api.html#cmdoption-solosis-cli-farm-cmds-run_ipynb-n">-n</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
     solosis-cli-irods-iget-cellranger command line option
 
       <ul>
@@ -244,8 +380,6 @@
         <li><a href="api.html#cmdoption-solosis-cli-irods-iget-cellranger-samplefile">--samplefile</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     solosis-cli-irods-iget-fastqs command line option
 

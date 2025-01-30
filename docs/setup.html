@@ -9,7 +9,7 @@
   <title>Setup &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e40de6ea" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a78a336b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html#pytest">pytest</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -102,29 +101,11 @@
 </pre></div>
 </div>
 </div>
-<p><strong>Environment Variables</strong></p>
-<p>Then load environment variables</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEAM_DATA_DIR</span><span class="o">=</span>/lustre/scratch126/cellgen/team298/data
-
-<span class="c1">#change `&lt;YOURGROUP&gt;` to group id (e.g. team298)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LSB_DEFAULT_USERGROUP</span><span class="o">=</span>&lt;YOURGROUP&gt;
-</pre></div>
-</div>
-</div>
-<p><strong>iRODS</strong></p>
-<p>For commands using irods, Load the irods module</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="admonition-working-with-irods admonition">
+<p class="admonition-title">Working with iRODS</p>
+<p>If you’re running commands that work with iRODS, please load the module and authenticate yourself.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>cellgen/irods
-</pre></div>
-</div>
-</div>
-<p>Then log into irods</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>iinit
+iinit
 </pre></div>
 </div>
 </div>
