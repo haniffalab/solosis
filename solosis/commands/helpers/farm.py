@@ -3,7 +3,7 @@
 import click
 
 
-def farm(function):
+def job_resources(function):
     function = click.option("--mem", default=50000, type=int, help="mem in MB")(
         function
     )
@@ -14,4 +14,5 @@ def farm(function):
     function = click.option("--queue", default="normal", type=str, help="queue name")(
         function
     )
+    
     return function

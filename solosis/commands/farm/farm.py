@@ -2,14 +2,14 @@ import os
 import subprocess
 import click
 from .. import helpers
-
+from solosis.utils import echo_lsf_submission_message, echo_message, log_command
 
 # Script directory in the solosis package
 script_dir = os.path.dirname(os.path.abspath(__file__))  
 
 
 ## Functions supporting farm submission
-def bash_submit(command: str, **kwargs) -> None:
+def bash_submit(job_runner: str, **kwargs) -> None:
     """
     Runs a command. Command can be a bash command (du -hs ) or a script (test.sh)
     While running exports all kwargs as environment variables
@@ -21,19 +21,24 @@ def bash_submit(command: str, **kwargs) -> None:
         kwargs[str(k)] = str(v)
     # Capture result
     result = subprocess.run(
-        [command], capture_output=True, text=True, env={**os.environ, **kwargs}
+        [job_runner], capture_output=True, text=True, env={**os.environ, **kwargs}
     )
+
     click.echo(result.stdout)
     click.echo(result.stderr)
 
 
-def single_command(command_to_exec, job_name, queue, time, cores, mem, **kwargs):
+def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **kwargs):
     """
     Run a single command on the farm.
     """
     job_runner = os.path.abspath(
         os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
         )
+    if len(command_to_exec) == 0:
+        echo_message("No command to execute", type="error")
+        return
+    
     command_to_exec = " ".join(command_to_exec)
     bash_submit(
         job_runner,
@@ -49,10 +54,11 @@ def single_command(command_to_exec, job_name, queue, time, cores, mem, **kwargs)
 
 
 @click.command("command")
-@helpers.farm
+@helpers.job_resources
 @click.argument("command_to_exec", nargs=-1, type=str)
-@click.option("-j", "--job_name", required=False, type=str, help="Name of the job", default="random_val")  # random val to be implemented (from import random)
-def single_cmd(command_to_exec, job_name, **kwargs):
+@click.option("-j", "--job_name", required=False, type=str, help="Name of the job", default="default")  # random val to be implemented (from import random)
+@click.pass_context
+def single_cmd(ctx, command_to_exec, job_name, **kwargs):
     """
     Run a single command on the farm.
     """
@@ -60,7 +66,11 @@ def single_cmd(command_to_exec, job_name, **kwargs):
     time = kwargs.get("time")
     cores = kwargs.get("cores")
     mem = kwargs.get("mem")
-    single_command(command_to_exec, job_name=job_name, **kwargs)
+    log_command(ctx)
+    if job_name == "default":
+        job_name = f"{ctx.command_path}_{ctx.obj['execution_id']}"
+    echo_lsf_submission_message(f"Job name :{job_name} submitted to queue: {queue}")
+    _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 
 
 @click.command("run_ipynb")
@@ -74,7 +84,6 @@ def single_cmd(command_to_exec, job_name, **kwargs):
     required=False,
     type=str,
     help="Name of the job",
-    default="random_val",
 )  # random val to be implemented (from import random)
 
 
@@ -87,7 +96,7 @@ def run_ipynb(notebook, job_name, **kwargs):
     command_to_exec = f"source ~/.bashrc && conda activate /software/cellgen/team298/shared/envs/hl-conda/hl_minimal_v1.0.0 && jupyter nbconvert --to notebook --execute {notebook}"
     bash_submit(
         job_runner, command_to_exec=command_to_exec, job_name="notebook", **kwargs
-    )  # , queue=queue, time=time, cores=cores, mem=mem)
+    )
 
 
 if __name__ == "__main__":
