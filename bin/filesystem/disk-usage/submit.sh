@@ -64,7 +64,7 @@ done
 
 ####### lustre quota script ######
 #warning limit
-warn_int=42
+warn_int=39
 
 #Percentage equation
 lustre_percent=$(echo $((used_int*100/size_int))'%')
