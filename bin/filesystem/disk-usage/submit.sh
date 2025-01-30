@@ -81,7 +81,7 @@ Please review contents of Lustre directory (/lustre/scratch126/cellgen/team298),
 \n Thank you."
 
 #  this will change to if $used_value is more than 47.5T
-if [ "$warn_int" -gt "$warn_int" ]; then
+if [ "$used_int" -gt "$warn_int" ]; then
     # Submit the email
     echo -e "$message_lustre" | mail -s "Lustre Quota Alert" nlg143@newcastle.ac.uk #daniela.basurto-lozada@newcastle.ac.uk Dave.Horsfall@newcastle.ac.uk vm11@sanger.ac.uk
 fi
@@ -100,3 +100,7 @@ Please review contents of NFS directory (/nfs/team298), and remove content that 
 \n NOTE:Items that should not be permanently deleted can be stored on iRODS for secure storage. Find Haniffa Lab (Team298) storage spa>
 \n Thank you."
 
+if [ "$nfs_used_int" -gt "$warn_nfs" ]; then
+    # Submit the email
+    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
+fi
