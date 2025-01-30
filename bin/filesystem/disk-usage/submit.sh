@@ -97,7 +97,7 @@ Please review contents of NFS directory (/nfs/team298), and remove content that 
 \n NOTE:Items that should not be permanently deleted can be stored on iRODS for secure storage. Find Haniffa Lab (Team298) storage spa>
 \n Thank you."
 
-if [ "$nfs_used" -gt "$warn_nfs" ]; then
-    # Submit the email
-    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
-fi
+#if [ "$nfs_used" -gt "$warn_nfs" ]; then
+#    # Submit the email
+#    echo -e $nfs_message | mail -s "NFS Quota Alert" nlg143@newcastle.ac.uk 
+#fi
