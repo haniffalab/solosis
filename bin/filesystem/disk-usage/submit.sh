@@ -64,7 +64,7 @@ done
 warn_int=42
 
 #Percentage equation
-lustre_percentage=$(echo $((used_int*100/45))'%')
+lustre_percent=$(echo $((used_int*100/size_int))'%')
 
 ## text of the email 
 message_lustre="Dear User, \n 
