@@ -166,6 +166,6 @@ printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "-------"
 # Loop through data
 for row in "${data[@]}"; do
     printf "%-15s %-10s %-10s %-10s\n" $row
-done
+done > irods_report.txt
 
 EOF
