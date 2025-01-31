@@ -96,7 +96,7 @@ cd "\$OUTPUT_DIR"
 # Find the line that matches these values and output it in CSV format
 imeta qu -C -z /seq/illumina sample = \$SAMPLE_IDS | \
 grep "^collection: " | \
-sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv
+sed 's/^collection: //' > "\$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv"
 
 # Check if cellranger_path.csv is empty
 if [ -s cellranger_path.csv ]; then
@@ -108,7 +108,7 @@ fi
 ##find fastq/cram files
 imeta qu -d -z /seq sample = \$SAMPLE_IDS | \
 grep "^collection: " | \
-sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cram_path.csv
+sed 's/^collection: //' > "\$OUTPUT_DIR/\$SAMPLE/cram_path.csv"
 
 # Check if cram_path.csv is empty
 if [ -s cram_path.csv ]; then
