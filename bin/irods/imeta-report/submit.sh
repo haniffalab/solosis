@@ -90,25 +90,6 @@ mkdir -p "\$OUTPUT_DIR"
 mkdir -p "\$OUTPUT_DIR"
 cd "\$OUTPUT_DIR"
 
-# Find the line that matches these values and output it in CSV format
-imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
-grep "^collection: " | \
-sed 's/^collection: //' > irods_path.csv
-
-# Confirm the saved output
-num_paths=\$(wc -l irods_path.csv)
-echo "Saved \$num_paths matching path(s) to irods_path.csv."
-
-# Read each line from irods_path.csv and use iget to pull files to the output dir
-while IFS= read -r irods_path; do
-    echo "Retrieving \$irods_path to \$OUTPUT_DIR"
-    iget -r "\$irods_path" "\$OUTPUT_DIR"
-done < irods_path.csv
-
-# Confirmation message
-echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
-echo "\$OUTPUT_DIR"
-
 ####################################################
 
 ##find cellranger outputs
