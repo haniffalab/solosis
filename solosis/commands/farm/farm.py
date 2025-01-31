@@ -33,7 +33,7 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     Run a single command on the farm.
     """
     job_runner = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
+        os.path.join(script_dir, "../../../bin/farm/single_job.sh")
         )
     if len(command_to_exec) == 0:
         echo_message("No command to execute", type="error")
@@ -69,6 +69,8 @@ def single_cmd(ctx, command_to_exec, job_name, **kwargs):
     log_command(ctx)
     if job_name == "default":
         job_name = f"{ctx.command_path}_{ctx.obj['execution_id']}"
+    else:
+        job_name = f"{job_name}_{ctx.obj['execution_id']}"
     echo_lsf_submission_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 

@@ -15,9 +15,7 @@ fi
 
 # Creates an lsf folder in the current directory.
 # TODO: Append the solosis RUNID to this. 
-SOLOSIS_RUNID="solosis_runid"
-bsub_prefix="${job_name}-${SOLOSIS_RUNID}"
-bsub_file=$LOG_FOLDER/lsf/$bsub_prefix.lsf
+bsub_file=$LOG_FOLDER/lsf/${job_name}.lsf
 
 email="$USER@sanger.ac.uk"
 cat > $bsub_file <<eof
@@ -28,7 +26,7 @@ cat > $bsub_file <<eof
 #BSUB -M $mem
 #BSUB -R "select[mem>$mem] rusage[mem=$mem]"
 #BSUB -W $time
-#BSUB -o $LOG_FOLDER/lsf/$bsub_prefix.log
+#BSUB -o $LOG_FOLDER/lsf/${job_name}.log
 set -euo pipefail
 $command_to_exec
 status=\$?
