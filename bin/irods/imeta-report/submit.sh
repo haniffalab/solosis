@@ -1,5 +1,5 @@
 #!/bin/bash
-# submit.sh - Environment setup for imeta-report command   using 
+# submit.sh - Environment setup for imeta-report command
 
 # Usage:
 #   ./submit.sh <sample_ids>
@@ -7,8 +7,7 @@
 # Parameters:
 #   <sample_ids> - Comma-separated list of sample IDs to process.
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+set -e  # Exit on error
 
 # Ensure at least one argument is provided
 if [ "$#" -lt 1 ]; then
@@ -18,8 +17,6 @@ fi
 
 # Assign command-line argument to variable
 SAMPLE_IDS="$1"
-retain_bam="$2"; shift
-overwrite="$2"
 
 # Verify that the sample list is not empty
 if [ -z "$SAMPLE_IDS" ]; then
@@ -33,118 +30,68 @@ if ! module load cellgen/irods; then
   exit 1
 fi
 
-# Configure paths and job parameters
+# Define directories
 TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
-CPU=2
-MEM=3000
-QUEUE="small"
-GROUP="team298"
+TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/logs"
 
 # Ensure logs directory exists
 mkdir -p "$TEAM_LOGS_DIR"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
-NUM_SAMPLES=${#SAMPLES[@]}
 
-# Submit an array job to LSF, with each task handling a specific sample
-bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
-#!/bin/bash
-#BSUB -o "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.out"   # Standard output with array job index
-#BSUB -e "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.err"   # Standard error with array job index
-#BSUB -n $CPU                                    # Number of CPU cores
-#BSUB -M $MEM                                    # Memory limit in MB
-#BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
-#BSUB -q $QUEUE                                  # Queue name
+# Process each sample individually
+for SAMPLE in "${SAMPLES[@]}"; do
+    echo "Processing sample: $SAMPLE"
 
-# Define the samples array inside the job script
-################################################
-# The array is redefined here because the job scheduler environment does
-# not inherit the array from the parent script, so we re-split the 
-# SAMPLE_IDS string into an array in each individual job.
-IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
+    # Define sample-specific output directory
+    OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/${SAMPLE}/cellranger"
+    mkdir -p "$OUTPUT_DIR"
+    cd "$OUTPUT_DIR"
 
-# Determine the sample for the current task
-SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
+    # Find Cell Ranger outputs
+    imeta qu -C -z /seq/illumina sample = "$SAMPLE" | \
+    grep "^collection: " | sed 's/^collection: //' > "cellranger_path.csv"
 
-# Debug: output sample for current task
-echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
+    # Check if cellranger_path.csv is empty
+    if [ -s "cellranger_path.csv" ]; then
+      cellranger_avail="yes"
+    else
+      cellranger_avail="no"
+    fi
 
-# Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
+    # Find FASTQ/CRAM files
+    imeta qu -d -z /seq sample = "$SAMPLE" | \
+    grep "^collection: " | sed 's/^collection: //' > "cram_path.csv"
 
-################################
+    # Check if cram_path.csv is empty
+    if [ -s "cram_path.csv" ]; then
+      cram_avail="yes"
+    else
+      cram_avail="no"
+    fi
 
-# Check if outputs already present
-#if [ "\$(ls -A "\$OUTPUT_DIR")" ]; then
-#    echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs. Exiting"
-#    exit 0
-#fi
+    # Determine iRODS availability
+    if [ "$cellranger_avail" = "yes" ] || [ "$cram_avail" = "yes" ]; then
+      irods_avail="yes"
+    else
+      irods_avail="no"
+    fi
 
-# Create the output dir
-mkdir -p "\$OUTPUT_DIR"
+    # Confirm saved outputs
+    num_cellranger_paths=$(wc -l < cellranger_path.csv)
+    num_cram_paths=$(wc -l < cram_path.csv)
 
-cd "\$OUTPUT_DIR"
+    echo "Saved $num_cellranger_paths matching path(s) to $OUTPUT_DIR/cellranger_path.csv."
+    echo "Saved $num_cram_paths matching path(s) to $OUTPUT_DIR/cram_path.csv."
 
-####################################################
+    # Write to report
+    if [ ! -f "irods_report.txt" ]; then
+        printf "%-15s %-10s %-10s %-10s\n" "Samples" "iRODS" "CRAM" "CellRanger" > irods_report.txt
+        printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "---------" >> irods_report.txt
+    fi
+    printf "%-15s %-10s %-10s %-10s\n" "$SAMPLE" "$irods_avail" "$cram_avail" "$cellranger_avail" >> irods_report.txt
 
-##find cellranger outputs
-# Find the line that matches these values and output it in CSV format
-imeta qu -C -z /seq/illumina sample = \$SAMPLE_IDS | \
-grep "^collection: " | \
-sed 's/^collection: //' > "\$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv"
+done  # End sample loop
 
-# Check if cellranger_path.csv is empty
-if [ -s cellranger_path.csv ]; then
-  cellranger_avail="yes"
-else
-  cellranger_avail="no"
-fi
-
-##find fastq/cram files
-imeta qu -d -z /seq sample = \$SAMPLE_IDS | \
-grep "^collection: " | \
-sed 's/^collection: //' > "\$OUTPUT_DIR/\$SAMPLE/cram_path.csv"
-
-# Check if cram_path.csv is empty
-if [ -s cram_path.csv ]; then
-  cram_avail="yes"
-else
-  cram_avail="no"
-fi
-
-# Check if cram_path.csv is empty
-if [ -s cellranger_path.csv ] || [ -s cram_path.csv ]; then
-  irods_avail="yes"
-else
-  irods_avail="no"
-fi
-
-# Confirm the saved cellranger output
-num_paths=\$(wc -l cellranger_path.csv)
-echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv."
-
-# Confirm the saved cellranger output
-num_paths=\$(wc -l cram_path.csv)
-echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cram_path.csv."
-
-# Number of sample IDs
-num_samples=$(echo "\$SAMPLE_IDS" | tr ',' '\n' | wc -l)
-#echo "\$num_samples sample(s) provided."
-
-
-# Array of data
-data=("\$SAMPLE_IDS \$irods_avail \$cram_avail \$cellranger_avail ")
-
-# Define headers
-printf "%-15s %-10s %-10s %-10s\n" "Samples" "irods" "cram" "cellranger"
-printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "-------"
-
-# Loop through data
-for row in "${data[@]}"; do
-    printf "%-15s %-10s %-10s %-10s\n" $row
-done > irods_report.txt
-
-EOF
+echo "Processing completed. Report saved in irods_report.txt"
