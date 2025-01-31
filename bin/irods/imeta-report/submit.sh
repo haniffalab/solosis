@@ -86,8 +86,6 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 # Create the output dir
 mkdir -p "\$OUTPUT_DIR"
 
-# Create the output directory if it doesn't exist
-mkdir -p "\$OUTPUT_DIR"
 cd "\$OUTPUT_DIR"
 
 ####################################################
