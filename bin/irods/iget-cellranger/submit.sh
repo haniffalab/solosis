@@ -33,16 +33,19 @@ if ! module load cellgen/irods; then
   exit 1
 fi
 
-# Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
+# Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
+TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
+
+# Ensure directories exists
+mkdir -p "$TEAM_DATA_DIR"
+mkdir -p "$TEAM_LOGS_DIR"
+
+# Configure job parameters
 CPU=2
 MEM=3000
 QUEUE="small"
-GROUP="team298"
-
-# Ensure logs directory exists
-mkdir -p "$TEAM_LOGS_DIR"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
@@ -56,7 +59,7 @@ bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE                                  # Queue name
 
 # Define the samples array inside the job script
@@ -73,7 +76,7 @@ SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
 echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
+OUTPUT_DIR="${TEAM_DATA_DIR}/samples/\$SAMPLE/cellranger"
 
 ################################
 
@@ -109,63 +112,8 @@ done < irods_path.csv
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "\$OUTPUT_DIR"
 
-####################################################
-
-##find cellranger outputs
-# Find the line that matches these values and output it in CSV format
-imeta qu -C -z /seq/illumina sample = \$SAMPLE_IDS | \
-grep "^collection: " | \
-sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv
-
-# Check if cellranger_path.csv is empty
-if [ -s cellranger_path.csv ]; then
-  cellranger_avail="yes"
-else
-  cellranger_avail="no"
-fi
-
-##find fastq/cram files
-imeta qu -d -z /seq sample = \$SAMPLE_IDS | \
-grep "^collection: " | \
-sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cram_path.csv
-
-# Check if cram_path.csv is empty
-if [ -s cram_path.csv ]; then
-  cram_avail="yes"
-else
-  cram_avail="no"
-fi
-
-# Check if cram_path.csv is empty
-if [ -s cellranger_path.csv ] || [ -s cram_path.csv ]; then
-  irods_avail="yes"
-else
-  irods_avail="no"
-fi
-
-# Confirm the saved cellranger output
-num_paths=\$(wc -l cellranger_path.csv)
-echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv."
-
-# Confirm the saved cellranger output
-num_paths=\$(wc -l cram_path.csv)
-echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cram_path.csv."
-
-# Number of sample IDs
-num_samples=$(echo "\$SAMPLE_IDS" | tr ',' '\n' | wc -l)
-#echo "\$num_samples sample(s) provided."
-
-
-# Array of data
-data=("\$SAMPLE_IDS \$irods_avail \$cram_avail \$cellranger_avail ")
-
-# Define headers
-printf "%-15s %-10s %-10s %-10s\n" "Samples" "irods" "cram" "cellranger"
-printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "-------"
-
-# Loop through data
-for row in "${data[@]}"; do
-    printf "%-15s %-10s %-10s %-10s\n" $row
-done > irods_report.txt
-
 EOF
+
+
+
+#unsure about confirmation message..

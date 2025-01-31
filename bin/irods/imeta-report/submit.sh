@@ -1,5 +1,5 @@
 #!/bin/bash
-# submit.sh - Environment setup for imeta-report
+# submit.sh - Environment setup for imeta-report command   using 
 
 # Usage:
 #   ./submit.sh <sample_ids>
@@ -18,6 +18,8 @@ fi
 
 # Assign command-line argument to variable
 SAMPLE_IDS="$1"
+retain_bam="$2"; shift
+overwrite="$2"
 
 # Verify that the sample list is not empty
 if [ -z "$SAMPLE_IDS" ]; then
@@ -47,10 +49,10 @@ IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 NUM_SAMPLES=${#SAMPLES[@]}
 
 # Submit an array job to LSF, with each task handling a specific sample
-bsub -J "imeta_report_array[1-$NUM_SAMPLES]" <<EOF
+bsub -J "pull_cellranger_array[1-$NUM_SAMPLES]" <<EOF
 #!/bin/bash
-#BSUB -o "$TEAM_LOGS_DIR/imeta_report_%J_%I.out"   # Standard output with array job index
-#BSUB -e "$TEAM_LOGS_DIR/imeta_report_%J_%I.err"   # Standard error with array job index
+#BSUB -o "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.out"   # Standard output with array job index
+#BSUB -e "$TEAM_LOGS_DIR/pull_cellranger_%J_%I.err"   # Standard error with array job index
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
@@ -71,7 +73,7 @@ SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
 echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
 
 # Define the output directory
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/irods"
+OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 
 ################################
 
@@ -93,46 +95,77 @@ imeta qu -C -z /seq/illumina sample = \$SAMPLE | \
 grep "^collection: " | \
 sed 's/^collection: //' > irods_path.csv
 
-# Check if irods_path.csv is empty
-if [ -s irods_path.csv ]; then
+# Confirm the saved output
+num_paths=\$(wc -l irods_path.csv)
+echo "Saved \$num_paths matching path(s) to irods_path.csv."
+
+# Read each line from irods_path.csv and use iget to pull files to the output dir
+while IFS= read -r irods_path; do
+    echo "Retrieving \$irods_path to \$OUTPUT_DIR"
+    iget -r "\$irods_path" "\$OUTPUT_DIR"
+done < irods_path.csv
+
+# Confirmation message
+echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
+echo "\$OUTPUT_DIR"
+
+####################################################
+
+##find cellranger outputs
+# Find the line that matches these values and output it in CSV format
+imeta qu -C -z /seq/illumina sample = \$SAMPLE_IDS | \
+grep "^collection: " | \
+sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv
+
+# Check if cellranger_path.csv is empty
+if [ -s cellranger_path.csv ]; then
+  cellranger_avail="yes"
+else
+  cellranger_avail="no"
+fi
+
+##find fastq/cram files
+imeta qu -d -z /seq sample = \$SAMPLE_IDS | \
+grep "^collection: " | \
+sed 's/^collection: //' > \$OUTPUT_DIR/\$SAMPLE/cram_path.csv
+
+# Check if cram_path.csv is empty
+if [ -s cram_path.csv ]; then
+  cram_avail="yes"
+else
+  cram_avail="no"
+fi
+
+# Check if cram_path.csv is empty
+if [ -s cellranger_path.csv ] || [ -s cram_path.csv ]; then
   irods_avail="yes"
 else
   irods_avail="no"
 fi
 
-# Confirm the saved output
-num_paths=\$(wc -l irods_path.csv)
-echo "Saved \$num_paths matching path(s) to irods_path.csv."
+# Confirm the saved cellranger output
+num_paths=\$(wc -l cellranger_path.csv)
+echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cellranger_path.csv."
+
+# Confirm the saved cellranger output
+num_paths=\$(wc -l cram_path.csv)
+echo "Saved \$num_paths matching path(s) to \$OUTPUT_DIR/\$SAMPLE/cram_path.csv."
+
 # Number of sample IDs
-num_samples=\$(echo "\$SAMPLE" | tr ',' '\n' | wc -l)
-echo "\$num_samples sample(s) provided."
+num_samples=$(echo "\$SAMPLE_IDS" | tr ',' '\n' | wc -l)
+#echo "\$num_samples sample(s) provided."
 
-
-# Confirmation message
-echo "iRODS report for \$SAMPLE has been generated here:"
-echo "\$OUTPUT_DIR"
-
-# Print iRODS availability status
-echo "iRODS data available: \$irods_avail"
 
 # Array of data
-data=("\$SAMPLE \$irods_avail")
+data=("\$SAMPLE_IDS \$irods_avail \$cram_avail \$cellranger_avail ")
 
 # Define headers
-printf "%-15s %-10s\n" "Samples" "irods"
-printf "%-15s %-10s\n" "---------" "-------"
+printf "%-15s %-10s %-10s %-10s\n" "Samples" "irods" "cram" "cellranger"
+printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "-------"
 
 # Loop through data
 for row in "${data[@]}"; do
-    printf "%-15s %-10s\n" $row
-done
-
-# Confirmation message
-echo "iRODS report for \$SAMPLE has been generated here:"
-echo "\$OUTPUT_DIR"
+    printf "%-15s %-10s %-10s %-10s\n" $row
+done > irods_report.txt
 
 EOF
-
-
-
-#unsure about confirmation message..
