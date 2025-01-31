@@ -128,13 +128,13 @@ def cmd(sample, samplefile):
 
     # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
+    imeta_report_script = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/irods/imeta-report/submit.sh")
     )
 
     # Construct the command
     cmd = [
-        pull_cellranger_script,
+        imeta_report_script,
         sample_ids,
     ]
 
