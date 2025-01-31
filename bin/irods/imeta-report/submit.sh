@@ -37,6 +37,13 @@ TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/logs"
 # Ensure logs directory exists
 mkdir -p "$TEAM_LOGS_DIR"
 
+# Define report file (global, outside the loop)
+REPORT_FILE="${TEAM_LOGS_DIR}/irods_report.txt"
+
+# Create report file and write header only once
+printf "%-15s %-10s %-10s %-10s\n" "Samples" "iRODS" "CRAM" "CellRanger" > "$REPORT_FILE"
+printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "---------" >> "$REPORT_FILE"
+
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
 
@@ -85,13 +92,9 @@ for SAMPLE in "${SAMPLES[@]}"; do
     echo "Saved $num_cellranger_paths matching path(s) to $OUTPUT_DIR/cellranger_path.csv."
     echo "Saved $num_cram_paths matching path(s) to $OUTPUT_DIR/cram_path.csv."
 
-    # Write to report
-    if [ ! -f "irods_report.txt" ]; then
-        printf "%-15s %-10s %-10s %-10s\n" "Samples" "iRODS" "CRAM" "CellRanger" > irods_report.txt
-        printf "%-15s %-10s %-10s %-10s\n" "---------" "-------" "-------" "---------" >> irods_report.txt
-    fi
-    printf "%-15s %-10s %-10s %-10s\n" "$SAMPLE" "$irods_avail" "$cram_avail" "$cellranger_avail" >> irods_report.txt
+    # Append sample information to the report
+    printf "%-15s %-10s %-10s %-10s\n" "$SAMPLE" "$irods_avail" "$cram_avail" "$cellranger_avail" >> "$REPORT_FILE"
 
 done  # End sample loop
 
-echo "Processing completed. Report saved in irods_report.txt"
+echo "Processing completed. Report saved in $REPORT_FILE"
