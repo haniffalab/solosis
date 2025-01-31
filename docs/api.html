@@ -46,7 +46,39 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#solosis-cli">solosis-cli</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#solosis-cli-alignment">alignment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-alignment-cellranger-arc">cellranger-arc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-alignment-cellranger-count">cellranger-count</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-alignment-starsolo">starsolo</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solosis-cli-filesystem">filesystem</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-filesystem-disk-usage">disk-usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-filesystem-filecount">filecount</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solosis-cli-irods">irods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-iget-cellranger">iget-cellranger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-iget-fastqs">iget-fastqs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-imeta-report">imeta-report</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solosis-cli-ncl-bsu">ncl-bsu</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-ncl-bsu-migrate">migrate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solosis-cli-sc-rna">sc-rna</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-sc-rna-cellbender">cellbender</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-sc-rna-merge-h5ad">merge-h5ad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-sc-rna-scanpy">scanpy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
@@ -87,6 +119,318 @@
              
   <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Link to this heading"></a></h1>
+<section id="solosis-cli">
+<h2>solosis-cli<a class="headerlink" href="#solosis-cli" title="Link to this heading"></a></h2>
+<p>Command line utility for the Cellular Genetics programme at the Wellcome Sanger Institute</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-version" title="Link to this definition"></a></dt>
+<dd><p>Show the version and exit.</p>
+</dd></dl>
+
+<section id="solosis-cli-alignment">
+<h3>alignment<a class="headerlink" href="#solosis-cli-alignment" title="Link to this heading"></a></h3>
+<p>Commands for running alignment tools.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="solosis-cli-alignment-cellranger-arc">
+<h4>cellranger-arc<a class="headerlink" href="#solosis-cli-alignment-cellranger-arc" title="Link to this heading"></a></h4>
+<p>Cell Ranger ARC aligns GEX &amp; ATAC seq reads…</p>
+<hr class="docutils" />
+<p>Cell Ranger ARC (2.0.2) Software suite designed for analysing &amp; interpreting scRNA seq data, including multi-omics data.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-arc<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-libraries">
+<span class="sig-name descname"><span class="pre">--libraries</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;libraries&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-libraries" title="Link to this definition"></a></dt>
+<dd><p>Path to a single libraries file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-librariesfile">
+<span class="sig-name descname"><span class="pre">--librariesfile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;librariesfile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-librariesfile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV containing paths to multiple library files</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-create-bam">
+<span class="sig-name descname"><span class="pre">--create-bam</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-create-bam" title="Link to this definition"></a></dt>
+<dd><p>Generate BAM files for each library</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;version&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-version" title="Link to this definition"></a></dt>
+<dd><p>Cell Ranger ARC version to use (e.g., ‘2.0.2’)</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-alignment-cellranger-count">
+<h4>cellranger-count<a class="headerlink" href="#solosis-cli-alignment-cellranger-count" title="Link to this heading"></a></h4>
+<p>Cell Ranger  aligns and analyses sc-RNA seq data…</p>
+<hr class="docutils" />
+<p>Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
+and gene counting for single-cell 3’ and 5’ RNA-seq data, as well as
+V(D)J transcript sequence assembly.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>cellranger-count<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-sample">
+<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-sample" title="Link to this definition"></a></dt>
+<dd><p>Sample ID (string)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-samplefile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV or TSV file containing sample IDs</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-create-bam">
+<span class="sig-name descname"><span class="pre">--create-bam</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-create-bam" title="Link to this definition"></a></dt>
+<dd><p>Generate BAM files for each sample</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;version&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-version" title="Link to this definition"></a></dt>
+<dd><p>Cell Ranger version to use (e.g., ‘7.2.0’)</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-alignment-starsolo">
+<h4>starsolo<a class="headerlink" href="#solosis-cli-alignment-starsolo" title="Link to this heading"></a></h4>
+<p>STARsolo aligns single-cell RNA sequencing  reads…</p>
+<hr class="docutils" />
+<p>STARsolo (2.7.11b) Aligner processes scRNA seq data to generate
+GEX matrices &amp; identify cell-specific transcripts.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>alignment<span class="w"> </span>starsolo<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-starsolo-sample">
+<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-starsolo-sample" title="Link to this definition"></a></dt>
+<dd><p>Sample ID (string)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-starsolo-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-starsolo-samplefile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV or TSV file containing sample IDs</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="solosis-cli-filesystem">
+<h3>filesystem<a class="headerlink" href="#solosis-cli-filesystem" title="Link to this heading"></a></h3>
+<p>Commands for file and directory operations.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="solosis-cli-filesystem-disk-usage">
+<h4>disk-usage<a class="headerlink" href="#solosis-cli-filesystem-disk-usage" title="Link to this heading"></a></h4>
+<p>Check disk usage for Team298 workspaces.</p>
+<p>This command retrieves the disk usage for Team298 workspaces
+including NFS, Lustre, or warehouse storage systems.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span>disk-usage<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="solosis-cli-filesystem-filecount">
+<h4>filecount<a class="headerlink" href="#solosis-cli-filesystem-filecount" title="Link to this heading"></a></h4>
+<p>Check filecounts for Team298 workspaces.</p>
+<p>This command retrieves the filecounts for Team298 workspaces
+including NFS, Lustre, or warehouse storage systems.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span>filecount<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="solosis-cli-irods">
+<h3>irods<a class="headerlink" href="#solosis-cli-irods" title="Link to this heading"></a></h3>
+<p>Commands for working with iRODS.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="solosis-cli-irods-iget-cellranger">
+<h4>iget-cellranger<a class="headerlink" href="#solosis-cli-irods-iget-cellranger" title="Link to this heading"></a></h4>
+<p>Downloads cellranger outputs from iRODS…</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>iget-cellranger<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-sample">
+<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-sample" title="Link to this definition"></a></dt>
+<dd><p>Sample ID (string).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-samplefile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV or TSV file containing sample IDs.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-retainbam">
+<span class="sig-name descname"><span class="pre">--retainbam</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-retainbam" title="Link to this definition"></a></dt>
+<dd><p>Include the BAM file in the download. By default, it is excluded.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-overwrite">
+<span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-overwrite" title="Link to this definition"></a></dt>
+<dd><p>Overwrite existing output directories</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-irods-iget-fastqs">
+<h4>iget-fastqs<a class="headerlink" href="#solosis-cli-irods-iget-fastqs" title="Link to this heading"></a></h4>
+<p>Downloads fastqs from iRODS…</p>
+<p>Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
+Pulled directly from Github repo- up-to-date.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>iget-fastqs<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-fastqs-sample">
+<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-fastqs-sample" title="Link to this definition"></a></dt>
+<dd><p>Sample ID (string)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-fastqs-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-fastqs-samplefile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV or TSV file containing sample IDs</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-irods-imeta-report">
+<h4>imeta-report<a class="headerlink" href="#solosis-cli-irods-imeta-report" title="Link to this heading"></a></h4>
+<p>Generates report of data available on iRODS</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>imeta-report<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-imeta-report-sample">
+<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-imeta-report-sample" title="Link to this definition"></a></dt>
+<dd><p>Sample ID (string).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-imeta-report-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-imeta-report-samplefile" title="Link to this definition"></a></dt>
+<dd><p>Path to a CSV or TSV file containing sample IDs.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="solosis-cli-ncl-bsu">
+<h3>ncl-bsu<a class="headerlink" href="#solosis-cli-ncl-bsu" title="Link to this heading"></a></h3>
+<p>Commands for Newcastle University BSU.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>ncl-bsu<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="solosis-cli-ncl-bsu-migrate">
+<h4>migrate<a class="headerlink" href="#solosis-cli-ncl-bsu-migrate" title="Link to this heading"></a></h4>
+<p>Placeholder</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>ncl-bsu<span class="w"> </span>migrate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="solosis-cli-sc-rna">
+<h3>sc-rna<a class="headerlink" href="#solosis-cli-sc-rna" title="Link to this heading"></a></h3>
+<p>Commands for single-cell RNA-seq workflows.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="solosis-cli-sc-rna-cellbender">
+<h4>cellbender<a class="headerlink" href="#solosis-cli-sc-rna-cellbender" title="Link to this heading"></a></h4>
+<p>Removes droplets &amp; ambient RNA from scRNA-seq data…</p>
+<hr class="docutils" />
+<p>Cellbender (0.3.0.) Removes droplets &amp; ambient RNA from scRNA seq data.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>cellbender<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-cellbender-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-cellbender-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-cellbender-total_droplets_included">
+<span class="sig-name descname"><span class="pre">--total_droplets_included</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;total_droplets_included&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-cellbender-total_droplets_included" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> total_droplets_included</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-sc-rna-merge-h5ad">
+<h4>merge-h5ad<a class="headerlink" href="#solosis-cli-sc-rna-merge-h5ad" title="Link to this heading"></a></h4>
+<p>Merges multiple h5ads objects…</p>
+<hr class="docutils" />
+<p>Please run <cite>solosis-cli sc-rna scanpy –samplefile …</cite> command first.</p>
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns:
+1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>merge-h5ad<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-merge-h5ad-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-merge-h5ad-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-merge-h5ad-merged_filename">
+<span class="sig-name descname"><span class="pre">--merged_filename</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;merged_filename&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-merge-h5ad-merged_filename" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Output file name: Eg. merged.h5ad</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-sc-rna-scanpy">
+<h4>scanpy<a class="headerlink" href="#solosis-cli-sc-rna-scanpy" title="Link to this heading"></a></h4>
+<p>Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook …</p>
+<hr class="docutils" />
+<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
+Input file should have 3 mandatory columns:
+1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>sc-rna<span class="w"> </span>scanpy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-scanpy-samplefile">
+<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-scanpy-samplefile" title="Link to this definition"></a></dt>
+<dd><p><strong>Required</strong> Sample file text file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-sc-rna-scanpy-sample_basedir">
+<span class="sig-name descname"><span class="pre">--sample_basedir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample_basedir&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-sc-rna-scanpy-sample_basedir" title="Link to this definition"></a></dt>
+<dd><p>sample database folder</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
 </section>
 
 
