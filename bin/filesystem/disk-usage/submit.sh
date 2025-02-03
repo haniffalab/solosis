@@ -25,7 +25,7 @@ fi
 
 # Configure paths
 TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
-=$TEAM_DATA_DIR/reports/storage/
+OUTPUT_DIR="$TEAM_DATA_DIR/reports/storage/"
 # Create the output dir
 mkdir -p "$OUTPUT_DIR"
 
