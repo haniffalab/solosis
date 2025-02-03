@@ -73,7 +73,7 @@ def single_cmd(ctx, command_to_exec, job_name, **kwargs):
         job_name = f"{job_name}_{ctx.obj['execution_id']}"
     echo_lsf_submission_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
-
+    
 
 @click.command("run_ipynb")
 @helpers.farm
