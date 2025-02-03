@@ -62,7 +62,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#solosis-cli-irods">irods</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-iget-cellranger">iget-cellranger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-iget-fastqs">iget-fastqs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-irods-imeta-report">imeta-report</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#solosis-cli-ncl-bsu">ncl-bsu</a><ul>
@@ -242,7 +241,7 @@ GEX matrices &amp; identify cell-specific transcripts.</p>
 <h4>disk-usage<a class="headerlink" href="#solosis-cli-filesystem-disk-usage" title="Link to this heading"></a></h4>
 <p>Check disk usage for Team298 workspaces.</p>
 <p>This command retrieves the disk usage for Team298 workspaces
-including NFS, Lustre, or warehouse storage systems.</p>
+including NFS, Lustre, Warehouse &amp; <cite>/archive/team298</cite> irods storage systems.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>filesystem<span class="w"> </span>disk-usage<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -314,26 +313,6 @@ Pulled directly from Github repo- up-to-date.</p>
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-fastqs-samplefile">
 <span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-fastqs-samplefile" title="Link to this definition"></a></dt>
 <dd><p>Path to a CSV or TSV file containing sample IDs</p>
-</dd></dl>
-
-</section>
-<section id="solosis-cli-irods-imeta-report">
-<h4>imeta-report<a class="headerlink" href="#solosis-cli-irods-imeta-report" title="Link to this heading"></a></h4>
-<p>Generates report of data available on iRODS</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>irods<span class="w"> </span>imeta-report<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
-</pre></div>
-</div>
-<p class="rubric">Options</p>
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-imeta-report-sample">
-<span class="sig-name descname"><span class="pre">--sample</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-imeta-report-sample" title="Link to this definition"></a></dt>
-<dd><p>Sample ID (string).</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-imeta-report-samplefile">
-<span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-imeta-report-samplefile" title="Link to this definition"></a></dt>
-<dd><p>Path to a CSV or TSV file containing sample IDs.</p>
 </dd></dl>
 
 </section>
