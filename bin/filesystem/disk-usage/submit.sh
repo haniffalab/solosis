@@ -71,13 +71,13 @@ archive_percent=$(echo $((archive_used_int*100/archive_size_int))'%')
 data=("Lustre $lustre_size $lustre_used $lustre_avail $lustre_percent"
         "nfs $nfs_size $nfs_used $nfs_avail $nfs_percent"
         "warehouse $wh_size $wh_used $wh_avail $wh_percent"
-        "/archive/team298 $archive_used $archive_size $archive_percent")
+        "/archive/team298 $archive_used $archive_size - $archive_percent")
 
 # Define headers
-printf "%-12s %-6s %-8s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
-printf "%-12s %-6s %-8s %-6s %-6s\n" "---------" "-----" "------" "-----" "-----"
+printf "%-16s %-6s %-8s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
+printf "%-16s %-6s %-8s %-6s %-6s\n" "-------------" "-----" "------" "-----" "-----"
 
 # Loop through data
 for row in "${data[@]}"; do
-    printf "%-12s %-6s %-8s %-6s %-6s\n" $row
+    printf "%-16s %-6s %-8s %-6s %-6s\n" $row
 done
