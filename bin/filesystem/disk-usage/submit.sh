@@ -10,13 +10,6 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-#removing for now.. chatGPT has a decent response to this though
-# Ensure at least one argument is provided
-#if [ "$#" -lt 1 ]; then
-#  echo "Usage: $0" >&2
-#  exit 1
-#fi
-
 # Load irods module
 if ! module load cellgen/irods; then
   echo "Error: Failed to load irods module" >&2
@@ -55,10 +48,10 @@ wh_avail=$(df -h /warehouse/team298_wh01 | sed -n '2p' | awk '{print $4}')
 wh_percent=$(df -h /warehouse/team298_wh01 | sed -n '2p' | awk '{print $5}')
 #/archive/team298 irods 
 iquest --no-page -z archive "%s/%s,%s" "select COLL_NAME, DATA_NAME, DATA_SIZE where COLL_NAME like \
-'/archive/team298%'" | tail -n +2 | sort | uniq > $TEAM_DATA_DIR/reports/storage/team298.irods.csv
+'/archive/team298%'" | tail -n +2 | sort | uniq > $OUTPUT_DIR/team298.irods.csv
 archive_used=$(cut -f 2 -d , $OUTPUT_DIR/team298.irods.csv | paste -sd+ | bc | numfmt --to iec --format "%4.2f")
 archive_size="20T"
-#remove T's
+#archive- remove T's
 archive_used_num=$(echo "$archive_used" | sed 's/[A-Za-z]//g')
 archive_size_num=$(echo "$archive_size" | sed 's/[A-Za-z]//g')
 #turn archive numbers into integers
