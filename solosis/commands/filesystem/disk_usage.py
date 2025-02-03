@@ -13,7 +13,7 @@ def cmd():
     Check disk usage for Team298 workspaces.
 
     This command retrieves the disk usage for Team298 workspaces
-    including NFS, Lustre, or warehouse storage systems.
+    including NFS, Lustre, Warehouse & /archive/team298 irods storage systems.
     """
     ctx = click.get_current_context()
     echo_message(
