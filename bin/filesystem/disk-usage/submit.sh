@@ -55,7 +55,7 @@ wh_avail=$(df -h /warehouse/team298_wh01 | sed -n '2p' | awk '{print $4}')
 wh_percent=$(df -h /warehouse/team298_wh01 | sed -n '2p' | awk '{print $5}')
 #/archive/team298 irods 
 iquest --no-page -z archive "%s/%s,%s" "select COLL_NAME, DATA_NAME, DATA_SIZE where COLL_NAME like \
-'/archive/team298%'" | tail -n +2 | sort | uniq > $TEAM_DATA_DIR/reports/storage/team298.irods.csv
+'/archive/team298%'" | tail -n +2 | sort | uniq > $OUTPUT_DIR/team298.irods.csv
 archive_used=$(cut -f 2 -d , $OUTPUT_DIR/team298.irods.csv | paste -sd+ | bc | numfmt --to iec --format "%4.2f")
 archive_size="20T"
 #remove T's
