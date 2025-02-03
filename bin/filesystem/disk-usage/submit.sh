@@ -74,10 +74,10 @@ data=("Lustre $lustre_size $lustre_used $lustre_avail $lustre_percent"
         "/archive/team298 $archive_used $archive_size - $archive_percent")
 
 # Define headers
-printf "%-18s %-6s %-8s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
-printf "%-18s %-6s %-8s %-6s %-6s\n" "-------------" "-----" "------" "-----" "-----"
+printf "%-18s %-8s %-8s %-6s %-6s\n" "workspace" "size" "used" "avail" "use%"
+printf "%-18s %-8s %-8s %-6s %-6s\n" "-------------" "------" "------" "-----" "-----"
 
 # Loop through data
 for row in "${data[@]}"; do
-    printf "%-18s %-6s %-8s %-6s %-6s\n" $row
+    printf "%-18s %-8s %-8s %-6s %-6s\n" $row
 done
