@@ -136,7 +136,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     # Example usage inside the main logic
     for sample in samples_to_download:
-        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
+        cellranger_path = os.path.join(
+            team_sample_data_dir, sample, "cellranger/*GRCh38*"
+        )
 
         # Check for existing outputs in the sample directory
         if check_existing_outputs(cellranger_path):
