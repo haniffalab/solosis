@@ -118,7 +118,6 @@ while IFS= read -r irods_path; do
     iget -r "\$irods_path" "\$OUTPUT_DIR"
 done < irods_path.csv
 
-# BAM file handling
 if [ "$BAM_FLAG" == "--retainbam" ]; then
   echo "Retaining BAM files"
 else
@@ -128,10 +127,16 @@ else
     # Extract the last part of the path (directory name after last "/")
     dir_name=$(basename "$irods_path")
 
-    # Remove BAM files within the extracted directory
-    rm -f "$OUTPUT_DIR/$dir_name"/*.bam*
+    # Debug: print directory being processed
+    echo "Checking for BAM files in: $OUTPUT_DIR/$dir_name"
+
+    # Find and delete BAM files
+    find "$OUTPUT_DIR/$dir_name" -type f -name "*.bam*" -exec echo "Deleting: {}" \;
+    find "$OUTPUT_DIR/$dir_name" -type f -name "*.bam*" -exec rm -f {} +
+
   done < irods_path.csv
 fi
+
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "\$OUTPUT_DIR"
