@@ -181,6 +181,8 @@ def cmd(sample, samplefile, retainbam, overwrite):
             pull_cellranger_script,
             sample_ids,
         ]
+        if not retainbam:
+            cmd.append("--retainbam")
 
         try:
             result = subprocess.run(

@@ -12,14 +12,18 @@ set -e
 
 # Ensure at least one argument is provided
 if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 <sample_ids>" >&2
+  echo "Usage: $0 <sample_ids> [--retainbam]" >&2
   exit 1
 fi
 
+
 # Assign command-line argument to variable
 SAMPLE_IDS="$1"
-retain_bam="$2"; shift
-overwrite="$2"
+BAM_FLAG=""
+if [ "$2" == "--retainbam" ]; then
+  BAM_FLAG="--retainbam"
+fi
+#overwrite="$3"
 
 # Verify that the sample list is not empty
 if [ -z "$SAMPLE_IDS" ]; then
@@ -114,6 +118,20 @@ while IFS= read -r irods_path; do
     iget -r "\$irods_path" "\$OUTPUT_DIR"
 done < irods_path.csv
 
+# BAM file handling
+if [ "$BAM_FLAG" == "--retainbam" ]; then
+  echo "Retaining BAM files"
+else
+  echo "Removing BAM files"
+
+  while IFS= read -r irods_path; do
+    # Extract the last part of the path (directory name after last "/")
+    dir_name=$(basename "$irods_path")
+
+    # Remove BAM files within the extracted directory
+    rm -f "$OUTPUT_DIR/$dir_name"/*.bam
+  done < irods_path.csv
+fi
 # Confirmation message
 echo "All Cellranger outputs for \$SAMPLE have been pulled to:"
 echo "\$OUTPUT_DIR"
