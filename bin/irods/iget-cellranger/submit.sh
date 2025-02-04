@@ -129,7 +129,7 @@ else
     dir_name=$(basename "$irods_path")
 
     # Remove BAM files within the extracted directory
-    rm -f "$OUTPUT_DIR/$dir_name"/*.bam
+    rm -f "$OUTPUT_DIR/$dir_name"/*.bam*
   done < irods_path.csv
 fi
 # Confirmation message
