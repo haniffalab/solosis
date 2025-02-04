@@ -126,3 +126,21 @@ def bash_submit(job_runner: str, **kwargs) -> None:
     click.echo(result.stderr)
 
 
+## Functions supporting farm submission
+def bash_submit(job_runner: str, **kwargs) -> None:
+    """
+    Runs a command. Command can be a bash command (du -hs ) or a script (test.sh)
+    While running exports all kwargs as environment variables
+    This can be reused to run any bash script in all the subcommands
+    If the command needs to be submitted to farm use single_command or array_command
+    """
+    # env variables are set to
+    for k, v in kwargs.items():
+        kwargs[str(k)] = str(v)
+    # Capture result
+    result = subprocess.run(
+        [job_runner], capture_output=True, text=True, env={**os.environ, **kwargs}
+    )
+
+    click.echo(result.stdout)
+    click.echo(result.stderr)

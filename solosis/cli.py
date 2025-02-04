@@ -33,7 +33,7 @@ def cli(ctx):
 
 
 @cli.group()
-def farm_cmds():
+def jobrunner():
     """Farm related commands"""
     pass
 
@@ -89,9 +89,9 @@ sc_rna.add_command(scanpy.cmd, name="scanpy")
 sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
 
 
-# farm
-farm_cmds.add_command(farm.single_cmd)
-#farm_cmds.add_command(farm.run_ipynb)
+# farm jobs
+jobrunner.add_command(single_job.cmd, name="submit_job")
+#jobrunner.add_command(farm.run_ipynb)
 
 if __name__ == "__main__":
     cli()
