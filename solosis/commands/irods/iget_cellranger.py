@@ -131,6 +131,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
         return False  # Continue processing if no outputs
 
+    # Check each sample
+    samples_to_download = []  # Initialize to avoid UnboundLocalError
+
     # Example usage inside the main logic
     for sample in samples_to_download:
         cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
@@ -139,11 +142,9 @@ def cmd(sample, samplefile, retainbam, overwrite):
         if check_existing_outputs(cellranger_path):
             continue  # Skip to the next sample if outputs exist
 
-        # Proceed with further processing (e.g., preparing and submitting jobs)
+        # Add sample to the list for downloading
+        samples_to_download.append(sample)
         echo_message(f"Processing sample {sample}", "info")
-
-    # Check each sample
-    samples_to_download = []  # Initialize to avoid UnboundLocalError
 
     # Check each sample
     for sample in samples:
@@ -181,7 +182,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
             pull_cellranger_script,
             sample_ids,
         ]
-        if not retainbam:
+        if retainbam:
             cmd.append("--retainbam")
 
         try:
