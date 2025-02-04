@@ -90,7 +90,7 @@ OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/cellranger"
 # check if cellranger outputs for $SAMPLE have already been pulled, exit
 #OUTS=\$(sed 's|.*/||' \$OUTPUT_DIR/irods_path.csv)
 
-[ -d "$OUTPUT_DIR/$OUTS" ]
+[ -d "$OUTPUT_DIR/$OUTS/*GRCh38*" ]
 if [ -d "\$OUTPUT_DIR/\$OUTS" ]; then
     echo "Output directory '\$OUTPUT_DIR' already contains cellranger outputs from iRODS. Exiting"
     exit 2 
