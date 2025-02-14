@@ -116,11 +116,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
                     )
                     if os.path.exists(h5_file_path):
                         valid_samples.append(sample)
-                    else:
-                        echo_message(
-                            f"no CellRanger output for sample {sample} in {cr_path}. Skipping this sample",
-                            "warn",
-                        )
+                        break
 
     if not valid_samples:
         echo_message(
