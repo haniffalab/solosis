@@ -1,3 +1,5 @@
+#!/software/cellgen/team298/shared/envs/solosis-env/bin/python
+
 import glob
 import os
 import sys
