@@ -5,6 +5,7 @@ import sys
 import click
 import pandas as pd
 
+from solosis.helpers.qc import run_qc
 from solosis.utils import echo_message, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
@@ -132,6 +133,12 @@ def cmd(ctx, sample, samplefile, create_bam, version):
         f"starting qc for samples: {sample_ids}...",
         "progress",
     )
+
+    success = run_qc(samples)
+    if success:
+        echo_message("success")
+    else:
+        echo_message("error", "error")
 
 
 if __name__ == "__main__":
