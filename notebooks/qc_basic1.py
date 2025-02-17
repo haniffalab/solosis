@@ -187,14 +187,20 @@ def process_sample(sample_name):
 
     ### save p1
 
-    p3 = sns.displot(adata.obs["total_counts"], bins=100, kde=False)
+    p3 = sns.displot(
+        adata.obs["total_counts"], bins=100, kde=False, save="_total_counts.png"
+    )
     ### save p3
 
-    p4 = sc.pl.violin(adata, "pct_counts_mt")
+    p4 = sc.pl.violin(adata, "pct_counts_mt", save="_mt_counts.png")
     ### save p4
 
     p5 = sc.pl.scatter(
-        adata, "total_counts", "n_genes_by_counts", color="pct_counts_mt"
+        adata,
+        "total_counts",
+        "n_genes_by_counts",
+        color="pct_counts_mt",
+        save="_counts.png",
     )
     ### save p5
 
@@ -260,7 +266,11 @@ def process_sample(sample_name):
     df_counts.to_csv(out_directory / "qc_counts.csv")
 
     p6 = sc.pl.scatter(
-        adata, "total_counts", "n_genes_by_counts", color="pct_counts_mt"
+        adata,
+        "total_counts",
+        "n_genes_by_counts",
+        color="pct_counts_mt",
+        save="_counts.png",
     )
     ### save p6
 
@@ -308,10 +318,12 @@ def process_sample(sample_name):
     ax.set_xlim(None, 1.5)
     ax.set_ylim(None, 3)
     plt.show()
+    plt.savefig(out_directory / "figures" / "hvg_pca")
+    ##plt.savefig() ## check this in the notebook first..
     ### save pca1
 
     reqCols = ["n_genes_by_counts", "total_counts", "pct_counts_mt"]
-    sc.pl.pca_scatter(adata, color=reqCols)
+    sc.pl.pca_scatter(adata, color=reqCols, save="_reqCols.png")
     ### save pca2
 
     ## kNN, clustering and UMAP
@@ -327,7 +339,7 @@ def process_sample(sample_name):
     reqCols
     # ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'leiden']
 
-    sc.pl.umap(adata, color=reqCols, ncols=3)
+    sc.pl.umap(adata, color=reqCols, ncols=3, save="_reqCols.png")
     ### save umap
 
     ## Save csv of filtered genes/cutoffs
