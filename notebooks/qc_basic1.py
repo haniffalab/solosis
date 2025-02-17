@@ -79,7 +79,11 @@ def process_sample(sample_name):
 
     # loading raw data
     # defining paths
-    team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    ###### ADD BACK IN AFFTER TESTING #####
+    # team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+    #######################################
+
     # sample_name = "HCA_SkO14542035"
     # DO we need something like fire here?
 
