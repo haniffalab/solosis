@@ -18,7 +18,18 @@ from scipy.stats import median_abs_deviation
 def process_sample(sample_name):
     """Process a given sample name."""
     print(f"Processing sample: {sample_name}")
-    # Your existing processing code here
+
+    # Debugging: Check variables
+    print(f"team_data_dir: {repr(team_data_dir)}")
+    print(f"sample_name: {repr(sample_name)}")
+
+    # Check if any variable is None
+    if team_data_dir is None or sample_name is None:
+        raise ValueError("Error: 'team_data_dir' or 'sample_name' is None.")
+
+    # Join paths safely
+    out_directory = os.path.join(team_data_dir, sample_name, "rna_scanpy")
+    print(f"Output directory: {out_directory}")
 
     sc.settings.verbosity = 0
     sc.settings.set_figure_params(
