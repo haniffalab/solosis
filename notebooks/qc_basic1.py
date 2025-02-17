@@ -5,6 +5,7 @@ import os
 import sys
 from pathlib import Path
 
+import click
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
