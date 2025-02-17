@@ -137,6 +137,11 @@ def process_sample(sample_name):
     out_directory = Path(os.path.join(team_data_dir, sample_name, "rna_scanpy"))
     # adata.write(out_directory + 'raw_merged.h5ad')
 
+    ### changing working directory, this can maybe be put in bash script later on..
+    print("Before:", os.getcwd())  # Get current working directory
+    os.chdir(out_directory)  # Change directory
+    print("After:", os.getcwd())
+
     ## Remove bad quality cells and low value genes
     # * mitochondrial genes
     # * haemoglobin genes
@@ -177,7 +182,7 @@ def process_sample(sample_name):
         ["n_genes_by_counts", "total_counts", "pct_counts_mt", "pct_counts_rb"],
         jitter=0.4,
         multi_panel=True,
-        save=str(out_directory / "plots" / "counts_violin.png"),
+        save="_counts.png",
     )
 
     ### save p1
