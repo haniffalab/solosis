@@ -177,6 +177,7 @@ def process_sample(sample_name):
         ["n_genes_by_counts", "total_counts", "pct_counts_mt", "pct_counts_rb"],
         jitter=0.4,
         multi_panel=True,
+        save=str(out_directory / "plots" / "counts_violin.png"),
     )
 
     ### save p1
