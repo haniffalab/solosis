@@ -5,9 +5,11 @@ import os
 import sys
 from pathlib import Path
 
-import click
+import matplotlib as mpl
 import numpy as np
+import pandas as pd
 import scanpy as sc
+import scipy.sparse
 import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy.stats import median_abs_deviation
