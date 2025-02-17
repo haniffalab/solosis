@@ -12,7 +12,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy.stats import median_abs_deviation
 
-team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+# team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+team_data_dir = "/lustre/scratch126/cellgen/team298/data/samples"
 
 
 @click.command()
