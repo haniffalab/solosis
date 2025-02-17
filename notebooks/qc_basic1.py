@@ -187,10 +187,9 @@ def process_sample(sample_name):
 
     ### save p1
 
-    p3 = sns.displot(
-        adata.obs["total_counts"], bins=100, kde=False, save="_total_counts.png"
-    )
+    p3 = sns.displot(adata.obs["total_counts"], bins=100, kde=False)
     ### save p3
+    p3.savefig(out_directory / "figures" / "displot_total_counts.png")
 
     p4 = sc.pl.violin(adata, "pct_counts_mt", save="_mt_counts.png")
     ### save p4
