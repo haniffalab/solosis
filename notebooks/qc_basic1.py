@@ -112,22 +112,28 @@ def process_sample(sample_name):
     )
     adata.obs["sample_name"] = sample_name
 
+    adata.obs["index1"] = adata.obs.index + "-" + adata.obs["sample_name"]
+
     # raw adata cell counts
     cells_raw = adata.n_obs
-    cells_raw
 
     # Combine metadata to adata object
     # Read in metadata
-    # metadata_csv = pd.read_csv("/path/to/file/metadata.csv", low_memory=False)
+    metadata_csv = pd.read_csv(
+        "/nfs/users/nfs_l/lg28/kc_metadata.csv", low_memory=False
+    )
     # Merging based on the common columns 'Sanger_ID' and 'sanger_id'
-    # raw_metadata = pd.merge(adata.obs, metadata_csv, left_on='sanger_id', right_on='Sanger_ID', how='left')
+    raw_metadata = pd.merge(
+        adata.obs, metadata_csv, left_on="sample_name", right_on="Sanger_ID", how="left"
+    )
 
-    # raw_metadata
     # define index column
     # adata.obs['index1'] = adata.obs.index + "-" + adata.obs['sanger_id']
     # adata.obs.index
-    # raw_metadata.set_index('index1', inplace=True)
-    # raw_metadata
+    raw_metadata.set_index("index1", inplace=True)
+
+    # Update the observation dataframe of AnnData object with the merged result
+    adata.obs = raw_metadata
 
     ########### decide about whether to save raw object (pre QC and filtering) #############
     # make copy of raw object
@@ -232,7 +238,7 @@ def process_sample(sample_name):
     filtered_out_cells = adata.obs[(adata.obs.outlier) | (adata.obs.mt_outlier)].copy()
     filtered_out_cells
     # Save the filtered-out cells to CSV
-    # filtered_out_cells.to_csv(out_directory / "filtered_out_cells.csv")
+    filtered_out_cells.to_csv(out_directory / "filtered_cells.csv")
     # print(f"Saved {filtered_out_cells.shape[0]} filtered-out cells to 'filtered_out_cells.csv'.")
 
     # printing value for counts table
@@ -317,7 +323,7 @@ def process_sample(sample_name):
     ax.set_xlim(None, 1.5)
     ax.set_ylim(None, 3)
     plt.show()
-    plt.savefig(out_directory / "figures" / "hvg_pca")
+    plt.savefig(out_directory / "figures" / "pca_hvg")
     ##plt.savefig() ## check this in the notebook first..
     ### save pca1
 
