@@ -238,7 +238,7 @@ def process_sample(sample_name):
     filtered_out_cells = adata.obs[(adata.obs.outlier) | (adata.obs.mt_outlier)].copy()
     filtered_out_cells
     # Save the filtered-out cells to CSV
-    filtered_out_cells.to_csv(out_directory / "filtered_cells.csv")
+    filtered_out_cells.to_csv(out_directory / "filtered_out_cells.csv")
     # print(f"Saved {filtered_out_cells.shape[0]} filtered-out cells to 'filtered_out_cells.csv'.")
 
     # printing value for counts table
