@@ -96,7 +96,7 @@ def process_sample(sample_name):
             os.path.join(
                 team_data_dir,
                 sample_name,
-                "cellranger/cellranger710_count_46541_HCA_SkO13260141_GRCh38-2020-A/",
+                "cellranger/cellranger710_count_46541_HCA_SkO13260142_GRCh38-2020-A/",
             )
         ).rglob("filtered_feature_bc_matrix.h5")
     )
