@@ -73,7 +73,7 @@ def main(samplefile_path):
     samplefile = pd.read_csv(samplefile_path, index_col=None)
 
     # define out dir
-    out_directory = "/lustre/scratch126/cellgen/team298/data/merged_samples"
+    out_directory = Path("/lustre/scratch126/cellgen/team298/data/merged_samples")
     print(f"Output directory: {out_directory}")
 
     ### changing working directory, this can maybe be put in bash script later on..
