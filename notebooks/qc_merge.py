@@ -72,6 +72,15 @@ def main(samplefile_path):
     # will use samplefile flag from click cli to read in list.. but for now going to read in samplefile from here
     samplefile = pd.read_csv(samplefile_path, index_col=None)
 
+    # define out dir
+    out_directory = "/lustre/scratch126/cellgen/team298/data/merged_samples"
+    print(f"Output directory: {out_directory}")
+
+    ### changing working directory, this can maybe be put in bash script later on..
+    print("Before:", os.getcwd())  # Get current working directory
+    os.chdir(out_directory)  # Change directory
+    print("After:", os.getcwd())
+
     x = []
     for i in samplefile["sample_id"]:
         h5ad = Path(team_data_dir, i, "rna_scanpy", i + ".h5ad")
@@ -98,8 +107,10 @@ def main(samplefile_path):
     )
 
     ## some plots.. where shall we save them?
-    sc.pl.violin(adata, "pct_counts_mt", groupby="batch")
-    sc.pl.scatter(adata, "total_counts", "n_genes_by_counts", color="batch")
+    sc.pl.violin(adata, "pct_counts_mt", groupby="batch", save="_mt_counts.png")
+    sc.pl.scatter(
+        adata, "total_counts", "n_genes_by_counts", color="batch", save="_counts.png"
+    )
 
     sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, batch_key="batch")
 
@@ -115,10 +126,11 @@ def main(samplefile_path):
     ax.set_xlim(None, 1.5)
     ax.set_ylim(None, 3)
     plt.show()
+    plt.savefig(out_directory / "figures" / "pca_hvg")
     # save?
 
     reqCols = ["n_genes_by_counts", "total_counts", "pct_counts_mt"]
-    sc.pl.pca_scatter(adata, color=reqCols)
+    sc.pl.pca_scatter(adata, color=reqCols, save="_reqCols.png")
     # save?
 
     ## kNN, clustering and UMAP
@@ -133,15 +145,13 @@ def main(samplefile_path):
     reqCols.extend(["leiden"])
     reqCols
 
-    sc.pl.umap(adata, color=reqCols, ncols=3)
+    sc.pl.umap(adata, color=reqCols, ncols=3, save="_reqCols.png")
     # save?
 
     ##saving merged h5ad object
     merged_filename = (
         merged_filename if "h5ad" in merged_filename else merged_filename + ".h5ad"
     )
-    # define out dir
-    out_directory = "/lustre/scratch126/cellgen/team298/data/merged_samples"
     adata.write_h5ad(os.path.join(out_directory, merged_filename))
 
 
