@@ -37,12 +37,13 @@ def print_file(filename):
     with open(filename, "r") as f:
         print(f.readlines())
 
-    # set env variable
-    os.environ["REPO_DIR"] = "/nfs/users/nfs_l/lg28/repos/solosis"
-    # define team data directory
-    team_data_dir = "/lustre/scratch126/cellgen/team298/data/samples"
-    ###### ADD BACK IN AFFTER TESTING #####
-    # team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+# set env variable
+os.environ["REPO_DIR"] = "/nfs/users/nfs_l/lg28/repos/solosis"
+# define team data directory
+team_data_dir = "/lustre/scratch126/cellgen/team298/data/samples"
+###### ADD BACK IN AFFTER TESTING #####
+# team_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
 
 
 @click.command()
