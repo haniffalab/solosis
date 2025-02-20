@@ -141,3 +141,18 @@ def irods_validation():
             "error",
         )
         sys.exit(1)
+
+
+def validate_environment(required_vars):
+    """
+    Validates that all required environment variables are set.
+    :param required_vars: List of required environment variable names.
+    :raises click.Abort: If any required variable is not set.
+    """
+    for var in required_vars:
+        if not os.getenv(var):
+            echo_message(
+                f"Environment variable '{var}' is not set. Please export it before running this tool.",
+                "error",
+            )
+            raise click.Abort()

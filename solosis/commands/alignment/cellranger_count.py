@@ -1,10 +1,11 @@
 import os
 import subprocess
+import sys
 
 import click
 import pandas as pd
 
-from solosis.utils import echo_message
+from solosis.utils import echo_message, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
@@ -28,20 +29,22 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="7.2.0",  # Set a default version
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
-def cmd(sample, samplefile, create_bam, version):
+@click.pass_context
+def cmd(ctx, sample, samplefile, create_bam, version):
     """
     Cell Ranger  aligns and analyses sc-RNA seq data...\n
     --------------------------------- \n
     Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
     and gene counting for single-cell 3' and 5' RNA-seq data, as well as
-    V(D)J transcript sequence assembly
+    V(D)J transcript sequence assembly.
     """
-    ctx = click.get_current_context()
+    log_command(ctx)
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading Cell Ranger version {version}")
+
+    echo_message(f"loading Cell Ranger Count version {version}")
 
     samples = []
 
@@ -89,25 +92,25 @@ def cmd(sample, samplefile, create_bam, version):
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    if not os.path.isdir(team_sample_data_dir):
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
         echo_message(
-            f"sample data directory '{team_sample_data_dir}' does not exist",
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
+        fastq_path = os.path.join(samples_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory
         if os.path.exists(fastq_path) and any(
@@ -119,6 +122,15 @@ def cmd(sample, samplefile, create_bam, version):
                 f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
                 "warn",
             )
+        existing_path = os.path.join(samples_dir, sample, "cellranger", version)
+        # Check if cellranger output already exists in the directory
+        if os.path.exists(existing_path):
+            echo_message(
+                f"cellranger-count output(s) already exist for sample {sample} in {existing_path}. Skipping this sample",
+                "warn",
+            )
+        else:
+            valid_samples.append(sample)
 
     if not valid_samples:
         echo_message(
