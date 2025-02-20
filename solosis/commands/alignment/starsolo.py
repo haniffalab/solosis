@@ -4,7 +4,7 @@ import subprocess
 import click
 import pandas as pd
 
-from solosis.utils import echo_message
+from solosis.utils.logging_utils import secho
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
@@ -26,11 +26,11 @@ def cmd(sample, samplefile):
     """
     # Print a clear introductory message
     ctx = click.get_current_context()
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading starsolo")
+    secho(f"loading starsolo")
 
     samples = []
 
@@ -47,7 +47,7 @@ def cmd(sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                echo_message(
+                secho(
                     f"unsupported file format. Please provide a .csv or .tsv file",
                     "error",
                 )
@@ -58,20 +58,20 @@ def cmd(sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                echo_message(
+                secho(
                     f"file must contain a 'sample_id' column",
                     "error",
                 )
                 return
         except Exception as e:
-            echo_message(
+            secho(
                 f"error reading sample file: {e}",
                 "error",
             )
             return
 
     if not samples:
-        echo_message(
+        secho(
             f"no samples provided. Use --sample or --samplefile",
             "error",
         )
@@ -80,7 +80,7 @@ def cmd(sample, samplefile):
     # Get the sample data directory from the environment variable
     team_data_dir = os.getenv("TEAM_DATA_DIR")
     if not team_data_dir:
-        echo_message(
+        secho(
             f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
@@ -88,7 +88,7 @@ def cmd(sample, samplefile):
 
     samples_dir = os.path.join(team_data_dir, "samples")
     if not os.path.isdir(samples_dir):
-        echo_message(
+        secho(
             f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
@@ -104,13 +104,13 @@ def cmd(sample, samplefile):
         ):
             valid_samples.append(sample)
         else:
-            echo_message(
+            secho(
                 f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
                 "warn",
             )
 
     if not valid_samples:
-        echo_message(
+        secho(
             f"no valid samples found with FASTQ files. Exiting",
             "error",
         )
@@ -129,13 +129,13 @@ def cmd(sample, samplefile):
     cmd = [starsolo_submit_script, sample_ids]  # Pass version to the submit script
 
     # Print the command being executed for debugging
-    echo_message(
+    secho(
         f"executing command: {' '.join(cmd)}",
         "action",
     )
 
     # Execute the command for all valid samples
-    echo_message(
+    secho(
         f"starting starsolo for samples: {sample_ids}...",
         "progress",
     )
@@ -147,18 +147,18 @@ def cmd(sample, samplefile):
             stderr=subprocess.PIPE,
             text=True,
         )
-        echo_message(
+        secho(
             f"starsolo submitted successfully:\n{result.stdout}",
             "progress",
         )
     except subprocess.CalledProcessError as e:
         # Log the stderr and return code
-        echo_message(
+        secho(
             f"Error during starsolo execution: {e.stderr}",
             "warn",
         )
 
-    echo_message(
+    secho(
         f"starsolo submission complete. run `bjobs -w`  for progress.",
         "success",
     )

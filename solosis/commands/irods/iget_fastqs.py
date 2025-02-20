@@ -7,11 +7,10 @@ from datetime import datetime
 import click
 import pandas as pd
 
-from solosis.utils import irods_validation, log_command
+from solosis.utils.env_utils import irods_auth
+from solosis.utils.logging_utils import secho
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
-
-from solosis.utils import echo_message
 
 
 @click.command("iget-fastqs")
@@ -29,14 +28,13 @@ def cmd(ctx, sample, samplefile):
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
     """
-    log_command(ctx)
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
     # Call the function
-    irods_validation()
+    irods_auth()
 
     samples = []
 
@@ -53,7 +51,7 @@ def cmd(ctx, sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                echo_message(
+                secho(
                     f"unsupported file format. Please provide a .csv or .tsv file",
                     "error",
                 )
@@ -64,24 +62,24 @@ def cmd(ctx, sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                echo_message(
+                secho(
                     f"file must contain a 'sample_id' column",
                     "error",
                 )
                 return
         except Exception as e:
-            echo_message(
+            secho(
                 f"error reading sample file: {e}",
                 "error",
             )
             return
 
     if not samples:
-        echo_message(
+        secho(
             f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
-        echo_message(
+        secho(
             f"try using `solosis-cli irods iget-fastqs --help`",
             "info",
         )
@@ -90,7 +88,7 @@ def cmd(ctx, sample, samplefile):
     # Get the sample data directory from the environment variable
     team_data_dir = os.getenv("TEAM_DATA_DIR")
     if not team_data_dir:
-        echo_message(
+        secho(
             f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
@@ -98,7 +96,7 @@ def cmd(ctx, sample, samplefile):
 
     samples_dir = os.path.join(team_data_dir, "samples")
     if not os.path.isdir(samples_dir):
-        echo_message(
+        secho(
             f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
@@ -114,7 +112,7 @@ def cmd(ctx, sample, samplefile):
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
-            echo_message(
+            secho(
                 f"FASTQ files already found for sample '{sample}' in {fastq_path}. Skipping download.",
                 "warn",
             )
@@ -123,12 +121,12 @@ def cmd(ctx, sample, samplefile):
 
     # Inform if there are samples that need FASTQ downloads
     if samples_to_download:
-        echo_message(
+        secho(
             f"samples without FASTQ files: {samples_to_download}",
             "progress",
         )
     else:
-        echo_message(
+        secho(
             f"all provided samples already have FASTQ files. No downloads required.",
             "warn",
         )
@@ -150,13 +148,13 @@ def cmd(ctx, sample, samplefile):
     ]
 
     # Print the command being executed for debugging
-    echo_message(
+    secho(
         f"executing command: {' '.join(cmd)}",
         "progress",
     )
 
     # Execute the command with an active spinner
-    echo_message(
+    secho(
         f"starting process for samples: {sample_ids}...",
         "progress",
     )
@@ -172,22 +170,20 @@ def cmd(ctx, sample, samplefile):
         # Process stdout in real-time
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            echo_message(f"[{timestamp}] {line.strip()}", "progress")
+            secho(f"[{timestamp}] {line.strip()}", "progress")
 
         # Process stderr in real-time
         for line in process.stderr:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            echo_message(f"[{timestamp}] {line.strip()}", "warn")
+            secho(f"[{timestamp}] {line.strip()}", "warn")
 
         process.wait()
         if process.returncode != 0:
-            echo_message(
-                f"error during execution. Return code: {process.returncode}", "error"
-            )
+            secho(f"error during execution. Return code: {process.returncode}", "error")
         else:
-            echo_message("process completed successfully.", "success")
+            secho("process completed successfully.", "success")
     except Exception as e:
-        echo_message(f"error executing command: {e}", "error")
+        secho(f"error executing command: {e}", "error")
 
 
 if __name__ == "__main__":

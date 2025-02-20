@@ -6,7 +6,8 @@ import time
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
+from solosis.utils.env_utils import irods_auth
+from solosis.utils.logging_utils import secho
 
 
 # change to pull-cellranger
@@ -36,13 +37,13 @@ def cmd(sample, samplefile, retainbam, overwrite):
     Downloads cellranger outputs from iRODS...
     """
     ctx = click.get_current_context()
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
     # Call the function
-    irods_validation()
+    irods_auth()
 
     samples = []
 
@@ -59,7 +60,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                echo_message(
+                secho(
                     f"Unsupported file format. Please provide a .csv or .tsv file",
                     "error",
                 )
@@ -70,20 +71,20 @@ def cmd(sample, samplefile, retainbam, overwrite):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                echo_message(
+                secho(
                     f"File must contain a 'sample_id' column",
                     "error",
                 )
                 return
         except Exception as e:
-            echo_message(
+            secho(
                 f"Error reading sample file: {e}",
                 "error",
             )
             return
 
     if not samples:
-        echo_message(
+        secho(
             f"no samples provided. Use `--sample` or `--samplefile`",
             f"No samples provided. Use --sample or --samplefile options",
             "error",
@@ -93,7 +94,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
     # Get the sample data directory from the environment variable
     team_data_dir = os.getenv("TEAM_DATA_DIR")
     if not team_data_dir:
-        echo_message(
+        secho(
             f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
@@ -101,7 +102,7 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     samples_dir = os.path.join(team_data_dir, "samples")
     if not os.path.isdir(samples_dir):
-        echo_message(
+        secho(
             f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
@@ -116,26 +117,26 @@ def cmd(sample, samplefile, retainbam, overwrite):
         # Check if output exists
         if os.path.exists(cellranger_path):
             if overwrite:
-                echo_message(
+                secho(
                     f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
                     "warn",
                 )
                 try:
                     # Remove the directory and its contents
                     # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    echo_message(
+                    secho(
                         f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
                         "info",
                     )
                 except subprocess.CalledProcessError as e:
-                    echo_message(
+                    secho(
                         f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
                         "error",
                     )
                     return
                 samples_to_download.append(sample)
             else:
-                echo_message(
+                secho(
                     f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
                     "warn",
                 )
@@ -147,12 +148,12 @@ def cmd(sample, samplefile, retainbam, overwrite):
         sample_list = "\n".join(
             f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
         )
-        echo_message(
+        secho(
             f"Samples for download:\n{sample_list}",
             "info",
         )
     else:
-        echo_message(
+        secho(
             f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
             "warn",
         )
@@ -181,9 +182,8 @@ def cmd(sample, samplefile, retainbam, overwrite):
             stderr=subprocess.PIPE,
             text=True,
         )
-        echo_lsf_submission_message(result.stdout)
     except subprocess.CalledProcessError as e:
-        echo_message(
+        secho(
             f"Error during execution: {e.stderr}",
             "error",
         )

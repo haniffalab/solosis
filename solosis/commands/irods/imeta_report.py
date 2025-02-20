@@ -6,7 +6,8 @@ import time
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
+from solosis.utils.env_utils import irods_auth
+from solosis.utils.logging_utils import secho
 
 
 # change to pull-cellranger
@@ -22,13 +23,13 @@ def cmd(sample, samplefile):
     Generates report of data available on iRODS
     """
     ctx = click.get_current_context()
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
     # Call the function
-    irods_validation()
+    irods_auth()
 
     samples = []
 
@@ -45,7 +46,7 @@ def cmd(sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                echo_message(
+                secho(
                     f"Unsupported file format. Please provide a .csv or .tsv file",
                     "error",
                 )
@@ -56,20 +57,20 @@ def cmd(sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                echo_message(
+                secho(
                     f"File must contain a 'sample_id' column",
                     "error",
                 )
                 return
         except Exception as e:
-            echo_message(
+            secho(
                 f"Error reading sample file: {e}",
                 "error",
             )
             return
 
     if not samples:
-        echo_message(
+        secho(
             f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
@@ -79,14 +80,14 @@ def cmd(sample, samplefile):
     team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
 
     if not team_sample_data_dir:
-        echo_message(
+        secho(
             f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
     if not os.path.isdir(team_sample_data_dir):
-        echo_message(
+        secho(
             f"Sample data directory '{team_sample_data_dir}' does not exist",
             "error",
         )
@@ -102,7 +103,7 @@ def cmd(sample, samplefile):
         if os.path.exists(cellranger_path):
             samples_to_download.append(sample)
         else:
-            echo_message(
+            secho(
                 f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
                 "warn",
             )
@@ -112,12 +113,12 @@ def cmd(sample, samplefile):
         sample_list = "\n".join(
             f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
         )
-        echo_message(
+        secho(
             f"Samples for download:\n{sample_list}",
             "info",
         )
     else:
-        echo_message(
+        secho(
             f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
             "warn",
         )
@@ -146,9 +147,8 @@ def cmd(sample, samplefile):
             stderr=subprocess.PIPE,
             text=True,
         )
-        echo_lsf_submission_message(result.stdout)
     except subprocess.CalledProcessError as e:
-        echo_message(
+        secho(
             f"Error during execution: {e.stderr}",
             "error",
         )

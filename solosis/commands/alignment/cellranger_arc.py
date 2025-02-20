@@ -5,7 +5,7 @@ import tempfile
 import click
 import pandas as pd
 
-from solosis.utils import echo_message, log_command
+from solosis.utils.logging_utils import secho
 
 
 @click.command("cellranger-arc")
@@ -36,13 +36,12 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
     --------------------------------- \n
     Cell Ranger ARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
     """
-    log_command(ctx)
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
-    echo_message(f"loading Cell Ranger ARC Count version {version}")
+    secho(f"loading Cell Ranger ARC Count version {version}")
 
     libraries_paths = []
 
@@ -55,14 +54,14 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             with open(librariesfile, "r") as f:
                 libraries_paths.extend([line.strip() for line in f if line.strip()])
         except Exception as e:
-            echo_message(
+            secho(
                 f"Error reading libraries file: {e}",
                 "error",
             )
             return
 
     if not libraries_paths:
-        echo_message(
+        secho(
             f"No libraries provided. Use --libraries or --librariesfile",
             "error",
         )
@@ -73,7 +72,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
 
     for lib_path in libraries_paths:
         if not os.path.exists(lib_path):
-            echo_message(
+            secho(
                 f"Libraries file {lib_path} does not exist. Skipping this file",
                 "warn",
             )
@@ -84,7 +83,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             required_columns = {"fastqs", "sample", "library_type"}
 
             if not required_columns.issubset(df.columns):
-                echo_message(
+                secho(
                     f"Libraries file {lib_path} is missing required columns: {', '.join(required_columns - set(df.columns))}",
                     "error",
                 )
@@ -93,7 +92,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             if not all(
                 df["library_type"].isin(["Chromatin Accessibility", "Gene Expression"])
             ):
-                echo_message(
+                secho(
                     f"Libraries file {lib_path} contains invalid 'library_type' values. Must be 'Chromatin Accessibility' or 'Gene Expression'",
                     "error",
                 )
@@ -106,13 +105,13 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             # Append the validated details
             valid_libraries.append((lib_path, library_id))
         except Exception as e:
-            echo_message(
+            secho(
                 f"Error validating libraries file {lib_path}: {e}",
                 "error",
             )
 
     if not valid_libraries:
-        echo_message(
+        secho(
             f"No valid libraries files found. Exiting",
             "error",
         )
@@ -121,7 +120,7 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
     # Get the data directory from the environment variable
     team_data_dir = os.getenv("TEAM_DATA_DIR")
     if not team_data_dir:
-        echo_message(
+        secho(
             f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
@@ -149,12 +148,12 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
     if not create_bam:
         cmd.append("--no-bam")
 
-    echo_message(
+    secho(
         f"Executing command: {' '.join(cmd)}",
         "action",
     )
 
-    echo_message(
+    secho(
         f"Starting Cell Ranger ARC for libraries listed in: {temp_file_path}...",
         "progress",
     )
@@ -166,17 +165,17 @@ def cmd(ctx, libraries, librariesfile, create_bam, version):
             stderr=subprocess.PIPE,
             text=True,
         )
-        echo_message(
+        secho(
             f"Cell Ranger ARC submitted successfully:\n{result.stdout}",
             "progress",
         )
     except subprocess.CalledProcessError as e:
-        echo_message(
+        secho(
             f"Error during Cell Ranger ARC execution: {e.stderr}",
             "warn",
         )
 
-    echo_message(
+    secho(
         f"Cell Ranger ARC submission complete. Run `bjobs -w` for progress.",
         "success",
     )

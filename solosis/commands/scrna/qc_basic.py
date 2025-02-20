@@ -5,8 +5,7 @@ import sys
 import click
 import pandas as pd
 
-from solosis.helpers.qc import run_qc
-from solosis.utils import echo_message, log_command
+from solosis.utils.logging_utils import secho
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
@@ -35,8 +34,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
     """
     qc-basic
     """
-    log_command(ctx)
-    echo_message(
+    secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
@@ -56,7 +54,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                echo_message(
+                secho(
                     f"unsupported file format. Please provide a .csv or .tsv file",
                     "error",
                 )
@@ -67,20 +65,20 @@ def cmd(ctx, sample, samplefile, create_bam, version):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                echo_message(
+                secho(
                     f"file must contain a 'sample_id' column",
                     "error",
                 )
                 return
         except Exception as e:
-            echo_message(
+            secho(
                 f"error reading sample file: {e}",
                 "error",
             )
             return
 
     if not samples:
-        echo_message(
+        secho(
             f"no samples provided. Use --sample or --samplefile",
             "error",
         )
@@ -89,7 +87,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
     # Get the sample data directory from the environment variable
     team_data_dir = os.getenv("TEAM_DATA_DIR")
     if not team_data_dir:
-        echo_message(
+        secho(
             f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
@@ -97,7 +95,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
 
     samples_dir = os.path.join(team_data_dir, "samples")
     if not os.path.isdir(samples_dir):
-        echo_message(
+        secho(
             f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
@@ -120,7 +118,7 @@ def cmd(ctx, sample, samplefile, create_bam, version):
                         break
 
     if not valid_samples:
-        echo_message(
+        secho(
             f"no valid samples found with FASTQ files. Exiting",
             "error",
         )
@@ -129,16 +127,16 @@ def cmd(ctx, sample, samplefile, create_bam, version):
     # Join all valid sample IDs into a single string, separated by commas
     sample_ids = ",".join(valid_samples)
 
-    echo_message(
+    secho(
         f"starting qc for samples: {sample_ids}...",
         "progress",
     )
 
-    success = run_qc(samples)
-    if success:
-        echo_message("success")
-    else:
-        echo_message("error", "error")
+    # success = run_qc(samples)
+    # if success:
+    #     secho("success")
+    # else:
+    #     secho("error", "error")
 
 
 if __name__ == "__main__":
