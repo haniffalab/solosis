@@ -25,14 +25,7 @@ from solosis.utils.logging_utils import secho
     required=False,
     help="Include the BAM file in the download. By default, it is excluded.",
 )
-@click.option(
-    "--overwrite",
-    default=False,
-    is_flag=True,
-    required=False,
-    help="Overwrite existing output directories",
-)
-def cmd(sample, samplefile, retainbam, overwrite):
+def cmd(sample, samplefile, retainbam):
     """
     Downloads cellranger outputs from iRODS...
     """
@@ -113,51 +106,6 @@ def cmd(sample, samplefile, retainbam, overwrite):
     for sample in samples:
         # Path where cellranger outputs are expected for each sample
         cellranger_path = os.path.join(samples_dir, sample, "cellranger")
-
-        # Check if output exists
-        if os.path.exists(cellranger_path):
-            if overwrite:
-                secho(
-                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                    "warn",
-                )
-                try:
-                    # Remove the directory and its contents
-                    # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    secho(
-                        f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
-                        "info",
-                    )
-                except subprocess.CalledProcessError as e:
-                    secho(
-                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
-                        "error",
-                    )
-                    return
-                samples_to_download.append(sample)
-            else:
-                secho(
-                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                    "warn",
-                )
-        else:
-            samples_to_download.append(sample)
-
-    # Confirm samples to download
-    if samples_to_download:
-        sample_list = "\n".join(
-            f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
-        )
-        secho(
-            f"Samples for download:\n{sample_list}",
-            "info",
-        )
-    else:
-        secho(
-            f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-            "warn",
-        )
-        return  # Exit if no samples need downloading
 
     # Join all sample to download IDs into a single string, separated by commas
     sample_ids = ",".join(samples_to_download)
