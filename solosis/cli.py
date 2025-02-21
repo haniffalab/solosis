@@ -1,5 +1,3 @@
-import uuid
-
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
