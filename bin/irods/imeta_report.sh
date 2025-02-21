@@ -1,49 +1,31 @@
 #!/bin/bash
 
-set -e  # Exit on error
+set -e  
 
-
-
-# Check if sample ID argument is provided
 if [ -z "$1" ]; then
-  echo "Error: No sample ID provided."
-  echo "Usage: $0 <sample_id>"
+  echo "No sample ID provided" >&2
   exit 1
 fi
 
-# Sample ID from the argument
-SAMPLE=$1
+if [ -z "$2" ]; then
+  echo "No report file path provided" >&2
+  exit 1
+fi
 
 if ! module load cellgen/irods; then
-  echo "Error: Failed to load irods module" >&2
+  echo "Failed to load irods module" >&2
   exit 1
 fi
 
-# Find Cell Ranger outputs
-echo "Finding Cell Ranger outputs for sample: $SAMPLE"
-imeta qu -C -z /seq/illumina sample = "$SAMPLE" | \
-grep "^collection: " | sed 's/^collection: //' > "cellranger_path.csv"
+SAMPLE=$1
+REPORT_PATH=$2
 
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to retrieve Cell Ranger outputs for sample: $SAMPLE"
-  exit 1
-fi
+echo "Looking for CRAM files"
+imeta qu -d -z /seq sample = "$SAMPLE" | grep "^collection: " | sed 's/^collection: //' | awk '{print "Cram," $0}' > "$REPORT_PATH"
 
-echo "Cell Ranger outputs saved to cellranger_path.csv"
+echo "Looking for Cell Ranger outputs"
+imeta qu -C -z /seq/illumina sample = "$SAMPLE" | grep "^collection: " | sed 's/^collection: //' | awk '{print "Cell Ranger," $0}' >> "$REPORT_PATH"
 
-# Find FASTQ/CRAM files
-echo "Finding FASTQ/CRAM files for sample: $SAMPLE"
-imeta qu -d -z /seq sample = "$SAMPLE" | \
-grep "^collection: " | sed 's/^collection: //' > "cram_path.csv"
-
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to retrieve CRAM files for sample: $SAMPLE"
-  exit 1
-fi
-
-echo "CRAM files saved to cram_path.csv"
+echo "Report saved to $REPORT_PATH"
 
 exit 0
-
-
-

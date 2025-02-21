@@ -98,29 +98,35 @@ def cmd(sample, samplefile):
     for sample in samples:
         secho(f"Processing sample: {sample}", "info")
 
+        # Create report directory for the sample
+        sample_dir = os.path.join(samples_dir, sample)
+        os.makedirs(sample_dir, exist_ok=True)
+        report_path = os.path.join(sample_dir, "imeta_report.csv")
+
         # Path to the script
         imeta_report_script = os.path.abspath(
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
-                "../../../bin/irods/imeta-report.sh",
+                "../../../bin/irods/imeta_report.sh",
             )
         )
 
         try:
             result = subprocess.run(
-                [
-                    imeta_report_script,
-                    sample,  # Pass the single sample ID as an argument
-                ],
+                [imeta_report_script, sample, report_path],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
             )
-            secho(f"Standard Output: {result.stdout}", "info")
+            # Print each line from stdout with the "info" prefix
+            for line in result.stdout.splitlines():
+                secho(f"{line}", "info")
         except subprocess.CalledProcessError as e:
-            # Capture and report errors from the subprocess
-            secho(f"Error during execution for sample {sample}: {e.stderr}", "error")
+            # Catch subprocess-specific errors (e.g., command failed with non-zero exit code)
+            secho(f"Command '{e.cmd}' failed with return code {e.returncode}", "error")
+            secho(f"Standard Error: {e.stderr}", "error")
+            secho(f"Standard Output: {e.stdout}", "info")
         except Exception as e:
             # Catch any unexpected errors
             secho(f"Unexpected error: {str(e)}", "error")
