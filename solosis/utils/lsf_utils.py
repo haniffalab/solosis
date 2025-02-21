@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 import click
 
@@ -7,24 +8,25 @@ from solosis.utils.logging_utils import secho
 
 
 def lsf_options(function):
-    function = click.option("--mem", default=50000, type=int, help="mem in MB")(
+    function = click.option(
+        "--mem", default=64000, type=int, help="Memory limit (in MB)"
+    )(function)
+    function = click.option("--cpu", default=16, type=int, help="Number of CPU cores")(
         function
     )
-    function = click.option("--cores", default=4, type=int, help="# of cores")(function)
-    function = click.option("--time", default="12:00:00", help="time for running")(
-        function
-    )
-    function = click.option("--queue", default="normal", help="queue name")(function)
+    function = click.option(
+        "--queue", default="normal", help="Queue to which the job should be submitted"
+    )(function)
     return function
 
 
 def submit_lsf_job_array(
     command_file: str,
-    job_name: str = "command_array",
+    job_name: str = "job_array",
     cpu: int = 16,
     mem: int = 64000,
     queue: str = "normal",
-    group: str = "team298",
+    group: str = None,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -37,6 +39,18 @@ def submit_lsf_job_array(
         queue (str, optional): LSF queue name. Defaults to "normal".
         group (str, optional): User group for LSF submission. Defaults to "team298".
     """
+
+    if group is None:
+        group = os.environ.get("LSB_DEFAULT_USERGROUP")
+
+    # Check if the group starts with "team"
+    if not group.startswith("team"):
+        secho(
+            f"Error: Group '{group}' does not start with 'team'. Exiting.",
+            fg="red",
+            err=True,
+        )
+        sys.exit(1)
 
     if not os.path.isfile(command_file) or os.stat(command_file).st_size == 0:
         secho(

@@ -19,3 +19,12 @@ module load solosis
 solosis-cli --help
 ```
 
+pip-compile --output-file=envs/requirements.txt
+pip-compile --extra=dev --output-file=envs/dev-requirements.txt
+pip-compile --extra=dev --output-file=envs/doc-requirements.txt
+
+pip-sync envs/requirements.txt
+pip-sync envs/dev-requirements.txt
+pip-sync envs/doc-requirements.txt
+
+
