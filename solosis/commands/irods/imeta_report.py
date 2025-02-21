@@ -5,6 +5,7 @@ import time
 
 import click
 import pandas as pd
+from tabulate import tabulate
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.logging_utils import secho
@@ -94,6 +95,8 @@ def cmd(sample, samplefile):
         )
         return
 
+    data = []
+
     # Iterate over the samples and run the subprocess for each sample
     for sample in samples:
         secho(f"Processing sample: {sample}", "info")
@@ -122,6 +125,22 @@ def cmd(sample, samplefile):
             # Print each line from stdout with the "info" prefix
             for line in result.stdout.splitlines():
                 secho(f"{line}", "info")
+
+            # Now read the report and process it
+            if os.path.exists(report_path):
+                # Load the report as a dataframe
+                df = pd.read_csv(
+                    report_path, header=None, names=["collection_type", "path"]
+                )
+
+                # Assuming the report has 'Cram' and 'Cell Ranger' columns for the data
+                # Create a summary table
+                crams = len(df[df["collection_type"] == "CRAM"])
+                cellranger = len(df[df["collection_type"] == "CellRanger"])
+
+                # Add summary to a final table
+                data.extend({sample, crams, cellranger})
+
         except subprocess.CalledProcessError as e:
             # Catch subprocess-specific errors (e.g., command failed with non-zero exit code)
             secho(f"Command '{e.cmd}' failed with return code {e.returncode}", "error")
@@ -130,6 +149,16 @@ def cmd(sample, samplefile):
         except Exception as e:
             # Catch any unexpected errors
             secho(f"Unexpected error: {str(e)}", "error")
+
+        headers = [
+            "Sample",
+            "CRAM",
+            "CellRanger",
+        ]
+        table = tabulate(
+            data, headers, tablefmt="pretty", numalign="left", stralign="left"
+        )
+        secho(table)
 
 
 if __name__ == "__main__":
