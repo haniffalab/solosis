@@ -68,4 +68,6 @@ def secho(message, type="info", bold=False):
     }
 
     color = colors.get(type, "blue")
-    click.echo(click.style(f"{type.capitalize()}: ", fg=color, bold=bold) + message)
+    click.echo(
+        click.style(f"{type.capitalize()}: ", fg=color, bold=bold) + f"{message}"
+    )
