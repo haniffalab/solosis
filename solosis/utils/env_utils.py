@@ -1,4 +1,5 @@
 import csv
+import getpass
 import os
 import re
 import subprocess
@@ -21,157 +22,46 @@ def validate(required_vars):
             raise click.Abort()
 
 
-def irods_auth():
-
+def irods_auth(timeout=5):
+    """Validate irods authentication."""
     try:
-        secho("Checking iRODS status...", "info")
-        this_dir = os.path.dirname(os.path.abspath(__file__))
-        script_load_module = os.path.abspath(
-            os.path.join(this_dir, "../../bin/irods/load_module.sh")
-        )
-
+        secho("Checking iRODS authentication status...", "info")
         result = subprocess.run(
-            [script_load_module],
+            ["iget", "dummy"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            check=True,
+            check=False,
+            timeout=timeout,
         )
 
-        print(result.stdout)
-        print(result.stderr, file=sys.stderr)
+        # Capture errors from stderr even if the command "succeeded" but returned errors
+        if result.returncode != 0:
+            # Check if the error indicates that the user is authenticated
+            if "USER_INPUT_PATH_ERR" in result.stderr:
+                secho("iRODS authenticated.", "success")
+                return True
+
+            secho(f"iget command failed with return code {result.returncode}", "error")
+            secho(f"Standard Output:\n{result.stdout}", "info")
+            secho(f"Standard Error:\n{result.stderr}", "error")
 
     except Exception as e:
-        secho(f"An unexpected error occurred: {e}", "error")
-        sys.exit(1)  # Exit with error
-
-    sys.exit(1)  # Exit with error
-
-    # Load the iRODS module
-    try:
-
-        secho("Checking iRODS status...", "info")
-        module_result = subprocess.run(
-            ["iget"],
+        # Assuming error is a timeout, indicating user in not authenticated.
+        password = getpass.getpass("Enter iRODS Password: ")
+        subprocess.run(["stty", "sane"])  # Needed to reset terminal state
+        process = subprocess.Popen(
+            ["iinit"],
+            stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            check=True,
         )
-    except FileNotFoundError:
-        secho(
-            "'iget' command not found (FileNotFoundError)",
-            "error",
-        )
-        load_irods_module()
-    except Exception as e:
-        secho(f"An unexpected error occurred: {e}", "error")
-        sys.exit(1)  # Exit with error
-
-    sys.exit(1)
-
-    # Check stderr for "Command 'iget' not found, did you mean:"
-    if "Command 'iget' not found, did you mean:" in result.stderr:
-        secho("'iget' command not found. Attempting to load iRODS module...", "error")
-        sys.exit(1)
-        load_irods_module()
-        return
-
-    # Step 4: Check authentication error
-    if (
-        "CAT_INVALID_AUTHENTICATION" in result.stderr
-        or "-827000 CAT_INVALID_USER" in result.stderr
-    ):
-        secho(
-            "Authentication failed. Run `iinit` before re-running this command.",
-            "error",
-        )
-        sys.exit(1)
-        sys.exit(1)
-
-    sys.exit(1)
-    """Run a command and handle specific output conditions."""
-    command = [
-        "iget",
-        "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
-    ]
-
-    try:
-        # Run the command and capture stdout and stderr
-        result = subprocess.run(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
-
-        # If the command is successful, print a success message
-        secho("Command executed successfully.", "success")
-
-    except FileNotFoundError as e:
-        # Check if the error is because 'iget' is not found
-        if "Command 'iget' not found" in str(e):
-            secho("'iget' command not found. Loading iRODS module...", "info")
-            # Try loading the iRODS module
-            try:
-                subprocess.run(["module", "load", "cellgen/irods"], check=True)
-                secho("Module 'cellgen/irods' loaded successfully.", "success")
-                # Retry the original command after loading the module
-                result = subprocess.run(
-                    command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-                )
-                secho("Command executed successfully.", "success")
-            except subprocess.CalledProcessError:
-                secho(
-                    "Failed to load the iRODS module. Please ensure that the module is available.",
-                    "error",
-                )
-                sys.exit(1)
-
+        process.communicate(input=password + "\n")
+        if process.returncode == 0:
+            secho(f"iRODS authenticated...", "success")
+            return True
         else:
-            # Handle other FileNotFoundError cases
-            secho(
-                "iRODS not loaded. please run `module load cellgen/irods` before re-running this solosis command.",
-                "error",
-            )
-            sys.exit(1)
+            secho(f"iRODS initialization failed", "error")
 
-    # Handle specific iRODS authentication errors
-    if (
-        "CAT_INVALID_AUTHENTICATION" in result.stderr
-        or "-827000 CAT_INVALID_USER" in result.stderr
-    ):
-        secho(
-            "run `iinit` before re-running this solosis command.",
-            "error",
-        )
-        sys.exit(1)
-
-
-def load_irods_module():
-    """Load the iRODS module and exit if unsuccessful."""
-    secho(
-        "Attempting to load module",
-        "info",
-    )
-    try:
-        module_result = subprocess.run(
-            ["module", "load", "cellgen/irods"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True,
-            shell=True,
-        )
-        print(module_result.stdout)
-        print(module_result.stderr, file=sys.stderr)
-
-    except subprocess.CalledProcessError as e:
-        secho(
-            f"Failed to load the iRODS module. Ensure the module is available.: {e}",
-            "error",
-        )
-        sys.exit(1)  # Exit with error
-        secho(
-            "Failed to load the iRODS module. Ensure the module is available.", "error"
-        )
-        sys.exit(1)
-
-    secho("Successfully loaded the iRODS module. Please retry your command.", "success")
+    return False

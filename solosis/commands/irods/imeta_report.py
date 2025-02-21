@@ -72,86 +72,58 @@ def cmd(sample, samplefile):
     if not samples:
         secho(
             f"no samples provided. Use `--sample` or `--samplefile`",
+            f"No samples provided. Use --sample or --samplefile options",
             "error",
         )
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         secho(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    if not os.path.isdir(team_sample_data_dir):
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
         secho(
-            f"Sample data directory '{team_sample_data_dir}' does not exist",
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
 
-    # Check each sample
-    samples_to_download = []
+    # Iterate over the samples and run the subprocess for each sample
     for sample in samples:
-        # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
+        secho(f"Processing sample: {sample}", "info")
 
-        # Check if output exists
-        if os.path.exists(cellranger_path):
-            samples_to_download.append(sample)
-        else:
-            secho(
-                f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                "warn",
+        # Path to the script
+        imeta_report_script = os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "../../../bin/irods/imeta-report.sh",
             )
-
-    # Confirm samples to download
-    if samples_to_download:
-        sample_list = "\n".join(
-            f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
         )
-        secho(
-            f"Samples for download:\n{sample_list}",
-            "info",
-        )
-    else:
-        secho(
-            f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-            "warn",
-        )
-        return  # Exit if no samples need downloading
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
-
-    # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    imeta_report_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/imeta-report/submit.sh")
-    )
-
-    # Construct the command
-    cmd = [
-        imeta_report_script,
-        sample_ids,
-    ]
-
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-    except subprocess.CalledProcessError as e:
-        secho(
-            f"Error during execution: {e.stderr}",
-            "error",
-        )
+        try:
+            result = subprocess.run(
+                [
+                    imeta_report_script,
+                    sample,  # Pass the single sample ID as an argument
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            secho(f"Standard Output: {result.stdout}", "info")
+        except subprocess.CalledProcessError as e:
+            # Capture and report errors from the subprocess
+            secho(f"Error during execution for sample {sample}: {e.stderr}", "error")
+        except Exception as e:
+            # Catch any unexpected errors
+            secho(f"Unexpected error: {str(e)}", "error")
 
 
 if __name__ == "__main__":
