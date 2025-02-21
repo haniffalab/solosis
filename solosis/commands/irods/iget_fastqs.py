@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import datetime
 
@@ -120,49 +121,40 @@ def cmd(ctx, sample, samplefile):
             samples_to_download.append(sample)
 
     # Inform if there are samples that need FASTQ downloads
-    if samples_to_download:
+    if not samples_to_download:
         secho(
-            f"samples without FASTQ files: {samples_to_download}",
-            "progress",
-        )
-    else:
-        secho(
-            f"all provided samples already have FASTQ files. No downloads required.",
+            f"All samples already proccessed.",
             "warn",
         )
-        return  # Exit if no samples need downloading
+        return
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
+    # Define the directory where you want to create the temp file
+    temp_dir = os.path.join(os.environ.get("TEAM_DATA_DIR"), "tmp")
+    os.makedirs(temp_dir, exist_ok=True)
+
+    # Create a temporary file to hold the sample IDs
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=temp_dir
+    ) as tmpfile:
+        for sample in samples_to_download:
+            tmpfile.write(sample + "\n")
+        tmpfile_path = tmpfile.name
+        os.chmod(tmpfile_path, 0o660)
 
     # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     irods_to_fastq_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-fastqs/submit.sh")
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../bin/irods/nf-irods-to-fastq.sh",
+        )
     )
 
-    # Construct the command with optional BAM flag
-    cmd = [
-        irods_to_fastq_script,
-        sample_ids,
-    ]
-
-    # Print the command being executed for debugging
-    secho(
-        f"executing command: {' '.join(cmd)}",
-        "progress",
-    )
-
-    # Execute the command with an active spinner
-    secho(
-        f"starting process for samples: {sample_ids}...",
-        "progress",
-    )
-
-    # Execute the command and stream the output
     try:
         process = subprocess.Popen(
-            cmd,
+            [
+                irods_to_fastq_script,
+                tmpfile_path,
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

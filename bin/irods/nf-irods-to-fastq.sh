@@ -2,37 +2,28 @@
 # submit.sh - Environment setup for pull-fastq processing using Nextflow
 
 # Usage:
-#   ./submit.sh <sample_ids>
+#   ./submit.sh <sample_file>
 #
 # Parameters:
-#   <sample_ids> - Comma-separated list of sample IDs to process.
+#   <sample_file> - Path to a file containing sample IDs, one per line.
 
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Ensure at least one argument is provided
-if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 <sample_ids>" >&2
+# Ensure exactly one argument is provided
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <sample_file>" >&2
   exit 1
 fi
 
 # Assign command-line argument to variable
-SAMPLE_IDS="$1"
+SAMPLE_FILE="$1"
 
-# Verify that the sample list is not empty
-if [ -z "$SAMPLE_IDS" ]; then
-  echo "Error: No samples provided." >&2
+# Verify that the file exists and is not empty
+if [ ! -f "$SAMPLE_FILE" ] || [ ! -s "$SAMPLE_FILE" ]; then
+  echo "Error: Sample file '$SAMPLE_FILE' does not exist or is empty." >&2
   exit 1
 fi
-
-# Create a temporary file for sample IDs in CSV format
-TMP_SAMPLE_FILE=$(mktemp /tmp/sample_ids.XXXXXX.csv)
-
-# Convert comma-separated list to a file with one sample ID per line
-IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
-for SAMPLE in "${SAMPLES[@]}"; do
-  echo "$SAMPLE" >> "$TMP_SAMPLE_FILE"
-done
 
 # Load necessary modules
 MODULES=("irods" "conda" "nextflow" "singularity")
@@ -43,12 +34,12 @@ for MODULE in "${MODULES[@]}"; do
   fi
 done
 
-# Check environment variables are set
+# Check required environment variables are set
 LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
 TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
 TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
-# Ensure directories exists
+# Ensure necessary directories exist
 mkdir -p "$TEAM_DATA_DIR/samples"
 mkdir -p "$TEAM_DATA_DIR/tmp/fastq"
 mkdir -p "$TEAM_DATA_DIR/tmp/nxf"
@@ -63,18 +54,19 @@ mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
 
 # Run Nextflow process with the sample file
-echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
+echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
-    --findmeta "$TMP_SAMPLE_FILE" \
+    --findmeta "$SAMPLE_FILE" \
     --cram2fastq \
     --publish_dir "$OUTPUT_DIR" \
     --resume
 
-# Loop through each sample and move the FASTQ files to their respective directories
-for SAMPLE in "${SAMPLES[@]}"; do
+# Read sample IDs from file and process each
+while IFS= read -r SAMPLE; do
+  [ -z "$SAMPLE" ] && continue  # Skip empty lines
   SAMPLE_DIR="${TEAM_DATA_DIR}/samples/${SAMPLE}/fastq"
   
-  # Create the sample directory if it does not exist
+  # Create sample directory if it does not exist
   mkdir -p "$SAMPLE_DIR"
   
   # Assumption: The FASTQ files for each sample are named with the sample ID as the prefix.
@@ -92,10 +84,5 @@ for SAMPLE in "${SAMPLES[@]}"; do
 
   # Move FASTQ files into the respective sample directory
   echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
-  mv ${OUTPUT_DIR}/${SAMPLE}* "$SAMPLE_DIR"/
-done
-
-# Clean up the temporary sample file after Nextflow completes
-rm -f "$TMP_SAMPLE_FILE"
-
-echo "All samples processed and FASTQ files moved to respective directories."
+  mv "${OUTPUT_DIR}/${SAMPLE}"* "$SAMPLE_DIR"/
+done < "$SAMPLE_FILE"

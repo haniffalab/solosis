@@ -139,7 +139,7 @@ def cmd(sample, samplefile):
                 cellranger = len(df[df["collection_type"] == "CellRanger"])
 
                 # Add summary to a final table
-                data.extend([sample, crams, cellranger])
+                data.append([sample, crams, cellranger])
 
         except subprocess.CalledProcessError as e:
             # Catch subprocess-specific errors (e.g., command failed with non-zero exit code)
@@ -155,11 +155,10 @@ def cmd(sample, samplefile):
             "CRAM",
             "CellRanger",
         ]
-        secho(data)
         table = tabulate(
             data, headers, tablefmt="pretty", numalign="left", stralign="left"
         )
-        secho(table)
+        secho(f"Summary table... \n{table}")
 
 
 if __name__ == "__main__":
