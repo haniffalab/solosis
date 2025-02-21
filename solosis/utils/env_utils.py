@@ -23,8 +23,33 @@ def validate(required_vars):
 
 def irods_auth():
 
+    try:
+        secho("Checking iRODS status...", "info")
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        script_load_module = os.path.abspath(
+            os.path.join(this_dir, "../../bin/irods/load_module.sh")
+        )
+
+        result = subprocess.run(
+            [script_load_module],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+
+    except Exception as e:
+        secho(f"An unexpected error occurred: {e}", "error")
+        sys.exit(1)  # Exit with error
+
+    sys.exit(1)  # Exit with error
+
     # Load the iRODS module
     try:
+
         secho("Checking iRODS status...", "info")
         module_result = subprocess.run(
             ["iget"],
@@ -38,9 +63,12 @@ def irods_auth():
             "'iget' command not found (FileNotFoundError)",
             "error",
         )
-        sys.exit(1)
         load_irods_module()
-        return
+    except Exception as e:
+        secho(f"An unexpected error occurred: {e}", "error")
+        sys.exit(1)  # Exit with error
+
+    sys.exit(1)
 
     # Check stderr for "Command 'iget' not found, did you mean:"
     if "Command 'iget' not found, did you mean:" in result.stderr:
@@ -119,6 +147,10 @@ def irods_auth():
 
 def load_irods_module():
     """Load the iRODS module and exit if unsuccessful."""
+    secho(
+        "Attempting to load module",
+        "info",
+    )
     try:
         module_result = subprocess.run(
             ["module", "load", "cellgen/irods"],
@@ -126,11 +158,17 @@ def load_irods_module():
             stderr=subprocess.PIPE,
             text=True,
             check=True,
+            shell=True,
         )
         print(module_result.stdout)
         print(module_result.stderr, file=sys.stderr)
 
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
+        secho(
+            f"Failed to load the iRODS module. Ensure the module is available.: {e}",
+            "error",
+        )
+        sys.exit(1)  # Exit with error
         secho(
             "Failed to load the iRODS module. Ensure the module is available.", "error"
         )

@@ -6,7 +6,6 @@ import tempfile
 import click
 import pandas as pd
 
-from solosis.utils.env_utils import irods_auth
 from solosis.utils.logging_utils import secho
 from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
 
