@@ -3,7 +3,7 @@ import uuid
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
-from solosis.commands.farm import single_job
+from solosis.commands.farm import single_job, run_notebook
 from solosis.commands.filesystem import disk_usage, file_count
 from solosis.commands.irods import iget_cellranger, iget_fastqs
 from solosis.commands.ncl_bsu import migrate
@@ -91,7 +91,7 @@ sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
 
 # farm jobs
 jobrunner.add_command(single_job.cmd, name="submit_job")
-#jobrunner.add_command(farm.run_ipynb)
+jobrunner.add_command(run_notebook.cmd, name="run_notebook")
 
 if __name__ == "__main__":
     cli()

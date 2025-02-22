@@ -133,16 +133,17 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     Run a single command on the farm.
     """
     # Script directory in the solosis package
-    script_dir = os.path.dirname(os.path.abspath(__file__))  
-    codebase = os.path.join(script_dir, "..", "..", "..", "bin")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    print(script_dir)
+    #codebase = os.path.join(script_dir, "..", "..", "..", "bin")
     job_runner = os.path.abspath(
-        os.path.join(codebase, "/farm/single_job.sh")
+        os.path.join(script_dir, "../bin/farm/single_job.sh")
         )
     if len(command_to_exec) == 0:
         echo_message("No command to execute", type="error")
         return
     
-    command_to_exec = " ".join(command_to_exec)
+    #command_to_exec = " ".join(command_to_exec)
     bash_submit(
         job_runner,
         command_to_exec=command_to_exec,
