@@ -1,0 +1,53 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@node-14-22>
+Subject: Job 712780: <test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e> in cluster <farm22> Done
+
+Job <test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e> was submitted from host <farm22-head1> by user <vm11> in cluster <farm22> at Sat Feb 22 11:54:26 2025
+Job was executed on host(s) <4*node-14-22>, in queue <normal>, as user <vm11> in cluster <farm22> at Sat Feb 22 11:54:26 2025
+</nfs/users/nfs_v/vm11> was used as the home directory.
+</lustre/scratch126/cellgen/team298/vm11/PROJECTS/SOLOSIS/solosis/solosis/commands/farm> was used as the working directory.
+Started at Sat Feb 22 11:54:26 2025
+Terminated at Sat Feb 22 11:55:10 2025
+Results reported at Sat Feb 22 11:55:10 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e
+#BSUB -q normal
+#BSUB -n 4 
+#BSUB -M 50000
+#BSUB -R "select[mem>50000] rusage[mem=50000]"
+#BSUB -W 12:00
+#BSUB -o .solosis/lsf/test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e.log
+set -euo pipefail
+echo "hello world" > test.txt
+status=$?
+if [ $status -eq 0 ]; then
+  echo " command was successful: Exit status: $status" | mail -s "Job status: test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e" vm11@sanger.ac.uk
+else
+  echo " command failed: Exit status: $status" | mail -s "Job status: test_38e753d2-4f77-4840-9ab7-6da5fdd91c0e" vm11@sanger.ac.uk
+fi
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.05 sec.
+    Max Memory :                                 6 MB
+    Average Memory :                             4.67 MB
+    Total Requested Memory :                     50000.00 MB
+    Delta Memory :                               49994.00 MB
+    Max Swap :                                   -
+    Max Processes :                              2
+    Max Threads :                                2
+    Run time :                                   46 sec.
+    Turnaround time :                            44 sec.
+
+The output (if any) is above this job summary.
+
