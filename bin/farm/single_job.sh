@@ -27,14 +27,19 @@ cat > $bsub_file <<eof
 #BSUB -R "select[mem>$mem] rusage[mem=$mem]"
 #BSUB -W $time
 #BSUB -o $LOG_FOLDER/lsf/${job_name}.log
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh # CellGen Slack notification support
+
 set -euo pipefail
 $command_to_exec
 status=\$?
+# Email job exit status
 if [ \$status -eq 0 ]; then
-  echo "$command command was successful: Exit status: \$status" | mail -s "Job status: $job_name" $email
+  job_status="\$command_to_exec \n command was successful: Exit status: \$status"
+ 
 else
-  echo "$cmd command failed: Exit status: \$status" | mail -s "Job status: $job_name" $email
+  job_status="\$command_to_exec \n command failed: Exit status: \$status"
 fi
+echo \$job_status | mail -s "Job status: $job_name" $email
 eof
 
 bsub < $bsub_file
