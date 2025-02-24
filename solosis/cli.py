@@ -13,7 +13,6 @@ version_info = click.style(f"  ~  version {version}")
 
 
 @click.group()
-@click.pass_context
 def cli():
     """A command line interface for working with single-cell data."""
     click.echo(f"{module_name}{version_info}")
