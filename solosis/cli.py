@@ -17,7 +17,7 @@ version_info = click.style(f"  ~  version {version}")
 def cli(ctx):
     """A command line interface for working with single-cell data."""
     click.echo(f"{module_name}{version_info}")
-    # validate_env()
+    validate_env()
     logger.info(f"Logger initialized at startup with execution_uid: {execution_uid}")
 
 

@@ -8,6 +8,7 @@ setup(
     install_requires=[
         "click",
         "tabulate",
+        "pandas",
     ],
     extras_require={
         "dev": [
