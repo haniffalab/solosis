@@ -3,7 +3,7 @@ import click
 from solosis.commands.alignment import cellranger_arc_count, cellranger_count, starsolo
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report, lsf
 from solosis.commands.scrna import cellbender, merge_h5ad, qc_basic, scanpy
-from solosis.utils.env_utils import validate
+from solosis.utils.env_utils import validate_env
 from solosis.utils.state import execution_uid, logger, version
 
 # Styled output for the module name and version
@@ -16,13 +16,7 @@ version_info = click.style(f"  ~  version {version}")
 def cli(ctx):
     """Command line utility for the Cellular Genetics programme at the Wellcome Sanger Institute"""
     click.echo(f"{module_name}{version_info}")
-    validate(
-        [
-            "TEAM_DATA_DIR",
-            "TEAM_LOGS_DIR",
-            "LSB_DEFAULT_USERGROUP",
-        ]
-    )
+    validate_env()
     logger.info(f"Logger initialized at startup with execution_uid: {execution_uid}")
 
 

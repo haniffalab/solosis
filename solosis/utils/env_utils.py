@@ -1,25 +1,38 @@
-import csv
 import getpass
 import os
-import re
 import subprocess
-import sys
-from datetime import datetime
 
 import click
 
 from solosis.utils.logging_utils import secho
 
 
-def validate(required_vars):
-    """Validates that all required environment variables are set."""
-    for var in required_vars:
-        if not os.getenv(var):
-            secho(
-                f"Environment variable '{var}' is not set. Please export it before running Solosis.",
-                "error",
-            )
-            raise click.Abort()
+def validate_env():
+    """Ensure all required environment variables are set and sample directory exists."""
+    required_vars = ["TEAM_DATA_DIR", "LSB_DEFAULT_USERGROUP"]
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    if missing_vars:
+        secho(
+            f"Missing environment variables: {', '.join(missing_vars)}. Please export them before running Solosis.",
+            "error",
+        )
+        raise click.Abort()
+
+    samples_dir = os.path.join(os.getenv("TEAM_DATA_DIR"), "samples")
+    try:
+        os.makedirs(samples_dir, exist_ok=True)
+        os.environ["TEAM_SAMPLES_DIR"] = samples_dir
+    except OSError as e:
+        secho(f"Failed to create sample data directory '{samples_dir}': {e}", "error")
+        raise click.Abort()
+
+    tmp_dir = os.path.join(os.getenv("TEAM_DATA_DIR"), "tmp")
+    try:
+        os.makedirs(tmp_dir, exist_ok=True)
+        os.environ["TEAM_TMP_DIR"] = tmp_dir
+    except OSError as e:
+        secho(f"Failed to create sample data directory '{samples_dir}': {e}", "error")
+        raise click.Abort()
 
 
 def irods_auth(timeout=5):

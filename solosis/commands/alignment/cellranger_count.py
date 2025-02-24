@@ -1,15 +1,17 @@
 import os
 import subprocess
-import sys
+import tempfile
 
 import click
-import pandas as pd
 
+from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import secho
+from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
+@lsf_options
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -26,168 +28,79 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @click.option(
     "--version",
     type=str,
-    default="7.2.0",  # Set a default version
+    default="7.2.0",
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
 @click.pass_context
-def cmd(ctx, sample, samplefile, create_bam, version):
-    """
-    Cell Ranger  aligns and analyses sc-RNA seq data...\n
-    --------------------------------- \n
-    Cell Ranger (7.2.0) performs sample demultiplexing, barcode processing,
-    and gene counting for single-cell 3' and 5' RNA-seq data, as well as
-    V(D)J transcript sequence assembly.
-    """
+def cmd(ctx, sample, samplefile, create_bam, version, mem, cores, queue):
+    """scRNA-seq mapping and quantification"""
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+    secho(f"Using Cell Ranger version {version}", "info")
 
-    secho(f"loading Cell Ranger Count version {version}")
-
-    samples = []
-
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                secho(
-                    f"unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                secho(
-                    f"file must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            secho(
-                f"error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        secho(
-            f"no samples provided. Use --sample or --samplefile",
-            "error",
-        )
-        return
-
-    # Get the sample data directory from the environment variable
-    team_data_dir = os.getenv("TEAM_DATA_DIR")
-    if not team_data_dir:
-        secho(
-            f"TEAM_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    samples_dir = os.path.join(team_data_dir, "samples")
-    if not os.path.isdir(samples_dir):
-        secho(
-            f"sample data directory '{samples_dir}' does not exist",
-            "error",
-        )
-        return
+    samples = collect_samples(sample, samplefile)
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(samples_dir, sample, "fastq")
-
-        # Check if FASTQ files exist in the directory
+        fastq_path = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
-            valid_samples.append(sample)
+            cellranger_path = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger", version
+            )
+            if os.path.exists(cellranger_path):
+                secho(
+                    f"CellRanger output already exists for sample {sample} in {cellranger_path}. Skipping this sample",
+                    "warn",
+                )
+            else:
+                valid_samples.append(sample)
         else:
             secho(
-                f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
+                f"No FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
                 "warn",
             )
-        existing_path = os.path.join(samples_dir, sample, "cellranger", version)
-        # Check if cellranger output already exists in the directory
-        if os.path.exists(existing_path):
-            secho(
-                f"cellranger-count output(s) already exist for sample {sample} in {existing_path}. Skipping this sample",
-                "warn",
-            )
-        else:
-            valid_samples.append(sample)
 
     if not valid_samples:
         secho(
-            f"no valid samples found with FASTQ files. Exiting",
+            f"No valid samples found with FASTQ files. Exiting",
             "error",
         )
         return
 
-    # Join all valid sample IDs into a single string, separated by commas
-    sample_ids = ",".join(valid_samples)
-
-    # Path to the Cell Ranger submission script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     cellranger_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/cellranger-count/submit.sh")
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../bin/cellranger/cellranger_count.sh",
+        )
     )
 
-    # Construct the command with optional BAM flag
-    cmd = [
-        cellranger_submit_script,
-        sample_ids,
-        version,
-    ]  # Pass version to the submit script
-    if not create_bam:
-        cmd.append("--no-bam")
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", dir=os.getenv("TEAM_TMP_DIR")
+    ) as tmpfile:
+        tmpfile_path = tmpfile.name
 
-    # Print the command being executed for debugging
-    secho(
-        f"executing command: {' '.join(cmd)}",
-        "action",
+        for sample in valid_samples:
+            command = f"{cellranger_submit_script} {sample} {version}"
+            if not create_bam:
+                command += " --no-bam"
+            tmpfile_path.write(command + "\n")  # Write each command on a new line
+
+    secho(f"Temporary command file created: {tmpfile_path}", "info")
+
+    submit_lsf_job_array(
+        command_file=tmpfile_path,
+        job_name="cellranger_count_job_array",
+        cpu=cores,
+        mem=mem,
+        queue=queue,
     )
 
-    # Execute the command for all valid samples
     secho(
-        f"starting Cell Ranger for samples: {sample_ids}...",
-        "progress",
-    )
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        secho(
-            f"Cell Ranger submitted successfully:\n{result.stdout}",
-            "progress",
-        )
-    except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        secho(
-            f"Error during Cell Ranger execution: {e.stderr}",
-            "warn",
-        )
-
-    secho(
-        f"cellranger submission complete. run `bjobs -w`  for progress.",
+        f"Command complete.",
         "success",
     )
 
