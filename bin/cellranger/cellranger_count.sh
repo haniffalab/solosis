@@ -29,7 +29,7 @@ VERSION="$4"
 CPU="$5"
 MEM="$6"
 BAM_FLAG=""
-REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
+REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 
 # Handle optional --no-bam flag
 if [ "$7" == "--no-bam" ]; then
