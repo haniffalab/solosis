@@ -1,6 +1,6 @@
 import click
 
-from solosis.commands.alignment import cellranger_arc_count, cellranger_count, starsolo
+from solosis.commands.alignment import cellranger_arc_count, cellranger_count
 from solosis.commands.history import show, uid
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.scrna import cellbender, merge_h5ad, qc_basic, scanpy
@@ -29,7 +29,6 @@ def alignment():
 
 alignment.add_command(cellranger_count.cmd, name="cellranger-count")
 alignment.add_command(cellranger_arc_count.cmd, name="cellranger-arc-count")
-alignment.add_command(starsolo.cmd, name="starsolo")
 
 
 @cli.group()
