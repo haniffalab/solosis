@@ -29,7 +29,6 @@ from solosis.utils.logging_utils import secho
     default="2.0.2",  # Set a default version for Cell Ranger ARC
     help="Cell Ranger ARC version to use (e.g., '2.0.2')",
 )
-@click.pass_context
 def cmd(libraries, librariesfile, create_bam, version):
     """
     Cell Ranger ARC aligns GEX & ATAC seq reads... \n

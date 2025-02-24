@@ -29,7 +29,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="7.2.0",  # Set a default version
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
-@click.pass_context
 def cmd(sample, samplefile, create_bam, version):
     """
     qc-basic

@@ -19,7 +19,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-@click.pass_context
 def cmd(sample, samplefile):
     """Downloads fastqs from iRODS."""
     ctx = click.get_current_context()

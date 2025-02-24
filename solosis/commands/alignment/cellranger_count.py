@@ -30,7 +30,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="7.2.0",
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
-@click.pass_context
 def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
     """scRNA-seq mapping and quantification"""
     ctx = click.get_current_context()

@@ -9,7 +9,6 @@ from solosis.utils.logging_utils import secho
 
 @click.command("uid")
 @click.argument("uid")
-@click.pass_context
 def cmd(uid):
     """Show detailed information about a specific execution using UID."""
     ctx = click.get_current_context()
