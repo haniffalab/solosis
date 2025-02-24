@@ -69,13 +69,12 @@ def submit_lsf_job_array(
 
     log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
-    secho(log_dir)
 
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash
 #BSUB -J "{job_name}[1-{num_commands}]"
-#BSUB -o "{log_dir}/{job_name}_%J_%I.out"
-#BSUB -e "{log_dir}/{job_name}_%J_%I.err"
+#BSUB -o "{log_dir}/lsf_{job_name}_%J_%I.out"
+#BSUB -e "{log_dir}/lsf_{job_name}_%J_%I.err"
 #BSUB -n {cpu}
 #BSUB -M {mem}
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"

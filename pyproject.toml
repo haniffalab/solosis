@@ -3,20 +3,29 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rsewow"
-version = "0.1.0"
-description = "A CLI tool for performing various utilities and tasks"
-authors = [{ name = "Your Name", email = "your.email@example.com" }]
-readme = "README.md"
-requires-python = ">=3.8"
+name = "solosis"
+version = "0.3.0"
+description = "A command line interface for working with single-cell data"
+requires-python = ">=3.10"
 dependencies = [
-    "typer[all]>=0.9.0",
-    "pip-tools>=7.4.1",
-    "python-dotenv>=1.0.1",
-    "requests>=2.32.3",
-    "tabulate>=0.9.0",
-    "notion-client==2.3.0"
+    "click",
+    "tabulate",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+doc = [
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-click",
 ]
 
 [project.scripts]
-rsewow = "rsewow.cli:app"
+solosis = "solosis.cli:cli"

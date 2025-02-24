@@ -44,6 +44,7 @@ fi
 
 # Ensure required directories exist
 mkdir -p "$OUTPUT_DIR"
+cd "$OUTPUT_DIR"
 
 echo "Running Cell Ranger count for sample: $SAMPLE_ID"
 echo "Output directory: $OUTPUT_DIR"
@@ -53,13 +54,13 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 [ -n "$BAM_FLAG" ] && echo "BAM output is disabled"
 
 # Run Cell Ranger count
-# cellranger count \
-#     --id="$SAMPLE_ID" \
-#     --fastqs="$FASTQ_DIR" \
-#     --transcriptome="$REF" \
-#     --sample="$SAMPLE_ID" \
-#     --localcores="$CPU" \
-#     --localmem="$(($MEM / 1000))" \
-#     $BAM_FLAG
+cellranger count \
+    --id="$SAMPLE_ID" \
+    --fastqs="$FASTQ_DIR" \
+    --transcriptome="$REF" \
+    --sample="$SAMPLE_ID" \
+    --localcores="$CPU" \
+    --localmem="$(($MEM / 1000))" \
+    $BAM_FLAG
 
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"

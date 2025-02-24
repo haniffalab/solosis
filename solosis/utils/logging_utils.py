@@ -8,18 +8,33 @@ from pathlib import Path
 
 import click
 
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
+
 logger = logging.getLogger("solosis")
 logger.setLevel(logging.INFO)
 
 
-def log_history(uid: str):
+def get_version():
+    try:
+        with open("pyproject.toml", "rb") as f:
+            data = tomllib.load(f)
+        return data.get("project", {}).get("version", "unknown")
+    except Exception as e:
+        logger.error(f"Error reading version from pyproject.toml: {e}")
+        return "unknown"
+
+
+def log_history(uid: str, version: str):
     """Append command execution details to the history file."""
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
     user = getpass.getuser()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     command = " ".join(sys.argv)
     with open(history_file, "a") as f:
-        f.write(f"{timestamp},{user},{uid},{command}\n")
+        f.write(f"{timestamp},{user},{uid},{command},{version}\n")
 
 
 def setup_logging():
@@ -36,8 +51,8 @@ def setup_logging():
     command_log_dir = log_dir / execution_uid
     command_log_dir.mkdir(exist_ok=True)
 
-    log_filename = command_log_dir / "output.log"
-    error_filename = command_log_dir / "error.log"
+    log_filename = command_log_dir / "solosis_output.log"
+    error_filename = command_log_dir / "solosis_error.log"
 
     file_handler = logging.FileHandler(log_filename)
     file_handler.setFormatter(
@@ -55,9 +70,10 @@ def setup_logging():
         logger.addHandler(file_handler)
         logger.addHandler(error_handler)
 
-    log_history(execution_uid)
+    version = get_version()
+    log_history(execution_uid, version)
 
-    return logger, execution_uid
+    return logger, execution_uid, version
 
 
 def secho(message, type="info", bold=False):
