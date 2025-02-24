@@ -1,14 +1,12 @@
 import os
 import subprocess
-import sys
 import tempfile
-import time
 from datetime import datetime
 
 import click
-import pandas as pd
 
 from solosis.utils.env_utils import irods_auth
+from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import secho
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
@@ -23,91 +21,21 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @click.pass_context
 def cmd(ctx, sample, samplefile):
-    """
-    Downloads fastqs from iRODS...
-
-    Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
-    Pulled directly from Github repo- up-to-date.
-    """
+    """Downloads fastqs from iRODS."""
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
-    # Call the function
     irods_auth()
 
-    samples = []
-
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                secho(
-                    f"unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                secho(
-                    f"file must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            secho(
-                f"error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        secho(
-            f"no samples provided. Use `--sample` or `--samplefile`",
-            "error",
-        )
-        secho(
-            f"try using `solosis-cli irods iget-fastqs --help`",
-            "info",
-        )
-        return
-
-    # Get the sample data directory from the environment variable
-    team_data_dir = os.getenv("TEAM_DATA_DIR")
-    if not team_data_dir:
-        secho(
-            f"TEAM_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    samples_dir = os.path.join(team_data_dir, "samples")
-    if not os.path.isdir(samples_dir):
-        secho(
-            f"sample data directory '{samples_dir}' does not exist",
-            "error",
-        )
-        return
+    samples = collect_samples(sample, samplefile)
 
     # Check each sample
     samples_to_download = []
     for sample in samples:
         # Path where FASTQ files are expected for each sample
-        fastq_path = os.path.join(samples_dir, sample, "fastq")
+        fastq_path = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
 
         # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(fastq_path) and any(

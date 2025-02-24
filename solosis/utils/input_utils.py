@@ -40,5 +40,6 @@ def collect_samples(sample, samplefile):
 
     if not samples:
         secho("No samples provided. Use --sample or --samplefile", "error")
+        click.Abort()
 
     return samples

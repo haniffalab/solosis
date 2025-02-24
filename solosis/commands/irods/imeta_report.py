@@ -1,13 +1,12 @@
 import os
 import subprocess
-import sys
-import time
 
 import click
 import pandas as pd
 from tabulate import tabulate
 
 from solosis.utils.env_utils import irods_auth
+from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import secho
 
 
@@ -19,81 +18,18 @@ from solosis.utils.logging_utils import secho
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-def cmd(sample, samplefile):
+def cmd(ctx, sample, samplefile):
     """
     Generates report of data available on iRODS
     """
-    ctx = click.get_current_context()
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 
-    # Call the function
     irods_auth()
 
-    samples = []
-
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                secho(
-                    f"Unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                secho(
-                    f"File must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            secho(
-                f"Error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        secho(
-            f"no samples provided. Use `--sample` or `--samplefile`",
-            f"No samples provided. Use --sample or --samplefile options",
-            "error",
-        )
-        return
-
-    # Get the sample data directory from the environment variable
-    team_data_dir = os.getenv("TEAM_DATA_DIR")
-    if not team_data_dir:
-        secho(
-            f"TEAM_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    samples_dir = os.path.join(team_data_dir, "samples")
-    if not os.path.isdir(samples_dir):
-        secho(
-            f"sample data directory '{samples_dir}' does not exist",
-            "error",
-        )
-        return
+    samples = collect_samples(sample, samplefile)
 
     data = []
 
@@ -102,7 +38,7 @@ def cmd(sample, samplefile):
         secho(f"Processing sample: {sample}", "info")
 
         # Create report directory for the sample
-        sample_dir = os.path.join(samples_dir, sample)
+        sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
         os.makedirs(sample_dir, exist_ok=True)
         report_path = os.path.join(sample_dir, "imeta_report.csv")
 
