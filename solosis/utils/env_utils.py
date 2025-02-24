@@ -1,6 +1,7 @@
 import getpass
 import os
 import subprocess
+from pathlib import Path
 
 import click
 
@@ -32,6 +33,14 @@ def validate_env():
         os.environ["TEAM_TMP_DIR"] = tmp_dir
     except OSError as e:
         secho(f"Failed to create sample data directory '{samples_dir}': {e}", "error")
+        raise click.Abort()
+
+    log_dir = Path.home() / ".solosis"
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        os.environ["SOLOSIS_LOG_DIR"] = log_dir
+    except OSError as e:
+        secho(f"Failed to create log directory '{log_dir}': {e}", "error")
         raise click.Abort()
 
 

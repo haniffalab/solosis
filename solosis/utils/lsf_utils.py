@@ -1,10 +1,12 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 import click
 
 from solosis.utils.logging_utils import secho
+from solosis.utils.state import execution_uid
 
 
 def lsf_options(function):
@@ -43,7 +45,6 @@ def submit_lsf_job_array(
     if group is None:
         group = os.environ.get("LSB_DEFAULT_USERGROUP")
 
-    # Check if the group starts with "team"
     if not group.startswith("team"):
         secho(
             f"Error: Group '{group}' does not start with 'team'. Exiting.",
@@ -60,12 +61,15 @@ def submit_lsf_job_array(
         )
         return
 
-    # Count the number of commands
     with open(command_file, "r") as f:
         num_commands = sum(1 for _ in f)
 
-    log_dir = "command_logs"
+    if not execution_uid:
+        raise ValueError("execution_uid is empty or None. It must be a valid UUID.")
+
+    log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
+    secho(log_dir)
 
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash

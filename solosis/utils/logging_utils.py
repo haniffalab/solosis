@@ -1,5 +1,6 @@
 import getpass
 import logging
+import os
 import sys
 import uuid
 from datetime import datetime
@@ -7,9 +8,7 @@ from pathlib import Path
 
 import click
 
-LOG_DIR = Path.home() / ".solosis"
-LOG_DIR.mkdir(exist_ok=True)
-
+LOG_DIR = Path(os.getenv("SOLOSIS_LOG_DIR"))
 HISTORY_FILE = LOG_DIR / "history.log"
 
 logger = logging.getLogger("solosis")
