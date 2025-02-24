@@ -71,10 +71,27 @@ def cmd(sample, samplefile, mem, cpu, queue):
                     # Loop through each row in the dataframe
                     for _, row in df.iterrows():
                         collection_type, path = row["collection_type"], row["path"]
-
-                        # If it's a CellRanger output, generate the iget command
                         if collection_type == "CellRanger":
-                            command = f"iget {path} {cellranger_dir}"
+                            collection_name = os.path.basename(path.rstrip("/"))
+                            if not collection_name.strip():
+                                secho(
+                                    f"Could not determine collection name {path}",
+                                    "warn",
+                                )
+                                continue
+                            output_dir = os.path.join(cellranger_dir, collection_name)
+                            if (
+                                os.path.exists(output_dir)
+                                and os.path.isdir(output_dir)
+                                and os.listdir(output_dir)
+                            ):
+                                secho(
+                                    f"Skipping {collection_name}, already exists in {cellranger_dir}"
+                                    "warn",
+                                )
+                                continue
+
+                            command = f"iget -r {path} {cellranger_dir}"
                             tmpfile.write(command + "\n")
 
             except subprocess.CalledProcessError as e:
