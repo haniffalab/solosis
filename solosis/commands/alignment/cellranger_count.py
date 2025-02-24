@@ -86,20 +86,18 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
     )
 
     with tempfile.NamedTemporaryFile(
-        delete=False, mode="w", dir=os.getenv("TEAM_TMP_DIR")
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        tmpfile_path = tmpfile.name
-
+        secho(f"Temporary command file created: {tmpfile.name}", "info")
+        os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
             tmpfile.write(command + "\n")
 
-    secho(f"Temporary command file created: {tmpfile_path}", "info")
-
     submit_lsf_job_array(
-        command_file=tmpfile_path,
+        command_file=tmpfile.name,
         job_name="cellranger_count_job_array",
         cpu=cpu,
         mem=mem,

@@ -32,13 +32,9 @@ def cmd(sample, samplefile):
 
     samples = collect_samples(sample, samplefile)
 
-    # Check each sample
     samples_to_download = []
     for sample in samples:
-        # Path where FASTQ files are expected for each sample
         fastq_path = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
-
-        # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(fastq_path) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
         ):
@@ -49,7 +45,6 @@ def cmd(sample, samplefile):
         else:
             samples_to_download.append(sample)
 
-    # Inform if there are samples that need FASTQ downloads
     if not samples_to_download:
         secho(
             f"All samples already proccessed.",
@@ -57,20 +52,14 @@ def cmd(sample, samplefile):
         )
         return
 
-    # Define the directory where you want to create the temp file
-    temp_dir = os.path.join(os.environ.get("TEAM_DATA_DIR"), "tmp")
-    os.makedirs(temp_dir, exist_ok=True)
-
-    # Create a temporary file to hold the sample IDs
     with tempfile.NamedTemporaryFile(
-        delete=False, mode="w", suffix=".txt", dir=temp_dir
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
+        secho(f"Temporary command file created: {tmpfile.name}", "info")
+        os.chmod(tmpfile.name, 0o660)
         for sample in samples_to_download:
             tmpfile.write(sample + "\n")
-        tmpfile_path = tmpfile.name
-        os.chmod(tmpfile_path, 0o660)
 
-    # Path to the script
     irods_to_fastq_script = os.path.abspath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -82,7 +71,7 @@ def cmd(sample, samplefile):
         process = subprocess.Popen(
             [
                 irods_to_fastq_script,
-                tmpfile_path,
+                tmpfile.name,
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

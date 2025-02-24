@@ -127,11 +127,9 @@ def cmd(libraries, librariesfile, create_bam, version):
         )
         return
 
-    # Create a temporary file to store library paths and IDs
-    tmp_dir = os.path.join(team_data_dir, "tmp")
     with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".txt", dir=tmp_dir
-    ) as temp_file:
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
         for lib_path, library_id in valid_libraries:
             temp_file.write(f"{lib_path},{library_id}\n")
         temp_file_path = temp_file.name

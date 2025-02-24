@@ -1,15 +1,17 @@
 import os
 import subprocess
+import tempfile
 
 import click
+import pandas as pd
 
-from solosis.commands.irods.imeta_report import cmd as imeta_report
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import secho
+from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
 
 
-# change to pull-cellranger
+@lsf_options
 @click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -17,7 +19,7 @@ from solosis.utils.logging_utils import secho
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-def cmd(sample, samplefile):
+def cmd(sample, samplefile, mem, cpu, queue):
     """Downloads cellranger outputs from iRODS."""
     ctx = click.get_current_context()
     secho(
@@ -29,51 +31,70 @@ def cmd(sample, samplefile):
 
     samples = collect_samples(sample, samplefile)
 
-    # Run imeta-report first and collect output
-    secho("Running metadata report...", "info")
-    report_results = ctx.invoke(imeta_report, sample=sample, samplefile=samplefile)
-    secho(report_results)
-    click.Abort()
-    if not report_results:
-        secho("No valid samples found from the report. Exiting.", "error")
-        return
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
+        secho(f"Temporary command file created: {tmpfile.name}", "info")
+        os.chmod(tmpfile.name, 0o660)
+        for sample in samples:
+            sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
+            cellranger_dir = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
+            )
+            os.makedirs(cellranger_dir, exist_ok=True)
+            report_path = os.path.join(sample_dir, "imeta_report.csv")
 
-    # Check each sample
-    samples_to_download = []
-    for sample in samples:
-        # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(
-            os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
-        )
+            # Path to the script
+            imeta_report_script = os.path.abspath(
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "../../../bin/irods/imeta_report.sh",
+                )
+            )
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
+            try:
+                subprocess.run(
+                    [imeta_report_script, sample, report_path],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
 
-    # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
-    )
+                # Now read the report and process it
+                if os.path.exists(report_path):
+                    # Load the report as a dataframe
+                    df = pd.read_csv(
+                        report_path, header=None, names=["collection_type", "path"]
+                    )
 
-    # Construct the command with optional BAM flag
-    cmd = [
-        pull_cellranger_script,
-        sample_ids,
-    ]
+                    # Loop through each row in the dataframe
+                    for _, row in df.iterrows():
+                        collection_type, path = row["collection_type"], row["path"]
 
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-    except subprocess.CalledProcessError as e:
-        secho(
-            f"Error during execution: {e.stderr}",
-            "error",
-        )
+                        # If it's a CellRanger output, generate the iget command
+                        if collection_type == "CellRanger":
+                            command = f"iget {path} {cellranger_dir}"
+                            tmpfile.write(command + "\n")
+
+            except subprocess.CalledProcessError as e:
+                # Catch subprocess-specific errors (e.g., command failed with non-zero exit code)
+                secho(
+                    f"Command '{e.cmd}' failed with return code {e.returncode}", "error"
+                )
+                secho(f"Standard Error: {e.stderr}", "error")
+                secho(f"Standard Output: {e.stdout}", "info")
+            except Exception as e:
+                # Catch any unexpected errors
+                secho(f"Unexpected error: {str(e)}", "error")
+
+    # submit_lsf_job_array(
+    #     command_file=tmpfile.name,
+    #     job_name="iget_cellranger_job_array",
+    #     cpu=cpu,
+    #     mem=mem,
+    #     queue=queue,
+    # )
 
 
 if __name__ == "__main__":
