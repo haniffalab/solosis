@@ -32,7 +32,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
 @click.pass_context
-def cmd(ctx, sample, samplefile, create_bam, version, mem, cores, queue):
+def cmd(ctx, sample, samplefile, create_bam, version, mem, cpu, queue):
     """scRNA-seq mapping and quantification"""
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
@@ -87,14 +87,14 @@ def cmd(ctx, sample, samplefile, create_bam, version, mem, cores, queue):
             command = f"{cellranger_submit_script} {sample} {version}"
             if not create_bam:
                 command += " --no-bam"
-            tmpfile_path.write(command + "\n")  # Write each command on a new line
+            tmpfile.write(command + "\n")  # Write each command on a new line
 
     secho(f"Temporary command file created: {tmpfile_path}", "info")
-
+    click.Abort()
     submit_lsf_job_array(
         command_file=tmpfile_path,
         job_name="cellranger_count_job_array",
-        cpu=cores,
+        cpu=cpu,
         mem=mem,
         queue=queue,
     )

@@ -93,6 +93,6 @@ eval "$COMMAND"
         process = subprocess.run(
             ["bsub"], input=lsf_script, text=True, capture_output=True, check=True
         )
-        secho(f"Job submitted successfully: {process.stdout.strip()}", fg="green")
+        secho(f"Job submitted successfully: {process.stdout.strip()}", "success")
     except subprocess.CalledProcessError as e:
-        secho(f"Error submitting job: {e.stderr}", fg="red", err=True)
+        secho(f"Error submitting job: {e.stderr}", "error")
