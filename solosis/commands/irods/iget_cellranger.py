@@ -2,7 +2,6 @@ import os
 import subprocess
 
 import click
-import pandas as pd
 
 from solosis.commands.irods.imeta_report import cmd as imeta_report
 from solosis.utils.env_utils import irods_auth
@@ -18,8 +17,9 @@ from solosis.utils.logging_utils import secho
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-def cmd(ctx, sample, samplefile):
+def cmd(sample, samplefile):
     """Downloads cellranger outputs from iRODS."""
+    ctx = click.get_current_context()
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",

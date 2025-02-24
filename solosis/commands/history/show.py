@@ -14,10 +14,11 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     "--lines", "-n", default=10, help="Number of recent history entries to show."
 )
 @click.pass_context
-def cmd(ctx, lines):
+def cmd(lines):
     """Show command execution history"""
+    ctx = click.get_current_context()
     secho(
-        f"Starting: {click.style(ctx.command.name, bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
 

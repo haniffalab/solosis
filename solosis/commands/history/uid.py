@@ -10,8 +10,13 @@ from solosis.utils.logging_utils import secho
 @click.command("uid")
 @click.argument("uid")
 @click.pass_context
-def cmd(ctx, uid):
+def cmd(uid):
     """Show detailed information about a specific execution using UID."""
+    ctx = click.get_current_context()
+    secho(
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
+        "info",
+    )
     secho(f"Fetching details for UID: {uid}", "info")
 
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"

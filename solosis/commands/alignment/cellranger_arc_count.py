@@ -30,12 +30,13 @@ from solosis.utils.logging_utils import secho
     help="Cell Ranger ARC version to use (e.g., '2.0.2')",
 )
 @click.pass_context
-def cmd(ctx, libraries, librariesfile, create_bam, version):
+def cmd(libraries, librariesfile, create_bam, version):
     """
     Cell Ranger ARC aligns GEX & ATAC seq reads... \n
     --------------------------------- \n
     Cell Ranger ARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
     """
+    ctx = click.get_current_context()
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",

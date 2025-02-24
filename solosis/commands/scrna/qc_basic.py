@@ -30,10 +30,11 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
 @click.pass_context
-def cmd(ctx, sample, samplefile, create_bam, version):
+def cmd(sample, samplefile, create_bam, version):
     """
     qc-basic
     """
+    ctx = click.get_current_context()
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",

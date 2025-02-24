@@ -31,10 +31,11 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
 @click.pass_context
-def cmd(ctx, sample, samplefile, create_bam, version, mem, cpu, queue):
+def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
     """scRNA-seq mapping and quantification"""
+    ctx = click.get_current_context()
     secho(
-        f"Starting: {click.style(ctx.command.name, bold=True, underline=True)}",
+        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
     secho(f"Using Cell Ranger version {version}", "info")

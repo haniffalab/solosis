@@ -18,10 +18,11 @@ from solosis.utils.logging_utils import secho
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-def cmd(ctx, sample, samplefile):
+def cmd(sample, samplefile):
     """
     Generates report of data available on iRODS
     """
+    ctx = click.get_current_context()
     secho(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
