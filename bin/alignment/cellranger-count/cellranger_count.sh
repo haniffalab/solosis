@@ -12,6 +12,8 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
+exit 1
+
 # Ensure at least two arguments are provided
 if [ "$#" -lt 2 ]; then
   echo "Usage: $0 <sample_ids> <version> [--no-bam]" >&2
@@ -55,7 +57,7 @@ cellranger count \
     --transcriptome="$REF" \
     --sample="$SAMPLE" \
     --localcores=$CPU \
-    --localmem=$((MEM / 1000)) \
+    --localmem=$(($MEM / 1000)) \
     $BAM_FLAG
 
 

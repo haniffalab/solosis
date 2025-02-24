@@ -1,5 +1,4 @@
 import os
-import subprocess
 import tempfile
 
 import click
@@ -35,7 +34,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 def cmd(ctx, sample, samplefile, create_bam, version, mem, cpu, queue):
     """scRNA-seq mapping and quantification"""
     secho(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
+        f"Starting: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
     secho(f"Using Cell Ranger version {version}", "info")
@@ -44,34 +43,41 @@ def cmd(ctx, sample, samplefile, create_bam, version, mem, cpu, queue):
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
-        if os.path.exists(fastq_path) and any(
-            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
+        fastq_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
+        output_dir = os.path.join(
+            os.getenv("TEAM_SAMPLES_DIR"),
+            sample,
+            "cellranger",
+            f"solosis_{version.replace('.', '')}",
+        )
+
+        if os.path.exists(fastq_dir) and any(
+            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
         ):
-            cellranger_path = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger", version
-            )
-            if os.path.exists(cellranger_path):
+            if os.path.exists(output_dir):
                 secho(
-                    f"CellRanger output already exists for sample {sample} in {cellranger_path}. Skipping this sample",
+                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample",
                     "warn",
                 )
             else:
-                valid_samples.append(sample)
+                valid_samples.append(
+                    {
+                        "sample_id": sample,
+                        "output_dir": output_dir,
+                        "fastq_dir": fastq_dir,
+                    }
+                )
         else:
             secho(
-                f"No FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
+                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample",
                 "warn",
             )
 
     if not valid_samples:
-        secho(
-            f"No valid samples found with FASTQ files. Exiting",
-            "error",
-        )
+        secho(f"No valid samples found. Exiting", "error")
         return
 
-    cellranger_submit_script = os.path.abspath(
+    script_path = os.path.abspath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "../../../bin/cellranger/cellranger_count.sh",
@@ -84,24 +90,19 @@ def cmd(ctx, sample, samplefile, create_bam, version, mem, cpu, queue):
         tmpfile_path = tmpfile.name
 
         for sample in valid_samples:
-            command = f"{cellranger_submit_script} {sample} {version}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
-            tmpfile.write(command + "\n")  # Write each command on a new line
+            tmpfile.write(command + "\n")
 
     secho(f"Temporary command file created: {tmpfile_path}", "info")
-    click.Abort()
+
     submit_lsf_job_array(
         command_file=tmpfile_path,
         job_name="cellranger_count_job_array",
         cpu=cpu,
         mem=mem,
         queue=queue,
-    )
-
-    secho(
-        f"Command complete.",
-        "success",
     )
 
 
