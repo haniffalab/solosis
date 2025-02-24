@@ -1,63 +1,59 @@
 #!/bin/bash
-# submit.sh - Array job submission for Cell Ranger using LSF
+# cellranger_count.sh - Run Cell Ranger count for a given sample
 
 # Usage:
-#   ./submit.sh <sample_ids> <version> [--no-bam]
+#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]
 #
 # Parameters:
-#   <sample_ids> - Comma-separated list of sample IDs to process.
-#   <version> - Version of Cell Ranger to use (e.g., "7.2.0").
-#   --no-bam - Optional flag to exclude BAM output.
+#   <sample_id>   - Sample ID to process.
+#   <output_dir>  - Path to store Cell Ranger output.
+#   <fastq_dir>   - Path to FASTQ files.
+#   <version>     - Version of Cell Ranger to use (e.g., "7.2.0").
+#   <cpu>         - Number of CPU cores.
+#   <mem>         - Memory in MB.
+#   --no-bam      - Optional flag to disable BAM file generation.
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+set -e  # Exit immediately if a command fails
 
-exit 1
-
-# Ensure at least two arguments are provided
-if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <sample_ids> <version> [--no-bam]" >&2
+# Ensure at least 6 arguments are provided
+if [ "$#" -lt 6 ]; then
+  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
   exit 1
 fi
 
 # Assign command-line arguments to variables
-SAMPLE_IDS="$1"
-VERSION="$2"
+SAMPLE_ID="$1"
+OUTPUT_DIR="$2"
+FASTQ_DIR="$3"
+VERSION="$4"
+CPU="$5"
+MEM="$6"
 BAM_FLAG=""
-if [ "$3" == "--no-bam" ]; then
+REF="/software/cellgen/cellgeni/refdata-gex-GRCh38-2024-A"
+
+# Handle optional --no-bam flag
+if [ "$7" == "--no-bam" ]; then
   BAM_FLAG="--no-bam"
 fi
 
-# Verify that the sample list is not empty
-if [ -z "$SAMPLE_IDS" ]; then
-  echo "Error: No samples provided." >&2
-  exit 1
-fi
-
-# Determine the sample for the current task
-SAMPLE=\${SAMPLES[\$((LSB_JOBINDEX - 1))]}
-
-# Debug: output sample for current task
-echo "Processing sample \$SAMPLE with index \$LSB_JOBINDEX"
-
-
-# Define paths for the current sample
-FASTQ_PATH="${TEAM_DATA_DIR}/samples/\$SAMPLE/fastq"
-OUTPUT_DIR="${TEAM_DATA_DIR}/samples/\$SAMPLE/cellranger/$VERSION"
-
-echo "DEBUG: SAMPLE_INDEX=\$SAMPLE_INDEX"
-echo "DEBUG: SAMPLE=\$SAMPLE"
-
-# Create output directory if it does not exist
+# Ensure required directories exist
 mkdir -p "$OUTPUT_DIR"
-cd "$OUTPUT_DIR"
+
+echo "Running Cell Ranger count for sample: $SAMPLE_ID"
+echo "Output directory: $OUTPUT_DIR"
+echo "FASTQ directory: $FASTQ_DIR"
+echo "Cell Ranger version: $VERSION"
+echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
+[ -n "$BAM_FLAG" ] && echo "BAM output is disabled"
+
+# Run Cell Ranger count
 cellranger count \
-    --id="$SAMPLE" \
-    --fastqs="$FASTQ_PATH" \
+    --id="$SAMPLE_ID" \
+    --fastqs="$FASTQ_DIR" \
     --transcriptome="$REF" \
-    --sample="$SAMPLE" \
-    --localcores=$CPU \
-    --localmem=$(($MEM / 1000)) \
+    --sample="$SAMPLE_ID" \
+    --localcores="$CPU" \
+    --localmem="$(($MEM / 1000))" \
     $BAM_FLAG
 
-
+echo "Cell Ranger count completed for sample: $SAMPLE_ID"
