@@ -105,13 +105,13 @@ def cmd(sample, samplefile, mem, cpu, queue):
                 # Catch any unexpected errors
                 secho(f"Unexpected error: {str(e)}", "error")
 
-    # submit_lsf_job_array(
-    #     command_file=tmpfile.name,
-    #     job_name="iget_cellranger_job_array",
-    #     cpu=cpu,
-    #     mem=mem,
-    #     queue=queue,
-    # )
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
+        job_name="iget_cellranger_job_array",
+        cpu=cpu,
+        mem=mem,
+        queue=queue,
+    )
 
 
 if __name__ == "__main__":
