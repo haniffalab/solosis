@@ -11,6 +11,7 @@ from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import debug
 from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
 from solosis.utils.state import logger
+from solosis.utils.subprocess_utils import popen
 
 
 @lsf_options
@@ -55,52 +56,34 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                     "../../../bin/irods/imeta_report.sh",
                 )
             )
-
-            try:
-                subprocess.run(
-                    [imeta_report_script, sample, report_path],
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
+            popen([imeta_report_script, sample, report_path])
+            if os.path.exists(report_path):
+                df = pd.read_csv(
+                    report_path, header=None, names=["collection_type", "path"]
                 )
 
-                if os.path.exists(report_path):
-                    df = pd.read_csv(
-                        report_path, header=None, names=["collection_type", "path"]
-                    )
+                for _, row in df.iterrows():
+                    collection_type, path = row["collection_type"], row["path"]
+                    if collection_type == "CellRanger":
+                        collection_name = os.path.basename(path.rstrip("/"))
+                        if not collection_name.strip():
+                            logger.warning(
+                                f"Could not determine collection name {path}"
+                            )
+                            continue
+                        output_dir = os.path.join(cellranger_dir, collection_name)
+                        if (
+                            os.path.exists(output_dir)
+                            and os.path.isdir(output_dir)
+                            and os.listdir(output_dir)
+                        ):
+                            logger.warning(
+                                f"Skipping {collection_name}, already exists in {cellranger_dir}"
+                            )
+                            continue
 
-                    for _, row in df.iterrows():
-                        collection_type, path = row["collection_type"], row["path"]
-                        if collection_type == "CellRanger":
-                            collection_name = os.path.basename(path.rstrip("/"))
-                            if not collection_name.strip():
-                                logger.warning(
-                                    f"Could not determine collection name {path}"
-                                )
-                                continue
-                            output_dir = os.path.join(cellranger_dir, collection_name)
-                            if (
-                                os.path.exists(output_dir)
-                                and os.path.isdir(output_dir)
-                                and os.listdir(output_dir)
-                            ):
-                                logger.warning(
-                                    f"Skipping {collection_name}, already exists in {cellranger_dir}"
-                                )
-                                continue
-
-                            command = f"iget -r {path} {cellranger_dir}"
-                            tmpfile.write(command + "\n")
-
-            except subprocess.CalledProcessError as e:
-                logger.error(
-                    f"Command '{e.cmd}' failed with return code {e.returncode}"
-                )
-                logger.error(f"Standard Error: {e.stderr}")
-                logger.info(f"Standard Output: {e.stdout}")
-            except Exception as e:
-                logger.error(f"Unexpected error: {str(e)}")
+                        command = f"iget -r {path} {cellranger_dir}"
+                        tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,

@@ -1,6 +1,5 @@
 import logging
 import os
-import subprocess
 
 import click
 import pandas as pd
@@ -8,7 +7,7 @@ from tabulate import tabulate
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import debug, secho
+from solosis.utils.logging_utils import debug
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 
@@ -39,7 +38,7 @@ def cmd(sample, samplefile, debug):
     samples = collect_samples(sample, samplefile)
     data = []
     for sample in samples:
-        secho(f"Processing sample: {sample}", "info")
+        logger.info(f"Processing sample: {sample}")
 
         sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
         os.makedirs(sample_dir, exist_ok=True)
@@ -51,7 +50,7 @@ def cmd(sample, samplefile, debug):
                 "../../../bin/irods/imeta_report.sh",
             )
         )
-        process = popen([imeta_report_script, sample, report_path])
+        popen([imeta_report_script, sample, report_path])
         if os.path.exists(report_path):
             df = pd.read_csv(
                 report_path, header=None, names=["collection_type", "path"]

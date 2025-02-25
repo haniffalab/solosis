@@ -5,7 +5,7 @@ import click
 from solosis.commands.alignment import cellranger_arc_count, cellranger_count
 from solosis.commands.history import clear, uid, view
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
-from solosis.commands.scrna import cellbender, merge_h5ad, qc_basic, scanpy
+from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
 from solosis.utils.env_utils import validate_env
 from solosis.utils.logging_utils import debug
 from solosis.utils.state import execution_uid, logger, version
@@ -67,7 +67,6 @@ def scrna():
 scrna.add_command(cellbender.cmd, name="cellbender")
 scrna.add_command(scanpy.cmd, name="scanpy")
 scrna.add_command(merge_h5ad.cmd, name="merge-h5ad")
-scrna.add_command(qc_basic.cmd, name="qc-basic")
 
 
 if __name__ == "__main__":

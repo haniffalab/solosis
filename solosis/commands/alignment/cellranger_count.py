@@ -1,16 +1,19 @@
+import logging
 import os
 import tempfile
 
 import click
 
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import secho
+from solosis.utils.logging_utils import debug
 from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
 @lsf_options
+@debug
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -30,17 +33,18 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     default="7.2.0",
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
-def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
+def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
     """scRNA-seq mapping and quantification"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     ctx = click.get_current_context()
-    secho(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
-    secho(f"Using Cell Ranger version {version}", "info")
+    logger.debug(f"Loading Cell Ranger Count version {version}")
 
     samples = collect_samples(sample, samplefile)
-
     valid_samples = []
     for sample in samples:
         fastq_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "fastq")
@@ -55,9 +59,8 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
         ):
             if os.path.exists(output_dir):
-                secho(
-                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample",
-                    "warn",
+                logger.warning(
+                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample"
                 )
             else:
                 valid_samples.append(
@@ -68,16 +71,15 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
                     }
                 )
         else:
-            secho(
-                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample",
-                "warn",
+            logger.warning(
+                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample"
             )
 
     if not valid_samples:
-        secho(f"No valid samples found. Exiting", "error")
-        return
+        logger.error(f"No valid samples found. Exiting")
+        raise click.Abort()
 
-    script_path = os.path.abspath(
+    cellranger_count_path = os.path.abspath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "../../../bin/cellranger/cellranger_count.sh",
@@ -87,10 +89,10 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        secho(f"Temporary command file created: {tmpfile.name}", "info")
+        logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
             tmpfile.write(command + "\n")

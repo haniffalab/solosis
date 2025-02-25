@@ -1,29 +1,36 @@
+import logging
 import os
 import tempfile
 
 import click
 
 from solosis.utils.input_utils import process_metadata_file
-from solosis.utils.logging_utils import secho
+from solosis.utils.logging_utils import debug
 from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.state import logger
+
+FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
 @lsf_options
+@debug
 @click.command("cellbender")
 @click.option(
     "--metadata",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing metadata",
 )
-def cmd(metadata, mem, cpu, queue):
+def cmd(metadata, mem, cpu, queue, debug):
     """Eliminate technical artifacts from scRNA-seq"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     ctx = click.get_current_context()
-    secho(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
-    samples = process_metadata_file(metafile)
+    samples = process_metadata_file(metadata)
 
     valid_samples = []
     for sample in samples:
@@ -34,9 +41,8 @@ def cmd(metadata, mem, cpu, queue):
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
         ):
             if os.path.exists(output_dir):
-                secho(
-                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample",
-                    "warn",
+                logger.warning(
+                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample"
                 )
             else:
                 valid_samples.append(
@@ -47,13 +53,12 @@ def cmd(metadata, mem, cpu, queue):
                     }
                 )
         else:
-            secho(
-                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample",
-                "warn",
+            logger.warning(
+                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample"
             )
 
     if not valid_samples:
-        secho(f"No valid samples found. Exiting", "error")
+        logger.error(f"No valid samples found. Exiting")
         return
 
     script_path = os.path.abspath(
@@ -66,7 +71,7 @@ def cmd(metadata, mem, cpu, queue):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        secho(f"Temporary command file created: {tmpfile.name}", "info")
+        logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"

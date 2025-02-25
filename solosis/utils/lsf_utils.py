@@ -5,8 +5,7 @@ from pathlib import Path
 
 import click
 
-from solosis.utils.logging_utils import secho
-from solosis.utils.state import execution_uid
+from solosis.utils.state import execution_uid, logger
 
 
 def lsf_options(function):
@@ -46,20 +45,14 @@ def submit_lsf_job_array(
         group = os.environ.get("LSB_DEFAULT_USERGROUP")
 
     if not group.startswith("team"):
-        secho(
-            f"Error: Group '{group}' does not start with 'team'. Exiting.",
-            fg="red",
-            err=True,
-        )
-        sys.exit(1)
+        logger.error(f"Group '{group}' does not start with 'team'. Exiting.")
+        raise click.Abort()
 
     if not os.path.isfile(command_file) or os.stat(command_file).st_size == 0:
-        secho(
-            f"Error: Command file '{command_file}' does not exist or is empty.",
-            fg="red",
-            err=True,
+        logger.error(
+            f"Command file '{command_file}' does not exist or is empty. Exiting."
         )
-        return
+        raise click.Abort()
 
     with open(command_file, "r") as f:
         num_commands = sum(1 for _ in f)
@@ -96,6 +89,6 @@ eval "$COMMAND"
         process = subprocess.run(
             ["bsub"], input=lsf_script, text=True, capture_output=True, check=True
         )
-        secho(f"Job submitted successfully: {process.stdout.strip()}", "success")
+        logger.info(f"Job submitted successfully: {process.stdout.strip()}")
     except subprocess.CalledProcessError as e:
-        secho(f"Error submitting job: {e.stderr}", "error")
+        logger.error(f"Error submitting job: {e.stderr}")

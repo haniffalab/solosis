@@ -1,10 +1,7 @@
-import os
-import subprocess
-
 import click
 import pandas as pd
 
-from solosis.utils.logging_utils import secho
+from solosis.utils.state import logger
 
 
 def collect_samples(sample, samplefile):
@@ -22,9 +19,8 @@ def collect_samples(sample, samplefile):
                 else "\t" if samplefile.endswith(".tsv") else None
             )
             if sep is None:
-                secho(
-                    "Unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
+                logger.error(
+                    "Unsupported file format. Please provide a .csv or .tsv file"
                 )
                 return []
 
@@ -32,14 +28,14 @@ def collect_samples(sample, samplefile):
             if "sample_id" in df.columns:
                 samples.extend(df["sample_id"].dropna().astype(str).tolist())
             else:
-                secho("File must contain a 'sample_id' column", "error")
+                logger.error("File must contain a 'sample_id' column")
                 return []
         except Exception as e:
-            secho(f"Error reading sample file: {e}", "error")
+            logger.error(f"Error reading sample file: {e}")
             return []
 
     if not samples:
-        secho("No samples provided. Use --sample or --samplefile", "error")
+        logger.error("No samples provided. Use --sample or --samplefile")
         raise click.Abort()
 
     return samples
@@ -48,41 +44,5 @@ def collect_samples(sample, samplefile):
 def process_metadata_file(metadata):
     """Collects sample IDs from command-line input or a file."""
     samples = []
-
-    if metadata:
-        try:
-            sep = (
-                ","
-                if metadata.endswith(".csv")
-                else "\t" if metadata.endswith(".tsv") else None
-            )
-            if sep is None:
-                secho(
-                    "Unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return []
-
-            df = pd.read_csv(metadata, sep=sep)
-            if "sample_id" in df.columns:
-                samples.append(
-                    {
-                        "sample_id": df["sample_id"].dropna().astype(str).tolist(),
-                        "cellranger_dir": df["cellranger_dir"]
-                        .dropna()
-                        .astype(str)
-                        .tolist(),
-                    }
-                )
-            else:
-                secho("File must contain a 'sample_id' column", "error")
-                return []
-        except Exception as e:
-            secho(f"Error reading sample file: {e}", "error")
-            return []
-
-    if not samples:
-        secho("No samples provided. Use --metadata", "error")
-        raise click.Abort()
 
     return samples

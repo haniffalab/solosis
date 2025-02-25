@@ -1,11 +1,9 @@
 import getpass
 import os
 import subprocess
-from pathlib import Path
 
 import click
 
-from solosis.utils.logging_utils import secho
 from solosis.utils.state import logger
 
 
@@ -58,6 +56,12 @@ def irods_auth(timeout=5):
             logger.error(f"iRODS command failed with return code {result.returncode}")
             logger.info(f"Standard Output:\n{result.stdout}")
             logger.error(f"Standard Error:\n{result.stderr}")
+
+    except FileNotFoundError:
+        logger.error(
+            "iRODS commands not found. Ensure iRODS is installed and the module is loaded."
+        )
+        return False
 
     except Exception as e:
         # Assuming error is a timeout, indicating user in not authenticated.

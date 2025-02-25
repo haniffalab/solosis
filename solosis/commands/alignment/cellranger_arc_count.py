@@ -1,14 +1,18 @@
+import logging
 import os
-import subprocess
 import tempfile
 
 import click
 import pandas as pd
 
-from solosis.utils.logging_utils import secho
+from solosis.utils.logging_utils import debug
+from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.state import logger
 
 
-@click.command("cellranger-arc")
+@lsf_options
+@debug
+@click.command("cellranger-arc-count")
 @click.option(
     "--libraries", type=click.Path(exists=True), help="Path to a single libraries file"
 )
@@ -26,26 +30,22 @@ from solosis.utils.logging_utils import secho
 @click.option(
     "--version",
     type=str,
-    default="2.0.2",  # Set a default version for Cell Ranger ARC
+    default="2.0.2",
     help="Cell Ranger ARC version to use (e.g., '2.0.2')",
 )
-def cmd(libraries, librariesfile, create_bam, version):
-    """
-    Cell Ranger ARC aligns GEX & ATAC seq reads... \n
-    --------------------------------- \n
-    Cell Ranger ARC (2.0.2) Software suite designed for analysing & interpreting scRNA seq data, including multi-omics data.
-    """
-    ctx = click.get_current_context()
-    secho(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
-    )
+def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
+    """Single-cell multiomic data processing"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
 
-    secho(f"loading Cell Ranger ARC Count version {version}")
+    ctx = click.get_current_context()
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
+    )
+    logger.debug(f"Loading Cell Ranger ARC Count version {version}")
 
     libraries_paths = []
 
-    # Collect libraries file paths from the provided options
     if libraries:
         libraries_paths.append(libraries)
 
@@ -54,128 +54,87 @@ def cmd(libraries, librariesfile, create_bam, version):
             with open(librariesfile, "r") as f:
                 libraries_paths.extend([line.strip() for line in f if line.strip()])
         except Exception as e:
-            secho(
-                f"Error reading libraries file: {e}",
-                "error",
-            )
+            logger.error(f"Error reading libraries file: {e}")
             return
 
     if not libraries_paths:
-        secho(
+        logger.error(
             f"No libraries provided. Use --libraries or --librariesfile",
             "error",
         )
-        return
+        raise click.Abort()
 
     # A list of valid libraries (with ID), where the path and contents has been validated.
     valid_libraries = []
-
-    for lib_path in libraries_paths:
-        if not os.path.exists(lib_path):
-            secho(
-                f"Libraries file {lib_path} does not exist. Skipping this file",
-                "warn",
+    for library_path in libraries_paths:
+        if not os.path.exists(library_path):
+            logger.warning(
+                f"Libraries file {library_path} does not exist. Skipping this file"
             )
             continue
 
         try:
-            df = pd.read_csv(lib_path)
+            df = pd.read_csv(library_path)
             required_columns = {"fastqs", "sample", "library_type"}
 
             if not required_columns.issubset(df.columns):
-                secho(
-                    f"Libraries file {lib_path} is missing required columns: {', '.join(required_columns - set(df.columns))}",
-                    "error",
+                logger.warning(
+                    f"Libraries file {library_path} is missing required columns: {', '.join(required_columns - set(df.columns))}"
                 )
                 continue
 
             if not all(
                 df["library_type"].isin(["Chromatin Accessibility", "Gene Expression"])
             ):
-                secho(
-                    f"Libraries file {lib_path} contains invalid 'library_type' values. Must be 'Chromatin Accessibility' or 'Gene Expression'",
-                    "error",
+                logger.warning(
+                    f"Libraries file {library_path} contains invalid 'library_type' values. Must be 'Chromatin Accessibility' or 'Gene Expression'"
                 )
                 continue
 
             # Generate ID (name of output directory) by concatenating sorted 'sample' values
             sorted_samples = sorted(df["sample"].dropna().astype(str).tolist())
             library_id = "_".join(sorted_samples)
-
-            # Append the validated details
-            valid_libraries.append((lib_path, library_id))
-        except Exception as e:
-            secho(
-                f"Error validating libraries file {lib_path}: {e}",
-                "error",
+            output_dir = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), "cellranger_arc", library_id
             )
 
-    if not valid_libraries:
-        secho(
-            f"No valid libraries files found. Exiting",
-            "error",
-        )
-        return
+            # Append the validated details
+            valid_libraries.append(
+                {
+                    "id": library_id,
+                    "output_dir": output_dir,
+                    "libraries_path": library_path,
+                }
+            )
+        except Exception as e:
+            logger.error(f"Error validating libraries file {library_path}: {e}")
 
-    # Get the data directory from the environment variable
-    team_data_dir = os.getenv("TEAM_DATA_DIR")
-    if not team_data_dir:
-        secho(
-            f"TEAM_DATA_DIR environment variable is not set",
-            "error",
+    if not valid_libraries:
+        logger.error(f"No valid libraries files found. Exiting")
+        raise click.Abort()
+
+    cellranger_arc_count_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../bin/cellranger/cellranger_arc_count.sh",
         )
-        return
+    )
 
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        for lib_path, library_id in valid_libraries:
-            temp_file.write(f"{lib_path},{library_id}\n")
-        temp_file_path = temp_file.name
+        logger.info(f"Temporary command file created: {tmpfile.name}")
+        os.chmod(tmpfile.name, 0o660)
+        for library in valid_libraries:
+            command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem}"
+            tmpfile.write(command + "\n")
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    cellranger_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/cellranger-arc/submit.sh")
-    )
-
-    cmd = [
-        cellranger_submit_script,
-        temp_file_path,
-        version,
-    ]
-    if not create_bam:
-        cmd.append("--no-bam")
-
-    secho(
-        f"Executing command: {' '.join(cmd)}",
-        "action",
-    )
-
-    secho(
-        f"Starting Cell Ranger ARC for libraries listed in: {temp_file_path}...",
-        "progress",
-    )
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        secho(
-            f"Cell Ranger ARC submitted successfully:\n{result.stdout}",
-            "progress",
-        )
-    except subprocess.CalledProcessError as e:
-        secho(
-            f"Error during Cell Ranger ARC execution: {e.stderr}",
-            "warn",
-        )
-
-    secho(
-        f"Cell Ranger ARC submission complete. Run `bjobs -w` for progress.",
-        "success",
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
+        job_name="cellranger_arc_count_job_array",
+        cpu=cpu,
+        mem=mem,
+        queue=queue,
     )
 
 

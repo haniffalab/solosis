@@ -50,7 +50,7 @@ def setup_logging():
         os.makedirs(log_dir, exist_ok=True)
         os.environ["SOLOSIS_LOG_DIR"] = str(log_dir)
     except OSError as e:
-        secho(f"Failed to create log directory '{log_dir}': {e}", "error")
+        logger.error(f"Failed to create log directory '{log_dir}': {e}")
         raise click.Abort()
 
     execution_uid = str(uuid.uuid4())
@@ -85,24 +85,6 @@ def setup_logging():
     log_history(execution_uid, version)
 
     return logger, execution_uid, version
-
-
-def secho(message, type="info", bold=False):
-    """Log a message with a specific type and color."""
-    colors = {
-        "info": "blue",  # Info messages will be blue
-        "debug": "purple",  # Debug messages will be purple
-        "error": "red",  # Error messages will be red
-        "warn": "yellow",  # Warning messages will be yellow
-        "success": "green",  # Success messages will be green
-        "progress": "white",  # Progress messages will be white
-        "action": "cyan",  # Action messages will be cyan
-    }
-
-    color = colors.get(type, "blue")
-    click.echo(
-        click.style(f"{type.capitalize()}: ", fg=color, bold=bold) + f"{message}"
-    )
 
 
 class ColoredFormatter(logging.Formatter):
