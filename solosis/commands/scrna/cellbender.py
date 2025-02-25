@@ -10,6 +10,7 @@ from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
 from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
+RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
 @lsf_options
@@ -34,27 +35,31 @@ def cmd(metadata, mem, cpu, queue, debug):
 
     valid_samples = []
     for sample in samples:
-        fastq_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger")
+        sample_id = sample["sample_id"]
+        cellranger_dir = sample["cellranger_dir"]
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "cellbender")
 
-        if os.path.exists(fastq_dir) and any(
-            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
+        # Check if cellranger_dir exists and contains the required file
+        if os.path.exists(cellranger_dir) and os.path.isfile(
+            os.path.join(cellranger_dir, RAW_FEATURE_FILE)
         ):
-            if os.path.exists(output_dir):
+            if os.path.exists(output_dir) and os.path.isfile(
+                os.path.join(output_dir, "cb.h5")
+            ):
                 logger.warning(
-                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample"
+                    f"Cellbender output already exists for sample {sample} in {output_dir}. Skipping this sample"
                 )
             else:
                 valid_samples.append(
                     {
-                        "sample_id": sample,
+                        "sample_id": sample_id,
+                        "cellranger_dir": cellranger_dir,
                         "output_dir": output_dir,
-                        "fastq_dir": fastq_dir,
                     }
                 )
         else:
             logger.warning(
-                f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample"
+                f"Required file {RAW_FEATURE_FILE} not found in {cellranger_dir} for sample {sample}. Skipping this sample"
             )
 
     if not valid_samples:
@@ -74,7 +79,7 @@ def cmd(metadata, mem, cpu, queue, debug):
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(

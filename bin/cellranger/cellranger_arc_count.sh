@@ -1,23 +1,23 @@
 #!/bin/bash
-# cellranger_count.sh - Run Cell Ranger count for a given sample
+# cellranger_arc_count.sh - Run Cell Ranger ARC count for a given sample
 
 # Usage:
-#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]
+#   ./cellranger_arc_count.sh <sample_id> <output_dir> <libraries_path> <version> <cpu> <mem> [--no-bam]
 #
 # Parameters:
-#   <sample_id>   - Sample ID to process.
-#   <output_dir>  - Path to store Cell Ranger output.
-#   <fastq_dir>   - Path to FASTQ files.
-#   <version>     - Version of Cell Ranger to use (e.g., "7.2.0").
-#   <cpu>         - Number of CPU cores.
-#   <mem>         - Memory in MB.
-#   --no-bam      - Optional flag to disable BAM file generation.
+#   <sample_id>      - Sample ID to process (unique identifier for the sample).
+#   <output_dir>     - Path to store the Cell Ranger ARC output.
+#   <libraries_path> - Path to the libraries file (CSV or TSV format).
+#   <version>        - Version of Cell Ranger ARC to use (e.g., "2.0.2").
+#   <cpu>            - Number of CPU cores to allocate.
+#   <mem>            - Amount of memory in MB to allocate.
+#   --no-bam         - Optional flag to disable BAM file generation (saves memory and disk space).
 
 set -e  # Exit immediately if a command fails
 
-# Ensure at least 6 arguments are provided
+# Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <libraries_path> <version> <cpu> <mem> [--no-bam]" >&2
   exit 1
 fi
 
@@ -28,21 +28,21 @@ LIBRARIES_PATH="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
-BAM_FLAG=""
-REF="/software/cellgen/cellgeni/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"
+BAM_FLAG=""  # Default to generating BAM files
+REF="/software/cellgen/cellgeni/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"  # Reference genome
 
-# Handle optional --no-bam flag
+# Handle optional --no-bam flag (disables BAM file generation)
 if [ "$7" == "--no-bam" ]; then
   BAM_FLAG="--no-bam"
 fi
 
-# Load Cell Ranger ARC module
+# Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger-arc/"$VERSION"; then
-  echo "Error: Failed to load cellranger-arc version $VERSION" >&2
+  echo "Error: Failed to load Cell Ranger ARC version $VERSION" >&2
   exit 1
 fi
 
-# Ensure required directories exist
+# Ensure output directory exists and create it if not
 mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
 
@@ -61,4 +61,5 @@ cellranger-arc count \
     --localmem=$((MEM / 1000)) \
     $BAM_FLAG
 
+chmod -R g+w "$OUTPUT_DIR"
 echo "Cell Ranger ARC count completed for libraries file: $LIBRARIES_PATH"

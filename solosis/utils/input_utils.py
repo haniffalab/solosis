@@ -42,7 +42,51 @@ def collect_samples(sample, samplefile):
 
 
 def process_metadata_file(metadata):
-    """Collects sample IDs from command-line input or a file."""
+    """Collects samples from metadata file."""
     samples = []
+
+    if metadata:
+        try:
+            sep = (
+                ","
+                if metadata.endswith(".csv")
+                else "\t" if metadata.endswith(".tsv") else None
+            )
+            if sep is None:
+                logger.error(
+                    "Unsupported file format. Please provide a .csv or .tsv file"
+                )
+                return []
+
+            df = pd.read_csv(metadata, sep=sep)
+            required_columns = {"sample_id", "cellranger_dir"}
+            if not required_columns.issubset(df.columns):
+                logger.warning(
+                    f"Metadata file {metadata} is missing required columns: {', '.join(required_columns - set(df.columns))}"
+                )
+            else:
+                # Loop through each row and validate the presence of 'sample_id' and 'cellranger_dir'
+                for _, row in df.iterrows():
+                    sample_id = row.get("sample_id")
+                    cellranger_dir = row.get("cellranger_dir")
+
+                    # Check if both values are present and non-empty
+                    if sample_id and cellranger_dir:
+                        samples.append(
+                            {
+                                "sample_id": sample_id,
+                                "cellranger_dir": cellranger_dir,
+                            }
+                        )
+                    else:
+                        logger.warning(
+                            f"Invalid entry (missing sample_id or cellranger_dir): {row}"
+                        )
+        except Exception as e:
+            logger.error(f"Error reading metadata file {samples}: {e}")
+
+    if not samples:
+        logger.error("No samples provided. Use --sample or --samplefile")
+        raise click.Abort()
 
     return samples

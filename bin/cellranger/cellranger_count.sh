@@ -15,7 +15,7 @@
 
 set -e  # Exit immediately if a command fails
 
-# Ensure at least 6 arguments are provided
+# Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
   echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
   exit 1
@@ -28,21 +28,21 @@ FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
-BAM_FLAG=""
+BAM_FLAG=""  # Default to generating BAM files
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 
-# Handle optional --no-bam flag
+# Handle optional --no-bam flag (disables BAM file generation)
 if [ "$7" == "--no-bam" ]; then
   BAM_FLAG="--no-bam"
 fi
 
-# Load Cell Ranger module
+# Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
   echo "Failed to load Cell Ranger version $VERSION" >&2
   exit 1
 fi
 
-# Ensure required directories exist
+# Ensure output directory exists and create it if not
 mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
 
@@ -63,4 +63,5 @@ cellranger count \
     --localmem="$(($MEM / 1000))" \
     $BAM_FLAG
 
+chmod -R g+w "$OUTPUT_DIR"
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"

@@ -34,22 +34,14 @@ for MODULE in "${MODULES[@]}"; do
   fi
 done
 
-# Check required environment variables are set
-LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
-TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+# Setup Nextflow work directory
+mkdir -p "$TEAM_TMP_DIR/nxf"
+chmod -R g+w "$TEAM_TMP_DIR/nxf"
+export NXF_WORK="$TEAM_TMP_DIR/nxf"
 
-# Ensure necessary directories exist
-mkdir -p "$TEAM_DATA_DIR/samples"
-mkdir -p "$TEAM_DATA_DIR/tmp/fastq"
-mkdir -p "$TEAM_DATA_DIR/tmp/nxf"
-mkdir -p "$TEAM_LOGS_DIR"
-
-# Configure environment variables
-export NXF_WORK="$TEAM_DATA_DIR/tmp/nxf"
-
-# Create output directory and move to it
-OUTPUT_DIR="${TEAM_DATA_DIR}/tmp/fastq"
-mkdir -p "$OUTPUT_DIR"
+# Setup output directory
+mkdir -p "$TEAM_TMP_DIR/fastq"
+chmod -R g+w "$TEAM_TMP_DIR/fastq"
 cd "$OUTPUT_DIR"
 
 # Run Nextflow process with the sample file
@@ -57,7 +49,7 @@ echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
     --findmeta "$SAMPLE_FILE" \
     --cram2fastq \
-    --publish_dir "$OUTPUT_DIR" \
+    --publish_dir "$TEAM_TMP_DIR/fastq" \
     --resume
 
 # Read sample IDs from file and process each
@@ -84,4 +76,5 @@ while IFS= read -r SAMPLE; do
   # Move FASTQ files into the respective sample directory
   echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
   mv "${OUTPUT_DIR}/${SAMPLE}"* "$SAMPLE_DIR"/
+  chmod -R g+w "$SAMPLE_DIR"
 done < "$SAMPLE_FILE"
