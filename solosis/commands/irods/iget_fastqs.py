@@ -1,14 +1,12 @@
 import logging
 import os
-import subprocess
 import tempfile
-from datetime import datetime
 
 import click
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import debug, secho
+from solosis.utils.logging_utils import debug
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 

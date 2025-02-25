@@ -66,7 +66,7 @@ def cmd(sample, samplefile, debug):
             "CellRanger",
         ]
         table = tabulate(
-            data, headers, tablefmt="plain", numalign="left", stralign="left"
+            data, headers, tablefmt="pretty", numalign="left", stralign="left"
         )
         logger.info(f"Summary table... \n{table}")
 
