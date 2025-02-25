@@ -58,10 +58,7 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
             return
 
     if not libraries_paths:
-        logger.error(
-            f"No libraries provided. Use --libraries or --librariesfile",
-            "error",
-        )
+        logger.error(f"No libraries provided. Use --libraries or --librariesfile")
         raise click.Abort()
 
     # A list of valid libraries (with ID), where the path and contents has been validated.
