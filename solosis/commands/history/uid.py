@@ -1,69 +1,57 @@
 import csv
+import logging
 import os
 from pathlib import Path
 
 import click
 
-from solosis.utils.logging_utils import secho
+from solosis.utils.logging_utils import debug
+from solosis.utils.state import logger
 
 
+@debug
 @click.command("uid")
 @click.argument("uid")
-def cmd(uid):
+def cmd(uid, debug):
     """Show detailed information about a specific execution using UID."""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     ctx = click.get_current_context()
-    secho(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
-    secho(f"Fetching details for UID: {uid}", "info")
 
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
-
     if not history_file.exists():
-        secho("No history found.", type="error")
-        return
+        logger.error(f"No history found")
+        raise click.Abort()
 
-    # Search for the UID efficiently using the CSV module
-    matching_entries = []
+    matching_entry = None
     with open(history_file, "r") as f:
         reader = csv.reader(f)
-        matching_entries = [
-            entry for entry in reader if len(entry) >= 3 and entry[2] == uid
-        ]
+        for index, entry in enumerate(reader):
+            if len(entry) >= 4 and entry[3] == uid:  # Check the 4th column (index 3)
+                matching_entry = entry
+                break
 
-    if not matching_entries:
-        secho(f"No entries found for UID: {uid}", type="error")
-        return
+    if not matching_entry:
+        logger.error(f"No log entry found for UID: {uid}")
+        raise click.Abort()
 
-    # Prepare and print the details for each entry
-    for entry in matching_entries:
-        timestamp, user, log_uid, command = entry[0], entry[1], entry[2], entry[3]
+    if len(matching_entry) < 5:
+        logger.error("Malformed log entry for UID: %s", uid)
+        raise click.Abort()
 
-        # Output entry details
-        secho(f" ", "info")
-        secho(
-            f"{click.style('Timestamp', bold=True, underline=True)}: {timestamp}",
-            "info",
-        )
-        secho(f"{click.style('User', bold=True, underline=True)}: {user}", "info")
-        secho(f"{click.style('UID', bold=True, underline=True)}: {log_uid}", "info")
-        secho(f"{click.style('Command', bold=True, underline=True)}: {command}", "info")
-        secho(f" ", "info")
-
-        # Location of the log directory for this UID
-        log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / log_uid
-        secho(
-            f"{click.style('Log directory', bold=True, underline=True)}: {log_dir}",
-            "info",
-        )
-        if log_dir.exists():
-            # Listing contents of the log directory
-            secho(
-                f"{click.style('Contents of log directory', bold=True, underline=True)}:",
-                "info",
-            )
-            for item in log_dir.iterdir():
-                secho(f"  {item}", "info")
-        else:
-            secho(f"Log directory {log_dir} does not exist.", "error")
+    timestamp, user, version, uid, command = matching_entry
+    log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / uid
+    logger.info(f"{click.style('Execution UID', bold=True)}: {uid}")
+    logger.info(f"{click.style('Timestamp', bold=True)}: {timestamp}")
+    logger.info(f"{click.style('User', bold=True)}: {user}")
+    logger.info(f"{click.style('Command', bold=True)}: {command}")
+    logger.info(f"{click.style('Logs', bold=True)}: {log_dir}")
+    if log_dir.exists():
+        for item in log_dir.iterdir():
+            logger.info(f"├── {item}")
+    else:
+        logger.warning(f"Log directory {log_dir} does not exist.")

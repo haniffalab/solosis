@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 
 from solosis.utils.logging_utils import secho
+from solosis.utils.state import execution_uid, logger, version
 
 
 def validate_env():
@@ -32,7 +33,7 @@ def validate_env():
         os.makedirs(tmp_dir, exist_ok=True)
         os.environ["TEAM_TMP_DIR"] = tmp_dir
     except OSError as e:
-        secho(f"Failed to create sample data directory '{samples_dir}': {e}", "error")
+        logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
         raise click.Abort()
 
 

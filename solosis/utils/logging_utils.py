@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 import click
+from colorama import Fore, Style
 
 try:
     import tomllib
@@ -27,6 +28,11 @@ def get_version():
         return "unknown"
 
 
+def debug(function):
+    function = click.option("--debug", is_flag=True, help="Enable debug mode")(function)
+    return function
+
+
 def log_history(uid: str, version: str):
     """Append command execution details to the history file."""
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
@@ -34,7 +40,7 @@ def log_history(uid: str, version: str):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     command = " ".join(sys.argv)
     with open(history_file, "a") as f:
-        f.write(f"{timestamp},{user},{uid},{command},{version}\n")
+        f.write(f"{timestamp},{user},{version},{uid},{command}\n")
 
 
 def setup_logging():
@@ -70,6 +76,11 @@ def setup_logging():
         logger.addHandler(file_handler)
         logger.addHandler(error_handler)
 
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(ColoredFormatter("%(levelname)s: %(message)s"))
+    console_handler.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
+
     version = get_version()
     log_history(execution_uid, version)
 
@@ -92,3 +103,21 @@ def secho(message, type="info", bold=False):
     click.echo(
         click.style(f"{type.capitalize()}: ", fg=color, bold=bold) + f"{message}"
     )
+
+
+class ColoredFormatter(logging.Formatter):
+    """Custom formatter to add colors to log level names."""
+
+    LEVEL_COLORS = {
+        "DEBUG": Fore.MAGENTA,
+        "INFO": Fore.BLUE,
+        "WARNING": Fore.YELLOW,
+        "ERROR": Fore.RED,
+        "CRITICAL": Fore.RED + Style.BRIGHT,
+    }
+
+    def format(self, record):
+        levelname = record.levelname
+        color = self.LEVEL_COLORS.get(levelname, Fore.WHITE)
+        record.levelname = f"{color}{levelname}{Style.RESET_ALL}"
+        return super().format(record)
