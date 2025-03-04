@@ -37,7 +37,6 @@ def cmd(ctx, notebook, job_name, **kwargs):
     job_name = _assign_job_name(job_name, ctx)
     # To do: Install jupyter in base solosis conda env
     command_to_exec = f"source ~/.bashrc && conda activate /software/cellgen/team298/shared/envs/hl-conda/hl_minimal_v1.0.0 && jupyter nbconvert --to notebook --execute {notebook}"
-    print(command_to_exec)
     echo_message(f"Job name :{job_name} submitted to queue: {kwargs.get('queue')}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 
