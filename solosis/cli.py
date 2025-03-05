@@ -3,6 +3,7 @@ import uuid
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
+from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.filesystem import disk_usage, file_count
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.ncl_bsu import migrate
@@ -38,6 +39,12 @@ def cli(ctx):
     if not execution_id:
         execution_id = str(uuid.uuid4())
         ctx.obj = {"execution_id": execution_id, "version": VERSION}
+
+
+@cli.group()
+def jobrunner():
+    """Farm related commands"""
+    pass
 
 
 # Alignment subgroup
@@ -92,6 +99,10 @@ sc_rna.add_command(scanpy.cmd, name="scanpy")
 sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
 sc_rna.add_command(qc_basic.cmd, name="qc-basic")
 
+
+# farm jobs
+jobrunner.add_command(single_job.cmd, name="submit_job")
+jobrunner.add_command(run_notebook.cmd, name="run_notebook")
 
 if __name__ == "__main__":
     cli()
