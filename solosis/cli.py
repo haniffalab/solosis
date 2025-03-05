@@ -7,7 +7,7 @@ from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.filesystem import disk_usage, file_count
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.ncl_bsu import migrate
-from solosis.commands.sc_rna import cellbender, merge_h5ad, qc_basic, scanpy
+from solosis.commands.sc_rna import cellbender, merge_h5ad, scanpy
 from solosis.utils import validate_environment
 
 VERSION = "0.3.0"
@@ -97,7 +97,6 @@ def sc_rna():
 sc_rna.add_command(cellbender.cmd, name="cellbender")
 sc_rna.add_command(scanpy.cmd, name="scanpy")
 sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
-sc_rna.add_command(qc_basic.cmd, name="qc-basic")
 
 
 # farm jobs
