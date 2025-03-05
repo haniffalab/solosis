@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import os
 import subprocess
+
 import click
-from solosis.utils import irods_validation, log_command, echo_message
+
+from solosis.utils import echo_message, irods_validation, log_command
 
 
 @click.command("scanpy")
@@ -29,7 +31,7 @@ def cmd(ctx, samplefile, sample_basedir):
         "info",
     )
 
-     # Path to the script
+    # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     shell_script = os.path.abspath(
         os.path.join(script_dir, "../../../bin/scrna/scanpy/submit.sh")
@@ -37,7 +39,10 @@ def cmd(ctx, samplefile, sample_basedir):
     env = os.environ.copy()
     env["solosis_dir"] = script_dir
     result = subprocess.run(
-        [shell_script, sample_basedir, samplefile], env = env, capture_output=True, text=True
+        [shell_script, sample_basedir, samplefile],
+        env=env,
+        capture_output=True,
+        text=True,
     )
     echo_message(result.stdout)
     echo_message(result.stderr)
