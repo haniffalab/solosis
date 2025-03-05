@@ -1,17 +1,33 @@
 import os
 import subprocess
+
 import click
+
+from solosis.utils import (
+    _single_command_bsub,
+    bash_submit,
+    echo_lsf_submission_message,
+    echo_message,
+    log_command,
+)
+
 from .. import helpers
-from solosis.utils import echo_lsf_submission_message, echo_message, log_command, bash_submit, _single_command_bsub
 
 # Script directory in the solosis package
-script_dir = os.path.dirname(os.path.abspath(__file__))  
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 @click.command("command")
 @helpers.job_resources
 @click.argument("command_to_exec", nargs=-1, type=str)
-@click.option("-j", "--job_name", required=False, type=str, help="Name of the job", default="default")  # random val to be implemented (from import random)
+@click.option(
+    "-j",
+    "--job_name",
+    required=False,
+    type=str,
+    help="Name of the job",
+    default="default",
+)  # random val to be implemented (from import random)
 @click.pass_context
 def cmd(ctx, command_to_exec, job_name, **kwargs):
     """
@@ -28,8 +44,6 @@ def cmd(ctx, command_to_exec, job_name, **kwargs):
         job_name = f"{job_name}_{ctx.obj['execution_id']}"
     echo_lsf_submission_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
-    
-
 
 
 if __name__ == "__main__":

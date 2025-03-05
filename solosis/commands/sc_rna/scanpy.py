@@ -5,16 +5,18 @@ import subprocess
 import click
 
 
-@click.command("merge-h5ad")
+@click.command("scanpy")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
-    "--merged_filename", required=True, help="Output file name: Eg. merged.h5ad"
+    "--sample_basedir",
+    required=False,
+    default="/lustre/scratch126/cellgen/team298/sample_data/",
+    help="sample database folder",
 )
-def cmd(samplefile, merged_filename, **kwargs):
+def cmd(samplefile, sample_basedir):
     """
-    Merging multiple h5ads objects...
-    ---------------------------------
-    Please run `rna scanpy --samplefile ...` command first.
+    Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook ... \n
+    ----------------------
 
     Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
     Input file should have 3 mandatory columns:
@@ -23,10 +25,10 @@ def cmd(samplefile, merged_filename, **kwargs):
     """
     shell_script = os.path.join(
         os.getcwd(),
-        "bin/scrna/merge-h5ad/submit.sh",
+        "bin/scrna/scanpy/submit.sh",
     )
     result = subprocess.run(
-        [shell_script, samplefile, merged_filename], capture_output=True, text=True
+        [shell_script, sample_basedir, samplefile], capture_output=True, text=True
     )
     click.echo(result.stdout)
     click.echo(result.stderr)

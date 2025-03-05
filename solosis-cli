@@ -1,4 +1,4 @@
-#!/software/cellgen/team298/shared/envs/solosis-env/bin/python
+#!/software/cellgen/team298/shared/envs/solosis/bin/python
 
 from solosis.cli import cli
 

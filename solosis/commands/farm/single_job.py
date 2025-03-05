@@ -1,9 +1,11 @@
 import os
 import subprocess
+
 import click
-from .. import helpers
+
 from solosis.utils import echo_lsf_submission_message, echo_message, log_command
 
+from .. import helpers
 
 
 ## Functions supporting farm submission
@@ -35,11 +37,11 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     codebase = os.path.join(script_dir, "../../../bin/")
     job_runner = os.path.abspath(
         os.path.join(script_dir, "../../../bin/farm/single_job.sh")
-        )
+    )
     if len(command_to_exec) == 0:
         echo_message("No command to execute", type="error")
         return
-    
+
     command_to_exec = " ".join(command_to_exec)
     bash_submit(
         job_runner,
@@ -52,12 +54,17 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     )
 
 
-
-
 @click.command("command")
 @helpers.job_resources
 @click.argument("command_to_exec", nargs=-1, type=str)
-@click.option("-j", "--job_name", required=False, type=str, help="Name of the job", default="default")  # random val to be implemented (from import random)
+@click.option(
+    "-j",
+    "--job_name",
+    required=False,
+    type=str,
+    help="Name of the job",
+    default="default",
+)  # random val to be implemented (from import random)
 @click.pass_context
 def cmd(ctx, command_to_exec, job_name, **kwargs):
     """
@@ -74,7 +81,6 @@ def cmd(ctx, command_to_exec, job_name, **kwargs):
         job_name = f"{job_name}_{ctx.obj['execution_id']}"
     echo_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
-    
 
 
 if __name__ == "__main__":

@@ -43,25 +43,25 @@ for MODULE in "${MODULES[@]}"; do
   fi
 done
 
-# Configure paths and environment variables
-export NXF_WORK="/lustre/scratch126/cellgen/team298/data/tmp"
-export LSB_DEFAULT_USERGROUP="team298"
-export PATH="/software/singularity/v3.10.0/bin:$PATH"
+# Check environment variables are set
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
+TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
-# Configure paths
-TEAM_SAMPLE_DATA_DIR="${TEAM_SAMPLE_DATA_DIR:?Environment variable TEAM_SAMPLE_DATA_DIR is not set. Please export it before running this script.}"
-
-# Ensure logs directory exists
-TEAM_LOGS_DIR="$HOME/logs"
+# Ensure directories exists
+mkdir -p "$TEAM_DATA_DIR/samples"
+mkdir -p "$TEAM_DATA_DIR/tmp/fastq"
+mkdir -p "$TEAM_DATA_DIR/tmp/nxf"
 mkdir -p "$TEAM_LOGS_DIR"
 
-# Define the output directory for Nextflow
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/fastq"
+# Configure environment variables
+export NXF_WORK="$TEAM_DATA_DIR/tmp/nxf"
 
-# Create output directory if it does not exist
+# Create output directory and move to it
+OUTPUT_DIR="${TEAM_DATA_DIR}/tmp/fastq"
 mkdir -p "$OUTPUT_DIR"
-
 cd "$OUTPUT_DIR"
+
 # Run Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $TMP_SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
@@ -72,7 +72,7 @@ nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
 
 # Loop through each sample and move the FASTQ files to their respective directories
 for SAMPLE in "${SAMPLES[@]}"; do
-  SAMPLE_DIR="${TEAM_SAMPLE_DATA_DIR}/${SAMPLE}/fastq"
+  SAMPLE_DIR="${TEAM_DATA_DIR}/samples/${SAMPLE}/fastq"
   
   # Create the sample directory if it does not exist
   mkdir -p "$SAMPLE_DIR"

@@ -31,16 +31,19 @@ if ! module load cellgen/star; then
   exit 1
 fi
 
-# Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
-TEAM_LOGS_DIR="$HOME/logs"
-CPU=16
-MEM=64000
-QUEUE="normal"
-GROUP="team298"
+# Configure paths
+LSB_DEFAULT_USERGROUP="${LSB_DEFAULT_USERGROUP:?Environment variable LSB_DEFAULT_USERGROUP is not set. Please export it before running this script.}"
+TEAM_DATA_DIR="${TEAM_DATA_DIR:?Environment variable TEAM_DATA_DIR is not set. Please export it before running this script.}"
+TEAM_LOGS_DIR="${TEAM_LOGS_DIR:?Environment variable TEAM_LOGS_DIR is not set. Please export it before running this script.}"
 
-# Ensure logs directory exists
+# Ensure directories exists
+mkdir -p "$TEAM_DATA_DIR/samples"
 mkdir -p "$TEAM_LOGS_DIR"
+
+# Configure job parameters
+CPU=16
+MEM=70000
+QUEUE="normal"
 
 # Convert comma-separated sample IDs into an array
 IFS=',' read -r -a SAMPLES <<< "$SAMPLE_IDS"
@@ -54,7 +57,7 @@ bsub -J "starsolo_array[1-$NUM_SAMPLES]" <<EOF
 #BSUB -n $CPU                                    # Number of CPU cores
 #BSUB -M $MEM                                    # Memory limit in MB
 #BSUB -R "span[hosts=1] select[mem>$MEM] rusage[mem=$MEM]" # Resource requirements
-#BSUB -G $GROUP                                  # Group for accounting
+#BSUB -G $LSB_DEFAULT_USERGROUP                                  # Group for accounting
 #BSUB -q $QUEUE   
 
 # Determine the sample for the current task
@@ -62,8 +65,8 @@ SAMPLE_INDEX=\$((LSB_JOBINDEX - 1))
 SAMPLE=${SAMPLES[$SAMPLE_INDEX]}
 
 # Define paths for the current sample
-FASTQ_PATH="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/fastq"
-OUTPUT_DIR="${TEAM_SAMPLE_DATA_DIR}/\$SAMPLE/starsolo"
+FASTQ_PATH="${TEAM_DATA_DIR}/samples/\$SAMPLE/fastq"
+OUTPUT_DIR="${TEAM_DATA_DIR}/samples/\$SAMPLE/starsolo"
 
 # Create output directory if it does not exist
 mkdir -p "\$OUTPUT_DIR"

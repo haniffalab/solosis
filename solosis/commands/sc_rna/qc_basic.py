@@ -1,36 +1,45 @@
 import os
 import subprocess
+import sys
 
 import click
 import pandas as pd
 
-from solosis.utils import echo_message
+from solosis.helpers.qc import run_qc
+from solosis.utils import echo_message, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@click.command("starsolo")
+@click.command("qc-basic")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-def cmd(sample, samplefile):
+@click.option(
+    "--create-bam",
+    is_flag=True,
+    default=False,
+    help="Generate BAM files for each sample",
+)
+@click.option(
+    "--version",
+    type=str,
+    default="7.2.0",  # Set a default version
+    help="Cell Ranger version to use (e.g., '7.2.0')",
+)
+@click.pass_context
+def cmd(ctx, sample, samplefile, create_bam, version):
     """
-    STARsolo aligns single-cell RNA sequencing  reads...\n
-    --------------------------------- \n
-    STARsolo (2.7.11b) Aligner processes scRNA seq data to generate
-    GEX matrices & identify cell-specific transcripts.
-
+    qc-basic
     """
-    # Print a clear introductory message
-    ctx = click.get_current_context()
+    log_command(ctx)
     echo_message(
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
-    echo_message(f"loading starsolo")
 
     samples = []
 
@@ -96,18 +105,19 @@ def cmd(sample, samplefile):
 
     valid_samples = []
     for sample in samples:
-        fastq_path = os.path.join(samples_dir, sample, "fastq")
+        cr_path = os.path.join(samples_dir, sample, "cellranger")
 
-        # Check if FASTQ files exist in the directory
-        if os.path.exists(fastq_path) and any(
-            f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_path)
-        ):
-            valid_samples.append(sample)
-        else:
-            echo_message(
-                f"no FASTQ files found for sample {sample} in {fastq_path}. Skipping this sample",
-                "warn",
-            )
+        # Check for "filtered_feature_bc_matrix.h5" files
+        if os.path.exists(cr_path):
+            for subfolder in os.listdir(cr_path):
+                subfolder_path = os.path.join(cr_path, subfolder)
+                if os.path.isdir(subfolder_path):
+                    h5_file_path = os.path.join(
+                        subfolder_path, "filtered_feature_bc_matrix.h5"
+                    )
+                    if os.path.exists(h5_file_path):
+                        valid_samples.append(sample)
+                        break
 
     if not valid_samples:
         echo_message(
@@ -119,49 +129,16 @@ def cmd(sample, samplefile):
     # Join all valid sample IDs into a single string, separated by commas
     sample_ids = ",".join(valid_samples)
 
-    # Path to the Cell Ranger submission script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    starsolo_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/alignment/starsolo/submit.sh")
-    )
-
-    # Construct the command with optional BAM flag
-    cmd = [starsolo_submit_script, sample_ids]  # Pass version to the submit script
-
-    # Print the command being executed for debugging
     echo_message(
-        f"executing command: {' '.join(cmd)}",
-        "action",
-    )
-
-    # Execute the command for all valid samples
-    echo_message(
-        f"starting starsolo for samples: {sample_ids}...",
+        f"starting qc for samples: {sample_ids}...",
         "progress",
     )
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        echo_message(
-            f"starsolo submitted successfully:\n{result.stdout}",
-            "progress",
-        )
-    except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        echo_message(
-            f"Error during starsolo execution: {e.stderr}",
-            "warn",
-        )
 
-    echo_message(
-        f"starsolo submission complete. run `bjobs -w`  for progress.",
-        "success",
-    )
+    success = run_qc(samples)
+    if success:
+        echo_message("success")
+    else:
+        echo_message("error", "error")
 
 
 if __name__ == "__main__":

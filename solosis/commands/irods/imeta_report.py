@@ -10,30 +10,16 @@ from solosis.utils import echo_lsf_submission_message, echo_message, irods_valid
 
 
 # change to pull-cellranger
-@click.command("iget-cellranger")
+@click.command("imeta-report")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-@click.option(
-    "--retainbam",
-    default=False,
-    is_flag=True,
-    required=False,
-    help="Include the BAM file in the download. By default, it is excluded.",
-)
-@click.option(
-    "--overwrite",
-    default=False,
-    is_flag=True,
-    required=False,
-    help="Overwrite existing output directories",
-)
-def cmd(sample, samplefile, retainbam, overwrite):
+def cmd(sample, samplefile):
     """
-    Downloads cellranger outputs from iRODS...
+    Generates report of data available on iRODS
     """
     ctx = click.get_current_context()
     echo_message(
@@ -85,24 +71,23 @@ def cmd(sample, samplefile, retainbam, overwrite):
     if not samples:
         echo_message(
             f"no samples provided. Use `--sample` or `--samplefile`",
-            f"No samples provided. Use --sample or --samplefile options",
             "error",
         )
         return
 
     # Get the sample data directory from the environment variable
-    team_data_dir = os.getenv("TEAM_DATA_DIR")
-    if not team_data_dir:
+    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
+
+    if not team_sample_data_dir:
         echo_message(
-            f"TEAM_DATA_DIR environment variable is not set",
+            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    samples_dir = os.path.join(team_data_dir, "samples")
-    if not os.path.isdir(samples_dir):
+    if not os.path.isdir(team_sample_data_dir):
         echo_message(
-            f"sample data directory '{samples_dir}' does not exist",
+            f"Sample data directory '{team_sample_data_dir}' does not exist",
             "error",
         )
         return
@@ -111,36 +96,16 @@ def cmd(sample, samplefile, retainbam, overwrite):
     samples_to_download = []
     for sample in samples:
         # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(samples_dir, sample, "cellranger")
+        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
         # Check if output exists
         if os.path.exists(cellranger_path):
-            if overwrite:
-                echo_message(
-                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                    "warn",
-                )
-                try:
-                    # Remove the directory and its contents
-                    # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    echo_message(
-                        f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
-                        "info",
-                    )
-                except subprocess.CalledProcessError as e:
-                    echo_message(
-                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
-                        "error",
-                    )
-                    return
-                samples_to_download.append(sample)
-            else:
-                echo_message(
-                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                    "warn",
-                )
-        else:
             samples_to_download.append(sample)
+        else:
+            echo_message(
+                f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
+                "warn",
+            )
 
     # Confirm samples to download
     if samples_to_download:
@@ -163,13 +128,13 @@ def cmd(sample, samplefile, retainbam, overwrite):
 
     # Path to the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
+    imeta_report_script = os.path.abspath(
+        os.path.join(script_dir, "../../../bin/irods/imeta-report/submit.sh")
     )
 
-    # Construct the command with optional BAM flag
+    # Construct the command
     cmd = [
-        pull_cellranger_script,
+        imeta_report_script,
         sample_ids,
     ]
 

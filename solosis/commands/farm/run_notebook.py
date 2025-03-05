@@ -1,12 +1,23 @@
 import os
 import subprocess
+
 import click
+
+from solosis.utils import (
+    _single_command_bsub,
+    bash_submit,
+    echo_lsf_submission_message,
+    echo_message,
+    log_command,
+)
+
 from .. import helpers
-from solosis.utils import echo_lsf_submission_message, echo_message, log_command, bash_submit, _single_command_bsub
 
 # Script directory in the solosis package
-script_dir = os.path.dirname(os.path.abspath(__file__))  
+script_dir = os.path.dirname(os.path.abspath(__file__))
 codebase = os.path.join(script_dir, "../../../bin/")
+
+
 def _assign_job_name(job_name, ctx):
     """
     Assign a job name to the job.
@@ -24,11 +35,14 @@ def _assign_job_name(job_name, ctx):
     "-n", "--notebook", required=True, type=str, help="Path to the notebook to run"
 )
 @click.option(
-    "-j", "--job_name", required=False, type=str, help="Name of the job", default="default"
-    )  # random val to be implemented (from import random)
-
+    "-j",
+    "--job_name",
+    required=False,
+    type=str,
+    help="Name of the job",
+    default="default",
+)  # random val to be implemented (from import random)
 @click.pass_context
-
 def cmd(ctx, notebook, job_name, **kwargs):
     """
     Run a jupyter notebook on the farm.
@@ -39,5 +53,3 @@ def cmd(ctx, notebook, job_name, **kwargs):
     command_to_exec = f"source ~/.bashrc && conda activate /software/cellgen/team298/shared/envs/hl-conda/hl_minimal_v1.0.0 && jupyter nbconvert --to notebook --execute {notebook}"
     echo_message(f"Job name :{job_name} submitted to queue: {kwargs.get('queue')}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
-
-

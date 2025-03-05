@@ -10,10 +10,10 @@ from solosis.utils import echo_message
 # @click.option("--workspace", type=str, required=True, help="Name of the workspace to check disk usage.")
 def cmd():
     """
-    Check disk usage for a specified workspace.
+    Check disk usage for Team298 workspaces.
 
-    This command retrieves the disk usage for a given workspace directory
-    across NFS, Lustre, or warehouse storage systems.
+    This command retrieves the disk usage for Team298 workspaces
+    including NFS, Lustre, Warehouse & `/archive/team298` irods storage systems.
     """
     ctx = click.get_current_context()
     echo_message(
@@ -38,7 +38,7 @@ def cmd():
     # Path to the Cell Ranger submission script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     diskusage_submit_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/utilities/disk-usage/submit.sh")
+        os.path.join(script_dir, "../../../bin/filesystem/disk-usage/submit.sh")
     )
     # Construct the command with optional BAM flag
     cmd = [diskusage_submit_script]

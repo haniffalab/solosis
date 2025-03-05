@@ -14,5 +14,5 @@ def job_resources(function):
     function = click.option("--queue", default="normal", type=str, help="queue name")(
         function
     )
-    
+
     return function

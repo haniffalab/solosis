@@ -1,8 +1,10 @@
 import csv
 import os
 import re
-from datetime import datetime
 import subprocess
+import sys
+from datetime import datetime
+
 import click
 
 
@@ -107,8 +109,6 @@ def echo_lsf_submission_message(job_stdout):
 
 
 ## Functions supporting farm submission
-
-## Functions supporting farm submission
 def bash_submit(job_runner: str, **kwargs) -> None:
     """
     Runs a command. Command can be a bash command (du -hs ) or a script (test.sh)
@@ -135,15 +135,13 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     # Script directory in the solosis package
     script_dir = os.path.dirname(os.path.abspath(__file__))
     print(script_dir)
-    #codebase = os.path.join(script_dir, "..", "..", "..", "bin")
-    job_runner = os.path.abspath(
-        os.path.join(script_dir, "../bin/farm/single_job.sh")
-        )
+    # codebase = os.path.join(script_dir, "..", "..", "..", "bin")
+    job_runner = os.path.abspath(os.path.join(script_dir, "../bin/farm/single_job.sh"))
     if len(command_to_exec) == 0:
         echo_message("No command to execute", type="error")
         return
-    
-    #command_to_exec = " ".join(command_to_exec)
+
+    # command_to_exec = " ".join(command_to_exec)
     bash_submit(
         job_runner,
         command_to_exec=command_to_exec,
@@ -155,3 +153,51 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     )
 
 
+def irods_validation():
+    """Run a command and handle specific output conditions."""
+    command = [
+        "iget",
+        "/seq/illumina/runs/48/48297/cellranger/cellranger720_count_48297_58_rBCN14591738_GRCh38-2020-A/web_summary.html",
+    ]
+
+    try:
+        # Run the command and capture stdout and stderr
+        result = subprocess.run(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Check for the specific error in stderr
+        if (
+            "CAT_INVALID_AUTHENTICATION" in result.stderr
+            or "-827000 CAT_INVALID_USER" in result.stderr
+        ):
+            echo_message(
+                "run `iinit` before re-running this solosis command.",
+                "error",
+            )
+            sys.exit(1)  # Exit with error status 1
+
+        # If no error, command executed successfully
+        echo_message("Command executed successfully.", "success")
+
+    except FileNotFoundError:
+        echo_message(
+            "iRODS not loaded. please run `module load cellgen/irods` before re-running this solosis command.",
+            "error",
+        )
+        sys.exit(1)
+
+
+def validate_environment(required_vars):
+    """
+    Validates that all required environment variables are set.
+    :param required_vars: List of required environment variable names.
+    :raises click.Abort: If any required variable is not set.
+    """
+    for var in required_vars:
+        if not os.getenv(var):
+            echo_message(
+                f"Environment variable '{var}' is not set. Please export it before running this tool.",
+                "error",
+            )
+            raise click.Abort()

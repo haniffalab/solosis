@@ -2,23 +2,16 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 
 import click
 import pandas as pd
 
-from solosis.utils import log_command
+from solosis.utils import irods_validation, log_command
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 from solosis.utils import echo_message
-
-
-def spinner():
-    """Generator for spinner animation in the terminal."""
-    spinner_frames = ["|", "/", "-", "\\"]
-    while True:
-        for frame in spinner_frames:
-            yield frame
 
 
 @click.command("iget-fastqs")
@@ -31,7 +24,7 @@ def spinner():
 @click.pass_context
 def cmd(ctx, sample, samplefile):
     """
-    Downloading fastqs from iRODS...
+    Downloads fastqs from iRODS...
 
     Utilising NF-irods-to-fastq pipeline developed by Cellgeni.
     Pulled directly from Github repo- up-to-date.
@@ -41,6 +34,9 @@ def cmd(ctx, sample, samplefile):
         f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
         "info",
     )
+
+    # Call the function
+    irods_validation()
 
     samples = []
 
@@ -82,28 +78,28 @@ def cmd(ctx, sample, samplefile):
 
     if not samples:
         echo_message(
-            f"no samples provided. Use --sample or --samplefile",
+            f"no samples provided. Use `--sample` or `--samplefile`",
             "error",
         )
         echo_message(
-            f"try using solosis-cli pull-fastqs --help",
+            f"try using `solosis-cli irods iget-fastqs --help`",
             "info",
         )
         return
 
     # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
+    team_data_dir = os.getenv("TEAM_DATA_DIR")
+    if not team_data_dir:
         echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
+            f"TEAM_DATA_DIR environment variable is not set",
             "error",
         )
         return
 
-    if not os.path.isdir(team_sample_data_dir):
+    samples_dir = os.path.join(team_data_dir, "samples")
+    if not os.path.isdir(samples_dir):
         echo_message(
-            f"sample data directory '{team_sample_data_dir}' does not exist",
+            f"sample data directory '{samples_dir}' does not exist",
             "error",
         )
         return
@@ -112,7 +108,7 @@ def cmd(ctx, sample, samplefile):
     samples_to_download = []
     for sample in samples:
         # Path where FASTQ files are expected for each sample
-        fastq_path = os.path.join(team_sample_data_dir, sample, "fastq")
+        fastq_path = os.path.join(samples_dir, sample, "fastq")
 
         # Check if FASTQ files exist in the directory for the sample
         if os.path.exists(fastq_path) and any(
@@ -159,51 +155,39 @@ def cmd(ctx, sample, samplefile):
         "progress",
     )
 
-    # Create the spinner generator
-    spin = spinner()
-
     # Execute the command with an active spinner
-
     echo_message(
         f"starting process for samples: {sample_ids}...",
         "progress",
     )
-    try:
-        with subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        ) as process:
-            # While the command runs, show the spinner animation
-            while True:
-                # Check if the process has finished
-                retcode = process.poll()
-                if retcode is not None:  # Process has finished
-                    sys.stdout.write(
-                        "\r"
-                    )  # Only move the cursor to the beginning of the line
-                    sys.stdout.flush()  # Ensure the change is immediately shown
-                    break
-                sys.stdout.write("\r" + next(spin))  # Display the spinner
-                sys.stdout.flush()  # Force output to the terminal
-                time.sleep(0.1)  # Delay between spinner updates
 
-            # Capture the output
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                echo_message(
-                    f"error during execution:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}",
-                    "warn",
-                )
-            else:
-                echo_message(
-                    f"process completed successfully:\n{stdout}",
-                    "success",
-                )
-    except subprocess.CalledProcessError as e:
-        # Log the stderr and return code
-        echo_message(
-            f"error during execution test: {e.stdout}\n{e.stderr}",
-            "warn",
+    # Execute the command and stream the output
+    try:
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
         )
+        # Process stdout in real-time
+        for line in process.stdout:
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "progress")
+
+        # Process stderr in real-time
+        for line in process.stderr:
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            echo_message(f"[{timestamp}] {line.strip()}", "warn")
+
+        process.wait()
+        if process.returncode != 0:
+            echo_message(
+                f"error during execution. Return code: {process.returncode}", "error"
+            )
+        else:
+            echo_message("process completed successfully.", "success")
+    except Exception as e:
+        echo_message(f"error executing command: {e}", "error")
 
 
 if __name__ == "__main__":

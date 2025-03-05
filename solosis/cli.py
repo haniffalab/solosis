@@ -3,13 +3,14 @@ import uuid
 import click
 
 from solosis.commands.alignment import cellranger_arc, cellranger_count, starsolo
-from solosis.commands.farm import single_job, run_notebook
+from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.filesystem import disk_usage, file_count
-from solosis.commands.irods import iget_cellranger, iget_fastqs
+from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.ncl_bsu import migrate
-from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
+from solosis.commands.sc_rna import cellbender, merge_h5ad, qc_basic, scanpy
+from solosis.utils import validate_environment
 
-VERSION = "0.2.3"
+VERSION = "0.3.0"
 
 
 # Styled output for the module name and version
@@ -24,6 +25,14 @@ def cli(ctx):
     """Command line utility for the Cellular Genetics programme at the Wellcome Sanger Institute"""
     # Print a welcome message when the CLI tool is invoked
     click.echo(f"{module_name}{version_info}")
+
+    # Validate environment variables
+    required_env_vars = [
+        "TEAM_DATA_DIR",
+        "TEAM_LOGS_DIR",
+        "LSB_DEFAULT_USERGROUP",
+    ]
+    validate_environment(required_env_vars)
 
     # Access the execution_id from the context, or create a new one if not set
     execution_id = getattr(ctx.obj, "execution_id", None)
@@ -67,6 +76,7 @@ def irods():
 
 irods.add_command(iget_fastqs.cmd, name="iget-fastqs")
 irods.add_command(iget_cellranger.cmd, name="iget-cellranger")
+irods.add_command(imeta_report.cmd, name="imeta-report")
 
 
 # NCL_BSU subgroup
@@ -87,6 +97,7 @@ def sc_rna():
 sc_rna.add_command(cellbender.cmd, name="cellbender")
 sc_rna.add_command(scanpy.cmd, name="scanpy")
 sc_rna.add_command(merge_h5ad.cmd, name="merge-h5ad")
+sc_rna.add_command(qc_basic.cmd, name="qc-basic")
 
 
 # farm jobs
