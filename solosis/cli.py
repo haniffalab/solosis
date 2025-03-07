@@ -3,6 +3,7 @@ import logging
 import click
 
 from solosis.commands.alignment import cellranger_arc_count, cellranger_count
+from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.history import clear, uid, view
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
@@ -10,7 +11,6 @@ from solosis.utils.env_utils import validate_env
 from solosis.utils.logging_utils import debug
 from solosis.utils.state import execution_uid, logger, version
 
-# Styled output for the module name and version
 module_name = click.style(f"{'SOLOSIS':^11}", bg="blue", fg="white", bold=True)
 version_info = click.style(f"  ~  version {version}")
 
@@ -24,6 +24,16 @@ def cli(debug):
         logger.setLevel(logging.DEBUG)
     validate_env()
     logger.debug(f"Logger initialized at startup with execution_uid: {execution_uid}")
+
+
+@cli.group()
+def jobrunner():
+    """Farm related commands"""
+    pass
+
+
+jobrunner.add_command(single_job.cmd, name="submit_job")
+jobrunner.add_command(run_notebook.cmd, name="run_notebook")
 
 
 @cli.group()
@@ -67,7 +77,6 @@ def scrna():
 scrna.add_command(cellbender.cmd, name="cellbender")
 scrna.add_command(scanpy.cmd, name="scanpy")
 scrna.add_command(merge_h5ad.cmd, name="merge-h5ad")
-
 
 if __name__ == "__main__":
     cli()
