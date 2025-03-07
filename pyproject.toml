@@ -5,8 +5,28 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "solosis"
 version = "0.3.0"
-description = "A Python CLI app using click"
-dependencies = ["click"]
+description = "A command line interface for working with single-cell data"
+requires-python = ">=3.10"
+dependencies = [
+    "click",
+    "tabulate",
+    "pandas",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+doc = [
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-click",
+]
 
 [project.scripts]
 solosis = "solosis.cli:cli"

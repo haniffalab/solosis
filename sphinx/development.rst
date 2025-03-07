@@ -48,14 +48,4 @@ Set the :code:`PYTHONPATH` environment variable to the :code:`bin` directory whe
 
 .. _pytest: https://docs.pytest.org/en/7.1.x/
 
-.. **Environment Variables**
-
-.. The following environment variables are required to be set for the Solosis module to work correctly.
-
-.. .. code-block:: shell
-..    :caption: Input
-
-..    export TEAM_DATA_DIR="/lustre/scratch126/cellgen/team298/data"
-..    export TEAM_LOGS_DIR="/lustre/scratch126/cellgen/team298/logs"
-..    export LSB_DEFAULT_USERGROUP="team298"
 

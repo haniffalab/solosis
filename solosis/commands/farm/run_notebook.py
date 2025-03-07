@@ -3,7 +3,7 @@ import subprocess
 
 import click
 
-from solosis.utils import (
+from solosis.utils.farm import (
     _single_command_bsub,
     bash_submit,
     echo_lsf_submission_message,

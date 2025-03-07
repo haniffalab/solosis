@@ -3,7 +3,7 @@ import subprocess
 
 import click
 
-from solosis.utils import echo_lsf_submission_message, echo_message, log_command
+from solosis.utils.farm import echo_lsf_submission_message, echo_message, log_command
 
 from .. import helpers
 

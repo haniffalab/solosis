@@ -1,15 +1,18 @@
+import logging
 import os
-import subprocess
-import sys
-import time
 
 import click
 import pandas as pd
+from tabulate import tabulate
 
-from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
+from solosis.utils.env_utils import irods_auth
+from solosis.utils.input_utils import collect_samples
+from solosis.utils.logging_utils import debug
+from solosis.utils.state import logger
+from solosis.utils.subprocess_utils import popen
 
 
-# change to pull-cellranger
+@debug
 @click.command("imeta-report")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -17,141 +20,54 @@ from solosis.utils import echo_lsf_submission_message, echo_message, irods_valid
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-def cmd(sample, samplefile):
+def cmd(sample, samplefile, debug):
     """
     Generates report of data available on iRODS
     """
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     ctx = click.get_current_context()
-    echo_message(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
-    # Call the function
-    irods_validation()
+    if not irods_auth():
+        raise click.Abort()
 
-    samples = []
-
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                echo_message(
-                    f"Unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                echo_message(
-                    f"File must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            echo_message(
-                f"Error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        echo_message(
-            f"no samples provided. Use `--sample` or `--samplefile`",
-            "error",
-        )
-        return
-
-    # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
-        echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    if not os.path.isdir(team_sample_data_dir):
-        echo_message(
-            f"Sample data directory '{team_sample_data_dir}' does not exist",
-            "error",
-        )
-        return
-
-    # Check each sample
-    samples_to_download = []
+    samples = collect_samples(sample, samplefile)
+    data = []
     for sample in samples:
-        # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
+        logger.info(f"Processing sample: {sample}")
 
-        # Check if output exists
-        if os.path.exists(cellranger_path):
-            samples_to_download.append(sample)
-        else:
-            echo_message(
-                f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                "warn",
+        sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
+        os.makedirs(sample_dir, exist_ok=True)
+        report_path = os.path.join(sample_dir, "imeta_report.csv")
+
+        imeta_report_script = os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "../../../bin/irods/imeta_report.sh",
             )
-
-    # Confirm samples to download
-    if samples_to_download:
-        sample_list = "\n".join(
-            f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
         )
-        echo_message(
-            f"Samples for download:\n{sample_list}",
-            "info",
-        )
-    else:
-        echo_message(
-            f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-            "warn",
-        )
-        return  # Exit if no samples need downloading
+        popen([imeta_report_script, sample, report_path])
+        if os.path.exists(report_path):
+            df = pd.read_csv(
+                report_path, header=None, names=["collection_type", "path"]
+            )
+            crams = len(df[df["collection_type"] == "CRAM"])
+            cellranger = len(df[df["collection_type"] == "CellRanger"])
+            data.append([sample, crams, cellranger])
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
-
-    # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    imeta_report_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/imeta-report/submit.sh")
-    )
-
-    # Construct the command
-    cmd = [
-        imeta_report_script,
-        sample_ids,
-    ]
-
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
+        headers = [
+            "Sample",
+            "CRAM",
+            "CellRanger",
+        ]
+        table = tabulate(
+            data, headers, tablefmt="pretty", numalign="left", stralign="left"
         )
-        echo_lsf_submission_message(result.stdout)
-    except subprocess.CalledProcessError as e:
-        echo_message(
-            f"Error during execution: {e.stderr}",
-            "error",
-        )
+        logger.info(f"Summary table... \n{table}")
 
 
 if __name__ == "__main__":

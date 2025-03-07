@@ -25,8 +25,8 @@ def test_cellranger_count():
     assert "Show this message and exit" in result.output
 
 
-def test_cellranger_arc():
+def test_cellranger_arc_count():
     runner = CliRunner()
-    result = runner.invoke(cli, ["alignment", "cellranger-arc", "--help"])
+    result = runner.invoke(cli, ["alignment", "cellranger-arc-count", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
