@@ -6,13 +6,13 @@ import click
 
 from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import debug
-from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
 from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_options
+@lsf_options_std
 @debug
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")

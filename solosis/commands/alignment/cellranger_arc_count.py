@@ -6,11 +6,11 @@ import click
 import pandas as pd
 
 from solosis.utils.logging_utils import debug
-from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
 from solosis.utils.state import logger
 
 
-@lsf_options
+@lsf_options_std
 @debug
 @click.command("cellranger-arc-count")
 @click.option(

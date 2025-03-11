@@ -6,14 +6,14 @@ import click
 
 from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug
-from solosis.utils.lsf_utils import lsf_options, submit_lsf_job_array
+from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
 from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
-@lsf_options
+@lsf_options_std
 @debug
 @click.command("cellbender")
 @click.option(
