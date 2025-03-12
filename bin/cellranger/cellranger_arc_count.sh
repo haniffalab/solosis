@@ -29,7 +29,7 @@ VERSION="$4"
 CPU="$5"
 MEM="$6"
 BAM_FLAG=""  # Default to generating BAM files
-REF="/software/cellgen/cellgeni/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"  # Reference genome
+REF="/software/cellgen/cellgeni/refdata_10x/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"  # Reference genome
 
 # Handle optional --no-bam flag (disables BAM file generation)
 if [ "$7" == "--no-bam" ]; then
