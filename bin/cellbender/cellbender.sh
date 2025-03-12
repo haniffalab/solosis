@@ -2,7 +2,7 @@
 # cellbender.sh - Run Cellbender background removal for a given sample
 
 # Usage:
-#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>]
+#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included]
 #
 # Parameters:
 #   <sample_id>       - Sample ID to process (unique identifier for the sample).
@@ -16,7 +16,7 @@ set -e  # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included]" >&2
   exit 1
 fi
 
@@ -27,9 +27,15 @@ CELLRANGER_DIR="$3"
 CPU="$4"
 MEM="$5"
 GPU_FLAG=""
+TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
 
 # Handle optional arguments for GPU
 # 
+
+# Handle optional --total-droplets-included flag (defines specifc value of total droplets included)
+if [ "$7" == "--total-droplets-included" ]; then
+  TOTAL_DROPLETS_FLAG="--total-droplets-included"
+fi
 
 # Load Cellbender module
 if ! module load cellgen/cellbender/; then
@@ -51,13 +57,19 @@ if [ -n "$GPU_FLAG" ]; then
 else
   echo "GPU flag not enabled, using CPU"
 fi
+if [ -n "$TOTAL_DROPLETS_FLAG" ]; then
+  echo "total droplets value for sample: $TOTAL_DROPLETS_FLAG"
+else
+  echo "cellbender calculating reasonable total droplets value."
+
 
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
 # cellbender remove-background \
 #     $GPU_FLAG \
 #     --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
 #     --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
-#     --total-droplets-included "$DROPLETS"
+#     --total-droplets-included "$DROPLETS" \
+#     $TOTAL_DROPLETS_FLAG
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2

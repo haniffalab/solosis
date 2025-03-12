@@ -21,7 +21,13 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing metadata",
 )
-def cmd(metadata, mem, cpu, queue, debug):
+@click.option(
+    "--total-droplets-included",
+    is_flag=True,
+    default=False,
+    help="Choose a number that goes a few thousand barcodes into the 'empty droplet plateau'",
+)
+def cmd(metadata, total_droplets_included, mem, cpu, queue, debug):
     """Eliminate technical artifacts from scRNA-seq"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -80,6 +86,8 @@ def cmd(metadata, mem, cpu, queue, debug):
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
+            if total_droplets_included:
+                command += " --total-droplets-included"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
