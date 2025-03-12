@@ -82,3 +82,15 @@ def irods_auth(timeout=5):
             logger.error(f"iRODS initialization failed")
 
     return False
+
+def create_solosis_dirs():
+    """Create the solosis directory in the log dir in the directory where it is run."""
+    solosis_local_dir = os.path.join(os.getcwd(), ".solosis/")
+    try:
+        os.makedirs(solosis_local_dir, exist_ok=True)
+        os.makedirs(os.path.join(solosis_local_dir + "lsf"))
+
+    except OSError as error:
+        print("Error creating solosis directory: ", error)
+        print("Intermediate files and history may not be created")
+    
