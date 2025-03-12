@@ -93,7 +93,6 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         mem=mem,
         queue=queue,
     )
-    logger.info(f"Cellrnager outputs have been downloaded at {cellranger_dir}")
 
 
 if __name__ == "__main__":
