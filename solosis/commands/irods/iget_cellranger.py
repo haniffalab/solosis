@@ -84,7 +84,9 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
                         command = f"iget -r {path} {cellranger_dir}"
                         tmpfile.write(command + "\n")
-            tmpfile.write(f"chmod -R g+w {cellranger_dir} || true" + "\n")
+            tmpfile.write(
+                f"chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true" + "\n"
+            )
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
