@@ -61,5 +61,5 @@ cellranger-arc count \
     --localmem=$((MEM / 1000)) \
     $BAM_FLAG
 
-chmod -R g+w "$OUTPUT_DIR"
+chmod -R g+w "$OUTPUT_DIR" 2>/dev/null
 echo "Cell Ranger ARC count completed for libraries file: $LIBRARIES_PATH"
