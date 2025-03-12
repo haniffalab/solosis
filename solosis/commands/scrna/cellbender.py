@@ -27,7 +27,13 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     default=False,
     help="Choose a number that goes a few thousand barcodes into the 'empty droplet plateau'",
 )
-def cmd(metadata, total_droplets_included, mem, cpu, queue, debug):
+@click.option(
+    "--expected-cells",
+    is_flag=True,
+    default=False,
+    help="Base this on either the number of cells expected a priori from the experimental design",
+)
+def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debug):
     """Eliminate technical artifacts from scRNA-seq"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -88,6 +94,8 @@ def cmd(metadata, total_droplets_included, mem, cpu, queue, debug):
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
             if total_droplets_included:
                 command += " --total-droplets-included"
+            if expected_cells:
+                command += " --expected-cells"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(

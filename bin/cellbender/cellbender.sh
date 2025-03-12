@@ -2,7 +2,7 @@
 # cellbender.sh - Run Cellbender background removal for a given sample
 
 # Usage:
-#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included]
+#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included] [--expected-cells]
 #
 # Parameters:
 #   <sample_id>       - Sample ID to process (unique identifier for the sample).
@@ -11,12 +11,14 @@
 #   <cpu>             - Number of CPU cores to allocate.
 #   <mem>             - Amount of memory in MB to allocate.
 #   --gpu <gpu_type>  - Optional flag to specify GPU type for processing (e.g., "NVIDIAA100_SXM4_80GB").
+#   --total-droplets-included         - optional flag to choose a number that goes a few thousand barcodes into the 'empty droplet plateau' in UMI plot.
+#   --expected-cells <expected_cells> - optional flag based on either the number of cells expected a priori from the experimental design.
 
 set -e  # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included] [--expected-cells]" >&2
   exit 1
 fi
 
@@ -28,6 +30,7 @@ CPU="$4"
 MEM="$5"
 GPU_FLAG=""
 TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
+EXPECTED_CELLS_FLAG=""
 
 # Handle optional arguments for GPU
 # 
@@ -35,6 +38,11 @@ TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this
 # Handle optional --total-droplets-included flag (defines specifc value of total droplets included)
 if [ "$7" == "--total-droplets-included" ]; then
   TOTAL_DROPLETS_FLAG="--total-droplets-included"
+fi
+
+# Handle optional --expected-cells flag (defines specifc value of expected cells)
+if [ "$8" == "--expected-cells" ]; then
+  EXPECTED_CELLS_FLAG="--expected-cells"
 fi
 
 # Load Cellbender module
@@ -61,6 +69,11 @@ if [ -n "$TOTAL_DROPLETS_FLAG" ]; then
   echo "total droplets value for sample: $TOTAL_DROPLETS_FLAG"
 else
   echo "cellbender calculating reasonable total droplets value."
+if [ -n "$EXPECTED_CELLS_FLAG" ]; then
+  echo "expected cell count for sample: $EXPECTED_CELLS_FLAG"
+else
+  echo "cellbender calculating reasonable expected cell count."
+
 
 
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
@@ -69,7 +82,8 @@ else
 #     --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
 #     --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
 #     --total-droplets-included "$DROPLETS" \
-#     $TOTAL_DROPLETS_FLAG
+#     $TOTAL_DROPLETS_FLAG \
+#     $EXPECTED_CELLS_FLAG
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2
