@@ -23,12 +23,14 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 )
 @click.option(
     "--total-droplets-included",
+    type=int,
     is_flag=True,
     default=False,
     help="Choose a number that goes a few thousand barcodes into the 'empty droplet plateau'",
 )
 @click.option(
     "--expected-cells",
+    type=int,
     is_flag=True,
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
