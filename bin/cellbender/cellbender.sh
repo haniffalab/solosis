@@ -64,5 +64,5 @@ fi
 # cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS
 # #BSUB -gpu "mode=shared:j_exclusive=no:gmem=${GMEM}:num=1:gmodel=NVIDIAA100_SXM4_80GB"
 
-chmod -R g+w "$OUTPUT_DIR" 2>/dev/null
+chmod -R g+w "$OUTPUT_DIR" || true
 echo "Cellbender completed for sample: $SAMPLE_ID"

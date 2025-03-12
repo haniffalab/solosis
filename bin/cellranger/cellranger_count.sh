@@ -63,5 +63,5 @@ cellranger count \
     --localmem="$(($MEM / 1000))" \
     $BAM_FLAG
 
-chmod -R g+w "$OUTPUT_DIR" 2>/dev/null
+chmod -R g+w "$OUTPUT_DIR" || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
