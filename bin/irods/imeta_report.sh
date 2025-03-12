@@ -24,4 +24,4 @@ imeta qu -d -z /seq sample = "$SAMPLE" | grep "^collection: " | sed 's/^collecti
 imeta qu -C -z /seq/illumina sample = "$SAMPLE" | grep "^collection: " | sed 's/^collection: //' | awk '{print "CellRanger," $0}' >> "$REPORT_PATH"
 echo "Report saved to $REPORT_PATH"
 
-chmod g+w "$REPORT_PATH" || true
+chmod g+w "$REPORT_PATH" >/dev/null 2>&1 || true
