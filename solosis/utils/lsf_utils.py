@@ -25,9 +25,18 @@ def lsf_options_std(function):
     function = click.option(
         "--mem", default=64000, type=int, help="Memory limit (in MB)"
     )(function)
-    function = click.option("--cpu", default=16, type=int, help="Number of CPU cores")(
+    function = click.option("--cpu", default=4, type=int, help="Number of CPU cores")(
         function
     )
+    function = click.option(
+        "--time", default="12:00", type=str, help="time for running"
+    )(function)
+    function = click.option(
+        "--gpu", default=0, type=str, help="GPU cores"
+    )(function)
+    function = click.option(
+        "--gpu_mem", default=0, type=str, help="GPU memory in MB"
+    )(function)
     function = click.option(
         "--queue", default="normal", help="Queue to which the job should be submitted"
     )(function)
