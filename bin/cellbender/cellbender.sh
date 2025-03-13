@@ -26,11 +26,11 @@ fi
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
-CPU="$4"
-MEM="$5"
-GPU_FLAG=""
-TOTAL_DROPLETS_FLAG="$7" #by default cellbender will calculate this 
-EXPECTED_CELLS_FLAG="$8"
+CPU="$6"
+MEM="$7" 
+GPU_FLAG="" #$8
+TOTAL_DROPLETS_FLAG="$4" #by default cellbender will calculate this 
+EXPECTED_CELLS_FLAG="$5"
 
 # Handle optional arguments for GPU
 # 
