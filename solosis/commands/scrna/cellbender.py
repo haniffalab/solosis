@@ -109,6 +109,7 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         mem=mem,
         queue=queue,
     )
+    print(os.getenv("TEAM_SAMPLES_DIR"))  # debugging code
 
 
 if __name__ == "__main__":
