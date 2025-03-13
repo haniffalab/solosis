@@ -24,12 +24,14 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 @click.option(
     "--total-droplets-included",
     type=int,
+    required=False,
     default=False,
     help="Choose a number that goes a few thousand barcodes into the 'empty droplet plateau'",
 )
 @click.option(
     "--expected-cells",
     type=int,
+    required=False,
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
 )
@@ -92,10 +94,12 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
-            if total_droplets_included:
-                command += " --total-droplets-included"
-            if expected_cells:
-                command += " --expected-cells"
+            if total_droplets_included is not None:
+                command.append("--total-droplets-included")
+                command.append(str(total_droplets_included))
+            if expected_cells is not None:
+                command.append("--expected-cells")
+                command.append(str(expected_cells))
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
