@@ -37,6 +37,14 @@ def lsf_options_std(function):
 def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
     """
     Decorator to add LSF job options to a click command.
+    Usage: 
+    @click.command()
+    @click.option("--input", type=click.Path(exists=True))
+    @lsf_job(mem = 20000)
+    @click.pass_context
+    def cmd(ctx, input):
+        pass
+
     """
     def decorator(function):
         @functools.wraps(function)  # Preserve function metadata
@@ -48,9 +56,8 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
         @click.option("--gpumem", default=gpumem, type=str, help="GPU memory to request")
 
         def wrapped(*args, **kwargs):
-            return function(*args, **kwargs)  # Ensure arguments are passed properly
-
-        return wrapped  # ✅ Return fully wrapped function
+            return function(*args, **kwargs)  
+        return wrapped  
 
     return decorator
 
