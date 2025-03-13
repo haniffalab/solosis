@@ -18,7 +18,7 @@ set -e  # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included] [--expected-cells]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
   exit 1
 fi
 

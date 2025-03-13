@@ -51,7 +51,9 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
-        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample, "cellbender")
+        output_dir = os.path.join(
+            os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellbender"
+        )
 
         # Check if cellranger_dir exists and contains the required file
         if os.path.exists(cellranger_dir) and os.path.isfile(
@@ -109,7 +111,6 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         mem=mem,
         queue=queue,
     )
-    print(os.getenv("TEAM_SAMPLES_DIR"))  # debugging code
 
 
 if __name__ == "__main__":
