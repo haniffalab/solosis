@@ -34,7 +34,10 @@ def lsf_options_std(function):
     )(function)
     return function
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0):
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
+    """
+    Decorator to add LSF job options to a click command.
+    """
     def decorator(function):
         @functools.wraps(function)  # Preserve function metadata
         @click.option("--mem", default=mem, type=str, help="Memory limit (in MB)")
@@ -42,6 +45,8 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0):
         @click.option("--time", default=time, type=str, help="Time for running")
         @click.option("--queue", default=queue, help="Queue to which the job should be submitted")
         @click.option("--gpu", default=gpu, type=str, help="Number of GPUs to request")
+        @click.option("--gpumem", default=gpumem, type=str, help="GPU memory to request")
+
         def wrapped(*args, **kwargs):
             return function(*args, **kwargs)  # Ensure arguments are passed properly
 
