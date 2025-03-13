@@ -29,21 +29,21 @@ CELLRANGER_DIR="$3"
 CPU="$4"
 MEM="$5"
 GPU_FLAG=""
-TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
-EXPECTED_CELLS_FLAG=""
+TOTAL_DROPLETS_FLAG="$7" #by default cellbender will calculate this 
+EXPECTED_CELLS_FLAG="$8"
 
 # Handle optional arguments for GPU
 # 
 
 # Handle optional --total-droplets-included flag (defines specifc value of total droplets included)
-if [ "$7" == "--total-droplets-included" ]; then
-  TOTAL_DROPLETS_FLAG="--total-droplets-included"
-fi
+#if [ "$7" == "--total-droplets-included" ]; then
+#  TOTAL_DROPLETS_FLAG="--total-droplets-included"
+#fi
 
 # Handle optional --expected-cells flag (defines specifc value of expected cells)
-if [ "$8" == "--expected-cells" ]; then
-  EXPECTED_CELLS_FLAG="--expected-cells"
-fi
+#if [ "$8" == "--expected-cells" ]; then
+#  EXPECTED_CELLS_FLAG="--expected-cells"
+#fi
 
 # Load Cellbender module
 if ! module load cellgen/cellbender/; then
