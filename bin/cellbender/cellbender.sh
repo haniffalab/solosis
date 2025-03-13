@@ -65,15 +65,18 @@ if [ -n "$GPU_FLAG" ]; then
 else
   echo "GPU flag not enabled, using CPU"
 fi
+
 if [ -n "$TOTAL_DROPLETS_FLAG" ]; then
   echo "total droplets value for sample: $TOTAL_DROPLETS_FLAG"
 else
   echo "cellbender calculating reasonable total droplets value."
+fi
+
 if [ -n "$EXPECTED_CELLS_FLAG" ]; then
   echo "expected cell count for sample: $EXPECTED_CELLS_FLAG"
 else
   echo "cellbender calculating reasonable expected cell count."
-
+fi
 
 
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
