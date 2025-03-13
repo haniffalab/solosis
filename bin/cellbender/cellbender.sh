@@ -77,12 +77,12 @@ else
 
 
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
-# cellbender remove-background \
-#     $GPU_FLAG \
-#     --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
-#     --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
-#     --total-droplets-included "$TOTAL_DROPLETS_FLAG" \
-#     --expected-cells "$EXPECTED_CELLS_FLAG"
+cellbender remove-background \
+     $GPU_FLAG \
+     --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
+     --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
+     --total-droplets-included "$TOTAL_DROPLETS_FLAG" \
+     --expected-cells "$EXPECTED_CELLS_FLAG"
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2
