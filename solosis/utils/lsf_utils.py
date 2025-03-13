@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+import functools
 
 import click
 
@@ -25,22 +26,38 @@ def lsf_options_std(function):
     function = click.option(
         "--mem", default=64000, type=int, help="Memory limit (in MB)"
     )(function)
-    function = click.option("--cpu", default=4, type=int, help="Number of CPU cores")(
-        function
+    function = click.option("--cpu", default=16, type=int, help="Number of CPU cores")(
+    function
     )
     function = click.option(
-        "--time", default="12:00", type=str, help="time for running"
-    )(function)
-    function = click.option(
-        "--gpu", default=0, type=str, help="GPU cores"
-    )(function)
-    function = click.option(
-        "--gpu_mem", default=0, type=str, help="GPU memory in MB"
-    )(function)
-    function = click.option(
-        "--queue", default="normal", help="Queue to which the job should be submitted"
+    "--queue", default="normal", help="Queue to which the job should be submitted"
     )(function)
     return function
+
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0):
+    def decorator(function):
+        @functools.wraps(function)  # Preserve function metadata
+        @click.option("--mem", default=mem, type=str, help="Memory limit (in MB)")
+        @click.option("--cpu", default=cpu, type=str, help="Number of CPU cores")
+        @click.option("--time", default=time, type=str, help="Time for running")
+        @click.option("--queue", default=queue, help="Queue to which the job should be submitted")
+        @click.option("--gpu", default=gpu, type=str, help="Number of GPUs to request")
+        def wrapped(*args, **kwargs):
+            return function(*args, **kwargs)  # Ensure arguments are passed properly
+
+        return wrapped  # ✅ Return fully wrapped function
+
+    return decorator
+
+def _assign_job_name(job_name, ctx):
+    """
+    Assign a job name to the job.
+    """
+    if job_name == "default":
+        job_name = f"{ctx.obj['execution_id']}"
+    else:
+        job_name = f"{job_name}_{ctx.obj['execution_id']}"
+    return job_name
 
 
 def submit_lsf_job_array(
