@@ -96,12 +96,11 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
+            # Add optional arguments if specified
             if total_droplets_included is not None:
-                command.append("--total-droplets-included")
-                command.append(str(total_droplets_included))
+                command += f" --total-droplets-included {total_droplets_included}"
             if expected_cells is not None:
-                command.append("--expected-cells")
-                command.append(str(expected_cells))
+                command += f" --expected-cells {expected_cells}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
