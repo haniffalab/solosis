@@ -82,7 +82,7 @@ fi
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
 cellbender remove-background \
      $GPU_FLAG \
-     --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
+     --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
      --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
      $TOTAL_DROPLETS_FLAG \
      $EXPECTED_CELLS_FLAG
