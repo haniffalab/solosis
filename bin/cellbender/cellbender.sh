@@ -29,8 +29,8 @@ CELLRANGER_DIR="$3"
 CPU="$4"
 MEM="$5" 
 GPU_FLAG="" #$8 --cuda?
-TOTAL_DROPLETS_FLAG="$7" #by default cellbender will calculate this 
-EXPECTED_CELLS_FLAG="$8"
+TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
+EXPECTED_CELLS_FLAG=""
 
 # Handle optional arguments for GPU
 # 
@@ -84,8 +84,8 @@ cellbender remove-background \
      $GPU_FLAG \
      --input "$CELLRANGER_DIR/outs/raw_feature_bc_matrix.h5" \
      --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
-     --total-droplets-included "$TOTAL_DROPLETS_FLAG" \
-     --expected-cells "$EXPECTED_CELLS_FLAG"
+     $TOTAL_DROPLETS_FLAG \
+     $EXPECTED_CELLS_FLAG
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2
