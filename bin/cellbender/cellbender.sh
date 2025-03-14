@@ -56,7 +56,7 @@ for i in "$@"; do
       shift
       ;;
     --expected-cells)
-      EXPECTED_CELLS_FLAG="--expected-cells $4"
+      EXPECTED_CELLS_FLAG="--expected-cells $5"
       shift
       ;;
     *)
