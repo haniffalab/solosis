@@ -44,6 +44,25 @@ EXPECTED_CELLS_FLAG=""
 #if [ "$8" == "--expected-cells" ]; then
 #  EXPECTED_CELLS_FLAG="--expected-cells"
 #fi
+# Parsing additional flags from the arguments
+for i in "$@"; do
+  case $i in
+    --gpu)
+      GPU_FLAG="--gpu $2"
+      shift
+      ;;
+    --total-droplets-included)
+      TOTAL_DROPLETS_FLAG="--total-droplets-included $2"
+      shift
+      ;;
+    --expected-cells)
+      EXPECTED_CELLS_FLAG="--expected-cells $2"
+      shift
+      ;;
+    *)
+      ;;
+  esac
+done
 
 # Load Cellbender module
 if ! module load cellgen/cellbender/; then
