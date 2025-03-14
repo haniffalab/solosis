@@ -52,11 +52,11 @@ for i in "$@"; do
       shift
       ;;
     --total-droplets-included)
-      TOTAL_DROPLETS_FLAG="--total-droplets-included $5"
+      TOTAL_DROPLETS_FLAG="--total-droplets-included $4"
       shift
       ;;
     --expected-cells)
-      EXPECTED_CELLS_FLAG="--expected-cells $6"
+      EXPECTED_CELLS_FLAG="--expected-cells $5"
       shift
       ;;
     *)
