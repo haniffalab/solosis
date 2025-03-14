@@ -48,15 +48,15 @@ EXPECTED_CELLS_FLAG=""
 for i in "$@"; do
   case $i in
     --gpu)
-      GPU_FLAG="--gpu $2"
+      GPU_FLAG="--gpu $4"
       shift
       ;;
     --total-droplets-included)
-      TOTAL_DROPLETS_FLAG="--total-droplets-included $2"
+      TOTAL_DROPLETS_FLAG="--total-droplets-included $4"
       shift
       ;;
     --expected-cells)
-      EXPECTED_CELLS_FLAG="--expected-cells $2"
+      EXPECTED_CELLS_FLAG="--expected-cells $4"
       shift
       ;;
     *)
