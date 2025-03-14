@@ -28,38 +28,37 @@ OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
 CPU="$4"
 MEM="$5" 
-GPU_FLAG="" #$8 --cuda?
+# optional flags 
+#GPU_FLAG="" #$8 --cuda?
 TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
-EXPECTED_CELLS_FLAG=""
+EXPECTED_CELLS_FLAG="" #by default cellbender will calculate this
 
-# Handle optional arguments for GPU
-# 
+# Parse optional arguments
+shift 5  # Move past the required arguments
 
-# Handle optional --total-droplets-included flag (defines specifc value of total droplets included)
-#if [ "$7" == "--total-droplets-included" ]; then
-#  TOTAL_DROPLETS_FLAG="--total-droplets-included"
-#fi
-
-# Handle optional --expected-cells flag (defines specifc value of expected cells)
-#if [ "$8" == "--expected-cells" ]; then
-#  EXPECTED_CELLS_FLAG="--expected-cells"
-#fi
-# Parsing additional flags from the arguments
-for i in "$@"; do
-  case $i in
-    --gpu)
-      GPU_FLAG="--gpu $4"
-      shift
-      ;;
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
     --total-droplets-included)
-      TOTAL_DROPLETS_FLAG="--total-droplets-included $4"
-      shift
+      if [[ -n "$2" && "$2" != --* ]]; then
+        TOTAL_DROPLETS_FLAG="--total-droplets-included $2"
+        shift 2
+      else
+        echo "Error: --total-droplets-included requires a value" >&2
+        exit 1
+      fi
       ;;
     --expected-cells)
-      EXPECTED_CELLS_FLAG="--expected-cells $5"
-      shift
+      if [[ -n "$2" && "$2" != --* ]]; then
+        EXPECTED_CELLS_FLAG="--expected-cells $2"
+        shift 2
+      else
+        echo "Error: --expected-cells requires a value" >&2
+        exit 1
+      fi
       ;;
     *)
+      echo "Warning: Unknown parameter $1 ignored"
+      shift
       ;;
   esac
 done
@@ -85,17 +84,8 @@ else
   echo "GPU flag not enabled, using CPU"
 fi
 
-if [ -n "$TOTAL_DROPLETS_FLAG" ]; then
-  echo "total droplets value for sample: $TOTAL_DROPLETS_FLAG"
-else
-  echo "cellbender calculating reasonable total droplets value."
-fi
-
-if [ -n "$EXPECTED_CELLS_FLAG" ]; then
-  echo "expected cell count for sample: $EXPECTED_CELLS_FLAG"
-else
-  echo "cellbender calculating reasonable expected cell count."
-fi
+[ -n "$TOTAL_DROPLETS_FLAG" ] && echo "Total droplets included: $TOTAL_DROPLETS_FLAG" || echo "Cellbender will determine total droplets."
+[ -n "$EXPECTED_CELLS_FLAG" ] && echo "Expected cells: $EXPECTED_CELLS_FLAG" || echo "Cellbender will determine expected cells."
 
 
 # Run Cellbender background removal (adjusting command based on optional GPU flag)
