@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 import os
 import subprocess
-
 import click
-
 from solosis.utils.farm import echo_message, irods_validation, log_command
 from solosis.utils.logging_utils import debug
 from solosis.utils.lsf_utils import lsf_job, lsf_options_sm, _assign_job_name
@@ -19,6 +17,13 @@ from solosis.utils.env_utils import create_solosis_dirs
     "--sample_basedir",
     required=False,
     default="/lustre/scratch126/cellgen/team298/data/samples/",
+    help="sample database folder",
+)
+
+@click.option(
+    "--celltypist_pkl",
+    required=False,
+    default="None",
     help="sample database folder",
 )
 @lsf_job(mem=64000)
@@ -49,9 +54,9 @@ def cmd(ctx, samplefile, sample_basedir, **kwargs):
 
     env = os.environ.copy()
     env["solosis_dir"] = script_dir
-
+        
     result = subprocess.run(
-        [shell_script, sample_basedir, samplefile],
+        [shell_script, sample_basedir, samplefile, celltypist_pkl],
         env={**env, **kwargs},
         capture_output=True,
         text=True,

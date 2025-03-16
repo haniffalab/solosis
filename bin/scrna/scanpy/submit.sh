@@ -2,16 +2,18 @@
 
 export LSB_DEFAULT_USERGROUP=team298
 conda_env="/software/cellgen/team298/shared/envs/hlb-conda/rna"
-if [ $# -ne 2 ]; then
-	echo "$0 samples_database sample_sheet.tsv"
+if [ $# -ne 3 ]; then
+	echo "$0 samples_database sample_sheet.tsv celltypist.pkl"
 	echo "This is a follow up of irods/pull-processed. If you have not run it, do so"
 	echo "samples_database: Folder where you have all sample cellranger data. Ideally - /lustre/scratch126/cellgen/team298/data/samples"
 	echo "sample_name: Folder name of sample that contains the processed_sanger folder"
+    echo "celltypist_pkl: If you have a pickle file for annotation. Find db in: TBC"
 	exit 0
 fi
 
 samples_database=$1; shift
 sample_tsv=$1; shift
+celltypist_pkl=$1
 
 #mkdir -p pap
 
@@ -46,6 +48,7 @@ do
      -p sample_name $sample_name \
      -p sample_id $sample_id \
      -p cellranger_folder cellranger/$cellranger_folder \
+     -p celltypist_pkl $celltypist_pkl \
      -p sample_file $sample_tsv --log-output"
 	echo $cmd >> $ofile
     fi
