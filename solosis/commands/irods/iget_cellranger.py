@@ -86,7 +86,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
                         command = f"iget -r {path} {cellranger_dir}"
                         tmpfile.write(command + "\n")
-                        samples_to_download.append((sample, path))
+                        samples_to_download.append((sample, cellranger_dir))
             tmpfile.write(
                 f"chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true" + "\n"
             )
