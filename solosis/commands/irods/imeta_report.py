@@ -87,9 +87,9 @@ def cmd(sample, samplefile, debug):
     if all_data:
         combined_df = pd.concat(all_data, ignore_index=True)
         combined_df.to_csv(all_report_path, index=False)
-        logger.info(f"✅ Overall report generated: {all_report_path}")
+        logger.info(f"Overall report generated: {all_report_path}")
     else:
-        logger.warning("⚠ No reports found. 'all-imeta-report.csv' was not created.")
+        logger.warning("No reports found. 'all-imeta-report.csv' was not created.")
 
 
 if __name__ == "__main__":
