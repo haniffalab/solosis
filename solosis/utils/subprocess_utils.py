@@ -18,13 +18,26 @@ def popen(
             bufsize=1,  # Line buffering
         )
 
+        # Dictionary to store each process line and its current status
+        lines = {}
+
         # Process stdout in real-time
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            sys.stdout.write(
-                f"\r[{timestamp}] {line.strip()}"
-            )  # Use \r to overwrite the line
-            sys.stdout.flush()
+            line = line.strip()
+
+            # Check if this line is being updated (e.g., by checking if it was previously printed)
+            if line not in lines:
+                lines[line] = False  # Mark it as a new line to be printed
+
+            # If a line is marked as updated, overwrite it
+            if lines[line]:
+                sys.stdout.write(f"\r[{timestamp}] {line}")
+                sys.stdout.flush()
+            else:
+                sys.stdout.write(f"[{timestamp}] {line}\n")
+                sys.stdout.flush()
+                lines[line]
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
