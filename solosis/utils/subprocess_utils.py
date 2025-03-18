@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from collections import deque
+from datetime import datetime
 
 from solosis.utils.state import logger
 
