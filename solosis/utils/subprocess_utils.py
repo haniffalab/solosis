@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from datetime import datetime
 
 from solosis.utils.state import logger
@@ -14,12 +15,16 @@ def popen(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            bufsize=1,  # Line buffering
         )
 
         # Process stdout in real-time
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            print(f"[{timestamp}] {line.strip()}", "progress")
+            sys.stdout.write(
+                f"\r[{timestamp}] {line.strip()}"
+            )  # Use \r to overwrite the line
+            sys.stdout.flush()
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
