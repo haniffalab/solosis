@@ -15,31 +15,16 @@ def popen(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            bufsize=5,  # Line buffering
         )
 
-        # Create a deque with a max length of 4 to keep the most recent 4 lines
-        recent_lines = deque(maxlen=4)
-
-        # Print initial message indicating the process is running
-        sys.stdout.write("Process started...\n")
-        sys.stdout.flush()
-
+        # Process stdout in real-time
         for line in process.stdout:
-            # Add the new line to the deque (it will automatically discard the oldest one if > 4 lines)
-            recent_lines.append(line.strip())
-
-            # Clear only the lines printed by this block (move cursor up by the number of lines in recent_lines)
+            timestamp = datetime.now().strftime("%H:%M:%S")
             sys.stdout.write(
-                "\033[F" * len(recent_lines)
-            )  # Move cursor up by the number of lines
-
-            # Print all the recent lines in the deque
-            for recent_line in recent_lines:
-                print(recent_line)
-
-            sys.stdout.flush()
-
-        print()  # Final print after all lines are done printing
+                f"\r[{timestamp}] {line.strip()}"
+            )  # Use \r to overwrite the line
+            sys.stdout.flush()  # Ensure immediate update
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
