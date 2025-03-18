@@ -96,6 +96,14 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         queue=queue,
     )
 
+    if downloaded_samples:
+        log_file = os.path.join(os.getcwd(), "iget-cellranger.log")
+        df = pd.DataFrame(downloaded_samples, columns=["sample", "cellranger_dir"])
+        df.to_csv(log_file, index=False)
+        logger.info(f"Log file of output paths: {log_file}")
+    else:
+        logger.info("No downloads were logged, no log file generated.")
+
 
 if __name__ == "__main__":
     cmd()
