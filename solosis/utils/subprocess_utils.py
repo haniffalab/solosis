@@ -22,6 +22,10 @@ def popen(
         # Create a deque to hold the last 5 lines of output
         recent_lines = deque(maxlen=5)
 
+        # Print 5 empty lines to start
+        for _ in range(5):
+            print()
+
         # Process stdout in real-time
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
@@ -29,8 +33,8 @@ def popen(
                 f"[{timestamp}] {line.strip()}"
             )  # Add the new line with timestamp
 
-            # Move the cursor up by the number of lines currently in recent_lines
-            sys.stdout.write("\033[F" * len(recent_lines))  # Move the cursor up
+            # Move the cursor up by 5 lines
+            sys.stdout.write("\033[F" * 5)
 
             # Print the last 5 lines (or fewer, depending on the deque's size)
             for recent_line in recent_lines:
