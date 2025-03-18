@@ -19,8 +19,8 @@ def popen(
             bufsize=1,  # Line buffering
         )
 
-        # Create a deque to hold the last 5 lines of output
-        recent_lines = deque(maxlen=5)
+        # Create a deque to hold the last 5 lines of output with an initial minimum length of 5 (empty lines)
+        recent_lines = deque([""] * 5, maxlen=5)
 
         # Print 5 empty lines to start
         for _ in range(5):
