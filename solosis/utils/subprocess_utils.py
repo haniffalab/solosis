@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from datetime import datetime
+from collections import deque
 
 from solosis.utils.state import logger
 
@@ -15,29 +15,27 @@ def popen(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1,  # Line buffering
         )
 
-        # Dictionary to store each process line and its current status
-        lines = {}
+        # Create a deque with a max length of 4 to keep the most recent 4 lines
+        recent_lines = deque(maxlen=4)
 
-        # Process stdout in real-time
         for line in process.stdout:
-            timestamp = datetime.now().strftime("%H:%M:%S")
-            line = line.strip()
+            # Add the new line to the deque (it will automatically discard the oldest one if > 4 lines)
+            recent_lines.append(line.strip())
 
-            # Check if this line is being updated (e.g., by checking if it was previously printed)
-            if line not in lines:
-                lines[line] = False  # Mark it as a new line to be printed
+            # Clear the screen (this simulates overwriting the output)
+            sys.stdout.write(
+                "\033[F" * len(recent_lines)
+            )  # Move cursor up by the number of lines
 
-            # If a line is marked as updated, overwrite it
-            if lines[line]:
-                sys.stdout.write(f"\r[{timestamp}] {line}")
-                sys.stdout.flush()
-            else:
-                sys.stdout.write(f"[{timestamp}] {line}\n")
-                sys.stdout.flush()
-                lines[line]
+            # Print all the recent lines
+            for recent_line in recent_lines:
+                print(recent_line)
+
+            sys.stdout.flush()
+
+        print()  # Final print after all lines are done printing
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
