@@ -18,7 +18,8 @@ version_info = click.style(f"  ~  version {version}")
 @click.group()
 @debug
 def cli(debug):
-    """A command line interface for working with single-cell data. \n   Documentation: https://haniffalab.com/solosis/"""
+    """A command line interface for working with single-cell data.
+    Documentation: https://haniffalab.com/solosis/"""
     click.echo(f"{module_name}{version_info}")
     if debug:
         logger.setLevel(logging.DEBUG)
