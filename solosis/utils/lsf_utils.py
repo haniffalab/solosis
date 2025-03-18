@@ -34,6 +34,50 @@ def lsf_options_std(function):
     return function
 
 
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
+    """
+    Decorator to add LSF job options to a click command.
+    Usage:
+    @click.command()
+    @click.option("--input", type=click.Path(exists=True))
+    @lsf_job(mem = 20000)
+    @click.pass_context
+    def cmd(ctx, input):
+        pass
+
+    """
+
+    def decorator(function):
+        @functools.wraps(function)  # Preserve function metadata
+        @click.option("--mem", default=mem, type=str, help="Memory limit (in MB)")
+        @click.option("--cpu", default=cpu, type=str, help="Number of CPU cores")
+        @click.option("--time", default=time, type=str, help="Time for running")
+        @click.option(
+            "--queue", default=queue, help="Queue to which the job should be submitted"
+        )
+        @click.option("--gpu", default=gpu, type=str, help="Number of GPUs to request")
+        @click.option(
+            "--gpumem", default=gpumem, type=str, help="GPU memory to request"
+        )
+        def wrapped(*args, **kwargs):
+            return function(*args, **kwargs)
+
+        return wrapped
+
+    return decorator
+
+
+def _assign_job_name(job_name, ctx):
+    """
+    Assign a job name to the job.
+    """
+    if job_name == "default":
+        job_name = f"{ctx.obj['execution_id']}"
+    else:
+        job_name = f"{job_name}_{ctx.obj['execution_id']}"
+    return job_name
+
+
 def submit_lsf_job_array(
     command_file: str,
     job_name: str = "job_array",
