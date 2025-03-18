@@ -36,13 +36,13 @@ done
 
 # Setup Nextflow work directory
 mkdir -p "$TEAM_TMP_DIR/nxf"
-chmod -R g+w "$TEAM_TMP_DIR/nxf"
+chmod -R g+w "$TEAM_TMP_DIR/nxf" >/dev/null 2>&1 || true
 export NXF_WORK="$TEAM_TMP_DIR/nxf"
 
 # Setup output directory
 mkdir -p "$TEAM_TMP_DIR/fastq"
-chmod -R g+w "$TEAM_TMP_DIR/fastq"
-cd "$OUTPUT_DIR"
+chmod -R g+w "$TEAM_TMP_DIR/fastq" >/dev/null 2>&1 || true
+cd "$TEAM_TMP_DIR/fastq"
 
 # Run Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
@@ -75,6 +75,6 @@ while IFS= read -r SAMPLE; do
 
   # Move FASTQ files into the respective sample directory
   echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
-  mv "${OUTPUT_DIR}/${SAMPLE}"* "$SAMPLE_DIR"/
-  chmod -R g+w "$SAMPLE_DIR"
+  mv "$TEAM_TMP_DIR/fastq/${SAMPLE}"* "$SAMPLE_DIR"/
+  chmod -R g+w "$SAMPLE_DIR" >/dev/null 2>&1 || true
 done < "$SAMPLE_FILE"

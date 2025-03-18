@@ -14,7 +14,7 @@
 #   --total-droplets-included         - optional flag to choose a number that goes a few thousand barcodes into the 'empty droplet plateau' in UMI plot.
 #   --expected-cells <expected_cells> - optional flag based on either the number of cells expected a priori from the experimental design.
 
-set -e  # Exit immediately if a command fails
+set -e # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
@@ -27,39 +27,38 @@ SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
 CPU="$4"
-MEM="$5" 
-# optional flags 
+MEM="$5"
+# Optional flags
 #GPU_FLAG="" #$8 --cuda?
-TOTAL_DROPLETS_FLAG="" #by default cellbender will calculate this 
-EXPECTED_CELLS_FLAG="" #by default cellbender will calculate this
+TOTAL_DROPLETS_FLAG="" # Default cellbender will calculate this
+EXPECTED_CELLS_FLAG="" # Default cellbender will calculate this
 
 # Parse optional arguments
-shift 5  # Move past the required arguments
-
+shift 5
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
-    --total-droplets-included)
-      if [[ -n "$2" && "$2" != --* ]]; then
-        TOTAL_DROPLETS_FLAG="--total-droplets-included $2"
-        shift 2
-      else
-        echo "Error: --total-droplets-included requires a value" >&2
-        exit 1
-      fi
-      ;;
-    --expected-cells)
-      if [[ -n "$2" && "$2" != --* ]]; then
-        EXPECTED_CELLS_FLAG="--expected-cells $2"
-        shift 2
-      else
-        echo "Error: --expected-cells requires a value" >&2
-        exit 1
-      fi
-      ;;
-    *)
-      echo "Warning: Unknown parameter $1 ignored"
-      shift
-      ;;
+  --total-droplets-included)
+    if [[ -n "$2" && "$2" != --* ]]; then
+      TOTAL_DROPLETS_FLAG="--total-droplets-included $2"
+      shift 2
+    else
+      echo "Error: --total-droplets-included requires a value" >&2
+      exit 1
+    fi
+    ;;
+  --expected-cells)
+    if [[ -n "$2" && "$2" != --* ]]; then
+      EXPECTED_CELLS_FLAG="--expected-cells $2"
+      shift 2
+    else
+      echo "Error: --expected-cells requires a value" >&2
+      exit 1
+    fi
+    ;;
+  *)
+    echo "Warning: Unknown parameter $1 ignored"
+    shift
+    ;;
   esac
 done
 
@@ -87,19 +86,18 @@ fi
 [ -n "$TOTAL_DROPLETS_FLAG" ] && echo "Total droplets included: $TOTAL_DROPLETS_FLAG" || echo "Cellbender will determine total droplets."
 [ -n "$EXPECTED_CELLS_FLAG" ] && echo "Expected cells: $EXPECTED_CELLS_FLAG" || echo "Cellbender will determine expected cells."
 
-
-# Run Cellbender background removal (adjusting command based on optional GPU flag)
+# Run Cellbender
 cellbender remove-background \
-     $GPU_FLAG \
-     --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
-     --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
-     $TOTAL_DROPLETS_FLAG \
-     $EXPECTED_CELLS_FLAG
+  "$GPU_FLAG" \
+  --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
+  --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
+  "$TOTAL_DROPLETS_FLAG" \
+  "$EXPECTED_CELLS_FLAG"
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2
 # cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS
 # #BSUB -gpu "mode=shared:j_exclusive=no:gmem=${GMEM}:num=1:gmodel=NVIDIAA100_SXM4_80GB"
 
-chmod -R g+w "$OUTPUT_DIR"
+chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cellbender completed for sample: $SAMPLE_ID"
