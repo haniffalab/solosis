@@ -108,4 +108,5 @@ def validate_library_type(tsv_file):
     if not invalid_samples.empty:
         logger.error("The following sample IDs have multiple library types:")
         print(invalid_samples.to_string())
+        logger.error("This command will now be terminated with no further action")
         raise click.Abort()
