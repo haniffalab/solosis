@@ -16,31 +16,19 @@ def popen(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1,  # Line buffering
+            bufsize=1,
         )
 
-        # Create a deque to hold the last 5 lines of output with an initial minimum length of 5 (empty lines)
-        recent_lines = deque([""] * 5, maxlen=5)
-
-        # Print 5 empty lines to start
-        for _ in range(5):
-            print()
-
         # Process stdout in real-time
+        lines = 7
+        recent_lines = deque([""] * lines, maxlen=lines)
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            recent_lines.append(
-                f"[{timestamp}] {line.strip()}"
-            )  # Add the new line with timestamp
-
-            # Move the cursor up by 5 lines
-            sys.stdout.write("\033[F" * 5)
-
-            # Print the last 5 lines (or fewer, depending on the deque's size)
+            recent_lines.append(f"[{timestamp}] {line.strip()}")
+            sys.stdout.write("\033[F" * lines)
             for recent_line in recent_lines:
                 print(recent_line)
-
-            sys.stdout.flush()  # Ensure immediate update
+            sys.stdout.flush()
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
