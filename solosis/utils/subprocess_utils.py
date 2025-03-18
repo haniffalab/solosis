@@ -1,5 +1,6 @@
 import subprocess
 import sys
+from collections import deque
 from datetime import datetime
 
 from solosis.utils.state import logger
@@ -15,15 +16,26 @@ def popen(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=5,  # Line buffering
+            bufsize=1,  # Line buffering
         )
+
+        # Create a deque to hold the last 5 lines of output
+        recent_lines = deque(maxlen=5)
 
         # Process stdout in real-time
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
-            sys.stdout.write(
-                f"\r[{timestamp}] {line.strip()}"
-            )  # Use \r to overwrite the line
+            recent_lines.append(
+                f"[{timestamp}] {line.strip()}"
+            )  # Add the new line with timestamp
+
+            # Move the cursor up by the number of lines currently in recent_lines
+            sys.stdout.write("\033[F" * len(recent_lines))  # Move the cursor up
+
+            # Print the last 5 lines (or fewer, depending on the deque's size)
+            for recent_line in recent_lines:
+                print(recent_line)
+
             sys.stdout.flush()  # Ensure immediate update
 
         for line in process.stderr:
