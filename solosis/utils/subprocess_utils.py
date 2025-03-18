@@ -22,6 +22,8 @@ def popen(
         # Process stdout in real-time
         lines = 7
         recent_lines = deque([""] * lines, maxlen=lines)
+        for _ in range(lines):
+            print()
         for line in process.stdout:
             timestamp = datetime.now().strftime("%H:%M:%S")
             recent_lines.append(f"[{timestamp}] {line.strip()}")
