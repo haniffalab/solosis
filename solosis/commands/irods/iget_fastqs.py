@@ -81,11 +81,7 @@ def cmd(sample, samplefile, debug):
         raise click.Abort()
 
     # Read and validate TSV file
-    try:
-        validate_library_type(metadata_tsv_path)
-    except Exception as e:
-        logger.error(f"Error reading metadata TSV file: {e}")
-        raise click.Abort()
+    validate_library_type(metadata_tsv_path)
 
     irods_to_fastq_script = os.path.abspath(
         os.path.join(
