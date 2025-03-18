@@ -16,9 +16,24 @@ def popen(
             text=True,
         )
 
+        output_lines = []  # Store output lines for tracking
+
         for line in process.stdout:
-            sys.stdout.write(f"\r{line.strip()}")
-            sys.stdout.flush()
+            output_lines.append(line.strip())
+
+            # Move the cursor up for each previous line
+            for _ in range(len(output_lines)):
+                sys.stdout.write("\033[F")  # Move cursor up
+
+            # Clear the lines
+            sys.stdout.write("\033[J")  # Clear from cursor to end of screen
+
+            # Reprint the updated output
+            for out_line in output_lines:
+                print(out_line)
+
+            sys.stdout.flush()  # Ensure immediate update
+
         print()
 
         for line in process.stderr:
