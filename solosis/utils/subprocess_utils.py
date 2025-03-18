@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 from solosis.utils.state import logger
 
@@ -16,7 +17,9 @@ def popen(
         )
 
         for line in process.stdout:
-            logger.info(f"{line.strip()}")
+            sys.stdout.write(f"\r{line.strip()}")
+            sys.stdout.flush()
+        print()
 
         for line in process.stderr:
             logger.error(f"{line.strip()}")
