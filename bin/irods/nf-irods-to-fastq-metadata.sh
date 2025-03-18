@@ -48,7 +48,7 @@ chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 cd "$OUTPUT_DIR"
 
 # Run Nextflow process with the sample file
-echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
+echo "Checking metadata for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
   --findmeta "$SAMPLE_FILE" \
   --publish_dir "$OUTPUT_DIR"

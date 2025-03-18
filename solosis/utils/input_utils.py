@@ -90,3 +90,22 @@ def process_metadata_file(metadata):
         raise click.Abort()
 
     return samples
+
+
+def validate_library_type(tsv_file):
+    """
+    Validates that each sample ID in the TSV file has only one unique library_type.
+    If multiple library_type values are found for a sample ID, the process is aborted.
+
+    :param tsv_file: Path to the TSV file
+    """
+    df = pd.read_csv(tsv_file, sep="\t", dtype=str)
+
+    # Count unique library_type values for each sample
+    invalid_samples = df.groupby("sample")["library_type"].nunique()
+    invalid_samples = invalid_samples[invalid_samples > 1]
+
+    if not invalid_samples.empty:
+        logger.error("The following sample IDs have multiple library types:")
+        logger.error(invalid_samples.to_string())
+        raise click.Abort()
