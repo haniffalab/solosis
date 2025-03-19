@@ -47,7 +47,7 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 
 # Run Cell Ranger count
-cellranger VDJ \
+cellranger vdj \
     --id="$SAMPLE_ID" \
     --fastqs="$FASTQ_DIR" \
     --reference="$REF" \
