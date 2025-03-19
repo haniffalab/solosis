@@ -90,7 +90,7 @@ fi
 cellbender remove-background \
   "$GPU_FLAG" \
   --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
-  --output "$OUTPUT_DIR/$SAMPLE_ID_CB_$(date +%Y%m%d).h5" \
+  --output "$OUTPUT_DIR/$SAMPLE_ID_$(date +%Y%m%d)_CB.h5" \
   "$TOTAL_DROPLETS_FLAG" \
   "$EXPECTED_CELLS_FLAG"
 # Q="gpu-normal"
