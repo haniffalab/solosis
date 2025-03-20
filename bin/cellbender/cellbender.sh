@@ -60,11 +60,11 @@ while [[ "$#" -gt 0 ]]; do
     fi
     ;;
   --GPU-FLAG)
-    GPU_FLAG="--GPU-FLAG"
+    GPU_FLAG="--cuda"
     shift
     ;;
   *)
-    echo "Warning: Unknown parameter $1 ignored"
+    echo "Warning: Unknown parameter $1 ignored" #unsure what to change this message to, is it related to --cuda or this entire 'while' loop.
     shift
     ;;
   esac
