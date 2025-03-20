@@ -22,6 +22,12 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     help="Path to a CSV or TSV file containing metadata",
 )
 @click.option(
+    "--cuda",
+    is_flag=True,
+    default=False,
+    help="Needed if job is run on GPU",
+)
+@click.option(
     "--total-droplets-included",
     type=int,
     required=False,
@@ -35,7 +41,18 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
 )
-def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debug):
+def cmd(
+    metadata,
+    cuda,
+    total_droplets_included,
+    expected_cells,
+    mem,
+    cpu,
+    queue,
+    gpumem,
+    gpu_type,
+    debug,
+):
     """Eliminate technical artifacts from scRNA-seq"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -95,8 +112,10 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem} {gpumem} {gpu_type}"
             # Add optional arguments if specified
+            if cuda is not None:
+                command += f" --cuda"
             if total_droplets_included is not None:
                 command += f" --total-droplets-included {total_droplets_included}"
             if expected_cells is not None:
