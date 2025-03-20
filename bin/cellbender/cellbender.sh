@@ -11,14 +11,16 @@
 #   <cpu>             - Number of CPU cores to allocate.
 #   <mem>             - Amount of memory in MB to allocate.
 #   --gpu <gpu_type>  - Optional flag to specify GPU type for processing (e.g., "NVIDIAA100_SXM4_80GB").
+#   --gpumem <gpu_mem>                - optional flag to run cellbender on GPU (--cuda)
 #   --total-droplets-included         - optional flag to choose a number that goes a few thousand barcodes into the 'empty droplet plateau' in UMI plot.
 #   --expected-cells <expected_cells> - optional flag based on either the number of cells expected a priori from the experimental design.
+
 
 set -e # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> [--cuda] <cpu> <mem> <queue> [--gpumem] [--gpu_type <gpu_type>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> <queue> [--gpumem <gpu_mem>] [--gpu_type <gpu_type>] [--gpu-flag <gpu_flag>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
   exit 1
 fi
 
@@ -26,10 +28,12 @@ fi
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
-CPU="$5"
-MEM="$6"
+CPU="$4"
+MEM="$5"
 # Optional flags
-GPU_FLAG="$4" #$8 --cuda?
+GPU_TYPE=""
+GPU_MEM=""
+GPU_FLAG="" # --cuda?
 TOTAL_DROPLETS_FLAG="" # Default cellbender will calculate this
 EXPECTED_CELLS_FLAG="" # Default cellbender will calculate this
 
@@ -54,6 +58,10 @@ while [[ "$#" -gt 0 ]]; do
       echo "Error: --expected-cells requires a value" >&2
       exit 1
     fi
+    ;;
+  --GPU-FLAG)
+    GPU_FLAG="--GPU-FLAG"
+    shift
     ;;
   *)
     echo "Warning: Unknown parameter $1 ignored"
@@ -88,11 +96,11 @@ fi
 
 # Run Cellbender
 cellbender remove-background \
-  "$GPU_FLAG" \
   --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
   --output "$OUTPUT_DIR/$SAMPLE_ID-cb.h5" \
+  "$GPU_FLAG" \
   "$TOTAL_DROPLETS_FLAG" \
-  "$EXPECTED_CELLS_FLAG"
+  "$EXPECTED_CELLS_FLAG" 
 # Q="gpu-normal"
 # GMEM=6000  # GPU memory
 # DROPLETS=$2
