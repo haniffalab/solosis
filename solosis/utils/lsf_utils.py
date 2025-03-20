@@ -85,6 +85,8 @@ def submit_lsf_job_array(
     mem: int = 64000,
     queue: str = "normal",
     group: str = None,
+    gpumem: int = 0,
+    gpu_type: str = None,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -130,14 +132,19 @@ def submit_lsf_job_array(
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
 #BSUB -q {queue}
+"""
+    # Add GPU-specific options if the queue requires it
+    if queue == "gpu-normal":
+        if not gpumem or not gpu_type:
+            raise ValueError(
+                "For 'gpu-normal' queue, --gpumem and --gpu-type must be specified."
+            )
+        lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num=1:gmodel={gpu_type}"\n"""
 
-# Extract the command for this job index
+    # Extract and run the command
+    lsf_script += f"""
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")
-
-# Debug: output the command being executed
 echo "Executing command: $COMMAND"
-
-# Run the command
 eval "$COMMAND"
 """
 

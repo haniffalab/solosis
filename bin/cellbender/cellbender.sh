@@ -18,7 +18,7 @@ set -e # Exit immediately if a command fails
 
 # Check if at least 5 arguments are provided
 if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> [--cuda] <cpu> <mem> <queue> [--gpumem] [--gpu_type <gpu_type>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
   exit 1
 fi
 
@@ -26,10 +26,10 @@ fi
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
-CPU="$4"
-MEM="$5"
+CPU="$5"
+MEM="$6"
 # Optional flags
-#GPU_FLAG="" #$8 --cuda?
+GPU_FLAG="$4" #$8 --cuda?
 TOTAL_DROPLETS_FLAG="" # Default cellbender will calculate this
 EXPECTED_CELLS_FLAG="" # Default cellbender will calculate this
 
