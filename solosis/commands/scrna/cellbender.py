@@ -13,7 +13,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
-@lsf_job
 @lsf_job(gpu="NVIDIAA100_SXM4_80GB")
 @debug
 @click.command("cellbender")
@@ -109,9 +108,9 @@ def cmd(
             # Add optional arguments if specified
             if gpu is not None:
                 command += f" --gpu"
-            if total_droplets_included is not None:
+            if total_droplets_included is not None and total_droplets_included != 0:
                 command += f" --total-droplets-included {total_droplets_included}"
-            if expected_cells is not None:
+            if expected_cells is not None and expected_cells != 0:
                 command += f" --expected-cells {expected_cells}"
             tmpfile.write(command + "\n")
 
