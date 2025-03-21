@@ -9,7 +9,7 @@ from solosis.utils.state import logger
 
 def validate_env():
     """Ensure all required environment variables are set and sample directory exists."""
-    required_vars = ["TEAM_DATA_DIR", "LSB_DEFAULT_USERGROUP"]
+    required_vars = ["TEAM_DATA_DIR", "LSB_DEFAULT_USERGROUP", "SCRIPT_BIN"]
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     if missing_vars:
         logger.error(
@@ -29,6 +29,14 @@ def validate_env():
     try:
         os.makedirs(tmp_dir, exist_ok=True)
         os.environ["TEAM_TMP_DIR"] = tmp_dir
+    except OSError as e:
+        logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
+        raise click.Abort()
+
+    script_bin = os.getenv("SCRIPT_BIN")
+    try:
+        os.makedirs(script_bin, exist_ok=True)
+        os.environ["SCRIPT_BIN"] = script_bin
     except OSError as e:
         logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
         raise click.Abort()
