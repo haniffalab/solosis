@@ -73,7 +73,8 @@ def cmd(sample, samplefile, debug):
     execution_dir = os.getcwd()
     all_report_path = os.path.join(execution_dir, "all-imeta-report.csv")
     if data:
-        data.to_csv(all_report_path, index=False)
+        df = pd.DataFrame(data, columns=["Sample", "CRAM", "CellRanger"])
+        df.to_csv(all_report_path, index=False)
         logger.info(f"Overall report generated: {all_report_path}")
     else:
         logger.warning("No reports found. 'all-imeta-report.csv' was not created.")
