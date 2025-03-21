@@ -113,6 +113,15 @@ def submit_lsf_job_array(
     log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
 
+    # Validate GPU options
+    if gpu:
+        if gpu not in VALID_GPUS:
+            raise ValueError(f"Invalid GPU type '{gpu}'. Must be one of: {VALID_GPUS}")
+
+        queue = "gpu-normal"
+        gpumem = 6000
+        gpunum = 1
+
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash
 #BSUB -J "{job_name}[1-{num_commands}]"
@@ -126,13 +135,6 @@ def submit_lsf_job_array(
 """
     # Validate and add GPU options if specified
     if gpu:
-        if gpu not in VALID_GPUS:
-            raise ValueError(f"Invalid GPU type '{gpu}'. Must be one of: {VALID_GPUS}")
-
-        queue = "gpu-normal"
-        gpumem = 6000
-        gpunum = 1
-
         lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpu}"\n"""
 
     # Extract and run the command
