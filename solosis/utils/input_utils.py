@@ -118,6 +118,7 @@ def validate_library_type(tsv_file):
             tablefmt="pretty",
             numalign="left",
             stralign="left",
+            showindex=False,
         )
         logger.info(f"Problematic samples... \n{table}")
         raise click.Abort()
