@@ -30,7 +30,13 @@ Install dev dependencies and install pre-commit hooks
     python -m pip install -r envs/doc-requirements.txt
     pre-commit install
     
-Pre-commit config includes ``black`` formatting and ``isort`` are implemented.
+Run Solosis in development mode
+
+::
+
+    python -m solosis.cli
+
+The pre-commit config includes ``black`` formatting and ``isort`` are implemented.
 You can manually check ``black`` formatting and ``isort`` as follows:
 
 ::
