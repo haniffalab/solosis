@@ -107,11 +107,17 @@ def validate_library_type(tsv_file):
     invalid_samples = invalid_samples[invalid_samples > 1]
 
     if not invalid_samples.empty:
+        invalid_samples_df = invalid_samples.reset_index()
+        invalid_samples_df.columns = ["Sample ID", "Library Type Count"]
         logger.error(
             "The following sample IDs have multiple library types, and will now terminate:"
         )
         table = tabulate(
-            invalid_samples, tablefmt="pretty", numalign="left", stralign="left"
+            invalid_samples_df,
+            headers="keys",
+            tablefmt="pretty",
+            numalign="left",
+            stralign="left",
         )
         logger.info(f"Problematic samples... \n{table}")
         raise click.Abort()
