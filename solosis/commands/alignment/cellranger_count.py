@@ -89,7 +89,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.info(f"Temporary command file created: {tmpfile.name}")
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"

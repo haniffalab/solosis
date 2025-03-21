@@ -92,7 +92,7 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.info(f"Temporary command file created: {tmpfile.name}")
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"

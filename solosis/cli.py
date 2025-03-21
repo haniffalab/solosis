@@ -23,7 +23,7 @@ def cli(debug):
     if debug:
         logger.setLevel(logging.DEBUG)
     validate_env()
-    logger.debug(f"Logger initialized at startup with execution_uid: {execution_uid}")
+    logger.info(f"Initialized with execution_uid: {execution_uid}")
 
 
 @cli.group()
