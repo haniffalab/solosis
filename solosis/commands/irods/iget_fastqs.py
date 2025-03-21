@@ -77,8 +77,10 @@ def cmd(sample, samplefile, debug):
 
     # Check if metadata TSV file exists
     if not os.path.exists(metadata_tsv_path):
-        logger.error(f"Metadata TSV file '{metadata_tsv_path}' not found.")
+        logger.error(f"Metadata TSV file {metadata_tsv_path} not found.")
         raise click.Abort()
+    else:
+        logger.error(f"Metadata TSV file saved: {metadata_tsv_path}")
 
     # Read and validate TSV file
     validate_library_type(metadata_tsv_path)
