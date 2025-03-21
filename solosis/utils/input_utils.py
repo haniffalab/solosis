@@ -1,5 +1,6 @@
 import click
 import pandas as pd
+from tabulate import tabulate
 
 from solosis.utils.state import logger
 
@@ -106,7 +107,11 @@ def validate_library_type(tsv_file):
     invalid_samples = invalid_samples[invalid_samples > 1]
 
     if not invalid_samples.empty:
-        logger.error("The following sample IDs have multiple library types:")
-        print(invalid_samples.to_string())
-        logger.error("This command will now be terminated with no further action")
+        logger.error(
+            "The following sample IDs have multiple library types, and will now terminate:"
+        )
+        table = tabulate(
+            invalid_samples, tablefmt="pretty", numalign="left", stralign="left"
+        )
+        logger.info(f"Problematic samples... \n{table}")
         raise click.Abort()
