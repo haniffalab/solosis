@@ -63,11 +63,11 @@ while [[ "$#" -gt 0 ]]; do
   esac
 done
 
-# # Load Cellbender module
-# if ! module load cellgen/cellbender/; then
-#   echo "Error: Failed to load Cellbender module" >&2
-#   exit 1
-# fi
+# Load Cellbender module
+if ! module load cellgen/cellbender/; then
+  echo "Error: Failed to load Cellbender module" >&2
+  exit 1
+fi
 
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
