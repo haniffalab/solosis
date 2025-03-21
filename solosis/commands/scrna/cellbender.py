@@ -104,7 +104,7 @@ def cmd(
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {gpumem} {gpu_type}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']}"
             # Add optional arguments if specified
             if gpu is not None:
                 command += f" --gpu"
