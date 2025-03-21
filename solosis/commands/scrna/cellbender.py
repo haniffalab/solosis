@@ -6,26 +6,21 @@ import click
 
 from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug
-from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
-@lsf_options_std
+@lsf_job
+@lsf_job(gpu="NVIDIAA100_SXM4_80GB")
 @debug
 @click.command("cellbender")
 @click.option(
     "--metadata",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing metadata",
-)
-@click.option(
-    "--cuda",
-    is_flag=True,
-    default=False,
-    help="Needed if job is run on GPU",
 )
 @click.option(
     "--total-droplets-included",
@@ -43,14 +38,12 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 )
 def cmd(
     metadata,
-    cuda,
     total_droplets_included,
     expected_cells,
     mem,
     cpu,
     queue,
-    gpumem,
-    gpu_type,
+    gpu,
     debug,
 ):
     """Eliminate technical artifacts from scRNA-seq"""
@@ -112,10 +105,10 @@ def cmd(
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem} {gpumem} {gpu_type}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {gpumem} {gpu_type}"
             # Add optional arguments if specified
-            if cuda is not None:
-                command += f" --cuda"
+            if gpu is not None:
+                command += f" --gpu"
             if total_droplets_included is not None:
                 command += f" --total-droplets-included {total_droplets_included}"
             if expected_cells is not None:
@@ -128,6 +121,7 @@ def cmd(
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 

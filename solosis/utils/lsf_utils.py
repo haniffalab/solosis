@@ -1,11 +1,19 @@
+import functools
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 import click
 
 from solosis.utils.state import execution_uid, logger
+
+VALID_GPUS = {
+    "NVIDIAA100_SXM4_80GB",
+    "TeslaV100_SXM2_32GB",
+    "TeslaV100_SXM2_16GB",
+    "TeslaV100_SXM2_32GB",
+    "NVIDIAH10080GBHBM3",
+}
 
 
 def lsf_options_sm(function):
@@ -34,17 +42,14 @@ def lsf_options_std(function):
     return function
 
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu="NVIDIAA100_SXM4_80GB"):
     """
     Decorator to add LSF job options to a click command.
     Usage:
-    @click.command()
-    @click.option("--input", type=click.Path(exists=True))
-    @lsf_job(mem = 20000)
-    @click.pass_context
-    def cmd(ctx, input):
-        pass
-
+        @click.command()
+        @lsf_job(mem=20000, cpu=4, gpu="NVIDIAA100_SXM4_80GB")
+        def cmd(mem, cpu, time, queue, gpu):
+            pass
     """
 
     def decorator(function):
@@ -56,26 +61,12 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
             "--queue", default=queue, help="Queue to which the job should be submitted"
         )
         @click.option("--gpu", default=gpu, type=str, help="Number of GPUs to request")
-        @click.option(
-            "--gpumem", default=gpumem, type=str, help="GPU memory to request"
-        )
         def wrapped(*args, **kwargs):
             return function(*args, **kwargs)
 
         return wrapped
 
     return decorator
-
-
-def _assign_job_name(job_name, ctx):
-    """
-    Assign a job name to the job.
-    """
-    if job_name == "default":
-        job_name = f"{ctx.obj['execution_id']}"
-    else:
-        job_name = f"{job_name}_{ctx.obj['execution_id']}"
-    return job_name
 
 
 def submit_lsf_job_array(
@@ -85,8 +76,7 @@ def submit_lsf_job_array(
     mem: int = 64000,
     queue: str = "normal",
     group: str = None,
-    gpumem: int = 0,
-    gpu_type: str = None,
+    gpu: str = None,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -133,13 +123,16 @@ def submit_lsf_job_array(
 #BSUB -G "{group}"
 #BSUB -q {queue}
 """
-    # Add GPU-specific options if the queue requires it
-    if queue == "gpu-normal":
-        if not gpumem or not gpu_type:
-            raise ValueError(
-                "For 'gpu-normal' queue, --gpumem and --gpu-type must be specified."
-            )
-        lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num=1:gmodel={gpu_type}"\n"""
+    # Validate and add GPU options if specified
+    if gpu:
+        if gpu not in VALID_GPUS:
+            raise ValueError(f"Invalid GPU type '{gpu}'. Must be one of: {VALID_GPUS}")
+
+        queue = "gpu-normal"
+        gpumem = 6000
+        gpunum = 1
+
+        lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpu}"\n"""
 
     # Extract and run the command
     lsf_script += f"""
