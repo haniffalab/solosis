@@ -144,10 +144,6 @@ echo "Executing command: $COMMAND"
 eval "$COMMAND"
 """
 
-    # Print the GPU value before submission
-    logger.info(f"Script: {lsf_script}")
-    click.Abort()
-
     # Submit the job array
     try:
         process = subprocess.run(
