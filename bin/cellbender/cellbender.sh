@@ -14,7 +14,7 @@
 
 set -e # Exit on failure
 
-# Check if at least 5 arguments are provided
+# Check if at least 3 arguments are provided
 if [ "$#" -lt 3 ]; then
   echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> [--gpu] [--total-droplets-included <value>] [--expected-cells <value>]" >&2
   exit 1
@@ -31,7 +31,7 @@ TOTAL_DROPLETS_FLAG=""
 EXPECTED_CELLS_FLAG=""
 
 # Parse optional arguments
-shift 5
+shift 3
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
   --total-droplets-included)
