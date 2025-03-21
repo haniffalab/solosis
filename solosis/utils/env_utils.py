@@ -50,9 +50,7 @@ def irods_auth(timeout=5):
         if result.returncode != 0:
             # Check if the response indicates an invalid user
             if "CAT_INVALID_USER" in result.stderr:
-                logger.warning(
-                    "iRODS authentication failed: Invalid user. Re-authenticating..."
-                )
+                logger.warning("iRODS authentication failed: Re-authenticating...")
                 return authenticate_irods()
 
             # Check if the response indicates the user is authenticated
