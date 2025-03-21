@@ -50,7 +50,7 @@ def irods_auth(timeout=5):
         if result.returncode != 0:
             # Check if the response indicates that the user is authenticated
             if "USER_INPUT_PATH_ERR" in result.stderr:
-                logger.info("iRODS authenticated.")
+                logger.info("iRODS authenticated")
                 return True
 
             logger.error(f"iRODS command failed with return code {result.returncode}")
@@ -76,7 +76,7 @@ def irods_auth(timeout=5):
         )
         process.communicate(input=password + "\n")
         if process.returncode == 0:
-            logger.info(f"iRODS authenticated...")
+            logger.info(f"iRODS authenticated")
             return True
         else:
             logger.error(f"iRODS initialization failed")

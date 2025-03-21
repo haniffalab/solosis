@@ -86,7 +86,7 @@ def process_metadata_file(metadata):
             logger.error(f"Error reading metadata file {samples}: {e}")
 
     if not samples:
-        logger.error("No samples provided. Use --sample or --samplefile")
+        logger.error("No samples provided. Use --metadata")
         raise click.Abort()
 
     return samples
