@@ -52,7 +52,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
             imeta_report_script = os.path.abspath(
                 os.path.join(
-                    os.environ("SCRIPT_BIN"),
+                    os.getenv("SCRIPT_BIN"),
                     "irods/imeta_report.sh",
                 )
             )
