@@ -81,7 +81,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
 
     cellranger_count_path = os.path.abspath(
         os.path.join(
-            os.environ("SCRIPT_BIN"),
+            os.getenv("SCRIPT_BIN"),
             "cellranger/cellranger_count.sh",
         )
     )
