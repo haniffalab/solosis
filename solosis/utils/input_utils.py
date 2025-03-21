@@ -120,5 +120,5 @@ def validate_library_type(tsv_file):
             stralign="left",
             showindex=False,
         )
-        logger.info(f"Problematic samples... \n{table}")
+        logger.error(f"Problematic samples... \n{table}")
         raise click.Abort()
