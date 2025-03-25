@@ -65,3 +65,6 @@ cellranger count \
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
+
+cd "$OUTPUT_DIR/$SAMPLE_ID" #this ends up being the full output dir e.g. '/lustre/scratch126/cellgen/team298/data/samples/HCA_SkO14189565/cellranger/solosis_720/HCA_SkO14189565/'
+grep -q "Pipestance completed successfully!" _log && echo "CellRanger completed successfully for sample: $SAMPLE_ID" || echo "CellRanger failed or incomplete for sample: $SAMPLE_ID."
