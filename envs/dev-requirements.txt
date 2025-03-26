@@ -12,6 +12,8 @@ click==8.1.8
     # via
     #   black
     #   solosis (setup.py)
+colorama==0.4.6
+    # via solosis (logging_utils.py)
 coverage[toml]==7.6.12
     # via pytest-cov
 distlib==0.3.9
