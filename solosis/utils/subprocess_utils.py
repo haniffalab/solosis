@@ -11,6 +11,7 @@ def popen(
 ):
     """Submit an LSF job array where each job runs a command from a file."""
     try:
+        logger.debug(f"Starting subprocess for: {command}")
         process = subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -39,6 +40,6 @@ def popen(
         if process.returncode != 0:
             logger.error(f"Error during execution. Return code: {process.returncode}")
         else:
-            logger.info("Process completed successfully.")
+            logger.debug("Subprocess completed successfully")
     except Exception as e:
         logger.error(f"Error executing command: {e}")
