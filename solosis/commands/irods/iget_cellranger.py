@@ -1,6 +1,5 @@
 import logging
 import os
-import subprocess
 import tempfile
 
 import click
@@ -82,6 +81,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                                 f"Skipping {collection_name}, already exists in {cellranger_dir}"
                             )
                             continue
+
                         command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
 

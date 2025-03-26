@@ -1,11 +1,12 @@
 import logging
 import os
+import secrets
 import tempfile
 
 import click
 
 from solosis.utils.env_utils import irods_auth
-from solosis.utils.input_utils import collect_samples
+from solosis.utils.input_utils import collect_samples, validate_library_type
 from solosis.utils.logging_utils import debug
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
@@ -48,7 +49,7 @@ def cmd(sample, samplefile, debug):
             samples_to_download.append(sample)
 
     if not samples_to_download:
-        logger.warning(f"All samples already proccessed.")
+        logger.warning("All samples already processed.")
         raise click.Abort()
 
     with tempfile.NamedTemporaryFile(
@@ -58,6 +59,31 @@ def cmd(sample, samplefile, debug):
         os.chmod(tmpfile.name, 0o660)
         for sample in samples_to_download:
             tmpfile.write(sample + "\n")
+
+    # Run the metadata script first
+    random_id = secrets.token_hex(4)
+    metadata_script = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../bin/irods/nf-irods-to-fastq-metadata.sh",
+        )
+    )
+    popen([metadata_script, tmpfile.name, random_id])
+
+    # Define expected TSV file path
+    metadata_tsv_path = os.path.join(
+        os.getenv("TEAM_TMP_DIR"), random_id, "metadata", "metadata.tsv"
+    )
+
+    # Check if metadata TSV file exists
+    if not os.path.exists(metadata_tsv_path):
+        logger.error(f"Metadata TSV file {metadata_tsv_path} not found.")
+        raise click.Abort()
+    else:
+        logger.info(f"Metadata TSV file saved: {metadata_tsv_path}")
+
+    # Read and validate TSV file
+    validate_library_type(metadata_tsv_path)
 
     irods_to_fastq_script = os.path.abspath(
         os.path.join(
