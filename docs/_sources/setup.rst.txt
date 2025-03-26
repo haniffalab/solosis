@@ -1,27 +1,46 @@
-.. _installation:
+.. _setup
 
 Setup
 =====
 
-To use Solosis from the Wellcome Sanger Institute, add the module path
+Add the module path.
 
 .. code-block:: shell
    :caption: Input
 
    module use append /software/cellgen/team298/shared/modulefiles
 
-Then load the Solosis module
+
+Load the Solosis module.
 
 .. code-block:: shell
    :caption: Input
 
    module load solosis
 
-.. admonition:: Working with iRODS
 
-   If you're running commands that work with iRODS, please load the module and authenticate yourself.
+.. code-block:: shell
+   :caption: Expected Output
 
-   .. code-block:: shell
+   ** INFO: 'Welcome to Solosis, Module loaded'
+   ** INFO: 'Type solosis-cli to get started'
 
-      module load cellgen/irods
-      iinit 
+
+Execute the main solosis command to view available commands.
+
+.. code-block:: shell
+   :caption: Input
+
+   solosis-cli
+
+
+.. code-block:: shell
+   :caption: Expected Output
+
+   Usage: solosis-cli [OPTIONS] COMMAND [ARGS]...
+
+    A command line interface for working with single-cell data.
+
+   Options:
+    --version  Show the version and exit.
+    --help     Show this message and exit.

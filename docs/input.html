@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input File &mdash; Solosis 0.3.0 documentation</title>
+  <title>Input Data &mdash; Solosis 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a78a336b" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Output Data" href="output.html" />
-    <link rel="prev" title="Examples" href="examples.html" /> 
+    <link rel="prev" title="API" href="api.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,13 +47,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input File</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#populate-samplefile">Populate Samplefile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cell-rangerarc">Cell RangerARC</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#samplefile">Samplefile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cell-ranger-arc-libraries-file">Cell Ranger ARC Libraries File</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
@@ -79,7 +78,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Input File</li>
+      <li class="breadcrumb-item active">Input Data</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/input.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -89,47 +88,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="input-file">
-<span id="input"></span><h1>Input File<a class="headerlink" href="#input-file" title="Link to this heading"></a></h1>
-<p id="setup-samplefile">Follow these instructions to populate input files to successfully run the solosis CLI.</p>
-<section id="populate-samplefile">
-<h2>Populate Samplefile<a class="headerlink" href="#populate-samplefile" title="Link to this heading"></a></h2>
-<p>This is the input file can be a comma-separated variable <code class="docutils literal notranslate"><span class="pre">.csv</span></code> or tab-separated variable <code class="docutils literal notranslate"><span class="pre">.tsv</span></code> file:</p>
-<ul class="simple">
-<li><p><em>This input file is an expected input on any command using the</em> <code class="docutils literal notranslate"><span class="pre">--samplefile</span></code> <em>argument.</em></p></li>
-</ul>
-<p><strong>NOTE:</strong> this input file can include any number of columns, so long as:</p>
-<ul class="simple">
-<li><p>column1 = <em>sample_id</em></p></li>
-</ul>
+  <section id="input-data">
+<span id="input"></span><h1>Input Data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h1>
+<p>Follow these instructions to populate input files to successfully run the solosis CLI.</p>
+<section id="samplefile">
+<h2>Samplefile<a class="headerlink" href="#samplefile" title="Link to this heading"></a></h2>
+<p>Several commands in Solosis accept a <code class="docutils literal notranslate"><span class="pre">--samplefile</span></code> option where you can pass multiple samples as a comma-separated <code class="docutils literal notranslate"><span class="pre">.csv</span></code> or tab-separated <code class="docutils literal notranslate"><span class="pre">.tsv</span></code> file. The column that contains the Sample IDs would be called “sample_id”.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 100.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>sample_id</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>pBCN14634207</p></td>
+<tr class="row-even"><td><p>s12345</p></td>
 </tr>
-<tr class="row-odd"><td><p>pBCN14634303</p></td>
+<tr class="row-odd"><td><p>s67890</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="cell-rangerarc">
-<span id="setup-cellrangerarc"></span><h2>Cell RangerARC<a class="headerlink" href="#cell-rangerarc" title="Link to this heading"></a></h2>
-<p>Cell RangerARC requires a different input file, a <code class="docutils literal notranslate"><span class="pre">libraries</span></code> file, which is a <em>comma-separated variable</em> <code class="docutils literal notranslate"><span class="pre">csv</span></code> file.</p>
-<ul class="simple">
-<li><p>csv file <code class="docutils literal notranslate"><span class="pre">libraries.csv</span></code> which includes library type of each sample (e.g. GEX or ATAC)</p></li>
-</ul>
+<section id="cell-ranger-arc-libraries-file">
+<span id="setup-cellrangerarc"></span><h2>Cell Ranger ARC Libraries File<a class="headerlink" href="#cell-ranger-arc-libraries-file" title="Link to this heading"></a></h2>
+<p>Cell Ranger ARC requires a specific input file, called a <code class="docutils literal notranslate"><span class="pre">libraries</span></code> file, which is a <em>comma-separated variable</em> <code class="docutils literal notranslate"><span class="pre">csv</span></code> file. Construct a 3-column libraries CSV file that specifies the location of the ATAC and GEX FASTQ files associated with the sample. For example:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 28.6%" />
-<col style="width: 42.9%" />
-<col style="width: 28.6%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>fastqs</p></th>
 <th class="head"><p>sample</p></th>
@@ -137,24 +118,24 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>/lustre/scratch126/cellgen/team298/tmp/HCA_rFSKI14910984</p></td>
-<td><p>HCA_rFSKI14910984</p></td>
+<tr class="row-even"><td><p>/home/jdoe/runs/HNGEXSQXXX/outs/fastq_path</p></td>
+<td><p>s12345</p></td>
 <td><p>Gene Expression</p></td>
 </tr>
-<tr class="row-odd"><td><p>/lustre/scratch126/cellgen/team298/tmp/HCA_rFSKI14910888</p></td>
-<td><p>HCA_rFSKI14910888</p></td>
+<tr class="row-odd"><td><p>/home/jdoe/runs/HNATACSQXX/outs/fastq_path</p></td>
+<td><p>s67890</p></td>
 <td><p>Chromatin Accessibility</p></td>
 </tr>
 </tbody>
 </table>
-<span class="target" id="environment-manual"></span></section>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="output.html" class="btn btn-neutral float-right" title="Output Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -46,11 +46,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="input.html">Input File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#python-testing">Python testing</a></li>
@@ -87,8 +86,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="development">
-<span id="id1"></span><h1>Development<a class="headerlink" href="#development" title="Link to this heading"></a></h1>
+  <section id="id1">
+<h1>Development<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p>If you are developing or want to contribute to Solosis, please read this page.</p>
 <p>You can clone the repo to your preferred development location</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">haniffalab</span><span class="o">/</span><span class="n">solosis</span><span class="o">.</span><span class="n">git</span>
@@ -101,21 +100,26 @@
 </pre></div>
 </div>
 <p>Install dev dependencies and install pre-commit hooks</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">doc</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 <span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
 </pre></div>
 </div>
-<p>For Github Actions to pass, will need to ensure <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> are implemented.
-You can manually check <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code></p>
+<p>Run Solosis in development mode</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">solosis</span><span class="o">.</span><span class="n">cli</span>
+</pre></div>
+</div>
+<p>The pre-commit config includes <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> are implemented.
+You can manually check <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">black</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
-
 <span class="n">isort</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <section id="python-testing">
 <h2>Python testing<a class="headerlink" href="#python-testing" title="Link to this heading"></a></h2>
-<p><strong>Testing of python scripts uses `pytest`_.</strong></p>
-<p>Set the <code class="code docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> environment variable to the <code class="code docutils literal notranslate"><span class="pre">bin</span></code> directory where the scripts are stored, and then run the following command:</p>
+<p>Testing of python scripts uses <a class="reference external" href="https://docs.pytest.org/en/7.1.x/">pytest</a>. Set the <code class="code docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> environment variable
+to the <code class="code docutils literal notranslate"><span class="pre">bin</span></code> directory where the scripts are stored, and then run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">q</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_cli</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
