@@ -1,6 +1,5 @@
 import logging
 import os
-import subprocess
 import tempfile
 
 import click
@@ -40,7 +39,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.info(f"Temporary command file created: {tmpfile.name}")
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
             sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
@@ -82,6 +81,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                                 f"Skipping {collection_name}, already exists in {cellranger_dir}"
                             )
                             continue
+
                         command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
 

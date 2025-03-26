@@ -35,7 +35,7 @@ def validate_env():
 
 
 def irods_auth(timeout=5):
-    """Validate irods authentication."""
+    """Validate iRODS authentication and prompt for credentials if needed."""
     try:
         logger.info("Checking iRODS authentication status...")
         result = subprocess.run(
@@ -48,9 +48,14 @@ def irods_auth(timeout=5):
         )
 
         if result.returncode != 0:
-            # Check if the response indicates that the user is authenticated
+            # Check if the response indicates an invalid user
+            if "CAT_INVALID_USER" in result.stderr:
+                logger.warning("iRODS authentication failed: Re-authenticating...")
+                return authenticate_irods()
+
+            # Check if the response indicates the user is authenticated
             if "USER_INPUT_PATH_ERR" in result.stderr:
-                logger.info("iRODS authenticated.")
+                logger.info("iRODS authenticated")
                 return True
 
             logger.error(f"iRODS command failed with return code {result.returncode}")
@@ -64,9 +69,17 @@ def irods_auth(timeout=5):
         return False
 
     except Exception as e:
-        # Assuming error is a timeout, indicating user in not authenticated.
+        logger.error(f"Unexpected error: {e}")
+
+    return False
+
+
+def authenticate_irods():
+    """Prompt user for iRODS password and attempt re-authentication."""
+    try:
         password = getpass.getpass("Enter iRODS Password: ")
-        subprocess.run(["stty", "sane"])  # Needed to reset terminal state
+        subprocess.run(["stty", "sane"])  # Reset terminal state
+
         process = subprocess.Popen(
             ["iinit"],
             stdin=subprocess.PIPE,
@@ -74,11 +87,15 @@ def irods_auth(timeout=5):
             stderr=subprocess.PIPE,
             text=True,
         )
-        process.communicate(input=password + "\n")
+        stdout, stderr = process.communicate(input=password + "\n")
+
         if process.returncode == 0:
-            logger.info(f"iRODS authenticated...")
+            logger.info("iRODS authenticated successfully")
             return True
         else:
-            logger.error(f"iRODS initialization failed")
+            logger.error(f"iRODS initialization failed:\n{stderr}")
+
+    except Exception as e:
+        logger.error(f"Error during iRODS authentication: {e}")
 
     return False

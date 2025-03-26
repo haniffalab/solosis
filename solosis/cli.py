@@ -22,12 +22,13 @@ version_info = click.style(f"  ~  version {version}")
 @click.group()
 @debug
 def cli(debug):
-    """A command line interface for working with single-cell data."""
+    """A command line interface for working with single-cell data. \n
+    Documentation: https://haniffalab.com/solosis/"""
     click.echo(f"{module_name}{version_info}")
     if debug:
         logger.setLevel(logging.DEBUG)
     validate_env()
-    logger.debug(f"Logger initialized at startup with execution_uid: {execution_uid}")
+    logger.info(f"Initialized with execution_uid: {execution_uid}")
 
 
 @cli.group()

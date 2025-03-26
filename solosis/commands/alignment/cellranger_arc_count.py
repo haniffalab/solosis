@@ -120,7 +120,7 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.info(f"Temporary command file created: {tmpfile.name}")
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for library in valid_libraries:
             command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem}"
