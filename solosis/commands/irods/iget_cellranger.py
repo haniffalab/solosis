@@ -88,7 +88,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                         command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
                         logger.info(
-                            f"Collection ({collection_name}) for sample {sample} will be downloaded to {output_dir}"
+                            f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
                         )
 
     submit_lsf_job_array(
