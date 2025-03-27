@@ -64,7 +64,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Load Cellbender module
-if ! module load cellgen/cellbender/; then
+if ! module load cellgen/cellbender/0.3.0; then
   echo "Error: Failed to load Cellbender module" >&2
   exit 1
 fi
@@ -83,8 +83,8 @@ echo "Expected cells: ${EXPECTED_CELLS_FLAG:-Auto-detected}"
 
 # Construct command
 CELLBENDER_CMD=("cellbender remove-background"
-  "--input \"$CELLRANGER_DIR/raw_feature_bc_matrix.h5\""
-  "--output \"$OUTPUT_DIR/$SAMPLE_ID-cb.h5\""
+  "--input=$CELLRANGER_DIR/raw_feature_bc_matrix.h5"
+  "--output=$OUTPUT_DIR/${SAMPLE_ID}_${USER}_$(date +%Y%m%d).h5"
 )
 [ -n "$GPU_FLAG" ] && CELLBENDER_CMD+=("$GPU_FLAG")
 [ -n "$TOTAL_DROPLETS_FLAG" ] && CELLBENDER_CMD+=("$TOTAL_DROPLETS_FLAG")
@@ -93,8 +93,8 @@ CELLBENDER_CMD=("cellbender remove-background"
 # Print the command before execution
 echo "Executing: ${CELLBENDER_CMD[*]}"
 
-# Run Cellbender
-eval "${CELLBENDER_CMD[*]}"
+# Execute
+"${CELLBENDER_CMD[@]}"
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cellbender completed for sample: $SAMPLE_ID"
