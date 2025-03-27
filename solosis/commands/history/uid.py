@@ -49,7 +49,7 @@ def cmd(uid, debug):
     logger.info(f"{click.style('Timestamp', bold=True)}: {timestamp}")
     logger.info(f"{click.style('User', bold=True)}: {user}")
     logger.info(f"{click.style('Command', bold=True)}: {command}")
-    logger.info(f"{click.style('Logs', bold=True)}: {log_dir}")
+    logger.info(f"{click.style('Logs', bold=True)}")
     if log_dir.exists():
         for item in log_dir.iterdir():
             logger.info(f"├── {item}")
