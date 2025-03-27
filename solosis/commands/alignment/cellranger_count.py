@@ -58,10 +58,13 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
         if os.path.exists(fastq_dir) and any(
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
         ):
-            if os.path.exists(output_dir):
-                logger.warning(
-                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample"
-                )
+            log_file = os.path.join(output_dir, sample, "_log")
+            if os.path.exists(log_file):
+                with open(log_file, "r") as lf:
+                    if "Pipestance completed successfully!" in lf.read():
+                        logger.warning(
+                            f"CellRanger output already completed successfully for sample {sample}. Skipping this sample"
+                        )
             else:
                 valid_samples.append(
                     {
