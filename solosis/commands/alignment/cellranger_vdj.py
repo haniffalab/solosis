@@ -21,12 +21,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
-# @click.option(
-#    "--create-bam",
-#    is_flag=True,
-#    default=False,
-#    help="Generate BAM files for each sample",
-# )
 @click.option(
     "--version",
     type=str,
@@ -93,8 +87,6 @@ def cmd(sample, samplefile, version, mem, cpu, queue, debug):
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
-            # if not create_bam:
-            #    command += " --no-bam"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(

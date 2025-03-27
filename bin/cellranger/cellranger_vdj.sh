@@ -29,7 +29,7 @@ CPU="$5"
 MEM="$6"
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0"
 
-# Load Cell Ranger ARC module (make sure the version is correct)
+# Load Cell Ranger module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
   echo "Failed to load Cell Ranger version $VERSION" >&2
   exit 1
@@ -46,7 +46,7 @@ echo "Cell Ranger version: $VERSION"
 echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 
-# Run Cell Ranger count
+# Run Cell Ranger vdj
 cellranger vdj \
     --id="$SAMPLE_ID" \
     --fastqs="$FASTQ_DIR" \
