@@ -13,6 +13,7 @@ setup(
     extras_require={
         "dev": [
             "black",
+            "colorama",
             "isort",
             "pre-commit",
             "pytest",
