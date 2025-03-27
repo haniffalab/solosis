@@ -83,8 +83,8 @@ echo "Expected cells: ${EXPECTED_CELLS_FLAG:-Auto-detected}"
 
 # Construct command
 CELLBENDER_CMD=("cellbender remove-background"
-  "--input \"$CELLRANGER_DIR/raw_feature_bc_matrix.h5\""
-  "--output \"$OUTPUT_DIR/${USER}_$(date +%Y%m%d).h5\""
+  "--input=$CELLRANGER_DIR/raw_feature_bc_matrix.h5"
+  "--output=$OUTPUT_DIR/${SAMPLE_ID}_${USER}_$(date +%Y%m%d).h5"
 )
 [ -n "$GPU_FLAG" ] && CELLBENDER_CMD+=("$GPU_FLAG")
 [ -n "$TOTAL_DROPLETS_FLAG" ] && CELLBENDER_CMD+=("$TOTAL_DROPLETS_FLAG")
@@ -93,7 +93,8 @@ CELLBENDER_CMD=("cellbender remove-background"
 # Print the command before execution
 echo "Executing: ${CELLBENDER_CMD[*]}"
 
-eval "${CELLBENDER_CMD[*]}"
+# Execute
+"${CELLBENDER_CMD[@]}"
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cellbender completed for sample: $SAMPLE_ID"
