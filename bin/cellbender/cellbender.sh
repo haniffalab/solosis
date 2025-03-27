@@ -2,39 +2,36 @@
 # cellbender.sh - Run Cellbender background removal for a given sample
 
 # Usage:
-#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included] [--expected-cells]
+#   ./cellbender.sh <sample_id> <output_dir> <cellranger_dir> [--gpu] [--total-droplets-included <value>] [--expected-cells <value>]
 #
 # Parameters:
 #   <sample_id>       - Sample ID to process (unique identifier for the sample).
 #   <output_dir>      - Path to store Cellbender output (processed data).
 #   <cellranger_dir>  - Path to the Cell Ranger directory containing the raw matrix data.
-#   <cpu>             - Number of CPU cores to allocate.
-#   <mem>             - Amount of memory in MB to allocate.
-#   --gpu <gpu_type>  - Optional flag to specify GPU type for processing (e.g., "NVIDIAA100_SXM4_80GB").
-#   --total-droplets-included         - optional flag to choose a number that goes a few thousand barcodes into the 'empty droplet plateau' in UMI plot.
-#   --expected-cells <expected_cells> - optional flag based on either the number of cells expected a priori from the experimental design.
+#   --gpu             - Optional flag to enable GPU (--cuda).
+#   --total-droplets-included <value> - Optional flag to specify droplet count.
+#   --expected-cells <value> - Optional flag to specify expected cells count.
 
-set -e # Exit immediately if a command fails
+set -e # Exit on failure
 
-# Check if at least 5 arguments are provided
-if [ "$#" -lt 5 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> [--gpu <gpu_type>] [--total-droplets-included <total_droplets_included>] [--expected-cells <expected_cells>]" >&2
+# Check if at least 3 arguments are provided
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> [--gpu] [--total-droplets-included <value>] [--expected-cells <value>]" >&2
   exit 1
 fi
 
-# Assign command-line arguments to variables
+# Assign required arguments
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 CELLRANGER_DIR="$3"
-CPU="$4"
-MEM="$5"
-# Optional flags
-#GPU_FLAG="" #$8 --cuda?
-TOTAL_DROPLETS_FLAG="" # Default cellbender will calculate this
-EXPECTED_CELLS_FLAG="" # Default cellbender will calculate this
+
+# Initialize optional flags
+GPU_FLAG=""
+TOTAL_DROPLETS_FLAG=""
+EXPECTED_CELLS_FLAG=""
 
 # Parse optional arguments
-shift 5
+shift 3
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
   --total-droplets-included)
@@ -55,8 +52,12 @@ while [[ "$#" -gt 0 ]]; do
       exit 1
     fi
     ;;
+  --gpu)
+    GPU_FLAG="--cuda"
+    shift
+    ;;
   *)
-    echo "Warning: Unknown parameter $1 ignored"
+    echo "Warning: Unknown parameter '$1' ignored." >&2
     shift
     ;;
   esac
@@ -76,28 +77,23 @@ cd "$OUTPUT_DIR"
 echo "Running Cellbender for sample: $SAMPLE_ID"
 echo "Output directory: $OUTPUT_DIR"
 echo "Cell Ranger directory: $CELLRANGER_DIR"
-echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
-if [ -n "$GPU_FLAG" ]; then
-  echo "GPU flag enabled: $GPU_FLAG"
-else
-  echo "GPU flag not enabled, using CPU"
-fi
+echo "GPU flag: ${GPU_FLAG:-Not enabled}"
+echo "Total droplets: ${TOTAL_DROPLETS_FLAG:-Auto-detected}"
+echo "Expected cells: ${EXPECTED_CELLS_FLAG:-Auto-detected}"
 
-[ -n "$TOTAL_DROPLETS_FLAG" ] && echo "Total droplets included: $TOTAL_DROPLETS_FLAG" || echo "Cellbender will determine total droplets."
-[ -n "$EXPECTED_CELLS_FLAG" ] && echo "Expected cells: $EXPECTED_CELLS_FLAG" || echo "Cellbender will determine expected cells."
+# Construct command
+CELLBENDER_CMD=("cellbender remove-background"
+  "--input \"$CELLRANGER_DIR/raw_feature_bc_matrix.h5\""
+  "--output \"$OUTPUT_DIR/${USER}_$(date +%Y%m%d).h5\""
+)
+[ -n "$GPU_FLAG" ] && CELLBENDER_CMD+=("$GPU_FLAG")
+[ -n "$TOTAL_DROPLETS_FLAG" ] && CELLBENDER_CMD+=("$TOTAL_DROPLETS_FLAG")
+[ -n "$EXPECTED_CELLS_FLAG" ] && CELLBENDER_CMD+=("$EXPECTED_CELLS_FLAG")
 
-# Run Cellbender
-cellbender remove-background \
-  "$GPU_FLAG" \
-  --input "$CELLRANGER_DIR/raw_feature_bc_matrix.h5" \
-  --output "$OUTPUT_DIR/$SAMPLE_ID_$(date +%Y%m%d)_CB.h5" \
-  "$TOTAL_DROPLETS_FLAG" \
-  "$EXPECTED_CELLS_FLAG"
-# Q="gpu-normal"
-# GMEM=6000  # GPU memory
-# DROPLETS=$2
-# cellbender remove-background --cuda --input $VOY_DATA/$sample/cellranger/outs/raw_feature_bc_matrix.h5 --output $VOY_DATA/$sample/cellbender-results/$sample-cb.h5 --total-droplets-included $DROPLETS
-# #BSUB -gpu "mode=shared:j_exclusive=no:gmem=${GMEM}:num=1:gmodel=NVIDIAA100_SXM4_80GB"
+# Print the command before execution
+echo "Executing: ${CELLBENDER_CMD[*]}"
+
+eval "${CELLBENDER_CMD[*]}"
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cellbender completed for sample: $SAMPLE_ID"
