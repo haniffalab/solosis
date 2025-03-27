@@ -64,7 +64,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Load Cellbender module
-if ! module load cellgen/cellbender/; then
+if ! module load cellgen/cellbender/0.3.0; then
   echo "Error: Failed to load Cellbender module" >&2
   exit 1
 fi

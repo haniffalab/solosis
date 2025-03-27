@@ -108,7 +108,7 @@ def submit_lsf_job_array(
         num_commands = sum(1 for _ in f)
 
     if not execution_uid:
-        raise ValueError("execution_uid is empty or None. It must be a valid UUID.")
+        raise ValueError("The execution_uid is empty or None. It must be a valid UUID.")
 
     log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
@@ -131,7 +131,7 @@ def submit_lsf_job_array(
 #BSUB -M {mem}
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
-#BSUB -q {queue}
+#BSUB -q "{queue}"
 """
     # Validate and add GPU options if specified
     if gpu:
