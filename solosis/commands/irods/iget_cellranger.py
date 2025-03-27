@@ -35,6 +35,8 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
     if not irods_auth():
         raise click.Abort()
 
+    samples_to_download = []
+
     samples = collect_samples(sample, samplefile)
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
@@ -82,8 +84,12 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                             )
                             continue
 
+                        samples_to_download.append((sample, output_dir))
                         command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
+                        logger.info(
+                            f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
+                        )
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
@@ -92,6 +98,12 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         mem=mem,
         queue=queue,
     )
+
+    if samples_to_download:
+        log_file = os.path.join(os.getcwd(), "iget-cellranger.log")
+        df = pd.DataFrame(samples_to_download, columns=["sample", "cellranger_dir"])
+        df.to_csv(log_file, index=False)
+        logger.info(f"Log file of output paths: {log_file}")
 
 
 if __name__ == "__main__":
