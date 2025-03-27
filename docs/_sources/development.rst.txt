@@ -25,6 +25,7 @@ Install dev dependencies and install pre-commit hooks
 
 ::
 
+    pip install --upgrade pip
     python -m pip install -r envs/requirements.txt
     python -m pip install -r envs/dev-requirements.txt
     python -m pip install -r envs/doc-requirements.txt
