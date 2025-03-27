@@ -38,6 +38,11 @@ def log_history(uid: str, version: str):
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
     user = getpass.getuser()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ignored_commands = [
+        "history view",
+        "history clear",
+        "history uid",
+    ]  # array of commands to not log
     command = " ".join(sys.argv)
     with open(history_file, "a") as f:
         f.write(f"{timestamp},{user},{version},{uid},{command}\n")
