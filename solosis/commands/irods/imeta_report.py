@@ -36,6 +36,7 @@ def cmd(sample, samplefile, debug):
         raise click.Abort()
 
     samples = collect_samples(sample, samplefile)
+
     data = []
     for sample in samples:
         logger.info(f"Processing sample: {sample}")
@@ -59,15 +60,24 @@ def cmd(sample, samplefile, debug):
             cellranger = len(df[df["collection_type"] == "CellRanger"])
             data.append([sample, crams, cellranger])
 
-        headers = [
-            "Sample",
-            "CRAM",
-            "CellRanger",
-        ]
-        table = tabulate(
-            data, headers, tablefmt="pretty", numalign="left", stralign="left"
-        )
-        logger.info(f"Summary table... \n{table}")
+    # Display summary table for samples
+    headers = [
+        "Sample",
+        "CRAM",
+        "CellRanger",
+    ]
+    table = tabulate(data, headers, tablefmt="pretty", numalign="left", stralign="left")
+    logger.info(f"Summary table... \n{table}")
+
+    # Output combined report for samples
+    execution_dir = os.getcwd()
+    all_report_path = os.path.join(execution_dir, "all-imeta-report.csv")
+    if data:
+        df = pd.DataFrame(data, columns=["Sample", "CRAM", "CellRanger"])
+        df.to_csv(all_report_path, index=False)
+        logger.info(f"Overall report generated: {all_report_path}")
+    else:
+        logger.warning("No reports found. 'all-imeta-report.csv' was not created.")
 
 
 if __name__ == "__main__":

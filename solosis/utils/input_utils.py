@@ -1,5 +1,6 @@
 import click
 import pandas as pd
+from tabulate import tabulate
 
 from solosis.utils.state import logger
 
@@ -90,3 +91,34 @@ def process_metadata_file(metadata):
         raise click.Abort()
 
     return samples
+
+
+def validate_library_type(tsv_file):
+    """
+    Validates that each sample ID in the TSV file has only one unique library_type.
+    If multiple library_type values are found for a sample ID, the process is aborted.
+
+    :param tsv_file: Path to the TSV file
+    """
+    df = pd.read_csv(tsv_file, sep="\t", dtype=str)
+
+    # Count unique library_type values for each sample
+    invalid_samples = df.groupby("sample")["library_type"].nunique()
+    invalid_samples = invalid_samples[invalid_samples > 1]
+
+    if not invalid_samples.empty:
+        invalid_samples_df = invalid_samples.reset_index()
+        invalid_samples_df.columns = ["Sample ID", "Library Type Count"]
+        logger.error(
+            "The following sample IDs have multiple library types, and will now terminate:"
+        )
+        table = tabulate(
+            invalid_samples_df,
+            headers="keys",
+            tablefmt="pretty",
+            numalign="left",
+            stralign="left",
+            showindex=False,
+        )
+        logger.error(f"Problematic samples... \n{table}")
+        raise click.Abort()

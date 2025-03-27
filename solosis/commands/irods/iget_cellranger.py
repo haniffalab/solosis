@@ -1,6 +1,5 @@
 import logging
 import os
-import subprocess
 import tempfile
 
 import click
@@ -42,7 +41,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.info(f"Temporary command file created: {tmpfile.name}")
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
             sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
@@ -59,6 +58,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                 )
             )
             popen([imeta_report_script, sample, report_path])
+
             if os.path.exists(report_path):
                 df = pd.read_csv(
                     report_path, header=None, names=["collection_type", "path"]
@@ -84,12 +84,12 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                             )
                             continue
 
-                        command = f"iget -r {path} {cellranger_dir}"
-                        tmpfile.write(command + "\n")
                         samples_to_download.append((sample, output_dir))
-            tmpfile.write(
-                f"chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true" + "\n"
-            )
+                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        tmpfile.write(command + "\n")
+                        logger.info(
+                            f"Collection {collection_name} for {sample} will be downloaded to {cellranger_dir}"
+                        )
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
@@ -104,8 +104,6 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         df = pd.DataFrame(samples_to_download, columns=["sample", "cellranger_dir"])
         df.to_csv(log_file, index=False)
         logger.info(f"Log file of output paths: {log_file}")
-    else:
-        logger.info("No downloads were logged, no log file generated.")
 
 
 if __name__ == "__main__":
