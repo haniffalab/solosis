@@ -42,10 +42,6 @@ def cmd(lines, debug):
         timestamp, user, version, uid, command = parts[:5]
         commands = command.split(" ", 1)[-1]
 
-        # Exclude `./solosis-cli history view` commands
-        # if command.strip() == "./solosis-cli history view":
-        #    continue
-
         table_data.append(
             [
                 timestamp,
