@@ -7,7 +7,7 @@ from solosis.cli import cli
 
 # responding to error message ("missing environmnet variables LSB_DEFAULT_USERGROUP and TEAM_DATA_DIR")
 os.environ["LSB_DEFAULT_USERGROUP"] = "team298"
-os.environ["TEAM_DATA_DIR"] = "/lustre/scratch126/cellgen/team298/data"
+os.environ["TEAM_DATA_DIR"] = "/lustre/scratch126/cellgen/team298/data/tmp/solosis"
 
 
 def test_version():
