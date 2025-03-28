@@ -34,10 +34,10 @@ def debug(function):
 
 
 ignored_commands = [
-    "./solosis-cli history",
-    "./solosis-cli history view",
-    "./solosis-cli history clear",
-    "./solosis-cli history uid",
+    "history",
+    "history view",
+    "history clear",
+    "history uid",
 ]
 
 
@@ -48,7 +48,7 @@ def log_history(uid: str, version: str):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     command = " ".join(sys.argv)
     # check for ignored commands
-    if any(command.startswith(ignored) for ignored in ignored_commands):
+    if any(ignored in command for ignored in ignored_commands):
         return  # don't log ignored commands
     with open(history_file, "a") as f:
         f.write(f"{timestamp},{user},{version},{uid},{command}\n")
