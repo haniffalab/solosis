@@ -33,17 +33,22 @@ def debug(function):
     return function
 
 
+ignored_commands = [
+    "history view",
+    "history clear",
+    "history uid",
+]
+
+
 def log_history(uid: str, version: str):
     """Append command execution details to the history file."""
     history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
     user = getpass.getuser()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    ignored_commands = [
-        "history view",
-        "history clear",
-        "history uid",
-    ]  # array of commands to not log
     command = " ".join(sys.argv)
+    # check for ignored commands
+    if any(command.startswith(ignored) for ignored in ignored_commands):
+        return  # don't log ignored commands
     with open(history_file, "a") as f:
         f.write(f"{timestamp},{user},{version},{uid},{command}\n")
 
