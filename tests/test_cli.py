@@ -89,3 +89,18 @@ def test_history_view():
     result = runner.invoke(cli, ["history", "view", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
+
+
+## Tests for jobrunner commands
+def test_run_notebook():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run_notebook", "view", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+def test_submit_job():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["submit_job", "view", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
