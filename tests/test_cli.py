@@ -24,6 +24,7 @@ def test_help():
     assert "Show this message and exit" in result.output
 
 
+## Tests for alignment commands
 def test_cellranger_count():
     runner = CliRunner()
     result = runner.invoke(cli, ["alignment", "cellranger-count", "--help"])
@@ -38,6 +39,7 @@ def test_cellranger_arc_count():
     assert "Show this message and exit" in result.output
 
 
+## Tests for irods commandds
 def test_imeta_report():
     runner = CliRunner()
     result = runner.invoke(cli, ["irods", "imeta-report", "--help"])
@@ -55,5 +57,35 @@ def test_iget_cellranger():
 def test_iget_fastqs():
     runner = CliRunner()
     result = runner.invoke(cli, ["irods", "iget-fastq", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+## Tests for scrna commands
+def test_cellbender():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["scrna", "cellbender", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+## Tests for history commands
+def test_history_clear():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["history", "clear", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+def test_history_uid():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["history", "uid", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+def test_history_view():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["history", "view", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
