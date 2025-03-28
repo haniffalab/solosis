@@ -50,3 +50,10 @@ def test_iget_cellranger():
     result = runner.invoke(cli, ["irods", "iget-cellranger", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
+
+
+def test_iget_fastqs():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["irods", "iget-fastq", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
