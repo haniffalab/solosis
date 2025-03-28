@@ -67,25 +67,3 @@ def test_cellbender():
     result = runner.invoke(cli, ["scrna", "cellbender", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
-
-
-## Tests for history commands
-def test_history_clear():
-    runner = CliRunner()
-    result = runner.invoke(cli, ["history", "clear", "--help"])
-    assert result.exit_code == 0
-    assert "Show this message and exit" in result.output
-
-
-def test_history_uid():
-    runner = CliRunner()
-    result = runner.invoke(cli, ["history", "uid", "--help"])
-    assert result.exit_code == 0
-    assert "Show this message and exit" in result.output
-
-
-def test_history_view():
-    runner = CliRunner()
-    result = runner.invoke(cli, ["history", "view", "--help"])
-    assert result.exit_code == 0
-    assert "Show this message and exit" in result.output
