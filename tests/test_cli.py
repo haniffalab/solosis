@@ -36,3 +36,10 @@ def test_cellranger_arc_count():
     result = runner.invoke(cli, ["alignment", "cellranger-arc-count", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
+
+
+def test_imeta_report():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["irods", "imeta-report", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
