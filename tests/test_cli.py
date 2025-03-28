@@ -3,10 +3,6 @@ from click.testing import CliRunner
 
 from solosis.cli import cli
 
-# responding to error message ("missing environmnet variables LSB_DEFAULT_USERGROUP and TEAM_DATA_DIR")
-os.environ["LSB_DEFAULT_USERGROUP"] = "team298"
-os.environ["TEAM_DATA_DIR"] = "/lustre/scratch126/cellgen/team298/data"
-
 
 def test_version():
     runner = CliRunner()
