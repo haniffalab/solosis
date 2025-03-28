@@ -43,7 +43,9 @@ def validate_env():
         os.makedirs(script_bin, exist_ok=True)
         os.environ["SCRIPT_BIN"] = script_bin
     except OSError as e:
-        logger.error(f"Failed to find script bin directory '{script_bin}': {e}")
+        logger.error(
+            f"Failed to verify accessibility of script bin directory '{script_bin}': {e}"
+        )
         raise click.Abort()
 
 
