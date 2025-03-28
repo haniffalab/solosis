@@ -69,6 +69,20 @@ def test_cellbender():
     assert "Show this message and exit" in result.output
 
 
+def test_merge_h5ad():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["scrna", "merge-h5ad", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
+def test_scanpy():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["scrna", "scanpy ", "--help"])
+    assert result.exit_code == 0
+    assert "Show this message and exit" in result.output
+
+
 ## Tests for history commands
 def test_history_clear():
     runner = CliRunner()
