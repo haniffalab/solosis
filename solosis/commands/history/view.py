@@ -43,8 +43,8 @@ def cmd(lines, debug):
         commands = command.split(" ", 1)[-1]
 
         # Exclude `./solosis-cli history view` commands
-        if command.strip() == "./solosis-cli history view":
-            continue
+        # if command.strip() == "./solosis-cli history view":
+        #    continue
 
         table_data.append(
             [

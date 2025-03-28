@@ -34,7 +34,7 @@ def debug(function):
 
 
 ignored_commands = [
-    "history view",
+    "history" "history view",
     "history clear",
     "history uid",
 ]
