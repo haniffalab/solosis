@@ -36,7 +36,7 @@ def validate_env():
     script_bin = os.path.abspath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "../../bin",
+            "../../../solosis/bin",
         )
     )
     try:
