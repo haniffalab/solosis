@@ -70,5 +70,5 @@ log_file="$OUTPUT_DIR/$SAMPLE_ID/_log"
 if grep -q "Pipestance completed successfully!" "$log_file"; then
     echo "CellRanger completed successfully for sample: $SAMPLE_ID"
 else
-    echo "CellRanger failed or incomplete for sample: $SAMPLE_ID."
+    echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
 fi
