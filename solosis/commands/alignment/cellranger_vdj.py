@@ -76,8 +76,8 @@ def cmd(sample, samplefile, version, mem, cpu, queue, debug):
 
     cellranger_vdj_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellranger/cellranger_vdj.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellranger/cellranger_vdj.sh",
         )
     )
 
