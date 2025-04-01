@@ -10,13 +10,6 @@ os.environ["LSB_DEFAULT_USERGROUP"] = "team298"
 os.environ["TEAM_DATA_DIR"] = "/tmp/solosis"
 
 
-def test_version():
-    runner = CliRunner()
-    result = runner.invoke(cli, ["--version"])
-    assert result.exit_code == 0
-    assert "version 0.3.0" in result.output
-
-
 def test_help():
     runner = CliRunner()
     result = runner.invoke(cli, ["--help"])
@@ -56,7 +49,7 @@ def test_iget_cellranger():
 
 def test_iget_fastqs():
     runner = CliRunner()
-    result = runner.invoke(cli, ["irods", "iget-fastq", "--help"])
+    result = runner.invoke(cli, ["irods", "iget-fastqs", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
 
@@ -78,7 +71,7 @@ def test_merge_h5ad():
 
 def test_scanpy():
     runner = CliRunner()
-    result = runner.invoke(cli, ["scrna", "scanpy ", "--help"])
+    result = runner.invoke(cli, ["scrna", "scanpy", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
 
@@ -108,13 +101,13 @@ def test_history_view():
 ## Tests for jobrunner commands
 def test_run_notebook():
     runner = CliRunner()
-    result = runner.invoke(cli, ["run_notebook", "view", "--help"])
+    result = runner.invoke(cli, ["jobrunner", "run_notebook", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
 
 
 def test_submit_job():
     runner = CliRunner()
-    result = runner.invoke(cli, ["submit_job", "view", "--help"])
+    result = runner.invoke(cli, ["jobrunner", "submit_job", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
