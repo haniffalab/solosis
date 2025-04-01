@@ -73,11 +73,9 @@ def cmd(sample, samplefile, version, mem, cpu, queue, debug):
         logger.error(f"No valid samples found. Exiting")
         raise click.Abort()
 
-    cellranger_vdj_path = os.path.abspath(
-        os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellranger/cellranger_vdj.sh",
-        )
+    cellranger_vdj_path = os.path.join(
+        os.getenv("SCRIPT_BIN"),
+        "cellranger/cellranger_vdj.sh",
     )
 
     with tempfile.NamedTemporaryFile(

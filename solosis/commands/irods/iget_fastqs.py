@@ -63,12 +63,11 @@ def cmd(sample, samplefile, debug):
 
     # Run the metadata script first
     random_id = secrets.token_hex(4)
-    metadata_script = os.path.abspath(
-        os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/irods/nf-irods-to-fastq-metadata.sh",
-        )
+    metadata_script = os.path.join(
+        os.getenv("SCRIPT_BIN"),
+        "irods/nf-irods-to-fastq-metadata.sh",
     )
+
     popen([metadata_script, tmpfile.name, random_id])
 
     # Define expected TSV file path
