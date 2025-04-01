@@ -33,6 +33,21 @@ def validate_env():
         logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
         raise click.Abort()
 
+    script_bin = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../solosis/bin",
+        )
+    )
+    if not os.path.isdir(script_bin):
+        logger.error(
+            f"Script bin directory '{script_bin}' does not exist or is inaccessible."
+        )
+        raise click.Abort()
+
+    # Set the environment variable
+    os.environ["SCRIPT_BIN"] = script_bin
+
 
 def irods_auth(timeout=5):
     """Validate iRODS authentication and prompt for credentials if needed."""

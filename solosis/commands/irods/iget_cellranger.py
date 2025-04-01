@@ -53,8 +53,8 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
             imeta_report_script = os.path.abspath(
                 os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "../../../bin/irods/imeta_report.sh",
+                    os.getenv("SCRIPT_BIN"),
+                    "irods/imeta_report.sh",
                 )
             )
             popen([imeta_report_script, sample, report_path])

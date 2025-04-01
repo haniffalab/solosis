@@ -87,8 +87,8 @@ def cmd(sample, samplefile, debug):
 
     irods_to_fastq_script = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/irods/nf-irods-to-fastq.sh",
+            os.getenv("SCRIPT_BIN"),
+            "irods/nf-irods-to-fastq.sh",
         )
     )
     popen([irods_to_fastq_script, tmpfile.name])

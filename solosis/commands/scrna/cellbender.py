@@ -93,8 +93,8 @@ def cmd(
 
     script_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellbender/cellbender.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellbender/cellbender.sh",
         )
     )
 
