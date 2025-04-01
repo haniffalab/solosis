@@ -5,7 +5,7 @@ import tempfile
 import click
 
 from solosis.utils.input_utils import process_metadata_file
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
 
@@ -35,6 +35,8 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
 )
+@debug
+@log
 def cmd(
     metadata,
     total_droplets_included,
@@ -93,8 +95,8 @@ def cmd(
 
     script_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellbender/cellbender.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellbender/cellbender.sh",
         )
     )
 

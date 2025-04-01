@@ -7,14 +7,13 @@ import pandas as pd
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_options_sm, submit_lsf_job_array
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 
 
 @lsf_options_sm
-@debug
 @click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -22,6 +21,8 @@ from solosis.utils.subprocess_utils import popen
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
+@debug
+@log
 def cmd(sample, samplefile, mem, cpu, queue, debug):
     """Downloads cellranger outputs from iRODS."""
     if debug:
@@ -53,8 +54,8 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
             imeta_report_script = os.path.abspath(
                 os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "../../../bin/irods/imeta_report.sh",
+                    os.getenv("SCRIPT_BIN"),
+                    "irods/imeta_report.sh",
                 )
             )
             popen([imeta_report_script, sample, report_path])
