@@ -5,7 +5,7 @@ import tempfile
 import click
 
 from solosis.utils.input_utils import process_metadata_file
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
 from solosis.utils.state import logger
 
@@ -14,7 +14,6 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
 @lsf_options_std
-@debug
 @click.command("cellbender")
 @click.option(
     "--metadata",
@@ -35,6 +34,8 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
 )
+@debug
+@log
 def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debug):
     """Eliminate technical artifacts from scRNA-seq"""
     if debug:

@@ -16,6 +16,37 @@ except ImportError:
 
 logger = logging.getLogger("solosis")
 logger.setLevel(logging.INFO)
+execution_uid = None
+
+
+def debug(func):
+    """Decorator to add a --debug flag to commands."""
+
+    @click.option("--debug", is_flag=True, help="Enable debug mode")
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def log(function):
+    """Decorator that logs execution details."""
+
+    def wrapper(*args, **kwargs):
+        global execution_uid
+        if execution_uid:
+            history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
+            user = getpass.getuser()
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            version = get_version()
+            command = " ".join(sys.argv)
+
+            with open(history_file, "a") as f:
+                f.write(f"{timestamp},{user},{version},{execution_uid},{command}\n")
+
+        return function(*args, **kwargs)
+
+    return wrapper
 
 
 def get_version():
@@ -28,34 +59,9 @@ def get_version():
         return "unknown"
 
 
-def debug(function):
-    function = click.option("--debug", is_flag=True, help="Enable debug mode")(function)
-    return function
-
-
-ignored_commands = [
-    "history",
-    "history view",
-    "history clear",
-    "history uid",
-]
-
-
-def log_history(uid: str, version: str):
-    """Append command execution details to the history file."""
-    history_file = Path(os.getenv("SOLOSIS_LOG_DIR")) / "history.log"
-    user = getpass.getuser()
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    command = " ".join(sys.argv)
-    # check for ignored commands
-    if any(ignored in command for ignored in ignored_commands):
-        return  # don't log ignored commands
-    with open(history_file, "a") as f:
-        f.write(f"{timestamp},{user},{version},{uid},{command}\n")
-
-
 def setup_logging():
     """Set up logging for the application."""
+    global execution_uid
     log_dir = Path(Path.home() / ".solosis")
     try:
         os.makedirs(log_dir, exist_ok=True)
@@ -93,7 +99,6 @@ def setup_logging():
     logger.addHandler(console_handler)
 
     version = get_version()
-    log_history(execution_uid, version)
 
     return logger, execution_uid, version
 
