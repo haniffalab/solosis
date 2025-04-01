@@ -23,7 +23,7 @@ copyright = "2024, Haniffa Lab"
 author = "Haniffa Lab"
 
 # The full version, including alpha/beta/rc tags
-release = "0.3.0"
+release = "0.4.0"
 
 # -- General configuration ---------------------------------------------------
 
