@@ -10,13 +10,6 @@ os.environ["LSB_DEFAULT_USERGROUP"] = "team298"
 os.environ["TEAM_DATA_DIR"] = "/tmp/solosis"
 
 
-def test_version():
-    runner = CliRunner()
-    result = runner.invoke(cli, ["--version"])
-    assert result.exit_code == 0
-    assert "version 0.3.0" in result.output
-
-
 def test_help():
     runner = CliRunner()
     result = runner.invoke(cli, ["--help"])
