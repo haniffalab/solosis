@@ -39,14 +39,14 @@ def validate_env():
             "../../../solosis/bin",
         )
     )
-    try:
-        os.makedirs(script_bin, exist_ok=True)
-        os.environ["SCRIPT_BIN"] = script_bin
-    except OSError as e:
+    if not os.path.isdir(script_bin):
         logger.error(
-            f"Failed to verify accessibility of script bin directory '{script_bin}': {e}"
+            f"Script bin directory '{script_bin}' does not exist or is inaccessible."
         )
         raise click.Abort()
+
+    # Set the environment variable
+    os.environ["SCRIPT_BIN"] = script_bin
 
 
 def irods_auth(timeout=5):
