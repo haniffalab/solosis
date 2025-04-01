@@ -82,3 +82,7 @@ code.docutils.literal.notranslate {
 #solosis-cli h4 {
   margin-top: 40px;
 }
+
+h1 {
+  font-size: 225%;
+}

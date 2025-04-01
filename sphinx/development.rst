@@ -1,5 +1,7 @@
 .. _development:
 
+.. _pytest: https://docs.pytest.org/en/7.1.x/
+
 Development
 ===========
 
@@ -109,22 +111,28 @@ Install dev dependencies and install pre-commit hooks
 
 ::
 
-    python -m pip install -r envs/dev/requirements.txt
+    pip install --upgrade pip
+    python -m pip install -r envs/requirements.txt
+    python -m pip install -r envs/dev-requirements.txt
+    python -m pip install -r envs/doc-requirements.txt
     pre-commit install
     
-For Github Actions to pass, will need to ensure ``black`` formatting and ``isort`` are implemented.
-You can manually check ``black`` formatting and ``isort``
+Run Solosis in development mode
+
+::
+
+    python -m solosis.cli
+
+The pre-commit config includes ``black`` formatting and ``isort`` are implemented.
+You can manually check ``black`` formatting and ``isort`` as follows:
 
 ::
 
     black path/to/file.py
-
     isort path/to/file.py
 
 Python testing
 --------------
-
-**Testing of python scripts uses `pytest_`.**
 
 Set the :code:`PYTHONPATH` environment variable to the :code:`bin` directory where the scripts are stored, and then run the following command:
 
@@ -132,6 +140,5 @@ Set the :code:`PYTHONPATH` environment variable to the :code:`bin` directory whe
 
     python -m pytest -q tests/test_cli.py
 
-.. _pytest: https://docs.pytest.org/en/7.1.x/
 
 

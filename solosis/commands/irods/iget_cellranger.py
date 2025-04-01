@@ -1,15 +1,19 @@
+import logging
 import os
-import subprocess
-import sys
-import time
+import tempfile
 
 import click
 import pandas as pd
 
-from solosis.utils import echo_lsf_submission_message, echo_message, irods_validation
+from solosis.utils.env_utils import irods_auth
+from solosis.utils.input_utils import collect_samples
+from solosis.utils.logging_utils import debug, log
+from solosis.utils.lsf_utils import lsf_options_sm, submit_lsf_job_array
+from solosis.utils.state import logger
+from solosis.utils.subprocess_utils import popen
 
 
-# change to pull-cellranger
+@lsf_options_sm
 @click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -17,176 +21,90 @@ from solosis.utils import echo_lsf_submission_message, echo_message, irods_valid
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-@click.option(
-    "--retainbam",
-    default=False,
-    is_flag=True,
-    required=False,
-    help="Include the BAM file in the download. By default, it is excluded.",
-)
-@click.option(
-    "--overwrite",
-    default=False,
-    is_flag=True,
-    required=False,
-    help="Overwrite existing output directories",
-)
-def cmd(sample, samplefile, retainbam, overwrite):
-    """
-    Downloads Cell Ranger outputs for the specified samples from iRODS.
-    """
+@debug
+@log
+def cmd(sample, samplefile, mem, cpu, queue, debug):
+    """Downloads cellranger outputs from iRODS."""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     ctx = click.get_current_context()
-    echo_message(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
-    # Call the function
-    irods_validation()
+    if not irods_auth():
+        raise click.Abort()
 
-    samples = []
-
-    # Collect sample IDs from the provided options
-    if sample:
-        samples.append(sample)
-
-    # Read sample IDs from a file if provided
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                echo_message(
-                    f"Unsupported file format. Please provide a .csv or .tsv file",
-                    "error",
-                )
-                return
-
-            df = pd.read_csv(samplefile, sep=sep)
-
-            if "sample_id" in df.columns:
-                samples.extend(df["sample_id"].dropna().astype(str).tolist())
-            else:
-                echo_message(
-                    f"File must contain a 'sample_id' column",
-                    "error",
-                )
-                return
-        except Exception as e:
-            echo_message(
-                f"Error reading sample file: {e}",
-                "error",
-            )
-            return
-
-    if not samples:
-        echo_message(
-            f"no samples provided. Use `--sample` or `--samplefile`",
-            f"No samples provided. Use --sample or --samplefile options",
-            "error",
-        )
-        return
-
-    # Get the sample data directory from the environment variable
-    team_sample_data_dir = os.getenv("TEAM_SAMPLE_DATA_DIR")
-
-    if not team_sample_data_dir:
-        echo_message(
-            f"TEAM_SAMPLE_DATA_DIR environment variable is not set",
-            "error",
-        )
-        return
-
-    if not os.path.isdir(team_sample_data_dir):
-        echo_message(
-            f"Sample data directory '{team_sample_data_dir}' does not exist",
-            "error",
-        )
-        return
-
-    # Check each sample
     samples_to_download = []
-    for sample in samples:
-        # Path where cellranger outputs are expected for each sample
-        cellranger_path = os.path.join(team_sample_data_dir, sample, "cellranger")
 
-        # Check if output exists
-        if os.path.exists(cellranger_path):
-            if overwrite:
-                echo_message(
-                    f"Overwriting existing outputs for sample '{sample}' in {cellranger_path}.",
-                    "warn",
+    samples = collect_samples(sample, samplefile)
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
+        os.chmod(tmpfile.name, 0o660)
+        for sample in samples:
+            sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
+            cellranger_dir = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
+            )
+            os.makedirs(cellranger_dir, exist_ok=True)
+            report_path = os.path.join(sample_dir, "imeta_report.csv")
+
+            imeta_report_script = os.path.abspath(
+                os.path.join(
+                    os.getenv("SCRIPT_BIN"),
+                    "irods/imeta_report.sh",
                 )
-                try:
-                    # Remove the directory and its contents
-                    # subprocess.run(["rm", "-rf", cellranger_path], check=True)
-                    echo_message(
-                        f"[DRY RUN] Would remove directory: '{cellranger_path}'.",
-                        "info",
-                    )
-                except subprocess.CalledProcessError as e:
-                    echo_message(
-                        f"Failed to remove existing directory '{cellranger_path}': {e.stderr}",
-                        "error",
-                    )
-                    return
-                samples_to_download.append(sample)
-            else:
-                echo_message(
-                    f"Cellranger outputs already downloaded for sample '{sample}' in {cellranger_path}. Skipping download.",
-                    "warn",
+            )
+            popen([imeta_report_script, sample, report_path])
+
+            if os.path.exists(report_path):
+                df = pd.read_csv(
+                    report_path, header=None, names=["collection_type", "path"]
                 )
-        else:
-            samples_to_download.append(sample)
 
-    # Confirm samples to download
-    if samples_to_download:
-        sample_list = "\n".join(
-            f"  {idx}. {sample}" for idx, sample in enumerate(samples_to_download, 1)
-        )
-        echo_message(
-            f"Samples for download:\n{sample_list}",
-            "info",
-        )
-    else:
-        echo_message(
-            f"All provided samples already have sanger processed cellranger outputs. No downloads required.",
-            "warn",
-        )
-        return  # Exit if no samples need downloading
+                for _, row in df.iterrows():
+                    collection_type, path = row["collection_type"], row["path"]
+                    if collection_type == "CellRanger":
+                        collection_name = os.path.basename(path.rstrip("/"))
+                        if not collection_name.strip():
+                            logger.warning(
+                                f"Could not determine collection name {path}"
+                            )
+                            continue
+                        output_dir = os.path.join(cellranger_dir, collection_name)
+                        if (
+                            os.path.exists(output_dir)
+                            and os.path.isdir(output_dir)
+                            and os.listdir(output_dir)
+                        ):
+                            logger.warning(
+                                f"Skipping {collection_name}, already exists in {cellranger_dir}"
+                            )
+                            continue
 
-    # Join all sample to download IDs into a single string, separated by commas
-    sample_ids = ",".join(samples_to_download)
+                        samples_to_download.append((sample, output_dir))
+                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        tmpfile.write(command + "\n")
+                        logger.info(
+                            f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
+                        )
 
-    # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    pull_cellranger_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/irods/iget-cellranger/submit.sh")
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
+        job_name="iget_cellranger_job_array",
+        cpu=cpu,
+        mem=mem,
+        queue=queue,
     )
 
-    # Construct the command with optional BAM flag
-    cmd = [
-        pull_cellranger_script,
-        sample_ids,
-    ]
-
-    try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        echo_lsf_submission_message(result.stdout)
-    except subprocess.CalledProcessError as e:
-        echo_message(
-            f"Error during execution: {e.stderr}",
-            "error",
-        )
+    if samples_to_download:
+        log_file = os.path.join(os.getcwd(), "iget-cellranger.log")
+        df = pd.DataFrame(samples_to_download, columns=["sample", "cellranger_dir"])
+        df.to_csv(log_file, index=False)
+        logger.info(f"Log file of output paths: {log_file}")
 
 
 if __name__ == "__main__":
