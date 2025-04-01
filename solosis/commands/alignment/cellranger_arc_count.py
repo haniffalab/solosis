@@ -113,8 +113,8 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
 
     cellranger_arc_count_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellranger/cellranger_arc_count.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellranger/cellranger_arc_count.sh",
         )
     )
 

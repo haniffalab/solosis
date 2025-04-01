@@ -16,11 +16,12 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black",
+    "colorama",
     "isort",
     "pre-commit",
     "pytest",
     "pytest-cov",
-    "pytest-mock",
+    "pytest-mock"
 ]
 doc = [
     "Sphinx",

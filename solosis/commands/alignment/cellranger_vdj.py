@@ -5,15 +5,16 @@ import tempfile
 import click
 
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import debug, log
+from solosis.utils.logging_utils import debug
 from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
-from solosis.utils.state import execution_uid, logger
+from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
 @lsf_options_std
-@click.command("cellranger-count")
+@debug
+@click.command("cellranger-vdj")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
@@ -21,21 +22,13 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     help="Path to a CSV or TSV file containing sample IDs",
 )
 @click.option(
-    "--create-bam",
-    is_flag=True,
-    default=False,
-    help="Generate BAM files for each sample",
-)
-@click.option(
     "--version",
     type=str,
     default="7.2.0",
     help="Cell Ranger version to use (e.g., '7.2.0')",
 )
-@debug
-@log
-def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
-    """scRNA-seq mapping and quantification"""
+def cmd(sample, samplefile, version, mem, cpu, queue, debug):
+    """immune profiling, scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
 
@@ -43,7 +36,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
     logger.debug(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
-    logger.debug(f"Loading Cell Ranger Count version {version}")
+    logger.debug(f"Loading Cell Ranger vdj version {version}")
 
     samples = collect_samples(sample, samplefile)
     valid_samples = []
@@ -52,7 +45,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
         output_dir = os.path.join(
             os.getenv("TEAM_SAMPLES_DIR"),
             sample,
-            "cellranger",
+            "cellranger-vdj",
             f"solosis_{version.replace('.', '')}",
         )
 
@@ -61,7 +54,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
         ):
             if os.path.exists(output_dir):
                 logger.warning(
-                    f"CellRanger output already exists for sample {sample} in {output_dir}. Skipping this sample"
+                    f"CellRanger-vdj output already exists for sample {sample} in {output_dir}. Skipping this sample"
                 )
             else:
                 valid_samples.append(
@@ -80,27 +73,25 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
         logger.error(f"No valid samples found. Exiting")
         raise click.Abort()
 
-    cellranger_count_path = os.path.abspath(
+    cellranger_vdj_path = os.path.abspath(
         os.path.join(
-            os.getenv("SCRIPT_BIN"),
-            "cellranger/cellranger_count.sh",
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../bin/cellranger/cellranger_vdj.sh",
         )
     )
 
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
-        logger.debug(f"Temporary command file created: {tmpfile.name}")
+        logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
-            if not create_bam:
-                command += " --no-bam"
+            command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
-        job_name="cellranger_count_job_array",
+        job_name="cellranger_vdj_job_array",
         cpu=cpu,
         mem=mem,
         queue=queue,

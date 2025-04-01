@@ -1,11 +1,19 @@
+import functools
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 import click
 
 from solosis.utils.state import execution_uid, logger
+
+VALID_GPUS = {
+    "NVIDIAA100_SXM4_80GB",
+    "TeslaV100_SXM2_32GB",
+    "TeslaV100_SXM2_16GB",
+    "TeslaV100_SXM2_32GB",
+    "NVIDIAH10080GBHBM3",
+}
 
 
 def lsf_options_sm(function):
@@ -34,48 +42,32 @@ def lsf_options_std(function):
     return function
 
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=0, gpumem=0):
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=None):
     """
     Decorator to add LSF job options to a click command.
     Usage:
-    @click.command()
-    @click.option("--input", type=click.Path(exists=True))
-    @lsf_job(mem = 20000)
-    @click.pass_context
-    def cmd(ctx, input):
-        pass
-
+        @click.command()
+        @lsf_job(mem=20000, cpu=4, gpu="NVIDIAA100_SXM4_80GB")
+        def cmd(mem, cpu, time, queue, gpu):
+            pass
     """
 
     def decorator(function):
-        @functools.wraps(function)  # Preserve function metadata
-        @click.option("--mem", default=mem, type=str, help="Memory limit (in MB)")
-        @click.option("--cpu", default=cpu, type=str, help="Number of CPU cores")
-        @click.option("--time", default=time, type=str, help="Time for running")
-        @click.option(
+        function = click.option(
+            "--mem", default=mem, type=str, help="Memory limit (in MB)"
+        )(function)
+        function = click.option(
+            "--cpu", default=cpu, type=str, help="Number of CPU cores"
+        )(function)
+        function = click.option(
             "--queue", default=queue, help="Queue to which the job should be submitted"
-        )
-        @click.option("--gpu", default=gpu, type=str, help="Number of GPUs to request")
-        @click.option(
-            "--gpumem", default=gpumem, type=str, help="GPU memory to request"
-        )
-        def wrapped(*args, **kwargs):
-            return function(*args, **kwargs)
-
-        return wrapped
+        )(function)
+        function = click.option(
+            "--gpu", default=gpu, type=str, help="Number of GPUs to request"
+        )(function)
+        return function
 
     return decorator
-
-
-def _assign_job_name(job_name, ctx):
-    """
-    Assign a job name to the job.
-    """
-    if job_name == "default":
-        job_name = f"{ctx.obj['execution_id']}"
-    else:
-        job_name = f"{job_name}_{ctx.obj['execution_id']}"
-    return job_name
 
 
 def submit_lsf_job_array(
@@ -85,6 +77,7 @@ def submit_lsf_job_array(
     mem: int = 64000,
     queue: str = "normal",
     group: str = None,
+    gpu: str = None,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -115,10 +108,19 @@ def submit_lsf_job_array(
         num_commands = sum(1 for _ in f)
 
     if not execution_uid:
-        raise ValueError("execution_uid is empty or None. It must be a valid UUID.")
+        raise ValueError("The execution_uid is empty or None. It must be a valid UUID.")
 
     log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
+
+    # Validate GPU options
+    if gpu:
+        if gpu not in VALID_GPUS:
+            raise ValueError(f"Invalid GPU type '{gpu}'. Must be one of: {VALID_GPUS}")
+
+        queue = "gpu-normal"
+        gpumem = 6000
+        gpunum = 1
 
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash
@@ -129,15 +131,16 @@ def submit_lsf_job_array(
 #BSUB -M {mem}
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
-#BSUB -q {queue}
+#BSUB -q "{queue}"
+"""
+    # Validate and add GPU options if specified
+    if gpu:
+        lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpu}"\n"""
 
-# Extract the command for this job index
+    # Extract and run the command
+    lsf_script += f"""
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")
-
-# Debug: output the command being executed
 echo "Executing command: $COMMAND"
-
-# Run the command
 eval "$COMMAND"
 """
 
