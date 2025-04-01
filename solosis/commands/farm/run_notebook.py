@@ -14,8 +14,7 @@ from solosis.utils.farm import (
 from .. import helpers
 
 # Script directory in the solosis package
-script_dir = os.path.dirname(os.path.abspath(__file__))
-codebase = os.path.join(script_dir, "../../../bin/")
+codebase = os.getenv("SCRIPT_BIN")
 
 
 def _assign_job_name(job_name, ctx):

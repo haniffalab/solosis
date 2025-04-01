@@ -5,16 +5,15 @@ import tempfile
 import click
 
 from solosis.utils.input_utils import process_metadata_file
-from solosis.utils.logging_utils import debug
-from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
+from solosis.utils.logging_utils import debug, log
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
-@lsf_options_std
-@debug
+@lsf_job(gpu="NVIDIAA100_SXM4_80GB")
 @click.command("cellbender")
 @click.option(
     "--metadata",
@@ -35,7 +34,18 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
     default=False,
     help="Base this on either the number of cells expected a priori from the experimental design",
 )
-def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debug):
+@debug
+@log
+def cmd(
+    metadata,
+    total_droplets_included,
+    expected_cells,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    debug,
+):
     """Eliminate technical artifacts from scRNA-seq"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -84,8 +94,8 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
 
     script_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellbender/cellbender.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellbender/cellbender.sh",
         )
     )
 
@@ -95,11 +105,13 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
+            command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']}"
             # Add optional arguments if specified
-            if total_droplets_included is not None:
+            if gpu is not None:
+                command += f" --gpu"
+            if total_droplets_included is not None and total_droplets_included != 0:
                 command += f" --total-droplets-included {total_droplets_included}"
-            if expected_cells is not None:
+            if expected_cells is not None and expected_cells != 0:
                 command += f" --expected-cells {expected_cells}"
             tmpfile.write(command + "\n")
 
@@ -109,6 +121,7 @@ def cmd(metadata, total_droplets_included, expected_cells, mem, cpu, queue, debu
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 

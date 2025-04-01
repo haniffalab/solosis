@@ -7,12 +7,11 @@ from tabulate import tabulate
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 
 
-@debug
 @click.command("imeta-report")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -20,6 +19,8 @@ from solosis.utils.subprocess_utils import popen
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
+@debug
+@log
 def cmd(sample, samplefile, debug):
     """
     Generates report of data available on iRODS
@@ -47,8 +48,8 @@ def cmd(sample, samplefile, debug):
 
         imeta_report_script = os.path.abspath(
             os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "../../../bin/irods/imeta_report.sh",
+                os.getenv("SCRIPT_BIN"),
+                "irods/imeta_report.sh",
             )
         )
         popen([imeta_report_script, sample, report_path])

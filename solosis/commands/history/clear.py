@@ -14,9 +14,9 @@ UUID_REGEX = re.compile(
 )
 
 
-@debug
 @click.command("clear")
 @click.option("--hours", "-h", default=168, help="Age of logs to clear in hours.")
+@debug
 def cmd(hours, debug):
     """Clear log entries and old log directories older than the specified number of hours."""
     if debug:

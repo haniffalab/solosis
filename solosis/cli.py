@@ -2,7 +2,11 @@ import logging
 
 import click
 
-from solosis.commands.alignment import cellranger_arc_count, cellranger_count
+from solosis.commands.alignment import (
+    cellranger_arc_count,
+    cellranger_count,
+    cellranger_vdj,
+)
 from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.history import clear, uid, view
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
@@ -45,6 +49,7 @@ def alignment():
 
 alignment.add_command(cellranger_count.cmd, name="cellranger-count")
 alignment.add_command(cellranger_arc_count.cmd, name="cellranger-arc-count")
+alignment.add_command(cellranger_vdj.cmd, name="cellranger-vdj")
 
 
 @cli.group()

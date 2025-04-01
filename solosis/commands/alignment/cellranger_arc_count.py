@@ -5,13 +5,12 @@ import tempfile
 import click
 import pandas as pd
 
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_options_std, submit_lsf_job_array
 from solosis.utils.state import logger
 
 
 @lsf_options_std
-@debug
 @click.command("cellranger-arc-count")
 @click.option(
     "--libraries", type=click.Path(exists=True), help="Path to a single libraries file"
@@ -33,6 +32,8 @@ from solosis.utils.state import logger
     default="2.0.2",
     help="Cell Ranger ARC version to use (e.g., '2.0.2')",
 )
+@debug
+@log
 def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
     """Single-cell multiomic data processing"""
     if debug:
@@ -112,8 +113,8 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, debug):
 
     cellranger_arc_count_path = os.path.abspath(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../../../bin/cellranger/cellranger_arc_count.sh",
+            os.getenv("SCRIPT_BIN"),
+            "cellranger/cellranger_arc_count.sh",
         )
     )
 

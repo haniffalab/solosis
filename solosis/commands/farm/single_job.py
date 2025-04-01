@@ -4,6 +4,7 @@ import subprocess
 import click
 
 from solosis.utils.farm import echo_lsf_submission_message, echo_message, log_command
+from solosis.utils.state import execution_uid, logger
 
 from .. import helpers
 
@@ -33,10 +34,11 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
     Run a single command on the farm.
     """
     # Script directory in the solosis package
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    codebase = os.path.join(script_dir, "../../../bin/")
     job_runner = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/farm/single_job.sh")
+        os.path.join(
+            os.getenv("SCRIPT_BIN"),
+            "farm/single_job.sh",
+        )
     )
     if len(command_to_exec) == 0:
         echo_message("No command to execute", type="error")
@@ -74,11 +76,10 @@ def cmd(ctx, command_to_exec, job_name, **kwargs):
     time = kwargs.get("time")
     cores = kwargs.get("cores")
     mem = kwargs.get("mem")
-    log_command(ctx)
     if job_name == "default":
-        job_name = f"{ctx.obj['execution_id']}"
+        job_name = f"{execution_uid}"
     else:
-        job_name = f"{job_name}_{ctx.obj['execution_id']}"
+        job_name = f"{job_name}_{execution_uid}"
     echo_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 

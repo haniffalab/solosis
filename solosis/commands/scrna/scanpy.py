@@ -32,9 +32,8 @@ def cmd(ctx, samplefile, sample_basedir):
     )
 
     # Path to the script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     shell_script = os.path.abspath(
-        os.path.join(script_dir, "../../../bin/scrna/scanpy/submit.sh")
+        os.path.join(os.getenv("SCRIPT_BIN"), "scrna/scanpy/submit.sh")
     )
     env = os.environ.copy()
     env["solosis_dir"] = script_dir
