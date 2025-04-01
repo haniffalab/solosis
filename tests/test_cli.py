@@ -78,7 +78,7 @@ def test_merge_h5ad():
 
 def test_scanpy():
     runner = CliRunner()
-    result = runner.invoke(cli, ["scrna", "scanpy ", "--help"])
+    result = runner.invoke(cli, ["scrna", "scanpy", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
 
