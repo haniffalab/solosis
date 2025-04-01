@@ -9,9 +9,9 @@ from solosis.utils.logging_utils import debug
 from solosis.utils.state import logger
 
 
-@debug
 @click.command("uid")
 @click.argument("uid")
+@debug
 def cmd(uid, debug):
     """Show detailed information about a specific execution using UID."""
     if debug:

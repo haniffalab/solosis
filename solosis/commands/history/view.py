@@ -9,11 +9,11 @@ from solosis.utils.logging_utils import debug
 from solosis.utils.state import logger
 
 
-@debug
 @click.command("view")
 @click.option(
     "--lines", "-n", default=10, help="Number of recent history entries to show."
 )
+@debug
 def cmd(lines, debug):
     """Show command execution history"""
     if debug:
@@ -41,6 +41,7 @@ def cmd(lines, debug):
 
         timestamp, user, version, uid, command = parts[:5]
         commands = command.split(" ", 1)[-1]
+
         table_data.append(
             [
                 timestamp,

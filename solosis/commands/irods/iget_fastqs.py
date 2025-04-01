@@ -7,14 +7,13 @@ import click
 
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples, validate_library_type
-from solosis.utils.logging_utils import debug
+from solosis.utils.logging_utils import debug, log
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@debug
 @click.command("iget-fastqs")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -22,6 +21,8 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs",
 )
+@debug
+@log
 def cmd(sample, samplefile, debug):
     """Downloads fastqs from iRODS."""
     if debug:
