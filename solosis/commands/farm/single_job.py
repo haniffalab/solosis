@@ -4,6 +4,7 @@ import subprocess
 import click
 
 from solosis.utils.farm import echo_lsf_submission_message, echo_message, log_command
+from solosis.utils.state import execution_uid, logger
 
 from .. import helpers
 
@@ -75,11 +76,10 @@ def cmd(ctx, command_to_exec, job_name, **kwargs):
     time = kwargs.get("time")
     cores = kwargs.get("cores")
     mem = kwargs.get("mem")
-    log_command(ctx)
     if job_name == "default":
-        job_name = f"{ctx.obj['execution_id']}"
+        job_name = f"{execution_uid}"
     else:
-        job_name = f"{job_name}_{ctx.obj['execution_id']}"
+        job_name = f"{job_name}_{execution_uid}"
     echo_message(f"Job name :{job_name} submitted to queue: {queue}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 

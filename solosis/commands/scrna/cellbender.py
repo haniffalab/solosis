@@ -14,7 +14,6 @@ RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
 @lsf_job(gpu="NVIDIAA100_SXM4_80GB")
-@debug
 @click.command("cellbender")
 @click.option(
     "--metadata",
