@@ -63,9 +63,11 @@ def cmd(sample, samplefile, debug):
 
     # Run the metadata script first
     random_id = secrets.token_hex(4)
-    metadata_script = os.path.join(
-        os.getenv("SCRIPT_BIN"),
-        "irods/nf-irods-to-fastq-metadata.sh",
+    metadata_script = os.path.abspath(
+        os.path.join(
+            os.getenv("SCRIPT_BIN"),
+            "irods/nf-irods-to-fastq-metadata.sh",
+        )
     )
 
     popen([metadata_script, tmpfile.name, random_id])
