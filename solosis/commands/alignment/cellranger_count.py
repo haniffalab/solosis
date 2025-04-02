@@ -60,13 +60,11 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
             f.endswith(ext) for ext in FASTQ_EXTENSIONS for f in os.listdir(fastq_dir)
         ):
             log_file = os.path.join(output_dir, sample, "_log")
-            if os.path.exists(log_file):
-                with open(log_file, "r") as lf:
-                    if "Pipestance completed successfully!" in lf.read():
-                        logger.warning(
-                            f"CellRanger output already completed successfully for sample {sample}. Skipping this sample"
-                        )
-            else:
+            outs_dir = os.path.join(output_dir, "outs")
+            matrix_dir = os.path.join(outs_dir, "filtered_feature_bc_matrix")
+
+            # If no output directory, sample is valid to run
+            if not os.path.exists(output_dir):
                 valid_samples.append(
                     {
                         "sample_id": sample,
@@ -74,6 +72,34 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
                         "fastq_dir": fastq_dir,
                     }
                 )
+                continue
+
+            # If output dir exists but no log file, job likely failed/killed
+            if not os.path.exists(log_file):
+                logger.error(
+                    f"Output directory exists for {sample}, but no log file found. "
+                    f"suggesting cellranger was unsuccessful. "
+                    f"Inspect {output_dir} and remove before re-running."
+                )
+                continue  # Do NOT add to valid_samples
+
+            # If log exists but no success message or missing matrix, it's incomplete
+            with open(log_file, "r") as lf:
+                log_content = lf.read()
+                if (
+                    "Pipestance completed successfully!" not in log_content
+                    or not os.path.exists(matrix_dir)
+                ):
+                    logger.warning(
+                        f"Incomplete CellRanger run detected for {sample}. Inspect {output_dir} and remove before re-running."
+                    )
+                    continue
+
+            # ❌ If we reach this point, the sample has already been successfully processed
+            logger.warning(
+                f"CellRanger already completed successfully for {sample}. Skipping."
+            )
+
         else:
             logger.warning(
                 f"No FASTQ files found for sample {sample} in {fastq_dir}. Skipping this sample"
