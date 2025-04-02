@@ -88,7 +88,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
                 log_content = lf.read()
                 if (
                     "Pipestance completed successfully!" not in log_content
-                    or not os.path.exists(matrix_dir)
+                    and not os.path.exists(matrix_dir)
                 ):
                     logger.warning(
                         f"Incomplete CellRanger run detected for {sample}. Inspect {output_dir} and remove before re-running."
