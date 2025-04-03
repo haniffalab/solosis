@@ -65,3 +65,10 @@ cellranger count \
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
+
+log_file="$OUTPUT_DIR/$SAMPLE_ID/_log"
+if grep -q "Pipestance completed successfully!" "$log_file"; then
+    echo "CellRanger completed successfully for sample: $SAMPLE_ID"
+else
+    echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
+fi
