@@ -91,11 +91,12 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, debug):
                     and not os.path.exists(matrix_dir)
                 ):
                     logger.warning(
-                        f"Incomplete CellRanger run detected for {sample}. Inspect {output_dir} and remove before re-running."
+                        f"Incomplete CellRanger run detected for {sample}. "
+                        f"Inspect {output_dir} and remove before re-running."
                     )
                     continue
 
-            # ❌ If we reach this point, the sample has already been successfully processed
+            # If we reach this point, the sample has already been successfully processed
             logger.warning(
                 f"CellRanger already completed successfully for {sample}. Skipping."
             )
