@@ -6,7 +6,9 @@ import click
 import pandas as pd
 
 from solosis.utils.env_utils import irods_auth
-from solosis.utils.input_utils import collect_samples
+
+# from solosis.utils.input_utils import collect_samples
+from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_options_sm, submit_lsf_job_array
 from solosis.utils.state import logger
@@ -15,7 +17,7 @@ from solosis.utils.subprocess_utils import popen
 
 @lsf_options_sm
 @click.command("iget-cellranger")
-@click.option("--sample", type=str, help="Sample ID (string).")
+# @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
@@ -23,7 +25,7 @@ from solosis.utils.subprocess_utils import popen
 )
 @debug
 @log
-def cmd(sample, samplefile, mem, cpu, queue, debug):
+def cmd(samplefile, mem, cpu, queue, debug):
     """Downloads cellranger outputs from iRODS."""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -38,7 +40,9 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
     samples_to_download = []
 
-    samples = collect_samples(sample, samplefile)
+    # samples = collect_samples(sample, samplefile)
+    samples = process_metadata_file(samplefile)
+
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
@@ -46,9 +50,11 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
             sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
-            cellranger_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
-            )
+            sample_id = sample["sample_id"]
+            cellranger_dir = sample["cellranger_dir"]
+            # cellranger_dir = os.path.join(
+            #    os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
+            # )
             os.makedirs(cellranger_dir, exist_ok=True)
             report_path = os.path.join(sample_dir, "imeta_report.csv")
 
@@ -86,7 +92,8 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                             continue
 
                         samples_to_download.append((sample, output_dir))
-                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        # command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        command = f"iget -r {path} {sample['cellranger_dir']} ; chmod -R g+w {sample['cellranger_dir']} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
                         logger.info(
                             f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
