@@ -23,12 +23,6 @@ from solosis.utils.subprocess_utils import popen
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
-# add in metadata flag
-@click.option(
-    "--metadata",
-    type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing metadata",
-)
 @debug
 @log
 def cmd(sample, samplefile, mem, cpu, queue, debug):
