@@ -8,7 +8,7 @@ import pandas as pd
 from solosis.utils.env_utils import irods_auth
 
 # from solosis.utils.input_utils import collect_samples
-from solosis.utils.input_utils import process_metadata_file
+from solosis.utils.input_utils import collect_samples, process_metadata_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_options_sm, submit_lsf_job_array
 from solosis.utils.state import logger
@@ -40,8 +40,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
 
     samples_to_download = []
 
-    #
-    df = pd.read_csv(samplefile, sep=sep)
+    df = pd.read_csv(samplefile)
     cols = set(df.columns)
     # if using samplefile has 'cellranger_dir' column use collect_samples()
     # if using samplefile doesn't have 'cellranger_dir' column use process_metadata_file()
