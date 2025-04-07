@@ -8,12 +8,12 @@ import pandas as pd
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import debug, log
-from solosis.utils.lsf_utils import lsf_options_sm, submit_lsf_job_array
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 
 
-@lsf_options_sm
+@lsf_job(mem=4000, cpu=2, queue="small")
 @click.command("iget-cellranger")
 @click.option("--sample", type=str, help="Sample ID (string).")
 @click.option(
@@ -23,7 +23,7 @@ from solosis.utils.subprocess_utils import popen
 )
 @debug
 @log
-def cmd(sample, samplefile, mem, cpu, queue, debug):
+def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
     """Downloads cellranger outputs from iRODS."""
     if debug:
         logger.setLevel(logging.DEBUG)

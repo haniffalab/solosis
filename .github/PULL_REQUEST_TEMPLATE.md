@@ -1,24 +1,18 @@
-# Pull Request Template
+# Description
 
-## Summary
-**What does this pull request address? Provide a brief description.**
+Give a brief summary of changes...
 
+Fixes # (issue)
 
-## Changes Made
-**List major changes or highlight key points:**
-- Change 1
-- Change 2
-- Change 3
+## Type of change
 
+- [ ] Documentation (non-breaking change that adds or improves the documentation)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Optimization (non-breaking, back-end change that speeds up the code)
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] Breaking change (whatever its nature)
 
 ## Checklist
-- [ ] The code adheres to the project's style guidelines
-- [ ] Documentation has been updated (if applicable)
-- [ ] Tests have been added/updated (if applicable)
-- [ ] I have linked this PR to an issue (if applicable)
-- [ ] I have reviewed my own code for potential issues
 
-
-## Additional Information (Optional)
-**Include any relevant context, links, or references.**  
-
+- [ ] All tests pass (eg. `pytest`)
+- [ ] Pre-commit hooks run successfully (eg. `pre-commit run --all-files`)
