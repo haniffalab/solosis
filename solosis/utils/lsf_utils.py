@@ -16,32 +16,6 @@ VALID_GPUS = {
 }
 
 
-def lsf_options_sm(function):
-    function = click.option(
-        "--mem", default=4000, type=int, help="Memory limit (in MB)"
-    )(function)
-    function = click.option("--cpu", default=2, type=int, help="Number of CPU cores")(
-        function
-    )
-    function = click.option(
-        "--queue", default="small", help="Queue to which the job should be submitted"
-    )(function)
-    return function
-
-
-def lsf_options_std(function):
-    function = click.option(
-        "--mem", default=64000, type=int, help="Memory limit (in MB)"
-    )(function)
-    function = click.option("--cpu", default=16, type=int, help="Number of CPU cores")(
-        function
-    )
-    function = click.option(
-        "--queue", default="normal", help="Queue to which the job should be submitted"
-    )(function)
-    return function
-
-
 def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=None):
     """
     Decorator to add LSF job options to a click command.
