@@ -14,7 +14,6 @@ This suite is made to work with farm22. The instructions below are to be perform
 # Setup
 
 ```
-module use append /software/cellgen/team298/shared/modulefiles
 module load solosis
 solosis-cli --help
 ```
@@ -26,5 +25,3 @@ pip-compile --extra=dev --output-file=envs/doc-requirements.txt
 pip-sync envs/requirements.txt
 pip-sync envs/dev-requirements.txt
 pip-sync envs/doc-requirements.txt
-
-
