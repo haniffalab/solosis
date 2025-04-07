@@ -38,7 +38,9 @@ def cmd(sample, samplefile, debug):
 
     samples = collect_samples(sample, samplefile)
 
-    data = []
+    summary_data = []
+    all_data = []
+
     for sample in samples:
         logger.info(f"Processing sample: {sample}")
 
@@ -58,27 +60,34 @@ def cmd(sample, samplefile, debug):
                 report_path, header=None, names=["collection_type", "path"]
             )
             crams = len(df[df["collection_type"] == "CRAM"])
-            cellranger = len(df[df["collection_type"] == "CellRanger"])
-            data.append([sample, crams, cellranger])
+            collections = len(df[df["collection_type"] == "COLLECTION"])
+            summary_data.append([sample, crams, collections])
+
+            # Concatendate reports
+            df.insert(0, "sample", sample)
+            all_data.append(df)
 
     # Display summary table for samples
     headers = [
         "Sample",
         "CRAM",
-        "CellRanger",
+        "COLLECTION",
     ]
-    table = tabulate(data, headers, tablefmt="pretty", numalign="left", stralign="left")
+    table = tabulate(
+        summary_data, headers, tablefmt="pretty", numalign="left", stralign="left"
+    )
     logger.info(f"Summary table... \n{table}")
 
     # Output combined report for samples
     execution_dir = os.getcwd()
     all_report_path = os.path.join(execution_dir, "all-imeta-report.csv")
-    if data:
-        df = pd.DataFrame(data, columns=["Sample", "CRAM", "CellRanger"])
-        df.to_csv(all_report_path, index=False)
-        logger.info(f"Overall report generated: {all_report_path}")
+
+    if all_data:
+        all_df = pd.concat(all_data, ignore_index=True)
+        all_df.to_csv(all_report_path, index=False)
+        logger.info(f"Report generated: {all_report_path}")
     else:
-        logger.warning("No reports found. 'all-imeta-report.csv' was not created.")
+        logger.warning("No data to show.")
 
 
 if __name__ == "__main__":
