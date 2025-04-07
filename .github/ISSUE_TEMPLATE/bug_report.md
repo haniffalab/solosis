@@ -1,39 +1,32 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve
-title: "[Bug] Brief description of the issue"
+about: Report a problem with the software
+title: "[Bug] "
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
-## Description
-**A clear and concise description of what the bug is.**
+**Describe the bug**  
+A clear and concise description of what the bug is.
 
----
+**To Reproduce**  
+Steps to reproduce the behavior:
 
-## Steps to Reproduce
-1. **Step 1:** What you did.
-2. **Step 2:** What you expected.
-3. **Step 3:** What happened.
+1. Go to '...'
+2. Click on '...'
+3. See error
 
----
+**Expected behavior**  
+A clear and concise description of what you expected to happen.
 
-## Expected Behaviour
-**What did you expect to happen?**
+**Screenshots (if applicable)**  
+If applicable, add screenshots to help explain the problem.
 
----
+**Environment (please complete the following information):**
 
-## Actual Behaviour
-**What actually happened?**
+- OS: [e.g., Windows, macOS, Linux]
+- Python/Node/Django/etc. version: [e.g., Python 3.9]
+- Browser (if applicable): [e.g., Chrome, Firefox]
 
----
-
-## Additional Information
-**Add any additional context, logs, or screenshots here.**
-
----
-
-## Checklist
-- [ ] I have searched for similar issues.
-- [ ] I have provided all necessary details to reproduce the issue.
+**Additional context**  
+Add any other context about the problem here.

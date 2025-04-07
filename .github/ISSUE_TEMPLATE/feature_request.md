@@ -1,37 +1,19 @@
 ---
 name: Feature Request
 about: Suggest a new feature or improvement
-title: "[Feature] Brief description of the feature"
+title: "[Feature] "
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
-## Summary
-**What is the feature or improvement you would like to propose?**
+**Is your feature request related to a problem? Please describe.**  
+A clear and concise description of what the problem is.
 
----
+**Describe the solution you'd like**  
+A clear and concise description of what you want to happen.
 
-## Why is this Needed?
-**Explain why this feature is important and how it will improve the project.**
+**Describe alternatives you've considered**  
+A clear and concise description of any alternative solutions or features you've considered.
 
----
-
-## Proposed Solution
-**Describe how you think this could be implemented.**
-
----
-
-## Alternatives Considered
-**Have you considered any alternatives or workarounds? If yes, please describe them.**
-
----
-
-## Additional Information
-**Add any relevant details, mockups, or context.**
-
----
-
-## Checklist
-- [ ] I have checked for similar feature requests.
-- [ ] I have clearly described the feature and its purpose.
+**Additional context**  
+Add any other context or screenshots about the feature request here.
