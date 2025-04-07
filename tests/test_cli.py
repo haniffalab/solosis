@@ -25,6 +25,26 @@ def test_cellranger_count():
     assert "Show this message and exit" in result.output
 
 
+def test_cellranger_count_invalid_sample(caplog):
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["alignment", "cellranger-count", "--sample", "test-sample"],
+        catch_exceptions=False,
+    )  # Ensure exceptions are captured
+
+    # Check if the process failed
+    assert result.exit_code != 0  # Expected to fail
+
+    # Capture the log output for the ERROR message
+    with caplog.at_level("ERROR"):  # Capturing logs at ERROR level
+        # Now the logs should contain the expected error message
+        assert (
+            "solosis:cellranger_count.py:110 No valid samples found. Exiting"
+            in caplog.text
+        )
+
+
 def test_cellranger_arc_count():
     runner = CliRunner()
     result = runner.invoke(cli, ["alignment", "cellranger-arc-count", "--help"])
