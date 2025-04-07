@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Solosis &mdash; Solosis 0.4.1 documentation</title>
+  <title>Solosis &mdash; Solosis 0.4.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a78a336b" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=c87aa342"></script>
+      <script src="_static/documentation_options.js?v=ff822928"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -102,36 +102,29 @@
 </section>
 <section id="setup">
 <h1>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h1>
-<p>Add the module path.</p>
+<p>Load the Solosis module.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>use<span class="w"> </span>append<span class="w"> </span>/software/cellgen/team298/shared/modulefiles
-</pre></div>
-</div>
-</div>
-<p>Load the Solosis module.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>load<span class="w"> </span>solosis
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>**<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Welcome to Solosis, Module loaded&#39;</span>
 **<span class="w"> </span>INFO:<span class="w"> </span><span class="s1">&#39;Type solosis-cli to get started&#39;</span>
 </pre></div>
 </div>
 </div>
 <p>Execute the main solosis command to view available commands.</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Input</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>solosis-cli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
 <span class="w"> </span>A<span class="w"> </span><span class="nb">command</span><span class="w"> </span>line<span class="w"> </span>interface<span class="w"> </span><span class="k">for</span><span class="w"> </span>working<span class="w"> </span>with<span class="w"> </span>single-cell<span class="w"> </span>data.
