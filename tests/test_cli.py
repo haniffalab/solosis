@@ -1,4 +1,5 @@
 import os
+import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -6,6 +7,7 @@ import click
 from click.testing import CliRunner
 
 from solosis.cli import cli
+from solosis.utils.env_utils import authenticate_irods, irods_auth
 
 # responding to error message ("missing environmnet variables LSB_DEFAULT_USERGROUP and TEAM_DATA_DIR")
 os.environ["LSB_DEFAULT_USERGROUP"] = "team298"
@@ -182,12 +184,59 @@ def test_cellranger_vdj_valid_sample(caplog):
             assert "Job submitted successfully" in caplog.text
 
 
-## Tests for irods commandds
+## Tests for irods commands
 def test_imeta_report():
     runner = CliRunner()
     result = runner.invoke(cli, ["irods", "imeta-report", "--help"])
     assert result.exit_code == 0
     assert "Show this message and exit" in result.output
+
+
+#####   FAILING
+def test_irods_auth_success(mocker):
+    runner = CliRunner()
+    # Mock irods_auth to return True (successful auth)
+    mocker.patch("solosis.utils.env_utils.irods_auth", return_value=True)
+    # Mock subprocess.run to prevent any actual iRODS commands from being run
+    mocker.patch(
+        "subprocess.run",
+        return_value=subprocess.CompletedProcess(
+            args=["iget", "dummy"], returncode=0, stdout="", stderr=""
+        ),
+    )
+
+    # Run the CLI command (the actual command you're testing)
+    result = runner.invoke(cli, ["irods", "imeta-report", "--sample", "sample_test"])
+
+    # Assert that the command ran successfully (exit code 0)
+    assert result.exit_code == 0
+    # Assert that the expected output is in the result
+    assert "Summary table" in result.output  # Assert the expected output
+    # Optionally, assert that irods_auth was called
+    irods_auth.assert_called_once()  # Ensure the mock was called once during the test
+
+
+#####   FAILING
+def test_imeta_report_valid_sample(caplog):
+    with patch("subprocess.run") as mock_run:
+        mock_process = MagicMock()
+        mock_process.stdout = "Processing sample:"
+        mock_process.stderr = ""  # Optional, but useful if your CLI logs stderr
+        mock_process.returncode = 0  # 👈 THIS LINE FIXES THE TEST
+
+        mock_run.return_value = mock_process
+
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["irods", "imeta-report", "--sample", "sample_test"],
+            catch_exceptions=False,
+        )
+
+        assert result.exit_code == 0
+
+        with caplog.at_level("INFO"):
+            assert "Processing sample:" in caplog.text
 
 
 def test_iget_cellranger():
