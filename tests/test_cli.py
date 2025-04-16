@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import click
 import pandas as pd
+import pytest
 from click.testing import CliRunner
 
 from solosis.cli import cli
@@ -27,14 +28,14 @@ file_path.touch()  # create empty file /tmp/solosis/samples/sample_test/fastq/sa
 libraries_path = Path(f"{os.environ['TEAM_DATA_DIR']}/test_libraries.csv")
 libraries_path.touch()
 # for cellbender tests
-cellranger_path = Path(
-    f"{os.environ['TEAM_DATA_DIR']}/samples/sample_test/cellranger/solosis_720/sample_test/outs"
-)
-cellranger_path.mkdir(parents=True, exist_ok=True)
-cellranger_log_path = Path(
-    f"{os.environ['TEAM_DATA_DIR']}/samples/sample_test/cellranger/solosis_720/sample_test"
-)
-cellranger_log_path.mkdir(parents=True, exist_ok=True)
+# cellranger_path = Path(
+#    f"{os.environ['TEAM_DATA_DIR']}/samples/sample_test/cellranger/solosis_720/sample_test/outs"
+# )
+# cellranger_path.mkdir(parents=True, exist_ok=True)
+# cellranger_log_path = Path(
+#    f"{os.environ['TEAM_DATA_DIR']}/samples/sample_test/cellranger/solosis_720/sample_test"
+# )
+# cellranger_log_path.mkdir(parents=True, exist_ok=True)
 # create metadata input file
 data = {
     "sample_id": ["sample_test"],
@@ -45,12 +46,12 @@ data = {
 # make it a dataframe
 df = pd.DataFrame(data)
 df.to_csv(Path(f"{os.environ['TEAM_DATA_DIR']}/metadata_input.csv"), index=False)
-cellranger_outs = cellranger_path / "raw_feature_bc_matrix.h5"
-cellranger_outs.touch()
+# cellranger_outs = cellranger_path / "raw_feature_bc_matrix.h5"
+# cellranger_outs.touch()
 # make log file with success message
-cellranger_log = Path(cellranger_log_path / "_log")
-cellranger_log.parent.mkdir(parents=True, exist_ok=True)
-cellranger_log.write_text("Pipestance completed successfully!\n")
+# cellranger_log = Path(cellranger_log_path / "_log")
+# cellranger_log.parent.mkdir(parents=True, exist_ok=True)
+# cellranger_log.write_text("Pipestance completed successfully!\n")
 
 
 def test_help():
@@ -203,9 +204,8 @@ def test_cellranger_vdj_valid_sample(caplog):
 
         # Check if the process succeeded
         assert result.exit_code == 0
-        # Capture the log output for the success message
-        with caplog.at_level("INFO"):  # Capturing logs at INFO level
-            assert "Job submitted successfully" in caplog.text
+        # Capture the log output for the success messageß
+        assert "Job submitted successfully" in caplog.text
 
 
 ## Tests for irods commands
@@ -275,28 +275,52 @@ def test_cellbender_invalid_metadata(caplog):
         assert "Invalid value for '--metadata': Path" in result.output
 
 
-def test_cellbender_valid_sample(caplog):
-    # make mock of subprocess.run to simulate a successful 'process'
-    with patch("subprocess.run") as mock_run:
-        # create a mock process object with stdout (was failing without)
-        mock_process = MagicMock()
-        mock_process.stdout = "Job submitted successfully"
+class TestCellbender:
 
-        # Mock subprocess.run to return mock process (instead of executing the command)
-        mock_run.return_value = mock_process
+    @pytest.fixture(scope="class")
+    def cellranger_validation(self, tmp_path_factory):
+        # Create a shared temp directory
+        base_dir = tmp_path_factory.mktemp("cellbender_test")
 
-        runner = CliRunner()
-        result = runner.invoke(
-            cli,
-            ["scrna", "cellbender", "--metadata", "/tmp/solosis/metadata_input.csv"],
-            catch_exceptions=False,
-        )  # Ensure exceptions are captured
+        # Build mock structure
+        sample_id = "sample_test"
+        outs = base_dir / sample_id / "cellranger" / "solosis_720" / sample_id / "outs"
+        outs.mkdir(parents=True)
 
-        # Check if the process succeeded
-        assert result.exit_code == 0
-        # Capture the log output for the success message
-        with caplog.at_level("INFO"):  # Capturing logs at INFO level
-            assert "Job submitted successfully" in caplog.text
+        # Create dummy output files
+        (outs / "raw_feature_bc_matrix.h5").write_text("fake h5 content")
+        (outs / "_log").write_text("Pipestance completed successfully!")
+
+        # Metadata file (relative paths!)
+        metadata = base_dir / "metadata_input.csv"
+        rel_path = f"{sample_id}/cellranger/solosis_720/{sample_id}/outs"
+        metadata.write_text(f"sample_id,cellranger_dir\n{sample_id},{rel_path}\n")
+
+        return {
+            "base_dir": base_dir,
+            "metadata": metadata,
+            "sample_id": sample_id,
+            "outs": outs,
+        }
+
+    def test_cellbender_valid_sample(monkeypatch, cellranger_validation):
+        monkeypatch.chdir(cellranger_validation["base_dir"])
+
+        with patch("subprocess.run") as mock_run:
+            mock_process = MagicMock()
+            mock_process.stdout = "Job submitted successfully"
+            mock_run.return_value = mock_process
+
+            runner = CliRunner()
+            result = runner.invoke(
+                cli,
+                ["scrna", "cellbender", "--metadata", "metadata_input.csv"],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            # Check if the success message is printed to stdout
+            assert "Job submitted successfully" in result.output
 
 
 def test_merge_h5ad():
