@@ -303,7 +303,7 @@ class TestCellbender:
             "outs": outs,
         }
 
-    def test_cellbender_valid_sample(monkeypatch, cellranger_validation):
+    def test_cellbender_valid_sample(self, caplog, monkeypatch, cellranger_validation):
         monkeypatch.chdir(cellranger_validation["base_dir"])
 
         with patch("subprocess.run") as mock_run:
@@ -320,7 +320,7 @@ class TestCellbender:
 
             assert result.exit_code == 0
             # Check if the success message is printed to stdout
-            assert "Job submitted successfully" in result.output
+            assert "Job submitted successfully" in caplog.text
 
 
 def test_merge_h5ad():
