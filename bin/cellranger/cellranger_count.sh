@@ -64,7 +64,6 @@ cellranger count \
     --sample="$SAMPLE_ID" \
     --localcores="$CPU" \
     --localmem="$(($MEM / 1000))" \
-    --disable-tenx-assistant \
     $BAM_FLAG
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
