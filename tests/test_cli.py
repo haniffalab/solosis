@@ -162,6 +162,7 @@ def test_cellranger_vdj_valid_sample(caplog):
         assert "Job submitted successfully" in caplog.text
 
 
+## tests for irods commands
 def test_imeta_report():
     runner = CliRunner()
     result = runner.invoke(cli, ["irods", "imeta-report", "--help"])
