@@ -203,24 +203,6 @@ def test_imeta_report():
     assert "Show this message and exit" in result.output
 
 
-#####   FAILING
-# @patch("solosis.utils.subprocess_utils.popen")
-# def test_imeta_report_valid_sample(mock_popen, caplog):
-#    mock_popen.return_value = None  # or a mock process if needed
-
-#    runner = CliRunner()
-#    result = runner.invoke(
-#        cli,
-#        ["irods", "imeta-report", "--sample", "sample_test"],
-#        catch_exceptions=False,
-#    )
-
-#    assert result.exit_code == 0
-
-#    with caplog.at_level("INFO"):
-#        assert "Processing sample:" in result.output
-
-
 ## testing successful irods authentication (env_utils.irods_auth)
 @mock.patch("solosis.utils.env_utils.subprocess.run")
 def test_irods_auth_success(mock_run):
@@ -437,7 +419,7 @@ def test_history_view_success(caplog):
 
 
 # testing success of history view (with specified line number)
-def test_history_view_success(caplog):
+def test_history_view_with_n_option_success(caplog):
     runner = CliRunner()
     result = runner.invoke(cli, ["history", "view", "-n", "20"])
     assert result.exit_code == 0
