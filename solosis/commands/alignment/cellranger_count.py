@@ -28,23 +28,23 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @click.option(
     "--chemistry",
-    type=click.Choice(
-        [
-            "SC5P-R2",
-            "SC5P-PE-v3",
-            "SC5P-R2",
-            "SC5P-R2-v3",
-            "SC3Pv1",
-            "SC3Pv2",
-            "SC3Pv3",
-            "SC3Pv4",
-            "SC3Pv3LT",
-            "SC3Pv3HT",
-            "SFRP",
-            "MFRP",
-        ]
-    ),
-    # type=str,
+    # type=click.Choice(
+    #    [
+    #        "SC5P-R2",
+    #        "SC5P-PE-v3",
+    #        "SC5P-R2",
+    #        "SC5P-R2-v3",
+    #        "SC3Pv1",
+    #        "SC3Pv3",
+    #        "SC3Pv2",
+    #        "SC3Pv4",
+    #        "SC3Pv3LT",
+    #        "SC3Pv3HT",
+    #        "SFRP",
+    #        "MFRP",
+    #    ]
+    # ),
+    type=str,
     help="Chemistry assay to define",
 )
 @click.option(
