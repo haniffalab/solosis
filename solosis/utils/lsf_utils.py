@@ -43,13 +43,6 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
             help="Number of CPU cores",
         )(function)
         function = click.option(
-            "--time",
-            default=time,
-            type=str,
-            show_default=True,
-            help="Wall time limit (e.g. 12:00)",
-        )(function)
-        function = click.option(
             "--queue",
             default=queue,
             type=str,
