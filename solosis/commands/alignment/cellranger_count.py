@@ -28,23 +28,23 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @click.option(
     "--chemistry",
-    # type=click.Choice(
-    #    [
-    #        "SC5P-R2",
-    #        "SC5P-PE-v3",
-    #        "SC5P-R2",
-    #        "SC5P-R2-v3",
-    #        "SC3Pv1",
-    #        "SC3Pv3",
-    #        "SC3Pv2",
-    #        "SC3Pv4",
-    #        "SC3Pv3LT",
-    #        "SC3Pv3HT",
-    #        "SFRP",
-    #        "MFRP",
-    #    ]
-    # ),
-    type=str,
+    type=click.Choice(
+        [
+            "SC5P-R2",
+            "SC5P-PE-v3",
+            "SC5P-R2",
+            "SC5P-R2-v3",
+            "SC3Pv1",
+            "SC3Pv3",
+            "SC3Pv2",
+            "SC3Pv4",
+            "SC3Pv3LT",
+            "SC3Pv3HT",
+            "SFRP",
+            "MFRP",
+        ]
+    ),
+    # type=str,
     help="Chemistry assay to define",
 )
 @click.option(
@@ -149,9 +149,9 @@ def cmd(
             command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
-            tmpfile.write(command + "\n")
-            if chemistry is not None and chemistry != 0:
+            if chemistry:
                 command += f" --chemistry {chemistry}"
+            tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
