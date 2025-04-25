@@ -151,7 +151,7 @@ def cmd(
                 command += " --no-bam"
             tmpfile.write(command + "\n")
             if chemistry:
-                command += ["--chemistry", chemistry]
+                command += f" --chemistry {chemistry}"
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
