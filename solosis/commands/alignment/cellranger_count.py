@@ -27,6 +27,27 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     help="Generate BAM files for each sample",
 )
 @click.option(
+    "--chemistry",
+    type=click.Choice(
+        [
+            "SC5P-R2",
+            "SC5P-PE-v3",
+            "SC5P-R2",
+            "SC5P-R2-v3",
+            "SC3Pv1",
+            "SC3Pv2",
+            "SC3Pv3",
+            "SC3Pv4",
+            "SC3Pv3LT",
+            "SC3Pv3HT",
+            "SFRP",
+            "MFRP",
+        ]
+    ),
+    # type=str,
+    help="Chemistry assay to define",
+)
+@click.option(
     "--version",
     type=str,
     default="7.2.0",
@@ -34,7 +55,9 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @debug
 @log
-def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
+def cmd(
+    sample, samplefile, create_bam, chemistry, version, mem, cpu, queue, gpu, debug
+):
     """scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -123,10 +146,12 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {chemistry} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
             tmpfile.write(command + "\n")
+            if chemistry:
+                command += ["--chemistry", chemistry]
 
     submit_lsf_job_array(
         command_file=tmpfile.name,

@@ -2,7 +2,7 @@
 # cellranger_count.sh - Run Cell Ranger count for a given sample
 
 # Usage:
-#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]
+#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam] [--chemistry]
 #
 # Parameters:
 #   <sample_id>   - Sample ID to process.
@@ -12,12 +12,13 @@
 #   <cpu>         - Number of CPU cores.
 #   <mem>         - Memory in MB.
 #   --no-bam      - Optional flag to disable BAM file generation.
+#   --chemistry   - Chemistry of assay kit used.
 
 set -e  # Exit immediately if a command fails
 
 # Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
+  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam] [--chemistry]" >&2
   exit 1
 fi
 
@@ -29,11 +30,17 @@ VERSION="$4"
 CPU="$5"
 MEM="$6"
 BAM_FLAG=""  # Default to generating BAM files
+CHEMISTRY="" # Default should detect chemistry
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 
 # Handle optional --no-bam flag (disables BAM file generation)
 if [ "$7" == "--no-bam" ]; then
   BAM_FLAG="--no-bam"
+fi
+
+# Handle optional --chemistry flag (default is not needed)
+if [ "$8" == "--chemistry" ] && [ -n "$9" ]; then
+  CHEMISTRY="--chemistry=$9"
 fi
 
 # Load Cell Ranger ARC module (make sure the version is correct)
@@ -61,7 +68,9 @@ cellranger count \
     --sample="$SAMPLE_ID" \
     --localcores="$CPU" \
     --localmem="$(($MEM / 1000))" \
-    $BAM_FLAG
+    $BAM_FLAG \
+    $CHEMISTRY
+
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
