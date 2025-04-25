@@ -32,7 +32,7 @@ MEM="$6"
 BAM_FLAG=""  # Default to generating BAM files
 CHEMISTRY="" # Default should detect chemistry
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
-
+echo "Arguments received: $@"
 # Handle optional --no-bam flag (disables BAM file generation)
 if [ "$7" == "--no-bam" ]; then
   BAM_FLAG="--no-bam"
