@@ -49,6 +49,9 @@ def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
             cellranger_dir = os.path.join(
                 os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
             )
+            cellranger_arc_dir = os.path.join(
+                os.getenv("TEAM_DATA_DIR"), "cellranger-arc"
+            )
             os.makedirs(cellranger_dir, exist_ok=True)
             report_path = os.path.join(sample_dir, "imeta_report.csv")
 
@@ -74,19 +77,29 @@ def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
                                 f"Could not determine collection name {path}"
                             )
                             continue
-                        output_dir = os.path.join(cellranger_dir, collection_name)
+
+                        # @TODO: Properly validate with "analysis_type" metadata attribute
+                        if "cellranger-arc" in collection_name:
+                            parent_dir = cellranger_arc_dir
+                            output_dir = os.path.join(
+                                cellranger_arc_dir, collection_name
+                            )
+                        else:
+                            parent_dir = cellranger_dir
+                            output_dir = os.path.join(cellranger_dir, collection_name)
+
                         if (
                             os.path.exists(output_dir)
                             and os.path.isdir(output_dir)
                             and os.listdir(output_dir)
                         ):
                             logger.warning(
-                                f"Skipping {collection_name}, already exists in {cellranger_dir}"
+                                f"Skipping {collection_name}, already exists in {output_dir}"
                             )
                             continue
 
                         samples_to_download.append((sample, output_dir))
-                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        command = f"iget -r {path} {parent_dir} ; chmod -R g+w {parent_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
                         logger.info(
                             f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
