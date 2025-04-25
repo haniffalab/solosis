@@ -117,7 +117,7 @@ def cmd(sample, samplefile, include_bam, mem, cpu, queue, gpu, debug):
                     for item in items:
                         full_path = f"{path}/{item}"
                         command = f"iget -r {full_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-                tmpfile.write(f"{command}\n")
+                        tmpfile.write(f"{command}\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
