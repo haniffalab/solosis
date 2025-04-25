@@ -150,7 +150,7 @@ def cmd(
             if not create_bam:
                 command += " --no-bam"
             tmpfile.write(command + "\n")
-            if chemistry:
+            if chemistry is not None and chemistry != 0:
                 command += f" --chemistry {chemistry}"
 
     submit_lsf_job_array(

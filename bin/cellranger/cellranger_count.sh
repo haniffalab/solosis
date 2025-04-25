@@ -29,41 +29,19 @@ FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
-
-# optional variables
 BAM_FLAG=""  # Default to generating BAM files
 CHEMISTRY="" # Default should detect chemistry
-
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 echo "Arguments received: $@"
 # Handle optional --no-bam flag (disables BAM file generation)
-#if [ "$7" == "--no-bam" ]; then
-#  BAM_FLAG="--no-bam"
-#fi
+if [ "$7" == "--no-bam" ]; then
+  BAM_FLAG="--no-bam"
+fi
 
-# Parse optional flags
-while [[ $# -gt 0 ]]; do
-  key="$1"
-  case $key in
-    --no-bam)
-      BAM_FLAG="--no-bam"
-      shift
-      ;;
-    --chemistry)
-      CHEMISTRY_VALUE="$2"
-      if [ -z "$CHEMISTRY_VALUE" ]; then
-        echo "Error: --chemistry flag requires a value." >&2
-        exit 1
-      fi
-      CHEMISTRY="--chemistry=$CHEMISTRY_VALUE"
-      shift 2
-      ;;
-    *)
-      echo "Unknown option: $key" >&2
-      exit 1
-      ;;
-  esac
-done
+# Handle optional --chemistry flag (default is not needed)
+if [ "$8" == "--chemistry" ] && [ -n "$9" ]; then
+  CHEMISTRY="--chemistry=$9"
+fi
 
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
