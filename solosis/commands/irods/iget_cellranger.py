@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 import tempfile
 
 import click
@@ -21,9 +22,15 @@ from solosis.utils.subprocess_utils import popen
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing sample IDs.",
 )
+@click.option(
+    "--include-bam",
+    is_flag=True,
+    default=False,
+    help="Download BAM files for each sample",
+)
 @debug
 @log
-def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
+def cmd(sample, samplefile, include_bam, mem, cpu, queue, gpu, debug):
     """Downloads cellranger outputs from iRODS."""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -85,12 +92,33 @@ def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
                             )
                             continue
 
-                        samples_to_download.append((sample, output_dir))
-                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-                        tmpfile.write(command + "\n")
-                        logger.info(
-                            f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
-                        )
+                # append the sample and output_dir for both full path and individual items
+                samples_to_download.append((sample, cellranger_dir))
+
+                if include_bam:
+                    # download BAM files
+                    command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                    tmpfile.write(f"{command}\n")
+                else:
+                    result = subprocess.run(
+                        ["ils", path], capture_output=True, text=True
+                    )
+                    if result.returncode != 0:
+                        logger.warning(f"ils failed on {path}: {result.stderr.strip()}")
+                        continue
+
+                    items = []
+                    for line in result.stdout.splitlines():
+                        line = line.strip()
+                        if line.startswith("  "):
+                            item_name = line.rsplit("/", 1)[-1]
+                            items.append(item_name)
+
+                    # Now construct and write commands for individual items
+                    for item in items:
+                        full_path = f"{path}/{item}"
+                        command = f"iget -r {full_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                        tmpfile.write(f"{command}\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
