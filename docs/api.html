@@ -179,24 +179,55 @@
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-mem">
 <span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-mem" title="Link to this definition"></a></dt>
 <dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-cpu">
 <span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-cpu" title="Link to this definition"></a></dt>
 <dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-time" title="Link to this definition"></a></dt>
+<dd><p>Wall time limit (e.g. 12:00)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'12:00'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-queue">
 <span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-queue" title="Link to this definition"></a></dt>
 <dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-gpu">
-<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-gpu" title="Link to this definition"></a></dt>
-<dd><p>Number of GPUs to request</p>
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -225,17 +256,6 @@
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-chemistry">
-<span class="sig-name descname"><span class="pre">--chemistry</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;chemistry&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-chemistry" title="Link to this definition"></a></dt>
-<dd><p>Chemistry assay to define</p>
-<dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p>SC5P-R2 | SC5P-PE-v3 | SC5P-R2 | SC5P-R2-v3 | SC3Pv1 | SC3Pv3 | SC3Pv2 | SC3Pv4 | SC3Pv3LT | SC3Pv3HT | SFRP | MFRP</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-version">
 <span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;version&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-version" title="Link to this definition"></a></dt>
 <dd><p>Cell Ranger version to use (e.g., ‘7.2.0’)</p>
@@ -251,24 +271,55 @@
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-mem">
 <span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-mem" title="Link to this definition"></a></dt>
 <dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-cpu">
 <span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-cpu" title="Link to this definition"></a></dt>
 <dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-time" title="Link to this definition"></a></dt>
+<dd><p>Wall time limit (e.g. 12:00)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'12:00'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-queue">
 <span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-queue" title="Link to this definition"></a></dt>
 <dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-gpu">
-<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-gpu" title="Link to this definition"></a></dt>
-<dd><p>Number of GPUs to request</p>
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -306,24 +357,55 @@
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-mem">
 <span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-mem" title="Link to this definition"></a></dt>
 <dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-cpu">
 <span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-cpu" title="Link to this definition"></a></dt>
 <dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-time" title="Link to this definition"></a></dt>
+<dd><p>Wall time limit (e.g. 12:00)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'12:00'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-queue">
 <span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-queue" title="Link to this definition"></a></dt>
 <dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-gpu">
-<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-gpu" title="Link to this definition"></a></dt>
-<dd><p>Number of GPUs to request</p>
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -427,24 +509,55 @@
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-mem">
 <span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-mem" title="Link to this definition"></a></dt>
 <dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4000</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-cpu">
 <span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-cpu" title="Link to this definition"></a></dt>
 <dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-time" title="Link to this definition"></a></dt>
+<dd><p>Wall time limit (e.g. 12:00)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'12:00'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-queue">
 <span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-queue" title="Link to this definition"></a></dt>
 <dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'small'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-gpu">
-<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-gpu" title="Link to this definition"></a></dt>
-<dd><p>Number of GPUs to request</p>
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -635,24 +748,55 @@
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-mem">
 <span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-mem" title="Link to this definition"></a></dt>
 <dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-cpu">
 <span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-cpu" title="Link to this definition"></a></dt>
 <dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-time" title="Link to this definition"></a></dt>
+<dd><p>Wall time limit (e.g. 12:00)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'12:00'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-queue">
 <span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-queue" title="Link to this definition"></a></dt>
 <dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-gpu">
-<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-gpu" title="Link to this definition"></a></dt>
-<dd><p>Number of GPUs to request</p>
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
