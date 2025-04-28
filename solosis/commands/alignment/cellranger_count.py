@@ -159,6 +159,7 @@ def cmd(
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 

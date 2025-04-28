@@ -133,6 +133,7 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, deb
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 
