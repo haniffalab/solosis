@@ -109,17 +109,21 @@ def cmd(sample, samplefile, include_bam, mem, cpu, queue, gpu, debug):
                             )
                             continue
 
-                        items = []
                         for line in result.stdout.splitlines():
                             line = line.strip()
-                            if line.startswith("  "):
-                                item_name = line.rsplit("/", 1)[-1]
-                                items.append(item_name)
+                            if not line or line.endswith(":"):
+                                continue  # skip headers and empty lines
 
-                        # Now construct and write commands for individual items
-                        for item in items:
-                            full_path = f"{path}/{item}"
-                            command = f"iget -r {full_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                            if line.startswith("C- "):
+                                # This is a sub-collection
+                                subcollection_path = line.split("C- ", 1)[1].strip()
+                                command = f"iget -r {subcollection_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                            else:
+                                # This is a file inside the collection
+                                item_name = line
+                                full_path = f"{path}/{item_name}"
+                                command = f"iget {full_path} {cellranger_dir} ; chmod g+w {cellranger_dir}/{item_name} >/dev/null 2>&1 || true"
+
                             tmpfile.write(f"{command}\n")
 
     submit_lsf_job_array(
