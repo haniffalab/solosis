@@ -92,33 +92,35 @@ def cmd(sample, samplefile, include_bam, mem, cpu, queue, gpu, debug):
                             )
                             continue
 
-                # append the sample and output_dir for both full path and individual items
-                samples_to_download.append((sample, cellranger_dir))
+                    # append the sample and output_dir for both full path and individual items
+                    samples_to_download.append((sample, cellranger_dir))
 
-                if include_bam:
-                    # download BAM files
-                    command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-                    tmpfile.write(f"{command}\n")
-                else:
-                    result = subprocess.run(
-                        ["ils", path], capture_output=True, text=True
-                    )
-                    if result.returncode != 0:
-                        logger.warning(f"ils failed on {path}: {result.stderr.strip()}")
-                        continue
-
-                    items = []
-                    for line in result.stdout.splitlines():
-                        line = line.strip()
-                        if line.startswith("  "):
-                            item_name = line.rsplit("/", 1)[-1]
-                            items.append(item_name)
-
-                    # Now construct and write commands for individual items
-                    for item in items:
-                        full_path = f"{path}/{item}"
-                        command = f"iget -r {full_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                    if include_bam:
+                        # download BAM files
+                        command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(f"{command}\n")
+                    else:
+                        result = subprocess.run(
+                            ["ils", path], capture_output=True, text=True
+                        )
+                        if result.returncode != 0:
+                            logger.warning(
+                                f"ils failed on {path}: {result.stderr.strip()}"
+                            )
+                            continue
+
+                        items = []
+                        for line in result.stdout.splitlines():
+                            line = line.strip()
+                            if line.startswith("  "):
+                                item_name = line.rsplit("/", 1)[-1]
+                                items.append(item_name)
+
+                        # Now construct and write commands for individual items
+                        for item in items:
+                            full_path = f"{path}/{item}"
+                            command = f"iget -r {full_path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                            tmpfile.write(f"{command}\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
