@@ -98,6 +98,7 @@ def cmd(sample, samplefile, include_bam, mem, cpu, queue, gpu, debug):
                 if include_bam:
                     # download BAM files
                     command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
+                    tmpfile.write(f"{command}\n")
                 else:
                     result = subprocess.run(
                         ["ils", path], capture_output=True, text=True
