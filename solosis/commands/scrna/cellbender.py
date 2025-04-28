@@ -85,7 +85,7 @@ def cmd(
                 )
         else:
             logger.warning(
-                f"Required file {RAW_FEATURE_FILE} not found in {cellranger_dir} for sample {sample}. Skipping this sample"
+                f"Required file {RAW_FEATURE_FILE} not found in {cellranger_dir} for sample {sample['sample_id']}. Skipping this sample"
             )
 
     if not valid_samples:

@@ -134,6 +134,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 

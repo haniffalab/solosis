@@ -131,6 +131,7 @@ eval "$COMMAND"
 """
 
     # Submit the job array
+    logger.debug(f"LSF Script: {lsf_script}")
     try:
         process = subprocess.run(
             ["bsub"], input=lsf_script, text=True, capture_output=True, check=True
