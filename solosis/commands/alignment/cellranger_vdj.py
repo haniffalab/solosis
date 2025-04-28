@@ -96,6 +96,7 @@ def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 
