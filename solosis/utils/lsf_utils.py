@@ -39,6 +39,10 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=None):
         function = click.option(
             "--gpu", default=gpu, type=str, help="Number of GPUs to request"
         )(function)
+        function = click.option(
+            "--time", default=time, type=str, help="Number of GPUs to request"
+        )(function)
+
         return function
 
     return decorator

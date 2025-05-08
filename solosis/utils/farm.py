@@ -128,7 +128,7 @@ def bash_submit(job_runner: str, **kwargs) -> None:
     click.echo(result.stderr)
 
 
-def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **kwargs):
+def _single_command_bsub(command_to_exec, job_name, queue, time, cpu, mem, **kwargs):
     """
     Run a single command on the farm.
     """
@@ -148,7 +148,7 @@ def _single_command_bsub(command_to_exec, job_name, queue, time, cores, mem, **k
         job_name=job_name,
         queue=queue,
         time=time,
-        cores=cores,
+        cpu=cpu,
         mem=mem,
     )
 
