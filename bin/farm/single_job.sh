@@ -22,7 +22,7 @@ cat > $bsub_file <<eof
 #!/bin/bash
 #BSUB -J $job_name
 #BSUB -q $queue
-#BSUB -n $cores 
+#BSUB -n $cpu
 #BSUB -M $mem
 #BSUB -R "select[mem>$mem] rusage[mem=$mem]"
 #BSUB -W $time
