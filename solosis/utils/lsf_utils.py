@@ -112,8 +112,6 @@ def submit_lsf_job_array(
         gpunum = 1
         gpumodel = "NVIDIAA100_SXM4_80GB"
         gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
-        cpu = 4
-        mem = 16000
 
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash
