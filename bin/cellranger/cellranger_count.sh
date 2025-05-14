@@ -23,25 +23,52 @@ if [ "$#" -lt 6 ]; then
 fi
 
 # Assign command-line arguments to variables
+# Assign required arguments
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
+# Initialize optional flags
 BAM_FLAG=""  # Default to generating BAM files
 CHEMISTRY="" # Default should detect chemistry
+# Define reference 
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 echo "Arguments received: $@"
-# Handle optional --no-bam flag (disables BAM file generation)
-if [ "$7" == "--no-bam" ]; then
-  BAM_FLAG="--no-bam"
-fi
 
+# Parse optional arguments
+shift 2
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+  --chemistry)
+    if [[ -n "$2" && "$2" != --* ]]; then
+      CHEMISTRY="--chemistry $2"
+      shift 2
+    else
+      echo "Error: --chemistry requires an str, check options via --help" >&2
+      exit 1
+    fi
+    ;;
+  --no-bam)
+    BAM_FLAG="--no-bam"
+    shift
+    ;;
+  *)
+    echo "Warning: Unknown parameter '$1' ignored." >&2
+    shift
+    ;;
+  esac
+done
+
+# Handle optional --no-bam flag (disables BAM file generation)
+#if [ "$7" == "--no-bam" ]; then
+#  BAM_FLAG="--no-bam"
+#fi
 # Handle optional --chemistry flag (default is not needed)
-if [ "$8" == "--chemistry" ] && [ -n "$9" ]; then
-  CHEMISTRY="--chemistry=$9"
-fi
+#if [ "$8" == "--chemistry" ] && [ -n "$9" ]; then
+#  CHEMISTRY="--chemistry=$9"
+#fi
 
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
@@ -58,7 +85,9 @@ echo "Output directory: $OUTPUT_DIR"
 echo "FASTQ directory: $FASTQ_DIR"
 echo "Cell Ranger version: $VERSION"
 echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
+# Debugging
 [ -n "$BAM_FLAG" ] && echo "BAM output is disabled"
+[ -n "$CHEMISTRY" ] && echo "Using chemistry option: $CHEMISTRY"
 
 # Run Cell Ranger count
 cellranger count \
