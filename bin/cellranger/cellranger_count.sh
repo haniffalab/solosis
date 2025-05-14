@@ -38,7 +38,7 @@ REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 echo "Arguments received: $@"
 
 # Parse optional arguments
-shift 2
+shift 6
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
   --chemistry)
