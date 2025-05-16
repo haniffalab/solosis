@@ -52,7 +52,7 @@
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#id3">pytest</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#id9">pytest</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#python-testing">Python testing</a></li>
 </ul>
 </li>
@@ -98,8 +98,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pwd</span>
 </pre></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id10" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/nfs/users/nfs_l/&lt;USER&gt;
 </pre></div>
 </div>
@@ -131,8 +131,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">status</span>
 </pre></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id11" title="Link to this code"></a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>On<span class="w"> </span>branch<span class="w"> </span>dev
 Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </span>up-to-date<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;origin/dev&#39;</span>.
 </pre></div>
@@ -147,6 +147,41 @@ Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </s
 </pre></div>
 </div>
 <p>For information on Naming nomenclature of git branches view this <a class="reference external" href="https://medium.com/&#64;abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534">page</a></p>
+<p>## Creating a new click command
+Click python tool is used to construct solosis
+[Documentation](<a class="reference external" href="https://click.palletsprojects.com/en/stable/">https://click.palletsprojects.com/en/stable/</a>)</p>
+<p>Main files needed:
+* Command submission bash script</p>
+<blockquote>
+<div><p>e.g. <cite>bin/command-group/command.sh</cite></p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Command click python script</dt><dd><p>e.g. <cite>solosis/commands/command-group/command.py</cite></p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Changes will need to be made to:
+* <cite>cli.py</cite> including <cite>add_command()</cite> for new command</p>
+<blockquote>
+<div><p>e.g.</p>
+</div></blockquote>
+<p><a href="#id2"><span class="problematic" id="id3">``</span></a>`
+&#64;cli.group()
+def command-group():</p>
+<blockquote>
+<div><p>“””Commands for running …”””
+pass</p>
+</div></blockquote>
+<p>command-group.add_command(command.cmd, name=”command”)
+<a href="#id4"><span class="problematic" id="id5">``</span></a><a href="#id6"><span class="problematic" id="id7">`</span></a></p>
+<p>Check files in Utils (<cite>solosis/utils/</cite>), they include features that can be integrated in <cite>command.py</cite>:
+* Logging configuration (<cite>solosis/utils/logging_utils.py</cite>)
+* Input file validation (<cite>solosis/utils/input_utils.py</cite>)
+* LSF job configuration (<cite>solosis/utils/lsf_utils.py</cite>)
+* Environment and iRODS validation (<cite>solosis/utils/env_utils.py</cite>)
+* Further LSF job configuration (<cite>solosis/utils/subprocess_utils.py</cite>)</p>
 <ol class="arabic simple" start="6">
 <li><p><strong>Executing solosis commands</strong></p></li>
 </ol>
@@ -165,8 +200,8 @@ Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </s
 </div>
 <p>Once changes are complete, create <a class="reference external" href="https://github.com/haniffalab/solosis/pulls">Pull Request</a> to merge changes to dev.</p>
 </section>
-<section id="id3">
-<h1>pytest<a class="headerlink" href="#id3" title="Link to this heading"></a></h1>
+<section id="id9">
+<h1>pytest<a class="headerlink" href="#id9" title="Link to this heading"></a></h1>
 <p>Create and activate the virtual environment</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
 <span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>

@@ -75,6 +75,38 @@ Create a new branch (off dev branch) to begin contributing. More info `here <htt
 
 For information on Naming nomenclature of git branches view this `page <https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534>`_
 
+
+## Creating a new click command 
+Click python tool is used to construct solosis 
+[Documentation](https://click.palletsprojects.com/en/stable/)
+
+Main files needed:
+* Command submission bash script 
+    e.g. `bin/command-group/command.sh`
+* Command click python script
+    e.g. `solosis/commands/command-group/command.py`    
+
+Changes will need to be made to:
+* `cli.py` including `add_command()` for new command 
+    e.g. 
+```
+@cli.group()
+def command-group():
+    """Commands for running ..."""
+    pass
+
+command-group.add_command(command.cmd, name="command")
+```
+
+Check files in Utils (`solosis/utils/`), they include features that can be integrated in `command.py`:
+* Logging configuration (`solosis/utils/logging_utils.py`)
+* Input file validation (`solosis/utils/input_utils.py`)
+* LSF job configuration (`solosis/utils/lsf_utils.py`)
+* Environment and iRODS validation (`solosis/utils/env_utils.py`)
+* Further LSF job configuration (`solosis/utils/subprocess_utils.py`)
+
+
+
 6. **Executing solosis commands**
 
 Executing solosis commands while developing need to solosis-cli to be as follows:
