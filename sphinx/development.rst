@@ -83,16 +83,24 @@ Click python tool is used to construct solosis `Click Documentation <https://cli
 **Main files needed:**
 
 * Command submission bash script 
-    e.g. `bin/command-group/command.sh`
+    Example 
+    ::
+
+        `bin/command-group/command.sh`
+    
 
 * Command click python script
-    e.g. `solosis/commands/command-group/command.py`    
+    Example 
+    ::
+
+        `solosis/commands/command-group/command.py`    
+
 
 **Changes will need to be made to:**
 
 * `cli.py` including `add_command()` for new command 
-    e.g. 
 
+    Example
 ::
 
     @cli.group()
