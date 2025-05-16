@@ -3,6 +3,9 @@
 Click python tool is used to construct solosis 
 [Documentation](https://click.palletsprojects.com/en/stable/)
 
+Initial information for constructing new command
+[Solosis Documentation](https://haniffalab.com/solosis/development.html)
+
 Main files needed:
 * Command submission bash script 
     e.g. `bin/command-group/command.sh`
