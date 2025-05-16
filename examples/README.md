@@ -6,13 +6,13 @@ Click python tool is used to construct solosis
 Initial information for constructing new command
 [Solosis Documentation](https://haniffalab.com/solosis/development.html)
 
-Main files needed:
+Files to create:
 * Command submission bash script 
     e.g. `bin/command-group/command.sh`
 * Command click python script
     e.g. `solosis/commands/command-group/command.py`    
 
-Changes will need to be made to:
+Files to make changes to:
 * `cli.py` including `add_command()` for new command 
     e.g. 
     ```

@@ -80,7 +80,7 @@ For information on Naming nomenclature of git branches view this `page <https://
 
 Click python tool is used to construct solosis `Click Documentation <https://click.palletsprojects.com/en/stable/>`_
 
-**Main files needed:**
+**Files to create:**
 
 * Command submission bash script 
     Example 
@@ -96,7 +96,7 @@ Click python tool is used to construct solosis `Click Documentation <https://cli
         `solosis/commands/command-group/command.py`    
 
 
-**Changes will need to be made to:**
+**Files to make changes to:**
 
 * `cli.py` including `add_command()` for new command 
 
