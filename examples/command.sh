@@ -1,6 +1,8 @@
 #!/bin/bash
 # command.sh - Run command for a given sample
 
+# Use cellranger-count command as working example.
+
 # Usage:
 #   ./command.sh <sample_id> <output_dir> ...
 #
@@ -45,7 +47,4 @@ echo "Output directory: $OUTPUT_DIR"
 
 
 # Run command 
-
-
-
-
+echo "hello world"

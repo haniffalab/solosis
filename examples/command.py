@@ -12,9 +12,8 @@ from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
 
-@lsf_job(
-    mem=64000, cpu=4, queue="normal"
-)  # lsf_job is imported from `solosis/utils/lsf_utils.py`
+# lsf_job is imported from `solosis/utils/lsf_utils.py`
+@lsf_job(mem=64000, cpu=4, queue="normal")
 # Build the click command
 @click.command("command name ")
 @click.option("--sample", type=str, help="Sample ID (string)")
@@ -40,8 +39,8 @@ def cmd(
 
     # Include any checks/validations of input data
 
-    # For more information on ln 21 of `examples/README.md`
-    # Use cellranger count command as working example.
+    # For more information, see ln 21 of `examples/README.md`
+    # Use cellranger-count command as working example.
 
     # Define path to the command.sh file
     command_path = os.path.abspath(
@@ -67,7 +66,7 @@ def cmd(
                 command += " --optional"
             tmpfile.write(command + "\n")
 
-    # Sub
+    # Submit job array
     submit_lsf_job_array(
         command_file=tmpfile.name,
         job_name="command_job_array",
