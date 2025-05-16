@@ -78,9 +78,7 @@ For information on Naming nomenclature of git branches view this `page <https://
 
 6. **Creating a new click command**
 
-Click python tool is used to construct solosis 
-
-`Documentation <https://click.palletsprojects.com/en/stable/>`
+Click python tool is used to construct solosis `Click Documentation <https://click.palletsprojects.com/en/stable/>`_
 
 **Main files needed:**
 
