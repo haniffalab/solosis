@@ -14,11 +14,11 @@ Changes will need to be made to:
     e.g. 
 ```
 @cli.group()
-def alignment():
-    """Commands for running alignment tools."""
+def command-group():
+    """Commands for running ..."""
     pass
 
-alignment.add_command(cellranger_count.cmd, name="cellranger-count")
+command-group.add_command(command.cmd, name="command")
 ```
 
 Check files in Utils (`solosis/utils/`), they include features that can be integrated in `command.py`:
