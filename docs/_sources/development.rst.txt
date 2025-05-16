@@ -89,14 +89,16 @@ Main files needed:
 Changes will need to be made to:
 * `cli.py` including `add_command()` for new command 
     e.g. 
-```
-@cli.group()
-def command-group():
-    """Commands for running ..."""
-    pass
 
-command-group.add_command(command.cmd, name="command")
-```
+::
+
+    @cli.group()
+    def command-group():
+        """Commands for running ..."""
+        pass
+
+    command-group.add_command(command.cmd, name="command")
+
 
 Check files in Utils (`solosis/utils/`), they include features that can be integrated in `command.py`:
 * Logging configuration (`solosis/utils/logging_utils.py`)
@@ -104,7 +106,6 @@ Check files in Utils (`solosis/utils/`), they include features that can be integ
 * LSF job configuration (`solosis/utils/lsf_utils.py`)
 * Environment and iRODS validation (`solosis/utils/env_utils.py`)
 * Further LSF job configuration (`solosis/utils/subprocess_utils.py`)
-
 
 
 6. **Executing solosis commands**
