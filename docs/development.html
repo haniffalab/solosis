@@ -152,24 +152,30 @@ Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </s
 </ol>
 <p>Click python tool is used to construct solosis <a class="reference external" href="https://click.palletsprojects.com/en/stable/">Click Documentation</a></p>
 <p><strong>Main files needed:</strong></p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Command submission bash script</dt><dd><p>e.g. <cite>bin/command-group/command.sh</cite></p>
+<ul>
+<li><dl>
+<dt>Command submission bash script</dt><dd><p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`bin/command-group/command.sh`
+</pre></div>
+</div>
 </dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>Command click python script</dt><dd><p>e.g. <cite>solosis/commands/command-group/command.py</cite></p>
+<li><dl>
+<dt>Command click python script</dt><dd><p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`solosis/commands/command-group/command.py`
+</pre></div>
+</div>
 </dd>
 </dl>
 </li>
 </ul>
 <p><strong>Changes will need to be made to:</strong></p>
-<ul class="simple">
-<li><dl class="simple">
-<dt><cite>cli.py</cite> including <cite>add_command()</cite> for new command</dt><dd><p>e.g.</p>
-</dd>
-</dl>
+<ul>
+<li><p><cite>cli.py</cite> including <cite>add_command()</cite> for new command</p>
+<blockquote>
+<div><p>Example</p>
+</div></blockquote>
 </li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
