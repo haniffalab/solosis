@@ -60,8 +60,11 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
             sample_id = sample["sample_id"]
             if "cellranger_dir" in sample:
                 # Already provided path
-                cellranger_dir = sample["cellranger_dir"]
-                sample_dir = cellranger_dir  # For locating imeta_report.csv
+                # irods_path = sample["cellranger_dir"]
+                sample_dir = os.path.join(
+                    os.getenv("TEAM_SAMPLES_DIR"), sample_id
+                )  # For locating imeta_report.csv
+                cellranger_dir = os.path.join(sample_dir, "cellranger")
             else:
                 # Construct paths from sample ID
                 sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
