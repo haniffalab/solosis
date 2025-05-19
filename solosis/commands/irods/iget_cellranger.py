@@ -48,6 +48,8 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         samples = process_metadata_file(samplefile)
     else:
         samples = collect_samples(sample, samplefile)
+        # Convert list of strings to list of dicts for consistency
+        samples = [{"sample_id": s} for s in samples]
 
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
@@ -55,13 +57,16 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
-            sample_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample["sample_id"]
-            )
             sample_id = sample["sample_id"]
-            cellranger_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
-            )
+            if "cellranger_dir" in sample:
+                # Already provided path
+                cellranger_dir = sample["cellranger_dir"]
+                sample_dir = cellranger_dir  # For locating imeta_report.csv
+            else:
+                # Construct paths from sample ID
+                sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
+                cellranger_dir = os.path.join(sample_dir, "cellranger")
+
             os.makedirs(cellranger_dir, exist_ok=True)
             report_path = os.path.join(sample_dir, "imeta_report.csv")
 
@@ -74,50 +79,38 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
             popen([imeta_report_script, sample_id, report_path])
 
             if os.path.exists(report_path):
-                df = pd.read_csv(
+                report_df = pd.read_csv(
                     report_path, header=None, names=["collection_type", "path"]
                 )
 
-                for _, row in df.iterrows():
+                for _, row in report_df.iterrows():
                     collection_type, path = row["collection_type"], row["path"]
-                    if collection_type == "CellRanger":
-                        collection_name = os.path.basename(path.rstrip("/"))
-                        if not collection_name.strip():
-                            logger.warning(
-                                f"Could not determine collection name {path}"
-                            )
-                            continue
-                        output_dir = os.path.join(cellranger_dir, collection_name)
-                        if (
-                            os.path.exists(output_dir)
-                            and os.path.isdir(output_dir)
-                            and os.listdir(output_dir)
-                        ):
-                            logger.warning(
-                                f"Skipping {collection_name}, already exists in {cellranger_dir}"
-                            )
-                            continue
+                    if collection_type != "CellRanger":
+                        continue
 
-                        samples_to_download.append((sample_id, output_dir))
-                        for _, row in df.iterrows():
-                            sample = row["sample_id"]  # Get the sample ID for this row
-                            output_dir = os.path.join(
-                                output_base_dir, sample
-                            )  # Modify with actual path logic
-
-                            if "cellranger_dir" in cols:
-                                # If the samplefile has the 'cellranger_dir' column, use it for the command
-                                irods_path = row["cellranger_dir"]
-                                command = f"iget -r {path} {irods_path} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-                            else:
-                                # Otherwise, construct the cellranger_dir path as before
-                                command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-
-                        # command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
-                        tmpfile.write(command + "\n")
-                        logger.info(
-                            f'Collection "{collection_name}" for sample "{sample_id}" will be downloaded to: {output_dir}'
+                    collection_name = os.path.basename(path.rstrip("/"))
+                    if not collection_name.strip():
+                        logger.warning(
+                            f"Could not determine collection name from path: {path}"
                         )
+                        continue
+                    output_dir = os.path.join(cellranger_dir, collection_name)
+                    if (
+                        os.path.exists(output_dir)
+                        and os.path.isdir(output_dir)
+                        and os.listdir(output_dir)
+                    ):
+                        logger.warning(
+                            f"Skipping {collection_name}, already exists in {cellranger_dir}"
+                        )
+                        continue
+
+                    samples_to_download.append((sample_id, output_dir))
+                    command = f"iget -r {path} {output_dir} ; chmod -R g+w {output_dir} >/dev/null 2>&1 || true"
+                    tmpfile.write(command + "\n")
+                    logger.info(
+                        f'Collection "{collection_name}" for sample "{sample_id}" will be downloaded to: {output_dir}'
+                    )
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
