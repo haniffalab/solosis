@@ -55,10 +55,12 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
-            sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
+            sample_dir = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), sample["sample_id"]
+            )
             sample_id = sample["sample_id"]
             cellranger_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample, "cellranger"
+                os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
             )
             os.makedirs(cellranger_dir, exist_ok=True)
             report_path = os.path.join(sample_dir, "imeta_report.csv")
