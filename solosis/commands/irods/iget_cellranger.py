@@ -94,7 +94,9 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                             f"Could not determine collection name from path: {path}"
                         )
                         continue
-                    output_dir = os.path.join(cellranger_dir, collection_name)
+                    output_dir = os.path.join(
+                        os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
+                    )
                     if (
                         os.path.exists(output_dir)
                         and os.path.isdir(output_dir)
