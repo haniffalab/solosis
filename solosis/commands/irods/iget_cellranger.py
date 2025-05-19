@@ -58,17 +58,10 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
         os.chmod(tmpfile.name, 0o660)
         for sample in samples:
             sample_id = sample["sample_id"]
-            if "cellranger_dir" in sample:
-                # Already provided path
-                # irods_path = sample["cellranger_dir"]
-                sample_dir = os.path.join(
-                    os.getenv("TEAM_SAMPLES_DIR"), sample_id
-                )  # For locating imeta_report.csv
-                cellranger_dir = os.path.join(sample_dir, "cellranger")
-            else:
-                # Construct paths from sample ID
-                sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
-                cellranger_dir = os.path.join(sample_dir, "cellranger")
+            sample_dir = os.path.join(
+                os.getenv("TEAM_SAMPLES_DIR"), sample_id
+            )  # For locating imeta_report.csv
+            cellranger_dir = os.path.join(sample_dir, "cellranger")
 
             os.makedirs(cellranger_dir, exist_ok=True)
             report_path = os.path.join(sample_dir, "imeta_report.csv")
