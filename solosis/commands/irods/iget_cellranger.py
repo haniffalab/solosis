@@ -71,7 +71,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                     "irods/imeta_report.sh",
                 )
             )
-            popen([imeta_report_script, sample, report_path])
+            popen([imeta_report_script, sample_id, report_path])
 
             if os.path.exists(report_path):
                 df = pd.read_csv(
@@ -98,7 +98,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                             )
                             continue
 
-                        samples_to_download.append((sample, output_dir))
+                        samples_to_download.append((sample_id, output_dir))
                         for _, row in df.iterrows():
                             sample = row["sample_id"]  # Get the sample ID for this row
                             output_dir = os.path.join(
@@ -116,7 +116,7 @@ def cmd(sample, samplefile, mem, cpu, queue, debug):
                         # command = f"iget -r {path} {cellranger_dir} ; chmod -R g+w {cellranger_dir} >/dev/null 2>&1 || true"
                         tmpfile.write(command + "\n")
                         logger.info(
-                            f'Collection "{collection_name}" for sample "{sample}" will be downloaded to: {output_dir}'
+                            f'Collection "{collection_name}" for sample "{sample_id}" will be downloaded to: {output_dir}'
                         )
 
     submit_lsf_job_array(
