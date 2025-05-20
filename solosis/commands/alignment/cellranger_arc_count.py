@@ -132,7 +132,7 @@ def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, deb
         job_name="cellranger_arc_count_job_array",
         cpu=cpu,
         mem=mem,
-        queue=queue,
+        queue="long",
         gpu=gpu,
     )
 

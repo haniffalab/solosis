@@ -133,7 +133,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
         job_name="cellranger_count_job_array",
         cpu=cpu,
         mem=mem,
-        queue=queue,
+        queue="long",
         gpu=gpu,
     )
 
