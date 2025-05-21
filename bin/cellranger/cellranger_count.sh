@@ -12,9 +12,9 @@
 #   <cpu>         - Number of CPU cores.
 #   <mem>         - Memory in MB.
 #   --no-bam      - Optional flag to disable BAM file generation.
-#   --chemistry <value> - Chemistry of assay kit used.
+#   --chemistry <value> - Optional chemistry of assay kit used.
 
-set -e  # Exit immediately if a command fails
+set -e # Exit immediately if a command fails
 
 # Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
@@ -23,7 +23,6 @@ if [ "$#" -lt 6 ]; then
 fi
 
 # Assign command-line arguments to variables
-# Assign required arguments
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 FASTQ_DIR="$3"
@@ -33,7 +32,7 @@ MEM="$6"
 # Initialize optional flags
 BAM_FLAG=""  # Default to generating BAM files
 CHEMISTRY="" # Default should detect chemistry
-# Define reference 
+# Define reference
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 echo "Arguments received: $@"
 
@@ -61,15 +60,6 @@ while [[ "$#" -gt 0 ]]; do
   esac
 done
 
-# Handle optional --no-bam flag (disables BAM file generation)
-#if [ "$7" == "--no-bam" ]; then
-#  BAM_FLAG="--no-bam"
-#fi
-# Handle optional --chemistry flag (default is not needed)
-#if [ "$8" == "--chemistry" ] && [ -n "$9" ]; then
-#  CHEMISTRY="--chemistry=$9"
-#fi
-
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
   echo "Failed to load Cell Ranger version $VERSION" >&2
@@ -91,22 +81,21 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 # Run Cell Ranger count
 cellranger count \
-    --id="$SAMPLE_ID" \
-    --fastqs="$FASTQ_DIR" \
-    --transcriptome="$REF" \
-    --sample="$SAMPLE_ID" \
-    --localcores="$CPU" \
-    --localmem="$(($MEM / 1000))" \
-    $BAM_FLAG \
-    $CHEMISTRY
-
+  --id="$SAMPLE_ID" \
+  --fastqs="$FASTQ_DIR" \
+  --transcriptome="$REF" \
+  --sample="$SAMPLE_ID" \
+  --localcores="$CPU" \
+  --localmem="$(($MEM / 1000))" \
+  $BAM_FLAG \
+  "$CHEMISTRY"
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
 
 log_file="$OUTPUT_DIR/$SAMPLE_ID/_log"
 if grep -q "Pipestance completed successfully!" "$log_file"; then
-    echo "CellRanger completed successfully for sample: $SAMPLE_ID"
+  echo "CellRanger completed successfully for sample: $SAMPLE_ID"
 else
-    echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
+  echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
 fi
