@@ -111,6 +111,7 @@ def cmd(sample, samplefile, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
     if samples_to_download:
