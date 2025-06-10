@@ -12,7 +12,7 @@ from solosis.utils.state import execution_uid, logger
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal")
+@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -56,7 +56,17 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @debug
 @log
 def cmd(
-    sample, samplefile, create_bam, chemistry, version, mem, cpu, queue, gpu, debug
+    sample,
+    samplefile,
+    create_bam,
+    chemistry,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
 ):
     """scRNA-seq mapping and quantification"""
     if debug:

@@ -10,13 +10,14 @@
 #   <fastq_dir>   - Path to FASTQ files.
 #   <version>     - Version of Cell Ranger to use (e.g., "7.2.0").
 #   <cpu>         - Number of CPU cores.
+#   <time>        - Time allocated to LSF job.
 #   <mem>         - Memory in MB.
 
 set -e  # Exit immediately if a command fails
 
 # Check if at least 6 arguments are provided
-if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem>" >&2
+if [ "$#" -lt 7 ]; then
+  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> <time>" >&2
   exit 1
 fi
 
@@ -27,6 +28,7 @@ FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
+TIME="$7"
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0"
 
 # Load Cell Ranger module (make sure the version is correct)

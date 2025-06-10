@@ -2,7 +2,7 @@
 # cellranger_count.sh - Run Cell Ranger count for a given sample
 
 # Usage:
-#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam] [--chemistry <str>]
+#   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> <time> [--no-bam] [--chemistry <str>]
 #
 # Parameters:
 #   <sample_id>   - Sample ID to process.
@@ -11,14 +11,15 @@
 #   <version>     - Version of Cell Ranger to use (e.g., "7.2.0").
 #   <cpu>         - Number of CPU cores.
 #   <mem>         - Memory in MB.
+#   <time>        - Time allocated to LSF job.
 #   --no-bam      - Optional flag to disable BAM file generation.
 #   --chemistry <value> - Optional chemistry of assay kit used.
 
 set -e # Exit immediately if a command fails
 
-# Check if at least 6 arguments are provided
-if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam] [--chemistry]" >&2
+# Check if at least 7 arguments are provided
+if [ "$#" -lt 7 ]; then
+  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> <time> [--no-bam] [--chemistry]" >&2
   exit 1
 fi
 
@@ -29,6 +30,7 @@ FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
+TIME="$7"
 # Initialize optional flags
 BAM_FLAG=""  # Default to generating BAM files
 CHEMISTRY="" # Default should detect chemistry
@@ -37,7 +39,7 @@ REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 echo "Arguments received: $@"
 
 # Parse optional arguments
-shift 6
+shift 7
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
   --chemistry)
