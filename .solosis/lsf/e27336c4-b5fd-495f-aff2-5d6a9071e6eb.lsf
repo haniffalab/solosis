@@ -1,0 +1,21 @@
+#!/bin/bash
+#BSUB -J e27336c4-b5fd-495f-aff2-5d6a9071e6eb
+#BSUB -q normal
+#BSUB -n 1
+#BSUB -M 50000
+#BSUB -R "select[mem>50000] rusage[mem=50000]"
+#BSUB -W 12:00
+#BSUB -o .solosis/lsf/e27336c4-b5fd-495f-aff2-5d6a9071e6eb.log
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh # CellGen Slack notification support
+
+set -euo pipefail
+ls
+status=$?
+# Email job exit status
+if [ $status -eq 0 ]; then
+  job_status="$command_to_exec \n command was successful: Exit status: $status"
+ 
+else
+  job_status="$command_to_exec \n command failed: Exit status: $status"
+fi
+echo $job_status | mail -s "Job status: e27336c4-b5fd-495f-aff2-5d6a9071e6eb" vm11@sanger.ac.uk

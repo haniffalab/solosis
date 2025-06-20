@@ -81,6 +81,7 @@ def cmd(ctx, command_to_exec, job_name, **kwargs):
     else:
         job_name = f"{job_name}_{execution_uid}"
     echo_message(f"Job name :{job_name} submitted to queue: {queue}")
+    echo_message(f"{cpu}")
     _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
 
 
