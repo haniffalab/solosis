@@ -10,7 +10,7 @@ from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal")
+@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("cellranger-arc-count")
 @click.option(
     "--libraries", type=click.Path(exists=True), help="Path to a single libraries file"
@@ -34,7 +34,9 @@ from solosis.utils.state import logger
 )
 @debug
 @log
-def cmd(libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, debug):
+def cmd(
+    libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, time, debug
+):
     """Single-cell multiomic data processing"""
     if debug:
         logger.setLevel(logging.DEBUG)
