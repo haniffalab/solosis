@@ -42,7 +42,7 @@ Then create the directory
 ::
 
     export export LSB_DEFAULT_USERGROUP=<USERGROUP>
-    export TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
+    export TEAM_DATA_DIR=/lustre/scratch126/cellgen/haniffa/data
     export TEAM_LOGS_DIR=/lustre/scratch126/cellgen/team298/logs
 
 5. **Set-up new git branch**
