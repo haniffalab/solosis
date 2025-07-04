@@ -12,7 +12,7 @@ from solosis.utils.farm import echo_message, irods_validation, log_command
 @click.option(
     "--sample_basedir",
     required=False,
-    default="/lustre/scratch126/cellgen/team298/sample_data/",
+    default="/lustre/scratch124/cellgen/haniffa/sample_data/",
     help="sample database folder",
 )
 @click.pass_context
