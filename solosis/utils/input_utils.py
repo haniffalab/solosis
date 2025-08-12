@@ -1,3 +1,5 @@
+import subprocess
+
 import click
 import pandas as pd
 from tabulate import tabulate
@@ -91,6 +93,83 @@ def process_metadata_file(metadata):
         raise click.Abort()
 
     return samples
+
+
+def process_irods_samplefile(samplefile):
+    """Collects samples from iget-cellranger samplefile."""
+    samples = []
+
+    if samplefile:
+        try:
+            sep = (
+                ","
+                if samplefile.endswith(".csv")
+                else "\t" if samplefile.endswith(".tsv") else None
+            )
+            if sep is None:
+                logger.error(
+                    "Unsupported file format. Please provide a .csv or .tsv file"
+                )
+                return []
+
+            df = pd.read_csv(samplefile, sep=sep)
+            required_columns = {"sample_id", "irods_path"}
+            if not required_columns.issubset(df.columns):
+                logger.warning(
+                    f"samplefile file {samplefile} is missing required columns: {', '.join(required_columns - set(df.columns))}"
+                )
+            else:
+                # Loop through each row and validate the presence of 'sample_id' and 'irods_path'
+                for _, row in df.iterrows():
+                    sample_id = row.get("sample_id")
+                    irods_path = row.get("irods_path")
+
+                    # Check if both values are present and non-empty
+                    if sample_id and irods_path:
+                        samples.append(
+                            {
+                                "sample_id": sample_id,
+                                "irods_path": irods_path,
+                            }
+                        )
+                    else:
+                        logger.warning(
+                            f"Invalid entry (missing sample_id or irods_path): {row}"
+                        )
+        except Exception as e:
+            logger.error(f"Error reading samplefile file {samples}: {e}")
+
+    if not samples:
+        logger.error("No samples provided. Use --samplefile")
+        raise click.Abort()
+
+    return samples
+
+
+def validate_irods_path(sample_id, irods_path):
+    """Validate that irods_path exists in imeta query results for sample_id."""
+    try:
+        cmd = ["imeta", "qu", "-C", "-z", "/seq/illumina", "sample", "=", sample_id]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+
+        matches = [
+            line.replace("collection: ", "").strip()
+            for line in result.stdout.splitlines()
+            if line.startswith("collection: ")
+        ]
+
+        if irods_path not in matches:
+            logger.error(
+                f"Provided iRODS path '{irods_path}' does not match any known collections for sample_id '{sample_id}'."
+            )
+            raise click.Abort()
+
+        logger.debug(f"Validated iRODS path '{irods_path}' for sample_id '{sample_id}'")
+        return True
+
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error running imeta command: {e.stderr.strip()}")
+        raise click.Abort()
 
 
 def validate_library_type(tsv_file):
