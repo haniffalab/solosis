@@ -22,7 +22,7 @@ from solosis.utils.subprocess_utils import popen
 )
 @debug
 @log
-def cmd(sample, samplefile, mem, cpu, queue, debug):
+def cmd(samplefile, mem, cpu, queue, debug):
     """Downloads cellranger outputs from iRODS."""
     if debug:
         logger.setLevel(logging.DEBUG)
