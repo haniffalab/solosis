@@ -148,13 +148,60 @@ Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </s
 </div>
 <p>For information on Naming nomenclature of git branches view this <a class="reference external" href="https://medium.com/&#64;abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534">page</a></p>
 <ol class="arabic simple" start="6">
+<li><p><strong>Creating a new click command</strong></p></li>
+</ol>
+<p>Click python tool is used to construct solosis <a class="reference external" href="https://click.palletsprojects.com/en/stable/">Click Documentation</a></p>
+<p><strong>Files to create:</strong></p>
+<ul>
+<li><dl>
+<dt>Command submission bash script</dt><dd><p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`bin/command-group/command.sh`
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Command click python script</dt><dd><p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`solosis/commands/command-group/command.py`
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Files to make changes to:</strong></p>
+<ul>
+<li><p><cite>cli.py</cite> including <cite>add_command()</cite> for new command</p>
+<blockquote>
+<div><p>Example</p>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="o">-</span><span class="n">group</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Commands for running ...&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="n">command</span><span class="o">-</span><span class="n">group</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Check files in Utils (`solosis/utils/`), they include features that can be integrated in `command.py`:</strong></p>
+<ul class="simple">
+<li><p>Logging configuration (<cite>solosis/utils/logging_utils.py</cite>)</p></li>
+<li><p>Input file validation (<cite>solosis/utils/input_utils.py</cite>)</p></li>
+<li><p>LSF job configuration (<cite>solosis/utils/lsf_utils.py</cite>)</p></li>
+<li><p>Environment and iRODS validation (<cite>solosis/utils/env_utils.py</cite>)</p></li>
+<li><p>Further LSF job configuration (<cite>solosis/utils/subprocess_utils.py</cite>)</p></li>
+</ul>
+<ol class="arabic simple" start="7">
 <li><p><strong>Executing solosis commands</strong></p></li>
 </ol>
 <p>Executing solosis commands while developing need to solosis-cli to be as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">solosis</span><span class="o">-</span><span class="n">cli</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p><strong>Committing changes to dev branch</strong></p></li>
 </ol>
 <p>Run the following commands:</p>
