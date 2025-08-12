@@ -5,7 +5,7 @@ conda_env="/software/cellgen/team298/shared/envs/hlb-conda/rna"
 if [ $# -ne 2 ]; then
 	echo "$0 samples_database sample_sheet.tsv"
 	echo "This is a follow up of irods/pull-processed. If you have not run it, do so"
-	echo "samples_database: Folder where you have all sample cellranger data. Ideally - /lustre/scratch126/cellgen/team298/data/samples"
+	echo "samples_database: Folder where you have all sample cellranger data. Ideally - /lustre/scratch124/cellgen/haniffa/data/samples"
 	echo "sample_name: Folder name of sample that contains the processed_sanger folder"
 	exit 0
 fi
