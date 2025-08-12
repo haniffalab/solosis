@@ -14,8 +14,6 @@ def job_resources(function):
     function = click.option("--queue", default="normal", type=str, help="queue name")(
         function
     )
-    function = click.option("--cpu", default="1", type=int, help="CPUs used")(
-        function
-    )
+    function = click.option("--cpu", default="1", type=int, help="CPUs used")(function)
 
     return function
