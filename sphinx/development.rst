@@ -21,7 +21,7 @@ Ensure you are in your home directory
 .. code-block:: shell
    :caption: Expected Output
 
-   /nfs/users/nfs_l/<USER>
+   $HOME/<USER>
 
 Then create the directory 
 ::
@@ -42,8 +42,9 @@ Then create the directory
 ::
 
     export export LSB_DEFAULT_USERGROUP=<USERGROUP>
-    export TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
-    export TEAM_LOGS_DIR=/lustre/scratch126/cellgen/team298/logs
+    export TEAM_DATA_DIR=./data
+    export TEAM_SAMPLE_DATA_DIR=./data/samples
+    export TEAM_LOGS_DIR=./logs
 
 5. **Set-up new git branch**
 
