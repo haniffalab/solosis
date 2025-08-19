@@ -39,7 +39,7 @@ if ! module load cellgen/cellranger/"$VERSION"; then
 fi
 
 # Configure paths and job parameters
-TEAM_SAMPLE_DATA_DIR="/lustre/scratch126/cellgen/team298/data/samples"
+TEAM_SAMPLE_DATA_DIR="/lustre/scratch124/cellgen/haniffa/data/samples"
 TEAM_LOGS_DIR="$HOME/logs"
 CPU=16
 MEM=64000
