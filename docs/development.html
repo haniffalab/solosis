@@ -100,7 +100,7 @@
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/nfs/users/nfs_l/&lt;USER&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$HOME</span>/&lt;USER&gt;
 </pre></div>
 </div>
 </div>
@@ -120,8 +120,9 @@
 <li><p><strong>Export environment variables</strong></p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">export</span> <span class="n">LSB_DEFAULT_USERGROUP</span><span class="o">=&lt;</span><span class="n">USERGROUP</span><span class="o">&gt;</span>
-<span class="n">export</span> <span class="n">TEAM_DATA_DIR</span><span class="o">=/</span><span class="n">lustre</span><span class="o">/</span><span class="n">scratch124</span><span class="o">/</span><span class="n">cellgen</span><span class="o">/</span><span class="n">haniffa</span><span class="o">/</span><span class="n">data</span>
-<span class="n">export</span> <span class="n">TEAM_LOGS_DIR</span><span class="o">=/</span><span class="n">lustre</span><span class="o">/</span><span class="n">scratch124</span><span class="o">/</span><span class="n">cellgen</span><span class="o">/</span><span class="n">haniffa</span><span class="o">/</span><span class="n">logs</span>
+<span class="n">export</span> <span class="n">TEAM_DATA_DIR</span><span class="o">=./</span><span class="n">data</span>
+<span class="n">export</span> <span class="n">TEAM_SAMPLE_DATA_DIR</span><span class="o">=./</span><span class="n">data</span><span class="o">/</span><span class="n">samples</span>
+<span class="n">export</span> <span class="n">TEAM_LOGS_DIR</span><span class="o">=./</span><span class="n">logs</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
