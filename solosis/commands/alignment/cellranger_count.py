@@ -18,7 +18,6 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing sample IDs",
     help=(
         "Path to a CSV or TSV file containing sample IDs as a comma-separated (.csv) "
         "or tab-separated (.tsv) file. The file must have a column named 'sample_id' containing the sample IDs.\n\n"
