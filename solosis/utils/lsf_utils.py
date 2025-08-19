@@ -129,6 +129,7 @@ def submit_lsf_job_array(
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
 #BSUB -q "{queue}"
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh
 {gpu_options}
 
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")
@@ -145,3 +146,79 @@ eval "$COMMAND"
         logger.info(f"Job submitted successfully: {process.stdout.strip()}")
     except subprocess.CalledProcessError as e:
         logger.error(f"Error submitting job: {e.stderr}")
+
+
+def submit_lsf_job(
+    command: str,
+    job_name: str = "single_job",
+    cpu: int = 16,
+    mem: int = 64000,
+    queue: str = "normal",
+    group: str = None,
+    gpu: bool = False,
+    execution_uid: str = None,
+):
+    """
+    Submit a single LSF job based on a command.
+
+    Args:
+        command (str): The shell command to run.
+        job_name (str, optional): Name for the job. Defaults to "single_job".
+        cpu (int, optional): Number of CPU cores. Defaults to 16.
+        mem (int, optional): Memory limit in MB. Defaults to 64000.
+        queue (str, optional): LSF queue name. Defaults to "normal".
+        group (str, optional): User group for LSF submission. Defaults to value in LSB_DEFAULT_USERGROUP.
+        gpu (bool, optional): Whether to request GPU resources. Defaults to False.
+        execution_uid (str, optional): Unique identifier for this execution (used for log dir). Required.
+    """
+    if group is None:
+        group = os.environ.get("LSB_DEFAULT_USERGROUP")
+
+    if not group or not group.startswith("team"):
+        logger.error(f"Group '{group}' is invalid. Exiting.")
+        raise ValueError(f"Invalid group: {group}")
+
+    if not execution_uid:
+        raise ValueError("execution_uid is required and cannot be empty")
+
+    log_dir = Path(os.getenv("SOLOSIS_LOG_DIR", "/tmp")) / execution_uid
+    os.makedirs(log_dir, exist_ok=True)
+
+    # Override queue and set GPU options if requested
+    gpu_options = ""
+    if gpu:
+        queue = "gpu-normal"
+        gpumem = 6000
+        gpunum = 1
+        gpumodel = "NVIDIAA100_SXM4_80GB"
+        gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
+        cpu = 4
+        mem = 16000
+
+    # Construct the LSF job submission script
+    lsf_script = f"""#!/bin/bash
+#BSUB -J "{job_name}"
+#BSUB -o "{log_dir}/lsf_{job_name}_%J.out"
+#BSUB -e "{log_dir}/lsf_{job_name}_%J.err"
+#BSUB -n {cpu}
+#BSUB -M {mem}
+#BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
+#BSUB -G "{group}"
+#BSUB -q "{queue}"
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh
+{gpu_options}
+
+echo "Executing command: {command}"
+eval "{command}"
+"""
+
+    # Submit the job
+    logger.debug(f"LSF Script: {lsf_script}")
+    try:
+        process = subprocess.run(
+            ["bsub"], input=lsf_script, text=True, capture_output=True, check=True
+        )
+        logger.info(f"Job submitted successfully: {process.stdout.strip()}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error submitting job: {e.stderr}")
+        raise

@@ -1,47 +1,79 @@
-#!/usr/bin/env python3
+import logging
 import os
-import subprocess
 
 import click
 
-from solosis.utils.farm import echo_message, irods_validation, log_command
+from solosis.utils.logging_utils import debug, log
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job
+from solosis.utils.state import execution_uid, logger
 
 
+@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("scanpy")
 @click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
     "--sample_basedir",
     required=False,
     default="/lustre/scratch124/cellgen/haniffa/sample_data/",
-    help="sample database folder",
+    help="Sample database folder",
 )
-@click.pass_context
-def cmd(ctx, samplefile, sample_basedir):
+@click.option(
+    "--job_name",
+    required=False,
+    type=str,
+    default="scanpy",
+    help="Optional name for the LSF job. Defaults to scanpy_<uid>.",
+)
+@debug
+@log
+def cmd(
+    samplefile, sample_basedir, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+):
     """
-    Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook ... \n
-    ----------------------
+    Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
-    Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-    Input file should have 3 mandatory columns:
-    1st column: sanger_id, 2nd column: sample_name, LAST column: irods path
+    Input samplefile should have 3 mandatory columns:
+    1st column: sanger_id, 2nd column: sample_name, 3rd column: irods path
     """
-    log_command(ctx)
-    echo_message(
-        f"Starting Process: {click.style(ctx.command.name, bold=True, underline=True)}",
-        "info",
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    ctx = click.get_current_context()
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
-    # Path to the script
+    # Path to the shell script
     shell_script = os.path.abspath(
-        os.path.join(os.getenv("SCRIPT_BIN"), "scrna/scanpy/submit.sh")
+        os.path.join(
+            os.getenv("SCRIPT_BIN"),
+            "scrna/scanpy/submit.sh",
+        )
     )
-    env = os.environ.copy()
-    env["solosis_dir"] = script_dir
-    result = subprocess.run(
-        [shell_script, sample_basedir, samplefile],
-        env=env,
-        capture_output=True,
-        text=True,
+
+    if not os.path.exists(shell_script):
+        logger.error(f"Shell script not found: {shell_script}")
+        return
+
+    # Compose job name
+    job_name = execution_uid if job_name == "scanpy" else f"{job_name}_{execution_uid}"
+    logger.info(f"Submitting Scanpy job: {job_name} to queue {queue}")
+
+    # Pass extra kwargs as environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
+
+    # Submit the job via LSF
+    submit_lsf_job(
+        command=f"{shell_script} {sample_basedir} {samplefile}",
+        job_name=job_name,
+        mem=mem,
+        cpu=cpu,
+        queue=queue,
+        gpu=gpu,
+        execution_uid=execution_uid,
+        env=env_vars,
     )
-    echo_message(result.stdout)
-    echo_message(result.stderr)
+
+
+if __name__ == "__main__":
+    cmd()
