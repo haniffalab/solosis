@@ -31,14 +31,17 @@ MEM="$6"
 BAM_FLAG=""  # Default to generating BAM files
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 
+INT_VERSION=$(echo "$VERSION" | tr -d '.')
+
 # Handle optional --no-bam flag (disables BAM file generation)
-if [ "$7" == "--no-bam" ] && [ "$VERSION" -lt "9.0.1" ]; then
+if [ "$7" == "--no-bam" ] && [ $INT_VERSION -lt 901 ]; then
   BAM_FLAG="--no-bam"
-elif [ "$7" == "--no-bam" ] && [ "$VERSION" == "9.0.1" ]; then
+elif [ "$7" == "--no-bam" ] && [ $INT_VERSION -eq 901 ]; then
   BAM_FLAG="--create-bam false"
-elif [ "$BAM_FLAG" == "" ] && [ "$VERSION" == "9.0.1" ]; then
+elif [ -z "$BAM_FLAG" ] && [ $INT_VERSION -eq 901 ]; then
   BAM_FLAG="--create-bam true"
 fi
+
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
   echo "Failed to load Cell Ranger version $VERSION" >&2
