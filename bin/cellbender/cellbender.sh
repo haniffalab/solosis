@@ -82,7 +82,7 @@ echo "Total droplets: ${TOTAL_DROPLETS_FLAG:-Auto-detected}"
 echo "Expected cells: ${EXPECTED_CELLS_FLAG:-Auto-detected}"
 
 # Construct command
-CELLBENDER_CMD=("cellbender" "remove-background"
+CELLBENDER_CMD=("cellbender remove-background"
   "--input=$CELLRANGER_DIR/raw_feature_bc_matrix.h5"
   "--output=$OUTPUT_DIR/${SAMPLE_ID}_${USER}_$(date +%Y%m%d).h5"
 )
