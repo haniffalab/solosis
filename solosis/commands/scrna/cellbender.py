@@ -109,10 +109,18 @@ def cmd(
             # Add optional arguments if specified
             if gpu:
                 command += " --gpu"
-            if total_droplets_included is not None and total_droplets_included != 0:
-                command += f" --total-droplets-included {total_droplets_included}"
-            if expected_cells is not None and expected_cells != 0:
-                command += f" --expected-cells {expected_cells}"
+            td = sample.get("total_droplets_included")
+            if td is None and total_droplets_included not in (None, False, 0):
+                td = total_droplets_included
+            if td is not None:
+                command += f" --total-droplets-included {td}"
+
+            # Same logic for expected_cells
+            ec = sample.get("expected_cells")
+            if ec is None and expected_cells not in (None, False, 0):
+                ec = expected_cells
+            if ec is not None:
+                command += f" --expected-cells {ec}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
