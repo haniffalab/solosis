@@ -44,8 +44,21 @@ def collect_samples(sample, samplefile):
     return samples
 
 
-def process_metadata_file(metadata):
-    """Collects samples from metadata file."""
+def process_metadata_file(metadata, required_columns=None):
+    """
+    Collects samples from metadata file, ensuring required columns are included.
+
+    Args:
+        metadata (str): Path to metadata CSV/TSV file.
+        required_columns (set or list, optional): Columns that must be present
+            in the metadata file and included in the return object.
+            Defaults to {"sample_id", "cellranger_dir"}.
+    """
+    if required_columns is None:
+        required_columns = {"sample_id", "cellranger_dir"}
+    else:
+        required_columns = set(required_columns)
+
     samples = []
 
     if metadata:
@@ -62,85 +75,28 @@ def process_metadata_file(metadata):
                 return []
 
             df = pd.read_csv(metadata, sep=sep)
-            required_columns = {"sample_id", "cellranger_dir"}
-            if not required_columns.issubset(df.columns):
+
+            # Check for missing required columns
+            missing = required_columns - set(df.columns)
+            if missing:
                 logger.warning(
-                    f"Metadata file {metadata} is missing required columns: {', '.join(required_columns - set(df.columns))}"
+                    f"Metadata file {metadata} is missing required columns: {', '.join(missing)}"
                 )
             else:
-                # Loop through each row and validate the presence of 'sample_id' and 'cellranger_dir'
+                # Iterate rows, build dict with only required columns
                 for _, row in df.iterrows():
-                    sample_id = row.get("sample_id")
-                    cellranger_dir = row.get("cellranger_dir")
-
-                    # Check if both values are present and non-empty
-                    if sample_id and cellranger_dir:
-                        samples.append(
-                            {
-                                "sample_id": sample_id,
-                                "cellranger_dir": cellranger_dir,
-                            }
-                        )
+                    if all(row.get(col) for col in required_columns):
+                        sample = {col: row[col] for col in required_columns}
+                        samples.append(sample)
                     else:
                         logger.warning(
-                            f"Invalid entry (missing sample_id or cellranger_dir): {row}"
+                            f"Invalid entry (missing required values): {row}"
                         )
         except Exception as e:
-            logger.error(f"Error reading metadata file {samples}: {e}")
+            logger.error(f"Error reading metadata file {metadata}: {e}")
 
     if not samples:
-        logger.error("No samples provided. Use --metadata")
-        raise click.Abort()
-
-    return samples
-
-
-def process_irods_samplefile(samplefile):
-    """Collects samples from iget-cellranger samplefile."""
-    samples = []
-
-    if samplefile:
-        try:
-            sep = (
-                ","
-                if samplefile.endswith(".csv")
-                else "\t" if samplefile.endswith(".tsv") else None
-            )
-            if sep is None:
-                logger.error(
-                    "Unsupported file format. Please provide a .csv or .tsv file"
-                )
-                return []
-
-            df = pd.read_csv(samplefile, sep=sep)
-            required_columns = {"sample_id", "irods_path"}
-            if not required_columns.issubset(df.columns):
-                logger.warning(
-                    f"samplefile file {samplefile} is missing required columns: {', '.join(required_columns - set(df.columns))}"
-                )
-            else:
-                # Loop through each row and validate the presence of 'sample_id' and 'irods_path'
-                for _, row in df.iterrows():
-                    sample_id = row.get("sample_id")
-                    irods_path = row.get("irods_path")
-
-                    # Check if both values are present and non-empty
-                    if sample_id and irods_path:
-                        samples.append(
-                            {
-                                "sample_id": sample_id,
-                                "irods_path": irods_path,
-                            }
-                        )
-                    else:
-                        logger.warning(
-                            f"Invalid entry (missing sample_id or irods_path): {row}"
-                        )
-        except Exception as e:
-            logger.error(f"Error reading samplefile file {samples}: {e}")
-
-    if not samples:
-        logger.error("No samples provided. Use --samplefile")
+        logger.error("No valid samples provided. Use --metadata")
         raise click.Abort()
 
     return samples

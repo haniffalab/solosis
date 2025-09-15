@@ -56,7 +56,9 @@ def cmd(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
-    samples = process_metadata_file(metadata)
+    samples = process_metadata_file(
+        metadata, required_columns={"sample_id", "cellranger_dir"}
+    )
 
     valid_samples = []
     for sample in samples:

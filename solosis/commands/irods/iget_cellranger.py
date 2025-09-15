@@ -6,23 +6,30 @@ import click
 import pandas as pd
 
 from solosis.utils.env_utils import irods_auth
-from solosis.utils.input_utils import process_irods_samplefile, validate_irods_path
+from solosis.utils.input_utils import process_metadata_file, validate_irods_path
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import logger
-from solosis.utils.subprocess_utils import popen
 
 
-@lsf_job(mem=4000, cpu=2, queue="small")
+@lsf_job(mem=4000, cpu=2, queue="small", time="12:00")
 @click.command("iget-cellranger")
 @click.option(
-    "--samplefile",
+    "--metadata",
     type=click.Path(exists=True),
-    help="columns required 'sample_id','irods_path'. Path to a CSV or TSV file containing sample IDs.",
+    help="Path to a CSV or TSV file containing metadata",
 )
 @debug
 @log
-def cmd(samplefile, mem, cpu, queue, debug):
+def cmd(
+    metadata,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
+):
     """Downloads cellranger outputs from iRODS."""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -35,38 +42,48 @@ def cmd(samplefile, mem, cpu, queue, debug):
     if not irods_auth():
         raise click.Abort()
 
-    samples = process_irods_samplefile(samplefile)
-    samples_to_download = []
+    samples = process_metadata_file(
+        metadata, required_columns={"sample_id", "irods_path"}
+    )
+
+    valid_samples = []
+    for sample in samples:
+        sample_id = sample["sample_id"]
+        irods_path = sample["irods_path"]
+        output_dir = os.path.join(
+            os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
+        )
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Validate irods path
+        if validate_irods_path(sample_id, irods_path):
+            valid_samples.append(
+                {
+                    "sample_id": sample_id,
+                    "irods_path": irods_path,
+                    "output_dir": output_dir,
+                }
+            )
+        else:
+            logger.warning(
+                f"Unable to validate iRODs path {sample["irods_path"]} for sample {sample['sample_id']}. Skipping this sample"
+            )
+
+    if not valid_samples:
+        logger.error(f"No valid samples found. Exiting")
+        return
 
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        for sample in samples:
-            sample_id = sample["sample_id"]
-            irods_path = sample["irods_path"]
-
-            output_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
-            )
-            os.makedirs(output_dir, exist_ok=True)
-
-            # validate irods path using imeta
-            validate_irods_path(sample_id, irods_path)
-
+        for sample in valid_samples:
             command = (
                 f"iget -r {irods_path} {output_dir} ; "
                 f"chmod -R g+w {output_dir} >/dev/null 2>&1 || true"
             )
             tmpfile.write(command + "\n")
-
-            logger.info(
-                f'Collection "{irods_path}" for sample "{sample_id}" will be downloaded to: {output_dir}'
-            )
-
-            # appending for the log file later on
-            samples_to_download.append((sample_id, irods_path, output_dir))
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
@@ -76,14 +93,6 @@ def cmd(samplefile, mem, cpu, queue, debug):
         queue=queue,
         gpu=gpu,
     )
-
-    if samples_to_download:
-        log_file = os.path.join(os.getcwd(), "iget-cellranger.log")
-        df = pd.DataFrame(
-            samples_to_download, columns=["sample", "irods_path", "cellranger_dir"]
-        )
-        df.to_csv(log_file, index=False)
-        logger.info(f"Log file of output paths: {log_file}")
 
 
 if __name__ == "__main__":
