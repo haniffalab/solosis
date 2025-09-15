@@ -1,90 +1,66 @@
+import logging
 import os
-import subprocess
+import tempfile
 
 import click
 
-from solosis.utils.farm import echo_lsf_submission_message, echo_message, log_command
+from solosis.utils.logging_utils import debug, log
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-from .. import helpers
 
-
-## Functions supporting farm submission
-def bash_submit(job_runner: str, **kwargs) -> None:
-    """
-    Runs a command. Command can be a bash command (du -hs ) or a script (test.sh)
-    While running exports all kwargs as environment variables
-    This can be reused to run any bash script in all the subcommands
-    If the command needs to be submitted to farm use single_command or array_command
-    """
-    # env variables are set to
-    for k, v in kwargs.items():
-        kwargs[str(k)] = str(v)
-    # Capture result
-    result = subprocess.run(
-        [job_runner], capture_output=True, text=True, env={**os.environ, **kwargs}
-    )
-
-    click.echo(result.stdout)
-    click.echo(result.stderr)
-
-
-def _single_command_bsub(command_to_exec, job_name, queue, time, cpu, mem, **kwargs):
-    """
-    Run a single command on the farm.
-    """
-    # Script directory in the solosis package
-    job_runner = os.path.abspath(
-        os.path.join(
-            os.getenv("SCRIPT_BIN"),
-            "farm/single_job.sh",
-        )
-    )
-    if len(command_to_exec) == 0:
-        echo_message("No command to execute", type="error")
-        return
-
-    command_to_exec = " ".join(command_to_exec)
-    bash_submit(
-        job_runner,
-        command_to_exec=command_to_exec,
-        job_name=job_name,
-        queue=queue,
-        time=time,
-        cpu=cpu,
-        mem=mem,
-    )
-
-
-@click.command("command")
-@helpers.job_resources
+@lsf_job(mem=64000, cpu=1, queue="normal", time="12:00")
+@click.command("single-job")
 @click.argument("command_to_exec", nargs=-1, type=str)
 @click.option(
     "-j",
     "--job_name",
     required=False,
     type=str,
-    help="Name of the job",
+    help="Optional name of the job. If not provided, the execution UID is used.",
     default="default",
-)  # random val to be implemented (from import random)
-@click.pass_context
-def cmd(ctx, command_to_exec, job_name, **kwargs):
-    """
-    Run a single command on the farm.
-    """
-    queue = kwargs.get("queue")
-    time = kwargs.get("time")
-    cpu = kwargs.get("cpu")
-    mem = kwargs.get("mem")
-    if job_name == "default":
-        job_name = f"{execution_uid}"
-    else:
-        job_name = f"{job_name}_{execution_uid}"
-    echo_message(f"Job name :{job_name} submitted to queue: {queue}")
-    echo_message(f"{cpu}")
-    _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
+)
+@debug
+@log
+def cmd(command_to_exec, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
+    """Submit a single comamnd via LSF"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    ctx = click.get_current_context()
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
+    )
+    job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
+    logger.debug(f"Job name: {job_name}")
+
+    # @TODO: Ensure all kwargs are strings for environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
+
+    if not command_to_exec:
+        logger.error("No command to execute")
+        return
+
+    # Convert tuple of strings to a single string
+    command_str = " ".join(command_to_exec)
+
+    # Submit the job
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
+        os.chmod(tmpfile.name, 0o660)
+        tmpfile.write(command_str + "\n")
+
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
+        job_name=job_name,
+        cpu=cpu,
+        mem=mem,
+        queue=queue,
+        gpu=gpu,
+    )
 
 
 if __name__ == "__main__":
-    script = os.path.join(codebase, "test.sh")
-    bash_submit(script, command_to_exec='echo "Hello, World!"')
+    cmd()

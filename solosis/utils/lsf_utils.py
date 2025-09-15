@@ -129,6 +129,7 @@ def submit_lsf_job_array(
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
 #BSUB -q "{queue}"
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh
 {gpu_options}
 
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")
