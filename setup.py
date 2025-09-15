@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="solosis",
-    version="0.4.0",
+    version="0.4.2",
     description="A command line interface for working with single-cell data",
     python_requires=">=3.10",
     install_requires=[

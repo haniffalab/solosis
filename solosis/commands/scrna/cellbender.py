@@ -13,7 +13,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 RAW_FEATURE_FILE = "raw_feature_bc_matrix.h5"  # The required file to check for
 
 
-@lsf_job(gpu="NVIDIAA100_SXM4_80GB")
+@lsf_job(gpu=True)
 @click.command("cellbender")
 @click.option(
     "--metadata",
@@ -44,6 +44,7 @@ def cmd(
     cpu,
     queue,
     gpu,
+    time,
     debug,
 ):
     """Eliminate technical artifacts from scRNA-seq"""
@@ -85,7 +86,7 @@ def cmd(
                 )
         else:
             logger.warning(
-                f"Required file {RAW_FEATURE_FILE} not found in {cellranger_dir} for sample {sample}. Skipping this sample"
+                f"Required file {RAW_FEATURE_FILE} not found in {cellranger_dir} for sample {sample['sample_id']}. Skipping this sample"
             )
 
     if not valid_samples:
@@ -107,8 +108,8 @@ def cmd(
         for sample in valid_samples:
             command = f"{script_path} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']}"
             # Add optional arguments if specified
-            if gpu is not None:
-                command += f" --gpu"
+            if gpu:
+                command += " --gpu"
             if total_droplets_included is not None and total_droplets_included != 0:
                 command += f" --total-droplets-included {total_droplets_included}"
             if expected_cells is not None and expected_cells != 0:

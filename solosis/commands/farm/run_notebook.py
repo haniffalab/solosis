@@ -1,35 +1,16 @@
+import logging
 import os
-import subprocess
+import tempfile
 
 import click
 
-from solosis.utils.farm import (
-    _single_command_bsub,
-    bash_submit,
-    echo_lsf_submission_message,
-    echo_message,
-    log_command,
-)
-
-from .. import helpers
-
-# Script directory in the solosis package
-codebase = os.getenv("SCRIPT_BIN")
+from solosis.utils.logging_utils import debug, log
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
+from solosis.utils.state import execution_uid, logger
 
 
-def _assign_job_name(job_name, ctx):
-    """
-    Assign a job name to the job.
-    """
-    if job_name == "default":
-        job_name = f"{ctx.obj['execution_id']}"
-    else:
-        job_name = f"{job_name}_{ctx.obj['execution_id']}"
-    return job_name
-
-
-@click.command("run_ipynb")
-@helpers.job_resources
+@lsf_job(mem=64000, cpu=1, queue="normal", time="12:00")
+@click.command("run-ipynb")
 @click.option(
     "-n", "--notebook", required=True, type=str, help="Path to the notebook to run"
 )
@@ -38,17 +19,50 @@ def _assign_job_name(job_name, ctx):
     "--job_name",
     required=False,
     type=str,
-    help="Name of the job",
+    help="Name of the job. If not provided, the execution UID will be used",
     default="default",
-)  # random val to be implemented (from import random)
-@click.pass_context
-def cmd(ctx, notebook, job_name, **kwargs):
-    """
-    Run a jupyter notebook on the farm.
-    """
-    log_command(ctx)
-    job_name = _assign_job_name(job_name, ctx)
-    # To do: Install jupyter in base solosis conda env
-    command_to_exec = f"source ~/.bashrc && conda activate /software/cellgen/team298/shared/envs/hl-conda/hl_minimal_v1.0.0 && jupyter nbconvert --to notebook --execute {notebook}"
-    echo_message(f"Job name :{job_name} submitted to queue: {kwargs.get('queue')}")
-    _single_command_bsub(command_to_exec, job_name=job_name, **kwargs)
+)
+@debug
+@log
+def cmd(notebook, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
+    """Submit a Jupyter notebook to run via LSF"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    ctx = click.get_current_context()
+    logger.debug(
+        f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
+    )
+    job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
+    logger.debug(f"Job name: {job_name}")
+
+    # @TODO: Ensure all kwargs are strings for environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
+
+    # Construct command
+    command_str = (
+        f"source ~/.bashrc && "
+        f"conda activate /software/cellgen/team298/shared/envs/hl-conda/hl_minimal_v1.0.0 && "
+        f"jupyter nbconvert --to notebook --execute {notebook}"
+    )
+
+    # Submit the job
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
+        os.chmod(tmpfile.name, 0o660)
+        tmpfile.write(command_str + "\n")
+
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
+        job_name=job_name,
+        cpu=cpu,
+        mem=mem,
+        queue=queue,
+        gpu=gpu,
+    )
+
+
+if __name__ == "__main__":
+    cmd()

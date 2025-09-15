@@ -51,7 +51,10 @@ def log(function):
 
 def get_version():
     try:
-        with open("pyproject.toml", "rb") as f:
+        pyproject_path = os.path.join(
+            os.path.dirname(__file__), "../../", "pyproject.toml"
+        )
+        with open(pyproject_path, "rb") as f:
             data = tomllib.load(f)
         return data.get("project", {}).get("version", "unknown")
     except Exception as e:
