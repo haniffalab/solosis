@@ -66,7 +66,7 @@ def cmd(
             )
         else:
             logger.warning(
-                f"Unable to validate iRODs path {sample["irods_path"]} for sample {sample['sample_id']}. Skipping this sample"
+                f"Unable to validate iRODs path {sample['irods_path']} for sample {sample['sample_id']}. Skipping this sample"
             )
 
     if not valid_samples:
