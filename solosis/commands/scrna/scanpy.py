@@ -1,10 +1,11 @@
 import logging
 import os
+import tempfile
 
 import click
 
 from solosis.utils.logging_utils import debug, log
-from solosis.utils.lsf_utils import lsf_job, submit_lsf_job
+from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
 
@@ -42,6 +43,11 @@ def cmd(
     logger.debug(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
+    job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
+    logger.debug(f"Job name: {job_name}")
+
+    # @TODO: Ensure all kwargs are strings for environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
 
     # Path to the shell script
     shell_script = os.path.abspath(
@@ -55,23 +61,24 @@ def cmd(
         logger.error(f"Shell script not found: {shell_script}")
         return
 
-    # Compose job name
-    job_name = execution_uid if job_name == "scanpy" else f"{job_name}_{execution_uid}"
-    logger.info(f"Submitting Scanpy job: {job_name} to queue {queue}")
+    # Construct command
+    command_str = f"{shell_script} {sample_basedir} {samplefile}"
 
-    # Pass extra kwargs as environment variables
-    env_vars = {str(k): str(v) for k, v in kwargs.items()}
+    # Submit the job
+    with tempfile.NamedTemporaryFile(
+        delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
+    ) as tmpfile:
+        logger.debug(f"Temporary command file created: {tmpfile.name}")
+        os.chmod(tmpfile.name, 0o660)
+        tmpfile.write(command_str + "\n")
 
-    # Submit the job via LSF
-    submit_lsf_job(
-        command=f"{shell_script} {sample_basedir} {samplefile}",
+    submit_lsf_job_array(
+        command_file=tmpfile.name,
         job_name=job_name,
-        mem=mem,
         cpu=cpu,
+        mem=mem,
         queue=queue,
         gpu=gpu,
-        execution_uid=execution_uid,
-        env=env_vars,
     )
 
 
