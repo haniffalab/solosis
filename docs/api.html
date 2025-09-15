@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Input Data" href="input.html" />
+    <link rel="next" title="Output Data" href="output.html" />
     <link rel="prev" title="Setup" href="setup.html" /> 
 </head>
 
@@ -67,8 +67,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#solosis-cli-jobrunner">jobrunner</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-jobrunner-command">command</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-jobrunner-run-ipynb">run_ipynb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-jobrunner-run-ipynb">run-ipynb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solosis-cli-jobrunner-single-job">single-job</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#solosis-cli-scrna">scrna</a><ul>
@@ -84,10 +84,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="input.html">Input Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html#id3">pytest</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Links</span></p>
 <ul>
@@ -219,6 +217,12 @@
 </dl>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-arc-count-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-arc-count-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
 </section>
 <section id="solosis-cli-alignment-cellranger-count">
 <h4>cellranger-count<a class="headerlink" href="#solosis-cli-alignment-cellranger-count" title="Link to this heading"></a></h4>
@@ -235,7 +239,11 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-samplefile">
 <span class="sig-name descname"><span class="pre">--samplefile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;samplefile&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-samplefile" title="Link to this definition"></a></dt>
-<dd><p>Path to a CSV or TSV file containing sample IDs</p>
+<dd><p>Path to a CSV or TSV file containing sample IDs as a comma-separated (.csv) or tab-separated (.tsv) file. The file must have a column named ‘sample_id’ containing the sample IDs.</p>
+<p>Example CSV format:
+sample_id
+s12345
+s67890</p>
 </dd></dl>
 
 <dl class="std option">
@@ -311,6 +319,12 @@
 </dl>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-count-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-count-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
 </section>
 <section id="solosis-cli-alignment-cellranger-vdj">
 <h4>cellranger-vdj<a class="headerlink" href="#solosis-cli-alignment-cellranger-vdj" title="Link to this heading"></a></h4>
@@ -384,6 +398,12 @@
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-alignment-cellranger-vdj-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-alignment-cellranger-vdj-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
 </dd></dl>
 
 </section>
@@ -527,6 +547,12 @@
 </dl>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-irods-iget-cellranger-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-irods-iget-cellranger-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
 </section>
 <section id="solosis-cli-irods-iget-fastqs">
 <h4>iget-fastqs<a class="headerlink" href="#solosis-cli-irods-iget-fastqs" title="Link to this heading"></a></h4>
@@ -585,92 +611,154 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>jobrunner<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 </pre></div>
 </div>
-<section id="solosis-cli-jobrunner-command">
-<h4>command<a class="headerlink" href="#solosis-cli-jobrunner-command" title="Link to this heading"></a></h4>
-<p>Run a single command on the farm.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>jobrunner<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>COMMAND_TO_EXEC<span class="o">]</span>...
-</pre></div>
-</div>
-<p class="rubric">Options</p>
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-queue">
-<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-queue" title="Link to this definition"></a></dt>
-<dd><p>queue name</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-time">
-<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-time" title="Link to this definition"></a></dt>
-<dd><p>time for running</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-cores">
-<span class="sig-name descname"><span class="pre">--cores</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cores&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-cores" title="Link to this definition"></a></dt>
-<dd><p># of cores</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-mem">
-<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-mem" title="Link to this definition"></a></dt>
-<dd><p>mem in MB</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-j">
-<span id="cmdoption-solosis-cli-jobrunner-command-job_name"></span><span class="sig-name descname"><span class="pre">-j</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-j" title="Link to this definition"></a></dt>
-<dd><p>Name of the job</p>
-</dd></dl>
-
-<p class="rubric">Arguments</p>
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-command-arg-COMMAND_TO_EXEC">
-<span class="sig-name descname"><span class="pre">COMMAND_TO_EXEC</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-command-arg-COMMAND_TO_EXEC" title="Link to this definition"></a></dt>
-<dd><p>Optional argument(s)</p>
-</dd></dl>
-
-</section>
 <section id="solosis-cli-jobrunner-run-ipynb">
-<h4>run_ipynb<a class="headerlink" href="#solosis-cli-jobrunner-run-ipynb" title="Link to this heading"></a></h4>
-<p>Run a jupyter notebook on the farm.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>jobrunner<span class="w"> </span>run_ipynb<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<h4>run-ipynb<a class="headerlink" href="#solosis-cli-jobrunner-run-ipynb" title="Link to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>jobrunner<span class="w"> </span>run-ipynb<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-queue">
-<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-queue" title="Link to this definition"></a></dt>
-<dd><p>queue name</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-time">
-<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-time" title="Link to this definition"></a></dt>
-<dd><p>time for running</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-cores">
-<span class="sig-name descname"><span class="pre">--cores</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cores&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-cores" title="Link to this definition"></a></dt>
-<dd><p># of cores</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-mem">
-<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-mem" title="Link to this definition"></a></dt>
-<dd><p>mem in MB</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-n">
-<span id="cmdoption-solosis-cli-jobrunner-run_ipynb-notebook"></span><span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--notebook</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;notebook&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-n" title="Link to this definition"></a></dt>
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-n">
+<span id="cmdoption-solosis-cli-jobrunner-run-ipynb-notebook"></span><span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--notebook</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;notebook&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-n" title="Link to this definition"></a></dt>
 <dd><p><strong>Required</strong> Path to the notebook to run</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run_ipynb-j">
-<span id="cmdoption-solosis-cli-jobrunner-run_ipynb-job_name"></span><span class="sig-name descname"><span class="pre">-j</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run_ipynb-j" title="Link to this definition"></a></dt>
-<dd><p>Name of the job</p>
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-j">
+<span id="cmdoption-solosis-cli-jobrunner-run-ipynb-job_name"></span><span class="sig-name descname"><span class="pre">-j</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-j" title="Link to this definition"></a></dt>
+<dd><p>Name of the job. If not provided, the execution UID will be used</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-debug">
+<span class="sig-name descname"><span class="pre">--debug</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-debug" title="Link to this definition"></a></dt>
+<dd><p>Enable debug mode</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-mem">
+<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-mem" title="Link to this definition"></a></dt>
+<dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-cpu">
+<span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-cpu" title="Link to this definition"></a></dt>
+<dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-queue">
+<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-queue" title="Link to this definition"></a></dt>
+<dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-gpu">
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-run-ipynb-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-run-ipynb-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
+</section>
+<section id="solosis-cli-jobrunner-single-job">
+<h4>single-job<a class="headerlink" href="#solosis-cli-jobrunner-single-job" title="Link to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>jobrunner<span class="w"> </span>single-job<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>COMMAND_TO_EXEC<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-j">
+<span id="cmdoption-solosis-cli-jobrunner-single-job-job_name"></span><span class="sig-name descname"><span class="pre">-j</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-j" title="Link to this definition"></a></dt>
+<dd><p>Optional name of the job. If not provided, the execution UID is used.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-debug">
+<span class="sig-name descname"><span class="pre">--debug</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-debug" title="Link to this definition"></a></dt>
+<dd><p>Enable debug mode</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-mem">
+<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-mem" title="Link to this definition"></a></dt>
+<dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-cpu">
+<span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-cpu" title="Link to this definition"></a></dt>
+<dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-queue">
+<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-queue" title="Link to this definition"></a></dt>
+<dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-gpu">
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-jobrunner-single-job-arg-COMMAND_TO_EXEC">
+<span class="sig-name descname"><span class="pre">COMMAND_TO_EXEC</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-jobrunner-single-job-arg-COMMAND_TO_EXEC" title="Link to this definition"></a></dt>
+<dd><p>Optional argument(s)</p>
 </dd></dl>
 
 </section>
@@ -755,15 +843,15 @@
 </dl>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-cellbender-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-cellbender-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
+</dd></dl>
+
 </section>
 <section id="solosis-cli-scrna-merge-h5ad">
 <h4>merge-h5ad<a class="headerlink" href="#solosis-cli-scrna-merge-h5ad" title="Link to this heading"></a></h4>
-<p>Merges multiple h5ads objects…</p>
-<hr class="docutils" />
-<p>Please run <cite>solosis-cli sc-rna scanpy –samplefile …</cite> command first.</p>
-<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-Input file should have 3 mandatory columns:
-1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>scrna<span class="w"> </span>merge-h5ad<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -777,17 +865,74 @@ Input file should have 3 mandatory columns:
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-merged_filename">
 <span class="sig-name descname"><span class="pre">--merged_filename</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;merged_filename&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-merged_filename" title="Link to this definition"></a></dt>
-<dd><p><strong>Required</strong> Output file name: Eg. merged.h5ad</p>
+<dd><p><strong>Required</strong> Output file name, e.g., merged.h5ad</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-job_name">
+<span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-job_name" title="Link to this definition"></a></dt>
+<dd><p>Optional name for the LSF job. Defaults to merge_h5ad_&lt;uid&gt;.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-debug">
+<span class="sig-name descname"><span class="pre">--debug</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-debug" title="Link to this definition"></a></dt>
+<dd><p>Enable debug mode</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-mem">
+<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-mem" title="Link to this definition"></a></dt>
+<dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-cpu">
+<span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-cpu" title="Link to this definition"></a></dt>
+<dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-queue">
+<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-queue" title="Link to this definition"></a></dt>
+<dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-gpu">
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-merge-h5ad-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-merge-h5ad-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
 </dd></dl>
 
 </section>
 <section id="solosis-cli-scrna-scanpy">
 <h4>scanpy<a class="headerlink" href="#solosis-cli-scrna-scanpy" title="Link to this heading"></a></h4>
-<p>Basic Scanpy workflow for scRNA-seq data, generates Jupyter Notebook …</p>
-<hr class="docutils" />
-<p>Example: /lustre/scratch126/cellgen/team298/soft/bin/examples/irods_download.txt
-Input file should have 3 mandatory columns:
-1st column: sanger_id, 2nd column: sample_name, LAST column: irods path</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>solosis-cli<span class="w"> </span>scrna<span class="w"> </span>scanpy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
@@ -801,7 +946,69 @@ Input file should have 3 mandatory columns:
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-sample_basedir">
 <span class="sig-name descname"><span class="pre">--sample_basedir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sample_basedir&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-sample_basedir" title="Link to this definition"></a></dt>
-<dd><p>sample database folder</p>
+<dd><p>Sample database folder</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-job_name">
+<span class="sig-name descname"><span class="pre">--job_name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;job_name&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-job_name" title="Link to this definition"></a></dt>
+<dd><p>Optional name for the LSF job. Defaults to scanpy_&lt;uid&gt;.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-debug">
+<span class="sig-name descname"><span class="pre">--debug</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-debug" title="Link to this definition"></a></dt>
+<dd><p>Enable debug mode</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-mem">
+<span class="sig-name descname"><span class="pre">--mem</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mem&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-mem" title="Link to this definition"></a></dt>
+<dd><p>Memory limit (in MB)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">64000</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-cpu">
+<span class="sig-name descname"><span class="pre">--cpu</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cpu&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-cpu" title="Link to this definition"></a></dt>
+<dd><p>Number of CPU cores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-queue">
+<span class="sig-name descname"><span class="pre">--queue</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;queue&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-queue" title="Link to this definition"></a></dt>
+<dd><p>Queue to which the job should be submitted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'normal'</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-gpu">
+<span class="sig-name descname"><span class="pre">--gpu</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-gpu" title="Link to this definition"></a></dt>
+<dd><p>Request a GPU with default settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-solosis-cli-scrna-scanpy-time">
+<span class="sig-name descname"><span class="pre">--time</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span></span><a class="headerlink" href="#cmdoption-solosis-cli-scrna-scanpy-time" title="Link to this definition"></a></dt>
+<dd><p>Number of GPUs to request</p>
 </dd></dl>
 
 </section>
@@ -814,7 +1021,7 @@ Input file should have 3 mandatory columns:
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="setup.html" class="btn btn-neutral float-left" title="Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="input.html" class="btn btn-neutral float-right" title="Input Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="output.html" class="btn btn-neutral float-right" title="Output Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

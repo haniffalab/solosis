@@ -49,11 +49,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">More</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="input.html">Input Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Output Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#id3">pytest</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#python-testing">Python testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#git">git</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#branches">Branches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#executing-solosis">Executing Solosis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#committing-changes">Committing Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pip-compile">pip-compile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">pytest</a></li>
 </ul>
 </li>
 </ul>
@@ -89,138 +93,30 @@
              
   <section id="id1">
 <h1>Development<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
-<p>If you are developing or want to contribute to Solosis, please read this page.</p>
-<ol class="arabic simple">
-<li><p><strong>Log-in to Farm</strong></p></li>
-<li><p><strong>If you haven’t already, create a directory for your Git repository in your home directory.</strong></p></li>
-</ol>
-<p>Ensure you are in your home directory</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pwd</span>
-</pre></div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$HOME</span>/&lt;USER&gt;
-</pre></div>
-</div>
-</div>
-<p>Then create the directory</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">repos</span>
-<span class="n">cd</span> <span class="n">repos</span><span class="o">/</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p><strong>Clone the solosis git repository</strong></p></li>
-</ol>
+<p>If you are developing or contributing to Solosis, follow the steps below to set up your local development environment.</p>
+<section id="git">
+<h2>git<a class="headerlink" href="#git" title="Link to this heading"></a></h2>
+<p><strong>Clone the Solosis Git repository</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">haniffalab</span><span class="o">/</span><span class="n">solosis</span><span class="o">.</span><span class="n">git</span>
 <span class="n">cd</span> <span class="n">solosis</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><p><strong>Export environment variables</strong></p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">export</span> <span class="n">LSB_DEFAULT_USERGROUP</span><span class="o">=&lt;</span><span class="n">USERGROUP</span><span class="o">&gt;</span>
-<span class="n">export</span> <span class="n">TEAM_DATA_DIR</span><span class="o">=./</span><span class="n">data</span>
-<span class="n">export</span> <span class="n">TEAM_SAMPLE_DATA_DIR</span><span class="o">=./</span><span class="n">data</span><span class="o">/</span><span class="n">samples</span>
-<span class="n">export</span> <span class="n">TEAM_LOGS_DIR</span><span class="o">=./</span><span class="n">logs</span>
+<p><strong>Export required environment variables</strong></p>
+<p>Replace placeholders with values specific to your environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LSB_DEFAULT_USERGROUP</span><span class="o">=&lt;</span><span class="n">USERGROUP</span><span class="o">&gt;</span>
+<span class="n">export</span> <span class="n">TEAM_DATA_DIR</span><span class="o">=&lt;</span><span class="n">DATA_DIR</span><span class="o">&gt;</span>
+<span class="n">export</span> <span class="n">TEAM_LOGS_DIR</span><span class="o">=&lt;</span><span class="n">LOG_DIR</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="5">
-<li><p><strong>Set-up new git branch</strong></p></li>
-</ol>
-<p>Check which branch you’re currently in</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">status</span>
-</pre></div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Expected Output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>On<span class="w"> </span>branch<span class="w"> </span>dev
-Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </span>up-to-date<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;origin/dev&#39;</span>.
-</pre></div>
-</div>
-</div>
-<p>Move to dev branch</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">dev</span>
-</pre></div>
-</div>
-<p>Create a new branch (off dev branch) to begin contributing. More info <a class="reference external" href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout#:~:text=New%20branches,to%20switch%20to%20that%20branch">here</a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git checkout -b ＜new-branch＞
-</pre></div>
-</div>
-<p>For information on Naming nomenclature of git branches view this <a class="reference external" href="https://medium.com/&#64;abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534">page</a></p>
-<ol class="arabic simple" start="6">
-<li><p><strong>Creating a new click command</strong></p></li>
-</ol>
-<p>Click python tool is used to construct solosis <a class="reference external" href="https://click.palletsprojects.com/en/stable/">Click Documentation</a></p>
-<p><strong>Files to create:</strong></p>
-<ul>
-<li><dl>
-<dt>Command submission bash script</dt><dd><p>Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`bin/command-group/command.sh`
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Command click python script</dt><dd><p>Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`solosis/commands/command-group/command.py`
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Files to make changes to:</strong></p>
-<ul>
-<li><p><cite>cli.py</cite> including <cite>add_command()</cite> for new command</p>
-<blockquote>
-<div><p>Example</p>
-</div></blockquote>
-</li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="o">-</span><span class="n">group</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Commands for running ...&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-
-<span class="n">command</span><span class="o">-</span><span class="n">group</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Check files in Utils (`solosis/utils/`), they include features that can be integrated in `command.py`:</strong></p>
-<ul class="simple">
-<li><p>Logging configuration (<cite>solosis/utils/logging_utils.py</cite>)</p></li>
-<li><p>Input file validation (<cite>solosis/utils/input_utils.py</cite>)</p></li>
-<li><p>LSF job configuration (<cite>solosis/utils/lsf_utils.py</cite>)</p></li>
-<li><p>Environment and iRODS validation (<cite>solosis/utils/env_utils.py</cite>)</p></li>
-<li><p>Further LSF job configuration (<cite>solosis/utils/subprocess_utils.py</cite>)</p></li>
-</ul>
-<ol class="arabic simple" start="7">
-<li><p><strong>Executing solosis commands</strong></p></li>
-</ol>
-<p>Executing solosis commands while developing need to solosis-cli to be as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">solosis</span><span class="o">-</span><span class="n">cli</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="8">
-<li><p><strong>Committing changes to dev branch</strong></p></li>
-</ol>
-<p>Run the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
-<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;ADD MESSAGE HERE&quot;</span>
-<span class="n">git</span> <span class="n">push</span>
-</pre></div>
-</div>
-<p>Once changes are complete, create <a class="reference external" href="https://github.com/haniffalab/solosis/pulls">Pull Request</a> to merge changes to dev.</p>
 </section>
-<section id="id3">
-<h1>pytest<a class="headerlink" href="#id3" title="Link to this heading"></a></h1>
-<p>Create and activate the virtual environment</p>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
+<p><strong>Create and activate a virtual environment</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
 <span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 </pre></div>
 </div>
-<p>Install dev dependencies and install pre-commit hooks</p>
+<p><strong>Install dependencies and pre-commit hooks</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
@@ -228,19 +124,80 @@ Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </s
 <span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
 </pre></div>
 </div>
-<p>Run Solosis in development mode</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">solosis</span><span class="o">.</span><span class="n">cli</span>
-</pre></div>
-</div>
-<p>The pre-commit config includes <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> are implemented.
-You can manually check <code class="docutils literal notranslate"><span class="pre">black</span></code> formatting and <code class="docutils literal notranslate"><span class="pre">isort</span></code> as follows:</p>
+<p>The pre-commit configuration includes checks for code formatting using <code class="docutils literal notranslate"><span class="pre">black</span></code> and import ordering using <code class="docutils literal notranslate"><span class="pre">isort</span></code>.
+You can run these manually as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">black</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
 <span class="n">isort</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<section id="python-testing">
-<h2>Python testing<a class="headerlink" href="#python-testing" title="Link to this heading"></a></h2>
-<p>Set the <code class="code docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> environment variable to the <code class="code docutils literal notranslate"><span class="pre">bin</span></code> directory where the scripts are stored, and then run the following command:</p>
+</section>
+<section id="branches">
+<h2>Branches<a class="headerlink" href="#branches" title="Link to this heading"></a></h2>
+<p><strong>Check your current branch</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">status</span>
+</pre></div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Expected output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>On<span class="w"> </span>branch<span class="w"> </span>main
+Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </span>up-to-date<span class="w"> </span>with<span class="w"> </span><span class="s1">&#39;origin/main&#39;</span>.
+</pre></div>
+</div>
+</div>
+<p><strong>Switch to the `dev` branch</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p><strong>Create a new branch from `dev`</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">new</span><span class="o">-</span><span class="n">branch</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>For more information on branching, see:
+- <a class="reference external" href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout">Git checkout guide</a>
+- <a class="reference external" href="https://medium.com/&#64;abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534">Branch naming conventions</a></p>
+</section>
+<section id="executing-solosis">
+<h2>Executing Solosis<a class="headerlink" href="#executing-solosis" title="Link to this heading"></a></h2>
+<p>When developing, run Solosis as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">solosis</span><span class="o">.</span><span class="n">cli</span>
+</pre></div>
+</div>
+</section>
+<section id="committing-changes">
+<h2>Committing Changes<a class="headerlink" href="#committing-changes" title="Link to this heading"></a></h2>
+<p><strong>Commit and push your changes</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;ADD MESSAGE HERE&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+</div>
+<p>Once changes are ready, create a <a class="reference external" href="https://github.com/haniffalab/solosis/pulls">Pull Request</a> to merge them into <code class="docutils literal notranslate"><span class="pre">dev</span></code>.</p>
+</section>
+<section id="pip-compile">
+<h2>pip-compile<a class="headerlink" href="#pip-compile" title="Link to this heading"></a></h2>
+<p>Solosis uses <a class="reference external" href="https://github.com/jazzband/pip-tools">pip-tools</a> to manage and lock dependencies.
+Dependencies are declared in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and compiled into pinned requirements files to ensure reproducible environments.</p>
+<p>To update locked dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="n">envs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="o">--</span><span class="n">extra</span><span class="o">=</span><span class="n">dev</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="o">--</span><span class="n">extra</span><span class="o">=</span><span class="n">dev</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="n">envs</span><span class="o">/</span><span class="n">doc</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Synchronise your environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="o">-</span><span class="n">sync</span> <span class="n">envs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="n">sync</span> <span class="n">envs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="n">sync</span> <span class="n">envs</span><span class="o">/</span><span class="n">doc</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>This will install exactly the packages and versions listed in the specified files, removing any packages not included.</p>
+<p>To upgrade dependencies, add <code class="docutils literal notranslate"><span class="pre">--upgrade</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="o">-</span><span class="nb">compile</span> <span class="o">--</span><span class="n">upgrade</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="n">envs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2>pytest<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>To run tests using <a class="reference external" href="https://docs.pytest.org/en/7.1.x/">pytest</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">q</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_cli</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
