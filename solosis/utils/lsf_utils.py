@@ -56,6 +56,10 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
             show_default=True,
             help="Request a GPU with default settings",
         )(function)
+        function = click.option(
+            "--time", default=time, type=str, help="Number of GPUs to request"
+        )(function)
+
         return function
 
     return decorator
@@ -125,6 +129,7 @@ def submit_lsf_job_array(
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
 #BSUB -q "{queue}"
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh
 {gpu_options}
 
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")

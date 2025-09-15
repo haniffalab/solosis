@@ -44,6 +44,7 @@ def cmd(
     cpu,
     queue,
     gpu,
+    time,
     debug,
 ):
     """Eliminate technical artifacts from scRNA-seq"""

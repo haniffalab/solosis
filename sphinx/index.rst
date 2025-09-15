@@ -27,7 +27,6 @@ Solosis is a command line interface for working with single-cell data.
    :hidden:
    :caption: More
   
-   input
    output
    development
 

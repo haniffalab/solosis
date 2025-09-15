@@ -12,13 +12,20 @@ from solosis.utils.state import execution_uid, logger
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_job(mem=64000, cpu=4, queue="long")
+@lsf_job(mem=64000, cpu=4, queue="long", time="12:00")
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing sample IDs",
+    help=(
+        "Path to a CSV or TSV file containing sample IDs as a comma-separated (.csv) "
+        "or tab-separated (.tsv) file. The file must have a column named 'sample_id' containing the sample IDs.\n\n"
+        "Example CSV format:\n"
+        "sample_id\n"
+        "s12345\n"
+        "s67890"
+    ),
 )
 @click.option(
     "--create-bam",
@@ -56,7 +63,17 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 @debug
 @log
 def cmd(
-    sample, samplefile, create_bam, chemistry, version, mem, cpu, queue, gpu, debug
+    sample,
+    samplefile,
+    create_bam,
+    chemistry,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
 ):
     """scRNA-seq mapping and quantification"""
     if debug:
