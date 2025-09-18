@@ -4,12 +4,9 @@ import tempfile
 
 import click
 
-from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
-
-##maybe add in validation with `from solosis.utils.input_utils import collect_samples`
 
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
@@ -49,59 +46,35 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir"}
-    )
-
-    valid_samples = []
-    for sample in samples:
-        sample_id = sample["sample_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        output_dir = os.path.join(
-            os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
-        )
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Validate irods path
-        if validate_cellranger_dir(sample_id, cellranger_dir):
-            valid_samples.append(
-                {
-                    "sample_id": sample_id,
-                    "cellranger_dir": cellranger_dir,
-                    "output_dir": output_dir,
-                }
-            )
-        else:
-            logger.warning(
-                f"Unable to validate cellranger path {sample['cellranger_dir']} for sample {sample['sample_id']}. Run `iget-cellranger` cmd before re-trying."
-            )
-
-    if not valid_samples:
-        logger.error(f"No valid samples found. Exiting")
-        return
+    # @TODO: Ensure all kwargs are strings for environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
 
     # Path to the shell script
-    scanpy_shell_script = os.path.abspath(
+    shell_script = os.path.abspath(
         os.path.join(
             os.getenv("SCRIPT_BIN"),
             "scrna/scanpy/submit.sh",
         )
     )
 
+    if not os.path.exists(shell_script):
+        logger.error(f"Shell script not found: {shell_script}")
+        return
+
+    # Construct command
+    command_str = f"{shell_script} {sample_basedir} {samplefile}"
+
+    # Submit the job
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        for sample in valid_samples:
-            command = f"{scanpy_shell_script} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {version} {cpu} {mem}"
-            if sample_basedir:
-                command += f" --sample_basedir {sample_basedir}"
-            tmpfile.write(command + "\n")
+        tmpfile.write(command_str + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
-        job_name="scanpy_job_array",
+        job_name=job_name,
         cpu=cpu,
         mem=mem,
         queue=queue,
