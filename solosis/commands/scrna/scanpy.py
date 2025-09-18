@@ -14,7 +14,7 @@ from solosis.utils.state import execution_uid, logger
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("scanpy")
-@click.option("--samplefile", required=True, help="Sample file text file")
+@click.option("--metadata", required=True, help="Sample file text file")
 @click.option(
     "--sample_basedir",
     required=False,
@@ -31,7 +31,7 @@ from solosis.utils.state import execution_uid, logger
 @debug
 @log
 def cmd(
-    samplefile, sample_basedir, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    metadata, sample_basedir, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
 ):
     """
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
