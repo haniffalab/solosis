@@ -90,7 +90,7 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{scanpy_shell_script} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {version} {cpu} {mem}"
+            command = f"{scanpy_shell_script} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
             if sample_basedir:
                 command += f" --sample_basedir {sample_basedir}"
             tmpfile.write(command + "\n")
