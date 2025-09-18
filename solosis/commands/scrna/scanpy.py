@@ -62,19 +62,15 @@ def cmd(
         )
         os.makedirs(output_dir, exist_ok=True)
 
-        # Validate irods path
-        if validate_cellranger_dir(sample_id, cellranger_dir):
-            valid_samples.append(
-                {
-                    "sample_id": sample_id,
-                    "cellranger_dir": cellranger_dir,
-                    "output_dir": output_dir,
-                }
-            )
-        else:
-            logger.warning(
-                f"Unable to validate cellranger path {sample['cellranger_dir']} for sample {sample['sample_id']}. Run `iget-cellranger` cmd before re-trying."
-            )
+        # will need to validate cellranger dir
+
+        valid_samples.append(
+            {
+                "sample_id": sample_id,
+                "cellranger_dir": cellranger_dir,
+                "output_dir": output_dir,
+            }
+        )
 
     if not valid_samples:
         logger.error(f"No valid samples found. Exiting")
