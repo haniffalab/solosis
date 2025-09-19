@@ -20,7 +20,7 @@ set -e # Exit immediately if a command fails
 conda_env="/software/cellgen/team298/shared/envs/hlb-conda/rna"
 
 # Check if at least 7 arguments are provided
-if [ "$#" -lt 7 ]; then
+if [ "$#" -lt 6 ]; then
   echo "Usage: $0 <sample_id> <output_dir> <cellranger_dir> <cpu> <mem> <time> [--sample_basedir] " >&2
   exit 1
 fi
@@ -36,18 +36,6 @@ TIME="$6"
 sample_basedir="/lustre/scratch124/cellgen/haniffa/data/samples"  # Default to use <outout_dir>
 
 ## will need to add conditional statemnt from replacing <output_dir> with --sample_basedir
-# Parse optional flags
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --sample_basedir)
-      sample_basedir="$2"
-      shift 2
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
 
 echo "Arguments received: $@"
 
