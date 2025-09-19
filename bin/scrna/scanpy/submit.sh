@@ -34,8 +34,10 @@ CPU="$4"
 MEM="$5"
 TIME="$6"
 # Initialize optional flags
-sample_basedir="/lustre/scratch124/cellgen/haniffa/data/samples"  # Default to use <outout_dir>
 
+#### hardcoded for now ####
+sample_basedir="/lustre/scratch124/cellgen/haniffa/data/samples"  # Default to use <outout_dir>
+solosis_dir="/nfs/users/nfs_l/lg28/repos/solosis"
 ## will need to add conditional statemnt from replacing <output_dir> with --sample_basedir
 
 echo "Arguments received: $@"
@@ -51,7 +53,7 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 # run the papermill command
 cmd="conda activate $conda_env &&  \
-    papermill $solosis_dir/../../../notebooks/sc_base1.ipynb \
+    papermill $solosis_dir/notebooks/sc_base1.ipynb \
     $OUTPUT_DIR/${SAMPLE_ID}_${SAMPLE_ID}.ipynb  \
     -p samples_database '${sample_basedir}' \
     -p sample_name $SAMPLE_ID \
