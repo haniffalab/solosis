@@ -18,7 +18,7 @@ from solosis.utils.state import execution_uid, logger
 @click.option(
     "--sample_basedir",
     required=False,
-    default="/lustre/scratch124/cellgen/haniffa/sample_data/",
+    default="/lustre/scratch124/cellgen/haniffa/data/samples",
     help="Sample database folder",
 )
 @click.option(
