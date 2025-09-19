@@ -34,7 +34,7 @@ CPU="$5"
 MEM="$6"
 TIME="$7"
 # Initialize optional flags
-sample_basedir="/lustre/scratch124/cellgen/haniffa/sample_data/"  # Default to use <outout_dir>
+sample_basedir="/lustre/scratch124/cellgen/haniffa/data/samples"  # Default to use <outout_dir>
 
 ## will need to add conditional statemnt from replacing <output_dir> with --sample_basedir
 #
