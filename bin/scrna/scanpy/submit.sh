@@ -17,6 +17,7 @@
 
 set -e # Exit immediately if a command fails
 
+module load cellgen/conda
 conda_env="/software/cellgen/team298/shared/envs/hlb-conda/rna"
 
 # Check if at least 7 arguments are provided
