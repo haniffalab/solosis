@@ -58,5 +58,9 @@ cmd="conda activate $conda_env &&  \
     -p cellranger_folder cellranger/${CELLRANGER_DIR##*/} \
     --log-output"
 
+echo "Executing papermill command:"
+echo "$cmd"
+eval "$cmd"
+
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Scanpy notebook completed for sample: $SAMPLE_ID"
