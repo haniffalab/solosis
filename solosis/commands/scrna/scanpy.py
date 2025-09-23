@@ -13,6 +13,8 @@ from solosis.utils.state import execution_uid, logger
 
 ########
 conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
+
+SOLOSIS_DIR = os.getenv("SOLOSIS_BASE")
 ########
 
 
@@ -88,7 +90,7 @@ def cmd(
             command = (
                 f"module load cellgen/conda &&"
                 f"source activate {conda_env} &&"
-                f"papermill solosis/notebooks/sc_base1.ipynb "
+                f"papermill {SOLOSIS_DIR}/notebooks/sc_base1.ipynb "
                 f"{output_dir}/{sample_id}_{sample_id}.ipynb "
                 f"-p samples_database '{sample_basedir}' "
                 f"-p sample_name '{sample_id}' "
