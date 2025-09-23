@@ -11,6 +11,10 @@ from solosis.utils.state import execution_uid, logger
 
 ##maybe add in validation with `from solosis.utils.input_utils import collect_samples`
 
+########
+conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
+########
+
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("scanpy")
@@ -57,9 +61,7 @@ def cmd(
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
-        output_dir = os.path.join(
-            os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
-        )
+        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
 
         # will need to validate cellranger dir
@@ -76,23 +78,24 @@ def cmd(
         logger.error(f"No valid samples found. Exiting")
         return
 
-    # Path to the shell script
-    scanpy_shell_script = os.path.abspath(
-        os.path.join(
-            os.getenv("SCRIPT_BIN"),
-            "scrna/scanpy/submit.sh",
-        )
-    )
-
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{scanpy_shell_script} {sample['sample_id']} {sample['output_dir']} {sample['cellranger_dir']} {cpu} {mem}"
-            if sample_basedir:
-                command += f" --sample_basedir {sample_basedir}"
+            # Build papermill command
+            command = (
+                f"module load cellgen/conda"
+                f"source activate {conda_env}"
+                f"papermill ../../notebooks/sc_base1.ipynb "
+                f"{output_dir}/{samples[sample_id]}_{samples[sample_id]}.ipynb "
+                f"-p samples_database '{sample_basedir}' "
+                f"-p sample_name '{sample[sample_id]}' "
+                f"-p sample_id '{sample[sample_id]}' "
+                f"-p cellranger_folder '{sample[cellranger_dir]}' "
+                "--log-output"
+            )
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
