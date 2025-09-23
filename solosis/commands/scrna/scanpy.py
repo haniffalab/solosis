@@ -69,6 +69,7 @@ def cmd(
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
+        sanger_id = sample.get("sanger_id", sample_id)
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
 
@@ -86,6 +87,7 @@ def cmd(
         valid_samples.append(
             {
                 "sample_id": sample_id,
+                "sanger_id": sanger_id,
                 "cellranger_dir": cellranger_dir,
                 "output_dir": output_dir,
             }
@@ -103,12 +105,12 @@ def cmd(
         for sample in valid_samples:
             # Build papermill command
             command = (
-                f"module load cellgen/conda &&"
-                f"source activate {conda_env} &&"
+                f"module load cellgen/conda && "
+                f"source activate {conda_env} && "
                 f"papermill {NOTEBOOK_PATH} "
-                f"{output_dir}/{sample_id}_{sample_id}.ipynb "
+                f"{output_dir}/{sample_id}_{sanger_id}.ipynb "
                 f"-p samples_database '{sample_basedir}' "
-                f"-p sample_name '{sample_id}' "
+                f"-p sample_name '{sanger_id}' "
                 f"-p sample_id '{sample_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
                 "--log-output"
