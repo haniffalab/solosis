@@ -88,11 +88,11 @@ def cmd(
             command = (
                 f"source activate {conda_env} &&"
                 f"papermill ../../notebooks/sc_base1.ipynb "
-                f"{output_dir}/{samples[sample_id]}_{samples[sample_id]}.ipynb "
+                f"{output_dir}/{sample_id}_{sample_id}.ipynb "
                 f"-p samples_database '{sample_basedir}' "
-                f"-p sample_name '{sample[sample_id]}' "
-                f"-p sample_id '{sample[sample_id]}' "
-                f"-p cellranger_folder '{sample[cellranger_dir]}' "
+                f"-p sample_name '{sample_id}' "
+                f"-p sample_id '{sample_id}' "
+                f"-p cellranger_folder '{cellranger_dir}' "
                 "--log-output"
             )
             tmpfile.write(command + "\n")
