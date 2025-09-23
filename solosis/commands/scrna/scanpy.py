@@ -72,6 +72,15 @@ def cmd(
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
 
+        # Path of the expected output notebook
+        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sample_id}.ipynb")
+
+        if os.path.exists(scanpy_output):
+            logger.warning(
+                f"Notebook for {sample_id} already exists at {scanpy_output}. Skipping."
+            )
+            continue  # skip this sample
+
         # will need to validate cellranger dir
 
         valid_samples.append(
