@@ -86,6 +86,7 @@ def cmd(
         for sample in valid_samples:
             # Build papermill command
             command = (
+                f"module load cellgen/conda &&"
                 f"source activate {conda_env} &&"
                 f"papermill ../../notebooks/sc_base1.ipynb "
                 f"{output_dir}/{sample_id}_{sample_id}.ipynb "
