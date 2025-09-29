@@ -103,6 +103,11 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
+            sample_id = sample["sample_id"]
+            sanger_id = sample["sanger_id"]
+            cellranger_dir = sample["cellranger_dir"]
+            output_dir = sample["output_dir"]
+
             # Build papermill command
             command = (
                 f"module load cellgen/conda && "
