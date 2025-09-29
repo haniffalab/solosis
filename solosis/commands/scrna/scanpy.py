@@ -69,9 +69,7 @@ def cmd(
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
-        sanger_id = sample.get("sanger_id")
-        if not sanger_id:
-            sanger_id = sample_id
+        sanger_id = sample.get("sanger_id") or sample["sample_id"]
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
 
@@ -117,8 +115,8 @@ def cmd(
                 f"papermill {NOTEBOOK_PATH} "
                 f"{output_dir}/{sample_id}_{sanger_id}.ipynb "
                 f"-p samples_database '{sample_basedir}' "
-                f"-p sample_name '{sanger_id}' "
-                f"-p sample_id '{sample_id}' "
+                f"-p sample_name '{sample_id}' "
+                f"-p sanger_id '{sanger_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
                 "--log-output"
             )
