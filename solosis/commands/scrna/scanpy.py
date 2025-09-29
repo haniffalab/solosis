@@ -69,6 +69,12 @@ def cmd(
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
+        if not os.path.exists(cellranger_dir):
+            logger.error(
+                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
+            )
+            continue  # skip this sample entirely
+
         sanger_id = sample.get("sanger_id") or sample["sample_id"]
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
