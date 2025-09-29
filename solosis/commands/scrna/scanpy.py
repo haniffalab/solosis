@@ -62,7 +62,7 @@ def cmd(
     logger.debug(f"Job name: {job_name}")
 
     samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir"}
+        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
     )
 
     valid_samples = []
