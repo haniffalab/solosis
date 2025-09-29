@@ -69,7 +69,9 @@ def cmd(
     for sample in samples:
         sample_id = sample["sample_id"]
         cellranger_dir = sample["cellranger_dir"]
-        sanger_id = sample.get("sanger_id", sample_id)
+        sanger_id = sample.get("sanger_id")
+        if not sanger_id:
+            sanger_id = sample_id
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
 
