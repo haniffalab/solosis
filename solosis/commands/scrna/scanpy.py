@@ -49,7 +49,7 @@ def cmd(
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sanger_id, 2nd column: sample_name, 3rd column: irods path
+    1st column: sample_id, 2nd column: sanger_id, 3rd column: irods path
     """
     if debug:
         logger.setLevel(logging.DEBUG)
