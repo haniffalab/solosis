@@ -26,7 +26,7 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("scanpy")
-@click.option("--metadata", required=True, help="Sample file text file")
+@click.option("--metadata", required=True, help="metadata csv file")
 @click.option(
     "--sample_basedir",
     required=False,
@@ -49,7 +49,7 @@ def cmd(
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: irods path
+    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -121,8 +121,8 @@ def cmd(
                 f"papermill {NOTEBOOK_PATH} "
                 f"{output_dir}/{sample_id}_{sanger_id}.ipynb "
                 f"-p samples_database '{sample_basedir}' "
-                f"-p sample_name '{sample_id}' "
-                f"-p sanger_id '{sanger_id}' "
+                f"-p sample_name '{sanger_id}' "
+                f"-p sample_id '{sample_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
                 "--log-output"
             )

@@ -4,26 +4,14 @@ import tempfile
 
 import click
 
-from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-########
-conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
-# SOLOSIS_DIR = os.getenv("SOLOSIS_BASE") ## wouldn't work without the solosis module loaded
-
-# found this potential solution
-base = os.getenv(
-    "SOLOSIS_BASE", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
-)
-NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
-########
-
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("merge-h5ad")
-@click.option("--metadata", required=True, help="metadata csv file")
+@click.option("--samplefile", required=True, help="Sample file text file")
 @click.option(
     "--merged_filename", required=True, help="Output file name, e.g., merged.h5ad"
 )
@@ -43,9 +31,9 @@ def cmd(
     Submit a job to merge multiple h5ad objects into a single file.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    1st column: sanger_id, 2nd column: sample_name, 3rd column: irods path
 
-    Make sure to run `solosis-cli sc-rna scanpy --metadata ...` first.
+    Make sure to run `solosis-cli sc-rna scanpy --samplefile ...` first.
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -57,31 +45,8 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    # Path of the expected output notebook
-    scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
-    valid_samples = []
-    for sample in samples:
-        sample_id = sample["sample_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        if not os.path.exists(cellranger_dir):
-            logger.error(
-                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
-            )
-            continue  # skip this sample entirely
-
-        sanger_id = sample.get("sanger_id") or sample["sample_id"]
-        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Path of the expected output notebook
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
-        if not os.path.exists(scanpy_output):
-            logger.warning(
-                f"Notebook for {sample_id} exists at {scanpy_output}. Skipping."
-            )
-            continue  # skip this sample
+    # @TODO: Ensure all kwargs are strings for environment variables
+    env_vars = {str(k): str(v) for k, v in kwargs.items()}
 
     # Path to the shell script
     shell_script = os.path.abspath(
