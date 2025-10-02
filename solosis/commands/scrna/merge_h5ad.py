@@ -129,7 +129,6 @@ def cmd(
             f"-p sample_table {metadata} "
             f"-p merged_filename {merged_filename} "
             f"-p samples_database '{sample_basedir}' "
-            f"-k python3;"
         )
         tmpfile.write(command + "\n")
 
