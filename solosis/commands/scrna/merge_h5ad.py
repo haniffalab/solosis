@@ -10,14 +10,14 @@ from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
 ########
-conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
+conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
 # SOLOSIS_DIR = os.getenv("SOLOSIS_BASE") ## wouldn't work without the solosis module loaded
 
 # found this potential solution
 base = os.getenv(
     "SOLOSIS_BASE", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 )
-NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
+NOTEBOOK_PATH = os.path.join(base, "notebooks", "rna__merge.ipynb")
 ########
 
 
@@ -25,7 +25,7 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
 @click.command("merge-h5ad")
 @click.option("--metadata", required=True, help="metadata csv file")
 @click.option(
-    "--merged_filename", required=True, help="Output file name, e.g., merged.h5ad"
+    "--merged_filename", required=True, help="Output file name, e.g. merged.h5ad"
 )
 @click.option(
     "--job_name",
@@ -75,25 +75,26 @@ def cmd(
         os.makedirs(output_dir, exist_ok=True)
 
         # Path of the expected output notebook
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
+        scanpy_notebook = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
 
         if not os.path.exists(scanpy_output):
             logger.warning(
-                f"Notebook for {sample_id} exists at {scanpy_output}. Skipping."
+                f"Notebook for {sample_id} exists at {scanpy_notebook}. Skipping."
             )
             continue  # skip this sample
 
-    # Path to the shell script
-    shell_script = os.path.abspath(
-        os.path.join(os.getenv("SCRIPT_BIN"), "scrna/merge-h5ad/submit.sh")
-    )
+        valid_samples.append(
+            {
+                "sample_id": sample_id,
+                "sanger_id": sanger_id,
+                "cellranger_dir": cellranger_dir,
+                "output_dir": output_dir,
+            }
+        )
 
-    if not os.path.exists(shell_script):
-        logger.error(f"Shell script not found: {shell_script}")
+    if not valid_samples:
+        logger.error(f"No valid samples found. Exiting")
         return
-
-    # Construct command
-    command_str = f"{shell_script} {samplefile} {merged_filename}"
 
     # Submit the job
     with tempfile.NamedTemporaryFile(
@@ -102,6 +103,16 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         tmpfile.write(command_str + "\n")
+        # Build papermill command
+        command = (
+            f"module load cellgen/conda && "
+            f"source activate {conda_env} && "
+            f"papermill {NOTEBOOK_PATH} merge_{merged_filename}.ipynb "
+            f"-p sample_table {metadata} "
+            f"-p merged_filename {merged_filename} "
+            f"-k python3;"
+        )
+        tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
