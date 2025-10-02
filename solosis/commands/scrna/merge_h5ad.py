@@ -37,12 +37,12 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "rna__merge.ipynb")
 @debug
 @log
 def cmd(
-    samplefile, merged_filename, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    metadata, merged_filename, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
 ):
     """
     Submit a job to merge multiple h5ad objects into a single file.
 
-    Input samplefile should have 3 mandatory columns:
+    Input metadata should have 3 mandatory columns:
     1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
 
     Make sure to run `solosis-cli sc-rna scanpy --metadata ...` first.
@@ -59,6 +59,10 @@ def cmd(
 
     # Path of the expected output notebook
     scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
+
+    samples = process_metadata_file(
+        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
+    )
 
     valid_samples = []
     for sample in samples:
