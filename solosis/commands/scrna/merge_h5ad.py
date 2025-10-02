@@ -105,7 +105,6 @@ def cmd(
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        tmpfile.write(command_str + "\n")
         # Build papermill command
         command = (
             f"module load cellgen/conda && "
