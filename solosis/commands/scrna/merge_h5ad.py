@@ -34,10 +34,26 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "rna__merge.ipynb")
     default="merge_h5ad",
     help="Optional name for the LSF job. Defaults to merge_h5ad_<uid>.",
 )
+@click.option(
+    "--sample_basedir",
+    required=False,
+    default="/lustre/scratch124/cellgen/haniffa/data/samples",
+    help="Sample database folder",
+)
 @debug
 @log
 def cmd(
-    metadata, merged_filename, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    metadata,
+    merged_filename,
+    job_name,
+    sample_basedir,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
+    **kwargs,
 ):
     """
     Submit a job to merge multiple h5ad objects into a single file.
@@ -112,6 +128,7 @@ def cmd(
             f"papermill {NOTEBOOK_PATH} merge_{merged_filename}.ipynb "
             f"-p sample_table {metadata} "
             f"-p merged_filename {merged_filename} "
+            f"-p samples_database '{sample_basedir}' "
             f"-k python3;"
         )
         tmpfile.write(command + "\n")
