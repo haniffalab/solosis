@@ -12,7 +12,7 @@ from solosis.utils.state import execution_uid, logger
 ##maybe add in validation with `from solosis.utils.input_utils import collect_samples`
 
 ########
-conda_env = "/software/cellgen/team298/shared/envs/solosis-scanpy"
+conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
 
 # SOLOSIS_DIR = os.getenv("SOLOSIS_BASE") ## wouldn't work without the solosis module loaded
 
