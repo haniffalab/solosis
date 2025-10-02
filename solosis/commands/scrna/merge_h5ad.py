@@ -57,9 +57,6 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    # Path of the expected output notebook
-    scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
     samples = process_metadata_file(
         metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
     )
@@ -76,8 +73,10 @@ def cmd(
 
         sanger_id = sample.get("sanger_id") or sample["sample_id"]
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
-        os.makedirs(output_dir, exist_ok=True)
+        # Path of the expected output notebook
+        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
 
+        os.makedirs(output_dir, exist_ok=True)
         # Path of the expected output notebook
         scanpy_notebook = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
 
