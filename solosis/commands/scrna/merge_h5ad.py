@@ -121,16 +121,19 @@ def cmd(
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        # Build papermill command
-        command = (
-            f"module load cellgen/conda && "
-            f"source activate {conda_env} && "
-            f"papermill {NOTEBOOK_PATH} merge_{merged_filename}.ipynb "
-            f"-p sample_table {metadata} "
-            f"-p merged_filename {merged_filename} "
-            f"-p samples_database '{sample_basedir}' "
-        )
-        tmpfile.write(command + "\n")
+        for sample in valid_samples:
+            sample_id = sample["sample_id"]
+            sanger_id = sample["sanger_id"]
+            # Build papermill command
+            command = (
+                f"module load cellgen/conda && "
+                f"source activate {conda_env} && "
+                f"papermill {NOTEBOOK_PATH} merge_{merged_filename}.ipynb "
+                f'-p metadata "{metadata}" '
+                f'-p merged_filename "{merged_filename}" '
+                f'-p samples_database "{sample_basedir}" '
+            )
+            tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
