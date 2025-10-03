@@ -77,6 +77,11 @@ def cmd(
         metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
     )
 
+    # defining output path for notebook
+    output_notebook = os.path.join(
+        sample_basedir, f"merged_objects", f"{merged_filename}.ipynb"
+    )
+
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
@@ -125,10 +130,6 @@ def cmd(
             sample_id = sample["sample_id"]
             sanger_id = sample["sanger_id"]
             # Build papermill command
-            output_notebook = os.path.join(
-                sample_basedir, f"merged_objects", f"{merged_filename}.ipynb"
-            )
-
             command = (
                 f"module load cellgen/conda && "
                 f"source activate {conda_env} && "
