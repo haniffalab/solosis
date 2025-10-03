@@ -126,7 +126,7 @@ def cmd(
             sanger_id = sample["sanger_id"]
             # Build papermill command
             output_notebook = os.path.join(
-                output_dir, f"merged_objects", f"{merged_filename}.ipynb"
+                sample_basedir, f"merged_objects", f"{merged_filename}.ipynb"
             )
 
             command = (
