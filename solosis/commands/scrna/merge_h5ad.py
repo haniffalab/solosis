@@ -132,6 +132,7 @@ def cmd(
                 f'-p metadata "{metadata}" '
                 f'-p merged_filename "{merged_filename}" '
                 f'-p samples_database "{sample_basedir}" '
+                f"-k solosis-sc-env"
             )
             tmpfile.write(command + "\n")
 
