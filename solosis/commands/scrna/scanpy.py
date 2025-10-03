@@ -9,19 +9,13 @@ from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-##maybe add in validation with `from solosis.utils.input_utils import collect_samples`
-
-########
+# put this definition elsewhere?
 conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
 
-# SOLOSIS_DIR = os.getenv("SOLOSIS_BASE") ## wouldn't work without the solosis module loaded
-
-# found this potential solution
 base = os.getenv(
     "SOLOSIS_BASE", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 )
 NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
-########
 
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
