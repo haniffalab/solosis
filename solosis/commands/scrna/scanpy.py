@@ -117,7 +117,7 @@ def cmd(
                 f"-p samples_database '{sample_basedir}' "
                 f"-p sample_name '{sanger_id}' "
                 f"-p sample_id '{sample_id}' "
-                f"-p h5_file '{cellranger_dir}' "
+                f'-p h5_file "{cellranger_dir}" '
                 "--log-output"
             )
             tmpfile.write(command + "\n")
