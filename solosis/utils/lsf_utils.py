@@ -51,15 +51,15 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
         )(function)
         function = click.option(
             "--gpu",
-            default=mem,
-            type=int,
+            is_flag=True,
+            default=gpu,
             show_default=True,
             help="Request a GPU with default settings",
         )(function)
         function = click.option(
             "--gpumem",
-            is_flag=True,
-            default=gpu,
+            default=gpumem,
+            type=int,
             show_default=True,
             help="GPU memory limit (in MB)",
         )(function)
