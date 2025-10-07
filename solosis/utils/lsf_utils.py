@@ -120,7 +120,7 @@ def submit_lsf_job_array(
     gpu_options = ""
     if gpu:
         queue = "gpu-normal"
-        gpumem = 6000
+        gpumem = gpumem or 6000
         gpunum = 1
         gpumodel = "NVIDIAA100_SXM4_80GB"
         gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
