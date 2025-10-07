@@ -23,7 +23,7 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
     Usage:
         @click.command()
         @lsf_job(mem=20000, cpu=4, gpu=True)
-        def cmd(mem, cpu, time, queue, gpu):
+        def cmd(mem, cpu, time, queue, gpu, gpumem):
             pass
     """
 

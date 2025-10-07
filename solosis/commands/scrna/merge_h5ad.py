@@ -25,7 +25,17 @@ from solosis.utils.state import execution_uid, logger
 @debug
 @log
 def cmd(
-    samplefile, merged_filename, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    samplefile,
+    merged_filename,
+    job_name,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    time,
+    debug,
+    **kwargs,
 ):
     """
     Submit a job to merge multiple h5ad objects into a single file.
@@ -75,6 +85,7 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
     )
 
 

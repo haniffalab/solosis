@@ -22,7 +22,7 @@ from solosis.utils.state import execution_uid, logger
 )
 @debug
 @log
-def cmd(command_to_exec, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
+def cmd(command_to_exec, job_name, mem, cpu, queue, gpu, gpumem, time, debug, **kwargs):
     """Submit a single comamnd via LSF"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -59,6 +59,7 @@ def cmd(command_to_exec, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
     )
 
 

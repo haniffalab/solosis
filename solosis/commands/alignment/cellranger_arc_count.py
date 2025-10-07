@@ -35,7 +35,17 @@ from solosis.utils.state import logger
 @debug
 @log
 def cmd(
-    libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, time, debug
+    libraries,
+    librariesfile,
+    create_bam,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    time,
+    debug,
 ):
     """Single-cell multiomic data processing"""
     if debug:
@@ -136,6 +146,7 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
     )
 
 

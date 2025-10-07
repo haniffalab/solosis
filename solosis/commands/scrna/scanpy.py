@@ -28,7 +28,17 @@ from solosis.utils.state import execution_uid, logger
 @debug
 @log
 def cmd(
-    samplefile, sample_basedir, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    samplefile,
+    sample_basedir,
+    job_name,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    time,
+    debug,
+    **kwargs,
 ):
     """
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
@@ -79,6 +89,7 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
     )
 
 
