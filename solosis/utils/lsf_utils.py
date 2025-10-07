@@ -51,8 +51,8 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
         )(function)
         function = click.option(
             "--gpu",
-            is_flag=True,
-            default=gpu,
+            default=mem,
+            type=int,
             show_default=True,
             help="Request a GPU with default settings",
         )(function)
