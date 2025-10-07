@@ -16,7 +16,7 @@ VALID_GPUS = {
 }
 
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False, gpumem=6000):
     """
     Decorator to add LSF job options to a click command.
 
