@@ -57,6 +57,13 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
             help="Request a GPU with default settings",
         )(function)
         function = click.option(
+            "--gpumem",
+            is_flag=True,
+            default=gpu,
+            show_default=True,
+            help="GPU memory limit (in MB)",
+        )(function)
+        function = click.option(
             "--time", default=time, type=str, help="Number of GPUs to request"
         )(function)
 
@@ -73,6 +80,7 @@ def submit_lsf_job_array(
     queue: str = "normal",
     group: str = None,
     gpu: bool = False,
+    gpumem: bool = False,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
