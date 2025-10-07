@@ -4,12 +4,11 @@ import tempfile
 
 import click
 
-from solosis.utils.input_utils import process_metadata_file
+from solosis.utils.input_utils import process_h5_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-# put this definition elsewhere?
 conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
 
 base = os.getenv(
@@ -43,7 +42,7 @@ def cmd(
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    1st column: sample_id, 2nd column: sanger_id, 3rd column: h5_path
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -55,17 +54,17 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
+    samples = process_h5_file(
+        metadata, required_columns={"sample_id", "h5_path", "sanger_id"}
     )
 
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        if not os.path.exists(cellranger_dir):
+        h5_path = sample["h5_path"]
+        if not os.path.exists(h5_path):
             logger.error(
-                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
+                f"h5 file does not exist: {h5_path} for sample: {sample_id}. Skipping."
             )
             continue  # skip this sample entirely
 
@@ -80,15 +79,13 @@ def cmd(
             logger.warning(
                 f"Notebook for {sample_id} already exists at {scanpy_output}. Skipping."
             )
-            continue  # skip this sample
-
-        # will need to validate cellranger dir
+            continue
 
         valid_samples.append(
             {
                 "sample_id": sample_id,
                 "sanger_id": sanger_id,
-                "cellranger_dir": cellranger_dir,
+                "h5_path": h5_path,
                 "output_dir": output_dir,
             }
         )
@@ -105,7 +102,7 @@ def cmd(
         for sample in valid_samples:
             sample_id = sample["sample_id"]
             sanger_id = sample["sanger_id"]
-            cellranger_dir = sample["cellranger_dir"]
+            h5_path = sample["h5_path"]
             output_dir = sample["output_dir"]
 
             # Build papermill command
@@ -117,7 +114,7 @@ def cmd(
                 f"-p samples_database '{sample_basedir}' "
                 f"-p sample_name '{sanger_id}' "
                 f"-p sample_id '{sample_id}' "
-                f'-p h5_file "{cellranger_dir}" '
+                f'-p h5_file "{h5_path}" '
                 "--log-output"
             )
             tmpfile.write(command + "\n")
