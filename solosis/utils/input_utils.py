@@ -145,12 +145,6 @@ def process_h5_file(metadata, required_columns=None):
                 for _, row in df.iterrows():
                     if all(row.get(col) for col in required_columns):
                         sample = {col: row[col] for col in required_columns}
-                        h5_path = str(sample.get("h5_path", "")).strip()
-                        if not h5_path.endswith(".h5"):
-                            logger.warning(
-                                f"Invalid h5_path (must end with .h5): {h5_path}"
-                            )
-                            continue  # skip this entry
 
                         samples.append(sample)
                     else:
