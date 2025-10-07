@@ -4,7 +4,7 @@ import tempfile
 
 import click
 
-from solosis.utils.input_utils import process_metadata_file
+from solosis.utils.input_utils import process_h5_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
@@ -55,7 +55,7 @@ def cmd(
     Submit a job to merge multiple h5ad objects into a single file.
 
     Input metadata should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    1st column: sample_id, 2nd column: sanger_id, 3rd column: h5_path
 
     Make sure to run `solosis-cli sc-rna scanpy --metadata ...` first.
     """
@@ -69,8 +69,8 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
+    samples = process_h5_file(
+        metadata, required_columns={"sample_id", "h5_path", "sanger_id"}
     )
 
     # defining output path for notebook
@@ -81,10 +81,10 @@ def cmd(
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        if not os.path.exists(cellranger_dir):
+        h5_path = sample["h5_path"]
+        if not os.path.exists(h5_path):
             logger.error(
-                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
+                f"h5 file does not exist: {h5_path} for sample: {sample_id}. Skipping."
             )
             continue  # skip this sample entirely
 
@@ -107,7 +107,7 @@ def cmd(
             {
                 "sample_id": sample_id,
                 "sanger_id": sanger_id,
-                "cellranger_dir": cellranger_dir,
+                "h5_path": h5_path,
                 "output_dir": output_dir,
             }
         )
