@@ -57,6 +57,12 @@ def cmd(
     samples = process_h5_file(
         metadata, required_columns={"sample_id", "h5_path", "sanger_id"}
     )
+    invalid = [s["h5_path"] for s in samples if not s["h5_path"].endswith(".h5")]
+    if invalid:
+        # Stop everything — don’t proceed to submission
+        raise click.ClickException(
+            f"Invalid h5_path(s) detected (must end with .h5):\n" + "\n".join(invalid)
+        )
 
     valid_samples = []
     for sample in samples:
