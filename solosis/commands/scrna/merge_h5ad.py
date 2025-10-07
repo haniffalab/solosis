@@ -73,7 +73,9 @@ def cmd(
         metadata, required_columns={"sample_id", "h5_path", "sanger_id"}
     )
 
-    invalid = [s["h5_path"] for s in samples if not s["h5_path"].endswith(".h5")]
+    invalid = [
+        sample["h5_path"] for sample in samples if not sample["h5_path"].endswith(".h5")
+    ]
     if invalid:
         # Stop everything — don’t proceed to submission
         raise click.ClickException(
