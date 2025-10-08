@@ -16,14 +16,16 @@ VALID_GPUS = {
 }
 
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False, gpumem=6000):
+def lsf_job(
+    mem=64000, cpu=2, time="12:00", queue="normal", gpu=False, gpumem=6000, gpunum=1
+):
     """
     Decorator to add LSF job options to a click command.
 
     Usage:
         @click.command()
         @lsf_job(mem=20000, cpu=4, gpu=True)
-        def cmd(mem, cpu, time, queue, gpu, gpumem):
+        def cmd(mem, cpu, time, queue, gpu, gpumem, gpunum):
             pass
     """
 
@@ -64,6 +66,13 @@ def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False, gpumem=60
             help="GPU memory limit (in MB)",
         )(function)
         function = click.option(
+            "--gpunum",
+            default=gpunum,
+            type=int,
+            show_default=True,
+            help="Number of GPU cores",
+        )(function)
+        function = click.option(
             "--time", default=time, type=str, help="Number of GPUs to request"
         )(function)
 
@@ -81,6 +90,7 @@ def submit_lsf_job_array(
     group: str = None,
     gpu: bool = False,
     gpumem: bool = False,
+    gpunum: bool = False,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -121,7 +131,7 @@ def submit_lsf_job_array(
     if gpu:
         queue = "gpu-normal"
         gpumem = gpumem or 6000
-        gpunum = 1
+        gpunum = gpunum or 1
         gpumodel = "NVIDIAA100_SXM4_80GB"
         gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
         cpu = 4
