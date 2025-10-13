@@ -25,7 +25,18 @@ from solosis.utils.state import execution_uid, logger
 @debug
 @log
 def cmd(
-    notebook, job_name, mem, cpu, queue, gpu, gpumem, gpunum, time, debug, **kwargs
+    notebook,
+    job_name,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
+    time,
+    debug,
+    **kwargs,
 ):
     """Submit a Jupyter notebook to run via LSF"""
     if debug:
@@ -65,6 +76,7 @@ def cmd(
         gpu=gpu,
         gpumem=gpumem,
         gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

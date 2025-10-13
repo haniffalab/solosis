@@ -28,7 +28,20 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @debug
 @log
-def cmd(sample, samplefile, version, mem, cpu, queue, gpu, gpumem, gpunum, time, debug):
+def cmd(
+    sample,
+    samplefile,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
+    time,
+    debug,
+):
     """immune profiling, scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -99,6 +112,7 @@ def cmd(sample, samplefile, version, mem, cpu, queue, gpu, gpumem, gpunum, time,
         gpu=gpu,
         gpumem=gpumem,
         gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

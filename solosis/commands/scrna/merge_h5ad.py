@@ -34,6 +34,7 @@ def cmd(
     gpu,
     gpumem,
     gpunum,
+    gpumodel,
     time,
     debug,
     **kwargs,
@@ -88,6 +89,7 @@ def cmd(
         gpu=gpu,
         gpumem=gpumem,
         gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

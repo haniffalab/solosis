@@ -11,21 +11,27 @@ VALID_GPUS = {
     "NVIDIAA100_SXM4_80GB",
     "TeslaV100_SXM2_32GB",
     "TeslaV100_SXM2_16GB",
-    "TeslaV100_SXM2_32GB",
     "NVIDIAH10080GBHBM3",
 }
 
 
 def lsf_job(
-    mem=64000, cpu=2, time="12:00", queue="normal", gpu=False, gpumem=6000, gpunum=1
+    mem=64000,
+    cpu=2,
+    time="12:00",
+    queue="normal",
+    gpu=False,
+    gpumem=6000,
+    gpunum=1,
+    gpumodel="NVIDIAA100_SXM4_80GB",
 ):
     """
     Decorator to add LSF job options to a click command.
 
     Usage:
         @click.command()
-        @lsf_job(mem=20000, cpu=4, gpu=True)
-        def cmd(mem, cpu, time, queue, gpu, gpumem, gpunum):
+        @lsf_job(mem=20000, cpu=4, gpu=True, gpumodel="TeslaV100_SXM2_32GB")
+        def cmd(mem, cpu, time, queue, gpu, gpumem, gpunum, gpumodel):
             pass
     """
 
@@ -70,10 +76,21 @@ def lsf_job(
             default=gpunum,
             type=int,
             show_default=True,
-            help="Number of GPU cores",
+            help="Number of GPUs to request",
         )(function)
         function = click.option(
-            "--time", default=time, type=str, help="Number of GPUs to request"
+            "--gpumodel",
+            default=gpumodel,
+            type=str,
+            show_default=True,
+            help=f"GPU model to request. Must be one of: {', '.join(sorted(VALID_GPUS))}",
+        )(function)
+        function = click.option(
+            "--time",
+            default=time,
+            type=str,
+            show_default=True,
+            help="Maximum runtime for the job (e.g. 12:00 for 12 hours)",
         )(function)
 
         return function
@@ -89,8 +106,9 @@ def submit_lsf_job_array(
     queue: str = "normal",
     group: str = None,
     gpu: bool = False,
-    gpumem: bool = False,
-    gpunum: bool = False,
+    gpumem: int = 6000,
+    gpunum: int = 1,
+    gpumodel: str = "NVIDIAA100_SXM4_80GB",
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
@@ -101,9 +119,14 @@ def submit_lsf_job_array(
         cpu (int, optional): Number of CPU cores per job. Defaults to 16.
         mem (int, optional): Memory limit in MB per job. Defaults to 64000.
         queue (str, optional): LSF queue name. Defaults to "normal".
-        group (str, optional): User group for LSF submission. Defaults to value in LSB_DEFAULT_USERGROUP.
+        group (str, optional): User group for LSF submission. Defaults to LSB_DEFAULT_USERGROUP.
         gpu (bool, optional): Whether to request GPU resources. Defaults to False.
+        gpumem (int, optional): GPU memory limit in MB. Defaults to 6000.
+        gpunum (int, optional): Number of GPUs. Defaults to 1.
+        gpumodel (str, optional): Model of GPU to request. Must be in VALID_GPUS.
     """
+
+    # Validate group
     if group is None:
         group = os.environ.get("LSB_DEFAULT_USERGROUP")
 
@@ -111,12 +134,22 @@ def submit_lsf_job_array(
         logger.error(f"Group '{group}' is invalid. Exiting.")
         raise click.Abort()
 
+    # Validate command file
     if not os.path.isfile(command_file) or os.stat(command_file).st_size == 0:
         logger.error(
             f"Command file '{command_file}' does not exist or is empty. Exiting."
         )
         raise click.Abort()
 
+    # Validate GPU model if GPU requested
+    if gpu:
+        if gpumodel not in VALID_GPUS:
+            logger.error(
+                f"Invalid GPU model '{gpumodel}'. Must be one of: {', '.join(sorted(VALID_GPUS))}"
+            )
+            raise click.Abort()
+
+    # Count the number of commands
     with open(command_file, "r") as f:
         num_commands = sum(1 for _ in f)
 
@@ -130,14 +163,11 @@ def submit_lsf_job_array(
     gpu_options = ""
     if gpu:
         queue = "gpu-normal"
-        gpumem = gpumem or 6000
-        gpunum = gpunum or 1
-        gpumodel = "NVIDIAA100_SXM4_80GB"
         gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
         cpu = 4
         mem = 32000
 
-    # Construct the LSF job submission script
+    # Construct LSF job submission script
     lsf_script = f"""#!/bin/bash
 #BSUB -J "{job_name}[1-{num_commands}]"
 #BSUB -o "{log_dir}/lsf_{job_name}_%J_%I.out"
@@ -156,7 +186,7 @@ eval "$COMMAND"
 """
 
     # Submit the job array
-    logger.debug(f"LSF Script: {lsf_script}")
+    logger.debug(f"LSF Script:\n{lsf_script}")
     try:
         process = subprocess.run(
             ["bsub"], input=lsf_script, text=True, capture_output=True, check=True
