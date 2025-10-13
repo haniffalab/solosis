@@ -72,6 +72,9 @@ def cmd(
     cpu,
     queue,
     gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
     time,
     debug,
 ):
@@ -177,6 +180,9 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
+        gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

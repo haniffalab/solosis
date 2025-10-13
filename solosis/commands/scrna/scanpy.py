@@ -31,7 +31,20 @@ sc_base1_path = os.path.abspath(
 )
 @debug
 @log
-def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
+def cmd(
+    metadata,
+    job_name,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
+    time,
+    debug,
+    **kwargs,
+):
     """
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
@@ -118,6 +131,9 @@ def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
+        gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 
