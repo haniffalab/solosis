@@ -9,7 +9,7 @@ from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-########
+# Define the environment
 conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
 sc_base1_path = os.path.abspath(
     os.path.join(
@@ -17,7 +17,6 @@ sc_base1_path = os.path.abspath(
         "sc_base1.ipynb",
     )
 )
-########
 
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
@@ -50,7 +49,7 @@ def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
     logger.debug(f"Job name: {job_name}")
 
     samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
+        metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
     )
 
     valid_samples = []
@@ -114,7 +113,7 @@ def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
-        job_name="scanpy_job_array",
+        job_name=job_name,
         cpu=cpu,
         mem=mem,
         queue=queue,

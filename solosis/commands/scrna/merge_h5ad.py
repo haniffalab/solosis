@@ -9,12 +9,14 @@ from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
+# Define the environment
 conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
-
-base = os.getenv(
-    "SOLOSIS_BASE", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+rna__merge_path = os.path.abspath(
+    os.path.join(
+        os.getenv("NOTEBOOKS_DIR"),
+        "sc_base1.ipynb",
+    )
 )
-NOTEBOOK_PATH = os.path.join(base, "notebooks", "rna__merge.ipynb")
 
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
@@ -29,12 +31,6 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "rna__merge.ipynb")
     type=str,
     default="merge_h5ad",
     help="Optional name for the LSF job. Defaults to merge_h5ad_<uid>.",
-)
-@click.option(
-    "--sample_basedir",
-    required=False,
-    default="/lustre/scratch124/cellgen/haniffa/data/samples",
-    help="Sample database folder",
 )
 @debug
 @log
@@ -70,7 +66,7 @@ def cmd(
     logger.debug(f"Job name: {job_name}")
 
     samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "cellranger_dir", "sanger_id"}
+        metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
     )
 
     # defining output path for notebook
@@ -81,6 +77,7 @@ def cmd(
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
+        sanger_id = sample["sanger_id"]
         cellranger_dir = sample["cellranger_dir"]
         if not os.path.exists(cellranger_dir):
             logger.error(
@@ -88,18 +85,13 @@ def cmd(
             )
             continue  # skip this sample entirely
 
-        sanger_id = sample.get("sanger_id") or sample["sample_id"]
+        # Path of the expected output from scanpy cmd
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
-        # Path of the expected output notebook
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
         os.makedirs(output_dir, exist_ok=True)
-        # Path of the expected output notebook
-        scanpy_notebook = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
+        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
         if not os.path.exists(scanpy_output):
             logger.warning(
-                f"Notebook for {sample_id} exists at {scanpy_notebook}. Skipping."
+                f"Output for {sample_id} does not exist at {scanpy_output}. Skipping."
             )
             continue  # skip this sample
 
@@ -116,26 +108,23 @@ def cmd(
         logger.error(f"No valid samples found. Exiting")
         return
 
-    # Submit the job
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        for sample in valid_samples:
-            sample_id = sample["sample_id"]
-            sanger_id = sample["sanger_id"]
-            # Build papermill command
-            command = (
-                f"module load cellgen/conda && "
-                f"source activate {conda_env} && "
-                f"papermill {NOTEBOOK_PATH} {output_notebook} "
-                f'-p metadata "{metadata}" '
-                f'-p merged_filename "{merged_filename}" '
-                f'-p samples_database "{sample_basedir}" '
-                f"-k solosis-sc-env"
-            )
-            tmpfile.write(command + "\n")
+
+        # Build papermill command
+        command = (
+            f"module load cellgen/conda && "
+            f"source activate {conda_env} && "
+            f"papermill {rna__merge_path} {output_notebook} "
+            f'-p metadata "{metadata}" '
+            f'-p merged_filename "{merged_filename}" '
+            f'-p samples_database "{sample_basedir}" '
+            f"-k solosis-sc-env"
+        )
+        tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
