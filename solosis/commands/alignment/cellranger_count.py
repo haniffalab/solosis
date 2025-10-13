@@ -12,19 +12,47 @@ from solosis.utils.state import execution_uid, logger
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal")
+@lsf_job(mem=64000, cpu=4, queue="long", time="12:00")
 @click.command("cellranger-count")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
     "--samplefile",
     type=click.Path(exists=True),
-    help="Path to a CSV or TSV file containing sample IDs",
+    help=(
+        "Path to a CSV or TSV file containing sample IDs as a comma-separated (.csv) "
+        "or tab-separated (.tsv) file. The file must have a column named 'sample_id' containing the sample IDs.\n\n"
+        "Example CSV format:\n"
+        "sample_id\n"
+        "s12345\n"
+        "s67890"
+    ),
 )
 @click.option(
     "--create-bam",
     is_flag=True,
     default=False,
     help="Generate BAM files for each sample",
+)
+@click.option(
+    "--chemistry",
+    type=click.Choice(
+        [
+            "SC5P-R2",
+            "SC5P-PE-v3",
+            "SC5P-R2",
+            "SC5P-R2-v3",
+            "SC3Pv1",
+            "SC3Pv3",
+            "SC3Pv2",
+            "SC3Pv4",
+            "SC3Pv3LT",
+            "SC3Pv3HT",
+            "SFRP",
+            "MFRP",
+        ]
+    ),
+    # type=str,
+    help="Chemistry assay to define",
 )
 @click.option(
     "--version",
@@ -34,7 +62,19 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @debug
 @log
-def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
+def cmd(
+    sample,
+    samplefile,
+    create_bam,
+    chemistry,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
+):
     """scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -126,6 +166,8 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
             command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
             if not create_bam:
                 command += " --no-bam"
+            if chemistry:
+                command += f" --chemistry {chemistry}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
@@ -134,6 +176,7 @@ def cmd(sample, samplefile, create_bam, version, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 

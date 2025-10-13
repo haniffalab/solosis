@@ -16,29 +16,50 @@ VALID_GPUS = {
 }
 
 
-def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=None):
+def lsf_job(mem=64000, cpu=2, time="12:00", queue="normal", gpu=False):
     """
     Decorator to add LSF job options to a click command.
+
     Usage:
         @click.command()
-        @lsf_job(mem=20000, cpu=4, gpu="NVIDIAA100_SXM4_80GB")
+        @lsf_job(mem=20000, cpu=4, gpu=True)
         def cmd(mem, cpu, time, queue, gpu):
             pass
     """
 
     def decorator(function):
         function = click.option(
-            "--mem", default=mem, type=str, help="Memory limit (in MB)"
+            "--mem",
+            default=mem,
+            type=int,
+            show_default=True,
+            help="Memory limit (in MB)",
         )(function)
         function = click.option(
-            "--cpu", default=cpu, type=str, help="Number of CPU cores"
+            "--cpu",
+            default=cpu,
+            type=int,
+            show_default=True,
+            help="Number of CPU cores",
         )(function)
         function = click.option(
-            "--queue", default=queue, help="Queue to which the job should be submitted"
+            "--queue",
+            default=queue,
+            type=str,
+            show_default=True,
+            help="Queue to which the job should be submitted",
         )(function)
         function = click.option(
-            "--gpu", default=gpu, type=str, help="Number of GPUs to request"
+            "--gpu",
+            is_flag=True,
+            default=gpu,
+            show_default=True,
+            help="Request a GPU with default settings",
         )(function)
+        function = click.option(
+            "--time", default=time, type=str, help="Number of GPUs to request"
+        )(function)
+
         return function
 
     return decorator
@@ -51,25 +72,25 @@ def submit_lsf_job_array(
     mem: int = 64000,
     queue: str = "normal",
     group: str = None,
-    gpu: str = None,
+    gpu: bool = False,
 ):
     """
     Submit an LSF job array where each job runs a command from a file.
 
     Args:
         command_file (str): Path to the file containing one command per line.
-        job_name (str, optional): Name for the job array. Defaults to "command_array".
+        job_name (str, optional): Name for the job array. Defaults to "job_array".
         cpu (int, optional): Number of CPU cores per job. Defaults to 16.
         mem (int, optional): Memory limit in MB per job. Defaults to 64000.
         queue (str, optional): LSF queue name. Defaults to "normal".
-        group (str, optional): User group for LSF submission. Defaults to "team298".
+        group (str, optional): User group for LSF submission. Defaults to value in LSB_DEFAULT_USERGROUP.
+        gpu (bool, optional): Whether to request GPU resources. Defaults to False.
     """
-
     if group is None:
         group = os.environ.get("LSB_DEFAULT_USERGROUP")
 
-    if not group.startswith("team"):
-        logger.error(f"Group '{group}' does not start with 'team'. Exiting.")
+    if not group or not group.startswith("team"):
+        logger.error(f"Group '{group}' is invalid. Exiting.")
         raise click.Abort()
 
     if not os.path.isfile(command_file) or os.stat(command_file).st_size == 0:
@@ -87,14 +108,16 @@ def submit_lsf_job_array(
     log_dir = Path(os.getenv("SOLOSIS_LOG_DIR")) / execution_uid
     os.makedirs(log_dir, exist_ok=True)
 
-    # Validate GPU options
+    # Override queue and set GPU options if requested
+    gpu_options = ""
     if gpu:
-        if gpu not in VALID_GPUS:
-            raise ValueError(f"Invalid GPU type '{gpu}'. Must be one of: {VALID_GPUS}")
-
         queue = "gpu-normal"
         gpumem = 6000
         gpunum = 1
+        gpumodel = "NVIDIAA100_SXM4_80GB"
+        gpu_options = f'#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpumodel}"'
+        cpu = 4
+        mem = 32000
 
     # Construct the LSF job submission script
     lsf_script = f"""#!/bin/bash
@@ -106,19 +129,16 @@ def submit_lsf_job_array(
 #BSUB -R "span[hosts=1] select[mem>{mem}] rusage[mem={mem}]"
 #BSUB -G "{group}"
 #BSUB -q "{queue}"
-"""
-    # Validate and add GPU options if specified
-    if gpu:
-        lsf_script += f"""#BSUB -gpu "mode=shared:j_exclusive=no:gmem={gpumem}:num={gpunum}:gmodel={gpu}"\n"""
+#BSUB -Ep /software/cellgen/cellgeni/etc/notify-slack.sh
+{gpu_options}
 
-    # Extract and run the command
-    lsf_script += f"""
 COMMAND=$(sed -n "${{LSB_JOBINDEX}}p" "{command_file}")
 echo "Executing command: $COMMAND"
 eval "$COMMAND"
 """
 
     # Submit the job array
+    logger.debug(f"LSF Script: {lsf_script}")
     try:
         process = subprocess.run(
             ["bsub"], input=lsf_script, text=True, capture_output=True, check=True

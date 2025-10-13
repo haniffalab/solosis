@@ -28,13 +28,10 @@ if [ ! -f "$SAMPLE_FILE" ] || [ ! -s "$SAMPLE_FILE" ]; then
 fi
 
 # Load necessary modules
-MODULES=("irods" "conda" "nextflow" "singularity")
-for MODULE in "${MODULES[@]}"; do
-  if ! module load cellgen/"$MODULE"; then
-    echo "Error: Failed to load $MODULE module" >&2
-    exit 1
-  fi
-done
+module load cellgen/nextflow/24.10.0
+module load cellgen/irods
+module load cellgen/singularity
+module load python-3.11.6
 
 # Setup Nextflow work directory
 mkdir -p "$TEAM_TMP_DIR/nxf"

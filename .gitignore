@@ -1,27 +1,40 @@
-# Flask
+# macOS
 .DS_Store
+
+# Environment variables / secrets
 .env
 .flaskenv
+
+# Python bytecode / cache
 *.pyc
 *.pyo
+__pycache__/
+
+# Virtual environments
 env/
 venv/
 .venv/
+
+# Build / distribution
 dist/
 build/
 *.egg
 *.egg-info/
+
+# Tox and cache
 .tox/
 .cache/
 .pytest_cache/
+
+# IDE / editor settings
 .idea/
-docs/_build/
 .vscode
-instance/
 *.swp
 *~
-*.pyc
-__pycache__/
+
+# Documentation build output
+docs/_build/
+sphinx/_build/
 
 # Coverage reports
 htmlcov/
@@ -30,9 +43,7 @@ htmlcov/
 *,cover
 coverage.xml
 
-# Sphinx
-sphinx/_build
-
+# Checkpoint files
 *ckpt.tar.gz
 .ipynb_checkpoints
-history.csv
+

@@ -12,7 +12,7 @@ from solosis.utils.state import logger
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal")
+@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("cellranger-vdj")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -28,7 +28,7 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @debug
 @log
-def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
+def cmd(sample, samplefile, version, mem, cpu, queue, gpu, time, debug):
     """immune profiling, scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -96,6 +96,7 @@ def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
     )
 
 
