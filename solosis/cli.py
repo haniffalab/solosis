@@ -2,6 +2,12 @@ import logging
 
 import click
 
+from solosis.utils.env_utils import validate_env
+from solosis.utils.logging_utils import debug
+from solosis.utils.state import execution_uid, logger, version
+
+validate_env()
+
 from solosis.commands.alignment import (
     cellranger_arc_count,
     cellranger_count,
@@ -11,9 +17,6 @@ from solosis.commands.farm import run_notebook, single_job
 from solosis.commands.history import clear, uid, view
 from solosis.commands.irods import iget_cellranger, iget_fastqs, imeta_report
 from solosis.commands.scrna import cellbender, merge_h5ad, scanpy
-from solosis.utils.env_utils import validate_env
-from solosis.utils.logging_utils import debug
-from solosis.utils.state import execution_uid, logger, version
 
 module_name = click.style(f"{'SOLOSIS':^11}", bg="blue", fg="white", bold=True)
 version_info = click.style(f"  ~  version {version}")
@@ -27,7 +30,6 @@ def cli(debug):
     click.echo(f"{module_name}{version_info}")
     if debug:
         logger.setLevel(logging.DEBUG)
-    validate_env()
     logger.info(f"Initialized with execution_uid: {execution_uid}")
 
 
