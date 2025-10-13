@@ -13,12 +13,12 @@
 #   <mem>         - Memory in MB.
 #   --no-bam      - Optional flag to disable BAM file generation.
 
-set -e  # Exit immediately if a command fails
+set -e # Exit immediately if a command fails
 
 # Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
-  exit 1
+	echo "Usage: $0 <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> [--no-bam]" >&2
+	exit 1
 fi
 
 # Assign command-line arguments to variables
@@ -28,24 +28,25 @@ FASTQ_DIR="$3"
 VERSION="$4"
 CPU="$5"
 MEM="$6"
-BAM_FLAG=""  # Default to generating BAM files
+BAM_FLAG="" # Default to generating BAM files
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
 
-INT_VERSION=$(echo "$VERSION" | tr -d '.')
-
 # Handle optional --no-bam flag (disables BAM file generation)
-if [ "$7" == "--no-bam" ] && [ $INT_VERSION -lt 901 ]; then
-  BAM_FLAG="--no-bam"
-elif [ "$7" == "--no-bam" ] && [ $INT_VERSION -eq 901 ]; then
-  BAM_FLAG="--create-bam false"
-elif [ -z "$BAM_FLAG" ] && [ $INT_VERSION -eq 901 ]; then
-  BAM_FLAG="--create-bam true"
+INT_VERSION=$(echo "$VERSION" | tr -d '.')
+if [ "$7" == "--no-bam" ]; then
+	if [ "$INT_VERSION" -ge 901 ]; then
+		BAM_FLAG="--create-bam false"
+	else
+		BAM_FLAG="--no-bam"
+	fi
+elif [ "$INT_VERSION" -ge 901 ]; then
+	BAM_FLAG="--create-bam true"
 fi
 
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger/"$VERSION"; then
-  echo "Failed to load Cell Ranger version $VERSION" >&2
-  exit 1
+	echo "Failed to load Cell Ranger version $VERSION" >&2
+	exit 1
 fi
 
 # Ensure output directory exists and create it if not
@@ -61,20 +62,20 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 # Run Cell Ranger count
 cellranger count \
-    --id="$SAMPLE_ID" \
-    --fastqs="$FASTQ_DIR" \
-    --transcriptome="$REF" \
-    --sample="$SAMPLE_ID" \
-    --localcores="$CPU" \
-    --localmem="$(($MEM / 1000))" \
-    $BAM_FLAG
+	--id="$SAMPLE_ID" \
+	--fastqs="$FASTQ_DIR" \
+	--transcriptome="$REF" \
+	--sample="$SAMPLE_ID" \
+	--localcores="$CPU" \
+	--localmem="$(($MEM / 1000))" \
+	"$BAM_FLAG"
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
 
 log_file="$OUTPUT_DIR/$SAMPLE_ID/_log"
 if grep -q "Pipestance completed successfully!" "$log_file"; then
-    echo "CellRanger completed successfully for sample: $SAMPLE_ID"
+	echo "CellRanger completed successfully for sample: $SAMPLE_ID"
 else
-    echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
+	echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
 fi
