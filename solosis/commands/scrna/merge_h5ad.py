@@ -4,16 +4,26 @@ import tempfile
 
 import click
 
+from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
+# Define the environment
+conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
+rna__merge_path = os.path.abspath(
+    os.path.join(
+        os.getenv("NOTEBOOKS_DIR"),
+        "sc_base1.ipynb",
+    )
+)
+
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("merge-h5ad")
-@click.option("--samplefile", required=True, help="Sample file text file")
+@click.option("--metadata", required=True, help="metadata csv file")
 @click.option(
-    "--merged_filename", required=True, help="Output file name, e.g., merged.h5ad"
+    "--merged_filename", required=True, help="Output file name, e.g. merged.h5ad"
 )
 @click.option(
     "--job_name",
@@ -25,15 +35,24 @@ from solosis.utils.state import execution_uid, logger
 @debug
 @log
 def cmd(
-    samplefile, merged_filename, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
+    metadata,
+    merged_filename,
+    job_name,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    time,
+    debug,
+    **kwargs,
 ):
     """
     Submit a job to merge multiple h5ad objects into a single file.
 
-    Input samplefile should have 3 mandatory columns:
-    1st column: sanger_id, 2nd column: sample_name, 3rd column: irods path
+    Input metadata should have 3 mandatory columns:
+    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
 
-    Make sure to run `solosis-cli sc-rna scanpy --samplefile ...` first.
+    Make sure to run `solosis-cli sc-rna scanpy --metadata ...` first.
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -45,28 +64,66 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    # @TODO: Ensure all kwargs are strings for environment variables
-    env_vars = {str(k): str(v) for k, v in kwargs.items()}
-
-    # Path to the shell script
-    shell_script = os.path.abspath(
-        os.path.join(os.getenv("SCRIPT_BIN"), "scrna/merge-h5ad/submit.sh")
+    samples = process_metadata_file(
+        metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
     )
 
-    if not os.path.exists(shell_script):
-        logger.error(f"Shell script not found: {shell_script}")
+    # defining output path for notebook
+    output_notebook = os.path.join(
+        os.getenv("TEAM_SAMPLES_DIR"), f"merged_objects", f"{merged_filename}.ipynb"
+    )
+
+    valid_samples = []
+    for sample in samples:
+        sample_id = sample["sample_id"]
+        sanger_id = sample["sanger_id"]
+        cellranger_dir = sample["cellranger_dir"]
+        if not os.path.exists(cellranger_dir):
+            logger.error(
+                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
+            )
+            continue  # skip this sample entirely
+
+        # Path of the expected output from scanpy cmd
+        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
+        os.makedirs(output_dir, exist_ok=True)
+        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
+        if not os.path.exists(scanpy_output):
+            logger.warning(
+                f"Output for {sample_id} does not exist at {scanpy_output}. Skipping."
+            )
+            continue  # skip this sample
+
+        valid_samples.append(
+            {
+                "sample_id": sample_id,
+                "sanger_id": sanger_id,
+                "cellranger_dir": cellranger_dir,
+                "output_dir": output_dir,
+            }
+        )
+
+    if not valid_samples:
+        logger.error(f"No valid samples found. Exiting")
         return
 
-    # Construct command
-    command_str = f"{shell_script} {samplefile} {merged_filename}"
-
-    # Submit the job
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
-        tmpfile.write(command_str + "\n")
+
+        # Build papermill command
+        command = (
+            f"module load cellgen/conda && "
+            f"source activate {conda_env} && "
+            f"papermill {rna__merge_path} {output_notebook} "
+            f"-p metadata '{metadata}' "
+            f"-p merged_filename '{merged_filename}' "
+            f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
+            f"-k solosis-sc-env"
+        )
+        tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
