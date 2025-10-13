@@ -9,23 +9,19 @@ from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
-conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
-
-base = os.getenv(
-    "SOLOSIS_BASE", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+# Define the environment
+conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
+sc_base1_path = os.path.abspath(
+    os.path.join(
+        os.getenv("NOTEBOOKS_DIR"),
+        "sc_base1.ipynb",
+    )
 )
-NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
 
 
 @lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("scanpy")
 @click.option("--metadata", required=True, help="metadata csv file")
-@click.option(
-    "--sample_basedir",
-    required=False,
-    default="/lustre/scratch124/cellgen/haniffa/data/samples",
-    help="Sample database folder",
-)
 @click.option(
     "--job_name",
     required=False,
@@ -35,9 +31,7 @@ NOTEBOOK_PATH = os.path.join(base, "notebooks", "sc_base1.ipynb")
 )
 @debug
 @log
-def cmd(
-    metadata, sample_basedir, job_name, mem, cpu, queue, gpu, time, debug, **kwargs
-):
+def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
     """
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
@@ -74,18 +68,15 @@ def cmd(
             )
             continue  # skip this sample entirely
 
-        sanger_id = sample.get("sanger_id") or sample["sample_id"]
+        # Path of the expected output notebook
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
-
-        # Path of the expected output notebook
         scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-
         if os.path.exists(scanpy_output):
             logger.warning(
                 f"Notebook for {sample_id} already exists at {scanpy_output}. Skipping."
             )
-            continue
+            continue  # skip this sample
 
         valid_samples.append(
             {
@@ -117,7 +108,7 @@ def cmd(
                 f"source activate {conda_env} && "
                 f"papermill {NOTEBOOK_PATH} "
                 f"{output_dir}/{sample_id}_{sanger_id}.ipynb "
-                f"-p samples_database '{sample_basedir}' "
+                f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
                 f"-p sample_name '{sanger_id}' "
                 f"-p sample_id '{sample_id}' "
                 f'-p h5_file "{h5_path}" '
@@ -127,7 +118,7 @@ def cmd(
 
     submit_lsf_job_array(
         command_file=tmpfile.name,
-        job_name="scanpy_job_array",
+        job_name=job_name,
         cpu=cpu,
         mem=mem,
         queue=queue,
