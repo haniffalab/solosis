@@ -104,7 +104,7 @@ def cmd(metadata, job_name, mem, cpu, queue, gpu, time, debug, **kwargs):
                 f"source activate {conda_env} && "
                 f"papermill {sc_base1_path} "
                 f"{scanpy_output} "
-                f"-p samples_database '{os.getenv("TEAM_SAMPLES_DIR")}' "
+                f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
                 f"-p sample_name '{sample_id}' "
                 f"-p sanger_id '{sanger_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
