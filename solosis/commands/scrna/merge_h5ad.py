@@ -38,7 +38,6 @@ def cmd(
     metadata,
     merged_filename,
     job_name,
-    sample_basedir,
     mem,
     cpu,
     queue,
@@ -71,7 +70,7 @@ def cmd(
 
     # defining output path for notebook
     output_notebook = os.path.join(
-        sample_basedir, f"merged_objects", f"{merged_filename}.ipynb"
+        os.getenv("TEAM_SAMPLES_DIR"), f"merged_objects", f"{merged_filename}.ipynb"
     )
 
     valid_samples = []
@@ -119,9 +118,9 @@ def cmd(
             f"module load cellgen/conda && "
             f"source activate {conda_env} && "
             f"papermill {rna__merge_path} {output_notebook} "
-            f'-p metadata "{metadata}" '
-            f'-p merged_filename "{merged_filename}" '
-            f'-p samples_database "{sample_basedir}" '
+            f"-p metadata '{metadata}' "
+            f"-p merged_filename '{merged_filename}' "
+            f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
             f"-k solosis-sc-env"
         )
         tmpfile.write(command + "\n")
