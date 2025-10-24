@@ -83,8 +83,8 @@ def cmd(
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
             command = (
-                f"iget -r {irods_path} {output_dir} ; "
-                f"chmod -R g+w {output_dir} >/dev/null 2>&1 || true"
+                f"iget -r {sample['irods_path']} {sample['output_dir']} ; "
+                f"chmod -R g+w {sample['output_dir']} >/dev/null 2>&1 || true"
             )
             tmpfile.write(command + "\n")
 
