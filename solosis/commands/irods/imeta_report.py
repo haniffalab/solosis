@@ -44,6 +44,7 @@ def cmd(sample, samplefile, debug):
 
         sample_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample)
         os.makedirs(sample_dir, exist_ok=True)
+        os.chmod(sample_dir, 0o2775)
         report_path = os.path.join(sample_dir, "imeta_report.csv")
 
         imeta_report_script = os.path.abspath(

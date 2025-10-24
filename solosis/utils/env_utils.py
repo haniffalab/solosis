@@ -20,6 +20,7 @@ def validate_env():
     samples_dir = os.path.join(os.getenv("TEAM_DATA_DIR"), "samples")
     try:
         os.makedirs(samples_dir, exist_ok=True)
+        os.chmod(samples_dir, 0o2775)
         os.environ["TEAM_SAMPLES_DIR"] = samples_dir
     except OSError as e:
         logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
@@ -28,6 +29,7 @@ def validate_env():
     tmp_dir = os.path.join(os.getenv("TEAM_DATA_DIR"), "tmp")
     try:
         os.makedirs(tmp_dir, exist_ok=True)
+        os.chmod(tmp_dir, 0o2775)
         os.environ["TEAM_TMP_DIR"] = tmp_dir
     except OSError as e:
         logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")

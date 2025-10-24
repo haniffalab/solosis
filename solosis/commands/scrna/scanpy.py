@@ -79,6 +79,7 @@ def cmd(
         # Path of the expected output notebook
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
+        os.chmod(output_dir, 0o2775)
         scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
         if os.path.exists(scanpy_output):
             logger.warning(
