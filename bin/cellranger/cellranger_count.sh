@@ -96,8 +96,8 @@ cellranger count \
 	--sample="$SAMPLE_ID" \
 	--localcores="$CPU" \
 	--localmem="$(($MEM / 1000))" \
-	"${BAM_FLAG:+$BAM_FLAG}" \
-	"${CHEMISTRY:+$CHEMISTRY}"
+	$BAM_FLAG \
+	$CHEMISTRY
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
