@@ -18,6 +18,7 @@ from solosis.utils.state import logger
     "--metadata",
     type=click.Path(exists=True),
     help="Path to a CSV or TSV file containing metadata",
+    required=True,
 )
 @debug
 @log
