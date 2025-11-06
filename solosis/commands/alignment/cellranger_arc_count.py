@@ -138,7 +138,7 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for library in valid_libraries:
-            command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem}"
+            command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem} {time}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
