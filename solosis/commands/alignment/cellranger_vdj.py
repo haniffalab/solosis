@@ -100,7 +100,7 @@ def cmd(
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem} {time}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
