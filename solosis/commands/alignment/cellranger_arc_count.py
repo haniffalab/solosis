@@ -106,9 +106,7 @@ def cmd(
             # Generate ID (name of output directory) by concatenating sorted 'sample' values
             sorted_samples = sorted(df["sample"].dropna().astype(str).tolist())
             library_id = "_".join(sorted_samples)
-            output_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), "cellranger_arc", library_id
-            )
+            output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), "cellranger_arc")
 
             # Append the validated details
             valid_libraries.append(
