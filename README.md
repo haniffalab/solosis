@@ -25,7 +25,6 @@
     <a href="https://github.com/github_username/solosis/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
     <br />
     <br />
-    Take your scRNA-seq data on a journey! 
     <a href="https://haniffalab.github.io/solosis">
         <img src="https://img.shields.io/badge/Documentation-online-blue" />
     </a>
