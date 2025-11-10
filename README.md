@@ -64,19 +64,17 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <!-- Features -->
 ## Features 
-<div align="center">
-  <p align="center">
-    1. Alignment - Commands for running alignment tools.
-    <br />
-    2. History   - Commands for managing history.
-    <br />
-    3. Irods     - Commands for working with iRODS.
-    <br />
-    4. Jobrunner - Farm related commands.
-    <br />
-    5. scrna     - Commands for single-cell RNA-seq tools.
-  </p>
+<div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px; text-align: center;">
+  <ol style="display: inline-block; text-align: left;">
+    <li><strong>Alignment</strong> – Commands for running alignment tools.</li>
+    <li><strong>History</strong> – Commands for managing history.</li>
+    <li><strong>Irods</strong> – Commands for working with iRODS.</li>
+    <li><strong>Jobrunner</strong> – Farm related commands.</li>
+    <li><strong>scrna</strong> – Commands for single-cell RNA-seq tools.</li>
+  </ol>
 </div>
+
+
 
 1. Alignment 
  - cellranger-count (GEX)
