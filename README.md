@@ -14,8 +14,7 @@
   </a>
 </p>
 
-[![docs](https://img.shields.io/badge/Documentation-online-blue)](https://haniffalab.github.io/solosis)
-[![doi](https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg)](https://doi.org/10.5281/zenodo.13950124)
+
 
 
 <!-- PROJECT LOGO -->
