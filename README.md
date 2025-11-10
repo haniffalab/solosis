@@ -16,9 +16,7 @@
 <h1 align="center">solosis</h1>
 
   <p align="center">
-    A plug and play pipeline for the lab.
-    
-    This suite is made to work with farm22. The instructions below are to be performed in farm unless otherwise stated.
+    A plug and play pipeline for the lab - made to work with farm22.
     <br />
     <br />
     <a href="https://github.com/haniffalab/solosis/issues">Report Bug</a>
