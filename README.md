@@ -58,7 +58,9 @@
 
 ### Haniffa Lab
 Vijay Baskar Mahalingam Shanmugiah- *vm11@sanger.ac.uk*
+
 Dave Horsfall- *dh21@sanger.ac.uk*
+
 Louise Grimble- *lg28@sanger.ac.uk*
 
 
