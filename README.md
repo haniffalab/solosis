@@ -20,7 +20,11 @@
   </a>
 
 <h1 align="center">solosis</h1>
-
+<p align="center">
+  <a href="https://haniffalab.github.io/solosis">
+    <img src="https://img.shields.io/badge/Documentation-online-blue" />
+  </a>
+</p> 
   <p align="center">
     A plug and play pipeline for the lab.
     This suite is made to work with farm22. The instructions below are to be performed in farm unless otherwise stated.
