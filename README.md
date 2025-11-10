@@ -71,7 +71,23 @@ Louise Grimble- *lg28@sanger.ac.uk*
 4. Jobrunner - Farm related commands.
 5. scrna     - Commands for single-cell RNA-seq tools.
 
+1. Alignment 
+ - cellranger-count (GEX)
+ - cellranger-arc-count (GEX & ATAC)
+ - cellranger-vdj (Immune profiling BCR/TCR)
 
+2. History
+ - view (look up recently executed solosis commands)
+ - uid (look up individual executed solosis commands for logs and errors)
+ - clear (remove history of executed solosis commands)
+
+3. Irods
+ - iget-cellranger ()
+ - iget-fastqs (run nf-irods-to-fastq pipeline from CellgenIT to download fastqs onto farm)
+ - imeta-report ()
+
+4. Jobrunner
+ -
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -84,11 +100,10 @@ Louise Grimble- *lg28@sanger.ac.uk*
    ```
 
 <!-- Required Files -->
-### Required Files
+### Tutorials
 
-- Cellranger outs or Cellbender out `(.h5)`
-- Metadata file (.csv) - **MUST INCLUDE `SAMPLE_ID` COLUMN**
-    * For example of metadata file `projects/test/samples.csv`
+
+
 
 <!-- USAGE EXAMPLES -->
 # Usage
