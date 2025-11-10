@@ -9,12 +9,7 @@
   <a href="https://haniffalab.github.io/solosis">
     <img src="https://img.shields.io/badge/Documentation-online-blue" />
   </a>
-  <a href="https://doi.org/10.5281/zenodo.13950124">
-    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg" />
-  </a>
 </p>
-
-
 
 
 <!-- PROJECT LOGO -->
