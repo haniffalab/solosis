@@ -5,12 +5,6 @@
 
 # Solosis
 
-<p align="center">
-  <a href="https://haniffalab.github.io/solosis">
-    <img src="https://img.shields.io/badge/Documentation-online-blue" />
-  </a>
-</p>
-
 
 <!-- PROJECT LOGO -->
 <br />
