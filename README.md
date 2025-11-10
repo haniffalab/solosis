@@ -64,8 +64,8 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <!-- Features -->
 ## Features 
-<div align="center" style="border: 1px solid #e1e4e8; background: #f8f9fa; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-  <ol style="text-align: left; margin: 0;">
+<div align="center" style="border: 1px solid #ccc; padding: 16px; border-radius: 8px; display: inline-block;">
+  <ol style="text-align: left;">
     <li><strong>Alignment</strong> – Commands for running alignment tools.</li>
     <li><strong>History</strong> – Commands for managing history.</li>
     <li><strong>Irods</strong> – Commands for working with iRODS.</li>
@@ -73,6 +73,7 @@ Louise Grimble- *lg28@sanger.ac.uk*
     <li><strong>scrna</strong> – Commands for single-cell RNA-seq tools.</li>
   </ol>
 </div>
+
 
 
 
