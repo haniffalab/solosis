@@ -5,6 +5,15 @@
 
 # Solosis
 
+<p align="center">
+  <a href="https://haniffalab.github.io/solosis">
+    <img src="https://img.shields.io/badge/Documentation-online-blue" />
+  </a>
+  <a href="https://doi.org/10.5281/zenodo.13950124">
+    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg" />
+  </a>
+</p>
+
 [![docs](https://img.shields.io/badge/Documentation-online-blue)](https://haniffalab.github.io/solosis)
 [![doi](https://zenodo.org/badge/DOI/10.5281/zenodo.13950124.svg)](https://doi.org/10.5281/zenodo.13950124)
 
