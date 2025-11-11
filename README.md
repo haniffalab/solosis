@@ -67,7 +67,7 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <div align="center">
   <a href="https://github.com/haniffalab/solosis">
-    <img src="images/command_list.png" alt="Logo" width="400" height="200">
+    <img src="images/command_list.png" alt="Logo" width="600" height="300">
   </a>
 </div>
 
