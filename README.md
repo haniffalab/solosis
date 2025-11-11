@@ -44,7 +44,7 @@
       <ul>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#setup">Setup</a></li>
-        <li><a href="#Required-Files">Required Files</a></li>
+        <li><a href="#Tutorials">Tutorials</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -105,7 +105,7 @@ Louise Grimble- *lg28@sanger.ac.uk*
    module load cellgen/solosis
    ```
 
-<!-- Required Files -->
+<!-- Tutorials -->
 ### Tutorials
 1. Sphinx [Documentation](https://haniffalab.github.io/solosis) (External Sanger user)
 
