@@ -64,19 +64,12 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <!-- Features -->
 ## Features 
-<div align="center" style="border: 1px solid #ccc; padding: 16px; border-radius: 8px; display: inline-block;">
-  <ol style="text-align: left;">
-    <li><strong>Alignment</strong> – Commands for running alignment tools.</li>
-    <li><strong>History</strong> – Commands for managing history.</li>
-    <li><strong>Irods</strong> – Commands for working with iRODS.</li>
-    <li><strong>Jobrunner</strong> – Farm related commands.</li>
-    <li><strong>scrna</strong> – Commands for single-cell RNA-seq tools.</li>
-  </ol>
+
+<div align="center">
+  <a href="https://github.com/haniffalab/solosis">
+    <img src="images/command_list.png" alt="Logo" width="400" height="200">
+  </a>
 </div>
-
-
-
-
 
 1. Alignment 
  - cellranger-count (GEX)
