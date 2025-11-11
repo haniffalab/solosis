@@ -107,11 +107,9 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <!-- Required Files -->
 ### Tutorials
-1. Sphinx Documentation (External Sanger user)
- [Sphinx](https://haniffalab.github.io/solosis).
+1. [Sphinx Documentation] (https://haniffalab.github.io/solosis) (External Sanger user)
 
-2. Notion Documentation (Haniffa lab user)
- [Notion](https://www.notion.so/haniffalab/Solosis-86fec351478140b6b75e375cafccfaaf).
+2. [Notion Documentation] (https://www.notion.so/haniffalab/Solosis-86fec351478140b6b75e375cafccfaaf) (Haniffa lab user)
 
 
 
