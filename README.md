@@ -71,23 +71,29 @@ Louise Grimble- *lg28@sanger.ac.uk*
   </a>
 </div>
 
-1. Alignment 
+*1. Alignment*
  - cellranger-count (GEX)
  - cellranger-arc-count (GEX & ATAC)
  - cellranger-vdj (Immune profiling BCR/TCR)
 
-2. History
- - view (look up recently executed solosis commands)
- - uid (look up individual executed solosis commands for logs and errors)
- - clear (remove history of executed solosis commands)
+*2. History*
+ - view (Look up recently executed solosis commands)
+ - uid (Look up individual executed solosis commands for logs and errors)
+ - clear (Remove history of executed solosis commands)
 
-3. Irods
- - iget-cellranger ()
- - iget-fastqs (run nf-irods-to-fastq pipeline from CellgenIT to download fastqs onto farm)
- - imeta-report ()
+*3. Irods*
+ - iget-cellranger (Download cellranger outputs from irods)
+ - iget-fastqs (Run nf-irods-to-fastq pipeline from CellgenIT to download fastqs onto farm)
+ - imeta-report (Create a report of data available on irods for specific samples)
 
-4. Jobrunner
- -
+*4. Jobrunner*
+ - run_notebook (Run a jupyter notebook on the farm)
+ - submit_job (Run a single command on the farm)
+
+*5. scrna*
+ - cellbender (Run cellbender remove-background)
+ - scanpy (Basic QC notebook)
+ - merge-h5ad (Merge h5ad objects into unified object)
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -101,13 +107,17 @@ Louise Grimble- *lg28@sanger.ac.uk*
 
 <!-- Required Files -->
 ### Tutorials
+1. Sphinx Documentation (External Sanger user)
+ [Sphinx](https://haniffalab.github.io/solosis).
 
+2. Notion Documentation (Haniffa lab user)
+ [Notion](https://www.notion.so/haniffalab/Solosis-86fec351478140b6b75e375cafccfaaf).
 
 
 
 <!-- USAGE EXAMPLES -->
 # Usage
-1. Execute the nextflow pipeline:
+1. Execute the base command:
 
     ```sh
     ./solosis-cli
