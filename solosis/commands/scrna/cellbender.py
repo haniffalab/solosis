@@ -59,6 +59,9 @@ def cmd(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
+    # Setting TEAM_DATA_DIR ACL permissions
+    set_team_data_acl()
+
     samples = process_metadata_file(
         metadata, required_columns={"sample_id", "cellranger_dir"}
     )

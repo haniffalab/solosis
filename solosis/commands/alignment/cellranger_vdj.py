@@ -52,6 +52,9 @@ def cmd(
     )
     logger.debug(f"Loading Cell Ranger vdj version {version}")
 
+    # Setting TEAM_DATA_DIR ACL permissions
+    set_team_data_acl()
+
     samples = collect_samples(sample, samplefile)
     valid_samples = []
     for sample in samples:

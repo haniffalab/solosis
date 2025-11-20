@@ -33,6 +33,9 @@ def cmd(sample, samplefile, debug):
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
 
+    # Setting TEAM_DATA_DIR ACL permissions
+    set_team_data_acl()
+
     if not irods_auth():
         raise click.Abort()
 

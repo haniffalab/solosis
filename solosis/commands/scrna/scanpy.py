@@ -61,6 +61,9 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
+    # Setting TEAM_DATA_DIR ACL permissions
+    set_team_data_acl()
+
     samples = process_metadata_file(
         metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
     )

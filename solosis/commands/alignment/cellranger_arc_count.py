@@ -59,6 +59,9 @@ def cmd(
     )
     logger.debug(f"Loading Cell Ranger ARC Count version {version}")
 
+    # Setting TEAM_DATA_DIR ACL permissions
+    set_team_data_acl()
+
     libraries_paths = []
 
     if libraries:
