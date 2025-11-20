@@ -9,6 +9,7 @@ from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import process_metadata_file, validate_irods_path
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
+from solosis.utils.permissions import set_team_data_acl
 from solosis.utils.state import logger
 
 

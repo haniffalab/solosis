@@ -8,6 +8,7 @@ import click
 from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import collect_samples, validate_library_type
 from solosis.utils.logging_utils import debug, log
+from solosis.utils.permissions import set_team_data_acl
 from solosis.utils.state import logger
 from solosis.utils.subprocess_utils import popen
 

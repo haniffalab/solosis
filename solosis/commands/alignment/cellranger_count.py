@@ -7,6 +7,7 @@ import click
 from solosis.utils.input_utils import collect_samples
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
+from solosis.utils.permissions import set_team_data_acl
 from solosis.utils.state import execution_uid, logger
 
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
