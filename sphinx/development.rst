@@ -5,109 +5,39 @@
 Development
 ===========
 
-If you are developing or want to contribute to Solosis, please read this page.
+If you are developing or contributing to Solosis, follow the steps below to set up your local development environment.
 
-1. **Log-in to Farm**
+git
+***
 
-
-2. **If you haven't already, create a directory for your Git repository in your home directory.**
-
-Ensure you are in your home directory 
-::
-
-    pwd
-
-
-.. code-block:: shell
-   :caption: Expected Output
-
-   /nfs/users/nfs_l/<USER>
-
-Then create the directory 
-::
-
-    mkdir repos 
-    cd repos/
-
-
-3. **Clone the solosis git repository**
+**Clone the Solosis Git repository**
 
 ::
 
     git clone git@github.com:haniffalab/solosis.git
     cd solosis
 
-4. **Export environment variables** 
+**Export required environment variables**
+
+Replace placeholders with values specific to your environment:
 
 ::
 
-    export export LSB_DEFAULT_USERGROUP=<USERGROUP>
-    export TEAM_DATA_DIR=/lustre/scratch126/cellgen/team298/data
-    export TEAM_LOGS_DIR=/lustre/scratch126/cellgen/team298/logs
+    export LSB_DEFAULT_USERGROUP=<USERGROUP>
+    export TEAM_DATA_DIR=<DATA_DIR>
+    export TEAM_LOGS_DIR=<LOG_DIR>
 
-5. **Set-up new git branch**
+Environment
+***********
 
-Check which branch you're currently in
-::
-
-    git status 
-
-.. code-block:: shell
-   :caption: Expected Output
-
-   On branch dev
-   Your branch is up-to-date with 'origin/dev'.
-
-
-Move to dev branch 
-
-::
-
-    git checkout dev 
-
-
-Create a new branch (off dev branch) to begin contributing. More info `here <https://www.atlassian.com/git/tutorials/using-branches/git-checkout#:~:text=New%20branches,to%20switch%20to%20that%20branch>`_
-
-::
-
-    git checkout -b ＜new-branch＞
-
-
-For information on Naming nomenclature of git branches view this `page <https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534>`_
-
-6. **Executing solosis commands**
-
-Executing solosis commands while developing need to solosis-cli to be as follows:
-::
-
-    ./solosis-cli
-
-
-
-7. **Committing changes to dev branch**
-
-Run the following commands:
-::
-
-    git add .
-    git commit -m "ADD MESSAGE HERE"
-    git push 
-
-Once changes are complete, create `Pull Request <https://github.com/haniffalab/solosis/pulls>`_ to merge changes to dev.
-
-.. _Pull Request: <https://github.com/haniffalab/solosis/pulls>
-
-
-pytest
-===========
-Create and activate the virtual environment
+**Create and activate a virtual environment**
 
 ::
 
     python -m venv .venv
     source .venv/bin/activate
 
-Install dev dependencies and install pre-commit hooks
+**Install dependencies and pre-commit hooks**
 
 ::
 
@@ -116,29 +46,104 @@ Install dev dependencies and install pre-commit hooks
     python -m pip install -r envs/dev-requirements.txt
     python -m pip install -r envs/doc-requirements.txt
     pre-commit install
-    
-Run Solosis in development mode
 
-::
-
-    python -m solosis.cli
-
-The pre-commit config includes ``black`` formatting and ``isort`` are implemented.
-You can manually check ``black`` formatting and ``isort`` as follows:
+The pre-commit configuration includes checks for code formatting using ``black`` and import ordering using ``isort``.  
+You can run these manually as follows:
 
 ::
 
     black path/to/file.py
     isort path/to/file.py
 
-Python testing
---------------
+Branches
+********
 
-Set the :code:`PYTHONPATH` environment variable to the :code:`bin` directory where the scripts are stored, and then run the following command:
+**Check your current branch**
+
+::
+
+    git status
+
+
+.. code-block:: shell
+   :caption: Expected output
+
+   On branch main
+   Your branch is up-to-date with 'origin/main'.
+
+**Switch to the `dev` branch**
+
+::
+
+    git checkout dev
+
+**Create a new branch from `dev`**
+
+::
+
+    git checkout -b <new-branch>
+
+For more information on branching, see:
+- `Git checkout guide <https://www.atlassian.com/git/tutorials/using-branches/git-checkout>`_
+- `Branch naming conventions <https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534>`_
+
+Executing Solosis
+*****************
+
+When developing, run Solosis as follows:
+
+::
+
+    python -m solosis.cli
+
+Committing Changes
+******************
+
+**Commit and push your changes**
+
+::
+
+    git add .
+    git commit -m "ADD MESSAGE HERE"
+    git push
+
+Once changes are ready, create a `Pull Request <https://github.com/haniffalab/solosis/pulls>`_ to merge them into ``dev``.
+
+pip-compile
+***********
+
+Solosis uses `pip-tools <https://github.com/jazzband/pip-tools>`_ to manage and lock dependencies.  
+Dependencies are declared in ``pyproject.toml`` and compiled into pinned requirements files to ensure reproducible environments.
+
+To update locked dependencies:
+
+::
+
+    pip-compile --output-file=envs/requirements.txt
+    pip-compile --extra=dev --output-file=envs/dev-requirements.txt
+    pip-compile --extra=dev --output-file=envs/doc-requirements.txt
+
+Synchronise your environment:
+
+::
+
+    pip-sync envs/requirements.txt
+    pip-sync envs/dev-requirements.txt
+    pip-sync envs/doc-requirements.txt
+
+This will install exactly the packages and versions listed in the specified files, removing any packages not included.
+
+To upgrade dependencies, add ``--upgrade``:
+
+::
+
+    pip-compile --upgrade --output-file=envs/requirements.txt
+
+pytest
+******
+
+To run tests using `pytest`_:
 
 ::
 
     python -m pytest -q tests/test_cli.py
-
-
-

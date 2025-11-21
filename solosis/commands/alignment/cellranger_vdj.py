@@ -12,7 +12,7 @@ from solosis.utils.state import logger
 FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal")
+@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
 @click.command("cellranger-vdj")
 @click.option("--sample", type=str, help="Sample ID (string)")
 @click.option(
@@ -28,7 +28,20 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
 )
 @debug
 @log
-def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
+def cmd(
+    sample,
+    samplefile,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
+    time,
+    debug,
+):
     """immune profiling, scRNA-seq mapping and quantification"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -87,7 +100,7 @@ def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
         logger.info(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{cellranger_vdj_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem} {time}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
@@ -96,6 +109,10 @@ def cmd(sample, samplefile, version, mem, cpu, queue, gpu, debug):
         cpu=cpu,
         mem=mem,
         queue=queue,
+        gpu=gpu,
+        gpumem=gpumem,
+        gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

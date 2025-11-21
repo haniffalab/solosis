@@ -26,13 +26,10 @@ if [ ! -f "$SAMPLE_FILE" ] || [ ! -s "$SAMPLE_FILE" ]; then
 fi
 
 # Load necessary modules
-MODULES=("irods" "conda" "nextflow" "singularity")
-for MODULE in "${MODULES[@]}"; do
-  if ! module load cellgen/"$MODULE"; then
-    echo "Error: Failed to load $MODULE module" >&2
-    exit 1
-  fi
-done
+module load cellgen/nextflow/24.10.0
+module load cellgen/irods
+module load cellgen/singularity
+module load python-3.11.6
 
 # Setup Nextflow work directory
 mkdir -p "$TEAM_TMP_DIR/nxf"
@@ -47,21 +44,21 @@ cd "$TEAM_TMP_DIR/fastq"
 # Run Nextflow process with the sample file
 echo "Running Nextflow process for samples listed in: $SAMPLE_FILE"
 nextflow run cellgeni/nf-irods-to-fastq -r main main.nf \
-    --findmeta "$SAMPLE_FILE" \
-    --cram2fastq \
-    --publish_dir "$TEAM_TMP_DIR/fastq" \
-    --resume
+  --findmeta "$SAMPLE_FILE" \
+  --cram2fastq \
+  --publish_dir "$TEAM_TMP_DIR/fastq" \
+  --resume
 
 # Read sample IDs from file and process each
 while IFS= read -r SAMPLE; do
-  [ -z "$SAMPLE" ] && continue  # Skip empty lines
+  [ -z "$SAMPLE" ] && continue # Skip empty lines
   SAMPLE_DIR="${TEAM_DATA_DIR}/samples/${SAMPLE}/fastq"
-  
+
   # Create sample directory if it does not exist
   mkdir -p "$SAMPLE_DIR"
-  
+
   # Assumption: The FASTQ files for each sample are named with the sample ID as the prefix.
-  # For example: 
+  # For example:
   # Sample ID: HCA_SkO13919076
   # Associated FASTQ files would be named as:
   # HCA_SkO13919076_S1_L001_R1_001.fastq.gz
@@ -77,4 +74,4 @@ while IFS= read -r SAMPLE; do
   echo "Moving FASTQ files for sample $SAMPLE to $SAMPLE_DIR"
   mv "$TEAM_TMP_DIR/fastq/${SAMPLE}"* "$SAMPLE_DIR"/
   chmod -R g+w "$SAMPLE_DIR" >/dev/null 2>&1 || true
-done < "$SAMPLE_FILE"
+done <"$SAMPLE_FILE"

@@ -23,7 +23,7 @@ merged_filename=$1; shift
 #mkdir -p pap
 
 HL_HIST_FOLDER=".pap"
-target_dir=/lustre/scratch126/cellgen/team298/sample_data/ # This is obtained by module load hl
+target_dir=/lustre/scratch124/cellgen/haniffa/sample_data/ # This is obtained by module load hl
 cwd=`pwd`
 run_token=$RUN_TOKEN
 outpt_prefix=`echo $merged_filename | sed -e 's/.h5ad//g'`
