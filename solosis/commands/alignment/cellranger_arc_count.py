@@ -35,7 +35,19 @@ from solosis.utils.state import logger
 @debug
 @log
 def cmd(
-    libraries, librariesfile, create_bam, version, mem, cpu, queue, gpu, time, debug
+    libraries,
+    librariesfile,
+    create_bam,
+    version,
+    mem,
+    cpu,
+    queue,
+    gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
+    time,
+    debug,
 ):
     """Single-cell multiomic data processing"""
     if debug:
@@ -94,9 +106,7 @@ def cmd(
             # Generate ID (name of output directory) by concatenating sorted 'sample' values
             sorted_samples = sorted(df["sample"].dropna().astype(str).tolist())
             library_id = "_".join(sorted_samples)
-            output_dir = os.path.join(
-                os.getenv("TEAM_SAMPLES_DIR"), "cellranger_arc", library_id
-            )
+            output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), "cellranger_arc")
 
             # Append the validated details
             valid_libraries.append(
@@ -126,7 +136,7 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for library in valid_libraries:
-            command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem}"
+            command = f"{cellranger_arc_count_path} {library['id']} {library['output_dir']} {library['libraries_path']} {version} {cpu} {mem} {time}"
             tmpfile.write(command + "\n")
 
     submit_lsf_job_array(
@@ -136,6 +146,9 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
+        gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 

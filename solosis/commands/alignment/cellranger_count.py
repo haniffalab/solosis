@@ -72,6 +72,9 @@ def cmd(
     cpu,
     queue,
     gpu,
+    gpumem,
+    gpunum,
+    gpumodel,
     time,
     debug,
 ):
@@ -163,7 +166,7 @@ def cmd(
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
         for sample in valid_samples:
-            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem}"
+            command = f"{cellranger_count_path} {sample['sample_id']} {sample['output_dir']} {sample['fastq_dir']} {version} {cpu} {mem} {time}"
             if not create_bam:
                 command += " --no-bam"
             if chemistry:
@@ -177,6 +180,9 @@ def cmd(
         mem=mem,
         queue=queue,
         gpu=gpu,
+        gpumem=gpumem,
+        gpunum=gpunum,
+        gpumodel=gpumodel,
     )
 
 
