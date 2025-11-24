@@ -69,7 +69,6 @@ fi
 
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
-chmod 2775 "$OUTPUT_DIR" >/dev/null 2>&1 || true
 cd "$OUTPUT_DIR"
 
 # Validate memory: must be at least 1 GB

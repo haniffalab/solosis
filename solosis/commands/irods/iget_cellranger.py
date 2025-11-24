@@ -58,7 +58,6 @@ def cmd(
             os.getenv("TEAM_SAMPLES_DIR"), sample_id, "cellranger"
         )
         os.makedirs(output_dir, exist_ok=True)
-        os.chmod(output_dir, 0o2775)
 
         # Validate irods path
         if validate_irods_path(sample_id, irods_path):

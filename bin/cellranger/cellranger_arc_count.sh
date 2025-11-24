@@ -46,7 +46,6 @@ fi
 
 # Ensure output directory exists and create it if not
 mkdir -p "$OUTPUT_DIR"
-chmod 2775 "$OUTPUT_DIR" >/dev/null 2>&1 || true
 cd "$OUTPUT_DIR"
 
 echo "Running Cell Ranger ARC count for libraries file: $LIBRARIES_PATH"
