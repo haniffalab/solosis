@@ -46,6 +46,7 @@ def cmd(
     logger.debug(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
+
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
