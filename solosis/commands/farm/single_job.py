@@ -6,7 +6,6 @@ import click
 
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
-from solosis.utils.permissions import set_team_data_acl
 from solosis.utils.state import execution_uid, logger
 
 
@@ -47,9 +46,6 @@ def cmd(
     )
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
-
-    # Setting TEAM_DATA_DIR ACL permissions
-    set_team_data_acl()
 
     # @TODO: Ensure all kwargs are strings for environment variables
     env_vars = {str(k): str(v) for k, v in kwargs.items()}

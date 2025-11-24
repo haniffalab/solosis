@@ -9,7 +9,6 @@ from solosis.utils.env_utils import irods_auth
 from solosis.utils.input_utils import process_metadata_file, validate_irods_path
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
-from solosis.utils.permissions import set_team_data_acl
 from solosis.utils.state import logger
 
 
@@ -43,9 +42,6 @@ def cmd(
     logger.debug(
         f"Starting command: {click.style(ctx.command.name, bold=True, underline=True)}"
     )
-
-    # Setting TEAM_DATA_DIR ACL permissions
-    set_team_data_acl()
 
     if not irods_auth():
         raise click.Abort()
