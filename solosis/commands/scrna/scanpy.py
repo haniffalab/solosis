@@ -10,7 +10,7 @@ from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
 
 # Define the environment
-conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/rna"
+conda_env = "/software/cellgen/team298/shared/envs/hlb-conda/scrna"
 sc_base1_path = os.path.abspath(
     os.path.join(
         os.getenv("NOTEBOOKS_DIR"),
