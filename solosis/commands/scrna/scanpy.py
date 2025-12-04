@@ -19,9 +19,10 @@ sc_base1_path = os.path.abspath(
 )
 
 
-@lsf_job(mem=64000, cpu=4, queue="normal", time="12:00")
+@lsf_job(mem=20000, cpu=1, queue="normal", time="04:00")
 @click.command("scanpy")
 @click.option("--metadata", required=True, help="metadata csv file")
+@click.option("--outpt_folder_path", required=True, help="Folder to save outputs")
 @click.option(
     "--job_name",
     required=False,
@@ -34,6 +35,7 @@ sc_base1_path = os.path.abspath(
 def cmd(
     metadata,
     job_name,
+    outpt_folder_path,
     mem,
     cpu,
     queue,
@@ -50,6 +52,12 @@ def cmd(
 
     Input samplefile should have 3 mandatory columns:
     1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    Example csv: 
+        sample_id,sanger_id,cellranger_dir
+        WS_wEMB10202353,WS_wEMB10202353,/lustre/scratch124/cellgen/haniffa/data/samples/WS_wEMB10202353/cellranger/cellranger601_count_37876_WS_wEMB10202353_GRCh38-2020-A
+        WS_wEMB10202354,WS_wEMB10202354,/lustre/scratch124/cellgen/haniffa/data/samples/WS_wEMB10202354/cellranger/cellranger601_count_37876_WS_wEMB10202354_GRCh38-2020-A
+
+    Example command: solosis-cli  scrna scanpy --metadata samples.csv --outpt_folder_path rna_scanpy
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -77,7 +85,7 @@ def cmd(
             continue  # skip this sample entirely
 
         # Path of the expected output notebook
-        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
+        output_dir = outpt_folder_path
         os.makedirs(output_dir, exist_ok=True)
         scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
         if os.path.exists(scanpy_output):
@@ -114,12 +122,13 @@ def cmd(
             command = (
                 f"module load cellgen/conda && "
                 f"source activate {conda_env} && "
-                f"papermill {sc_base1_path} "
+                f"python -m ipykernel install --user --name hlb_rna --display-name 'HLB RNA (conda)' && "
+                f"papermill {sc_base1_path} -k hlb_rna "
                 f"{scanpy_output} "
-                f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
                 f"-p sample_name '{sample_id}' "
                 f"-p sanger_id '{sanger_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
+                f"-p outpt_folder_path '{outpt_folder_path}' "
                 "--log-output"
             )
             tmpfile.write(command + "\n")
