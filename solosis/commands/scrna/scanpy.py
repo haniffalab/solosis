@@ -52,7 +52,7 @@ def cmd(
 
     Input samplefile should have 3 mandatory columns:
     1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
-    Example csv: 
+    Example csv:
         sample_id,sanger_id,cellranger_dir
         WS_wEMB10202353,WS_wEMB10202353,/lustre/scratch124/cellgen/haniffa/data/samples/WS_wEMB10202353/cellranger/cellranger601_count_37876_WS_wEMB10202353_GRCh38-2020-A
         WS_wEMB10202354,WS_wEMB10202354,/lustre/scratch124/cellgen/haniffa/data/samples/WS_wEMB10202354/cellranger/cellranger601_count_37876_WS_wEMB10202354_GRCh38-2020-A
@@ -125,7 +125,7 @@ def cmd(
                 f"python -m ipykernel install --user --name hlb_rna --display-name 'HLB RNA (conda)' && "
                 f"papermill {sc_base1_path} -k hlb_rna "
                 f"{scanpy_output} "
-                f"-p sample_name '{sample_id}' "
+                f"-p sample_id '{sample_id}' "
                 f"-p sanger_id '{sanger_id}' "
                 f"-p cellranger_folder '{cellranger_dir}' "
                 f"-p outpt_folder_path '{outpt_folder_path}' "
