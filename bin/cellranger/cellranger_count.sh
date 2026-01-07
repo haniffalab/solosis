@@ -3,19 +3,8 @@
 
 # Usage:
 #   ./cellranger_count.sh <sample_id> <output_dir> <fastq_dir> <version> <cpu> <mem> <time> [--no-bam] [--chemistry <str>]
-#
-# Parameters:
-#   <sample_id>   - Sample ID to process.
-#   <output_dir>  - Path to store Cell Ranger output.
-#   <fastq_dir>   - Path to FASTQ files.
-#   <version>     - Version of Cell Ranger to use (e.g., "7.2.0").
-#   <cpu>         - Number of CPU cores.
-#   <mem>         - Memory in MB.
-#   <time>        - Time allocated to LSF job.
-#   --no-bam      - Optional flag to disable BAM file generation.
-#   --chemistry <value> - Optional chemistry of assay kit used.
 
-set -e # Exit immediately if a command fails
+set -euo pipefail # Exit on errors, undefined variables, and failed pipelines
 
 # Check if at least 7 arguments are provided
 if [ "$#" -lt 7 ]; then
@@ -23,7 +12,7 @@ if [ "$#" -lt 7 ]; then
 	exit 1
 fi
 
-# Assign command-line arguments to variables
+# Required arguments
 SAMPLE_ID="$1"
 OUTPUT_DIR="$2"
 FASTQ_DIR="$3"
@@ -31,14 +20,17 @@ VERSION="$4"
 CPU="$5"
 MEM="$6"
 TIME="$7"
-# Initialize optional flags
-BAM_FLAG=""  # Default to generating BAM files
-CHEMISTRY="" # Default should detect chemistry
-# Define reference
+
+# Optional flags
+BAM_FLAG=""
+CHEMISTRY=""
+
+# Reference genome
 REF="/software/cellgen/cellgeni/refdata_10x/refdata-gex-GRCh38-2024-A"
+
 echo "Arguments received: $@"
 
-# Convert version string (e.g. 9.0.1) to integer (901)
+# Convert version string (e.g., 9.0.1 to 901)
 INT_VERSION=$(echo "$VERSION" | tr -d '.')
 
 # Parse optional arguments
@@ -46,11 +38,11 @@ shift 7
 while [[ "$#" -gt 0 ]]; do
 	case "$1" in
 	--chemistry)
-		if [[ -n "$2" && "$2" != --* ]]; then
+		if [[ -n "${2:-}" && "$2" != --* ]]; then
 			CHEMISTRY="--chemistry $2"
 			shift 2
 		else
-			echo "Error: --chemistry requires a value (check options via --help)" >&2
+			echo "Error: --chemistry requires a value" >&2
 			exit 1
 		fi
 		;;
@@ -69,42 +61,55 @@ while [[ "$#" -gt 0 ]]; do
 	esac
 done
 
-# Load Cell Ranger ARC module (make sure the version is correct)
+# Load Cell Ranger module
 if ! module load cellgen/cellranger/"$VERSION"; then
 	echo "Failed to load Cell Ranger version $VERSION" >&2
 	exit 1
 fi
 
-# Ensure output directory exists and create it if not
+# Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
+
+# Validate memory: must be at least 1 GB
+MEM_GB=$((MEM / 1000))
+if [ "$MEM_GB" -lt 1 ]; then
+	MEM_GB=1
+fi
 
 echo "Running Cell Ranger count for sample: $SAMPLE_ID"
 echo "Output directory: $OUTPUT_DIR"
 echo "FASTQ directory: $FASTQ_DIR"
 echo "Cell Ranger version: $VERSION"
-echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
-# Debugging
+echo "Using $CPU CPU cores and $MEM_GB GB memory"
+
 [ -n "$BAM_FLAG" ] && echo "BAM output is disabled"
 [ -n "$CHEMISTRY" ] && echo "Using chemistry option: $CHEMISTRY"
 
-# Run Cell Ranger count
-cellranger count \
-	--id="$SAMPLE_ID" \
-	--fastqs="$FASTQ_DIR" \
-	--transcriptome="$REF" \
-	--sample="$SAMPLE_ID" \
-	--localcores="$CPU" \
-	--localmem="$(($MEM / 1000))" \
-	$BAM_FLAG \
-	$CHEMISTRY
+# Build command array to avoid empty argument issues
+ARGS=(
+	--id="$SAMPLE_ID"
+	--fastqs="$FASTQ_DIR"
+	--transcriptome="$REF"
+	--sample="$SAMPLE_ID"
+	--localcores="$CPU"
+	--localmem="$MEM_GB"
+)
 
+[ -n "$BAM_FLAG" ] && ARGS+=($BAM_FLAG)
+[ -n "$CHEMISTRY" ] && ARGS+=($CHEMISTRY)
+
+# Run Cell Ranger count
+cellranger count "${ARGS[@]}"
+
+# Fix permissions
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger count completed for sample: $SAMPLE_ID"
 
+# Check log file
 log_file="$OUTPUT_DIR/$SAMPLE_ID/_log"
-if grep -q "Pipestance completed successfully!" "$log_file"; then
-	echo "CellRanger completed successfully for sample: $SAMPLE_ID"
+if [ -f "$log_file" ] && grep -q "Pipestance completed successfully!" "$log_file"; then
+	echo "Cell Ranger completed successfully for sample: $SAMPLE_ID"
 else
-	echo "CellRanger incomplete or not found for sample: $SAMPLE_ID."
+	echo "Cell Ranger incomplete or log not found for sample: $SAMPLE_ID."
 fi
