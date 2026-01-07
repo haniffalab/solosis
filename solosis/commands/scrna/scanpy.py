@@ -4,7 +4,7 @@ import tempfile
 
 import click
 
-from solosis.utils.input_utils import process_h5_file
+from solosis.utils.input_utils import process_metadata_file
 from solosis.utils.logging_utils import debug, log
 from solosis.utils.lsf_utils import lsf_job, submit_lsf_job_array
 from solosis.utils.state import execution_uid, logger
@@ -49,7 +49,9 @@ def cmd(
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: h5_path
+    1st column: sample_id
+    2nd column: sanger_id
+    3rd column: h5_path
     """
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -61,19 +63,22 @@ def cmd(
     job_name = execution_uid if job_name == "default" else f"{job_name}_{execution_uid}"
     logger.debug(f"Job name: {job_name}")
 
-    samples = process_h5_file(
-        metadata, required_columns={"sample_id", "h5_path", "sanger_id"}
+    samples = process_metadata_file(
+        metadata, required_columns={"sample_id", "sanger_id", "h5_path"}
     )
-    invalid = [s["h5_path"] for s in samples if not s["h5_path"].endswith(".h5")]
-    if invalid:
-        # Stop everything — don’t proceed to submission
-        raise click.ClickException(
-            f"Invalid h5_path(s) detected (must end with .h5):\n" + "\n".join(invalid)
-        )
+
+    # Check for invalid h5 paths
+    for s in samples:
+        h5_path = s["h5_path"]
+        if not h5_path.endswith(".h5"):
+            raise click.ClickException(
+                f"Invalid h5_path detected (must end with .h5): {h5_path}"
+            )
 
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
+        sanger_id = sample["sanger_id"]
         h5_path = sample["h5_path"]
         if not os.path.exists(h5_path):
             logger.error(
@@ -84,10 +89,10 @@ def cmd(
         # Path of the expected output notebook
         output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
         os.makedirs(output_dir, exist_ok=True)
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-        if os.path.exists(scanpy_output):
+        output_notebook = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
+        if os.path.exists(output_notebook):
             logger.warning(
-                f"Notebook for {sample_id} already exists at {scanpy_output}. Skipping."
+                f"Notebook for {sample_id} already exists at {output_notebook}. Skipping."
             )
             continue  # skip this sample
 
@@ -109,6 +114,8 @@ def cmd(
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
+
+        # Submit job for each valid sample
         for sample in valid_samples:
             sample_id = sample["sample_id"]
             sanger_id = sample["sanger_id"]
@@ -119,8 +126,7 @@ def cmd(
             command = (
                 f"module load cellgen/conda && "
                 f"source activate {conda_env} && "
-                f"papermill {NOTEBOOK_PATH} "
-                f"{output_dir}/{sample_id}_{sanger_id}.ipynb "
+                f"papermill {sc_base1_path} {output_notebook} "
                 f"-p samples_database '{os.getenv('TEAM_SAMPLES_DIR')}' "
                 f"-p sample_name '{sanger_id}' "
                 f"-p sample_id '{sample_id}' "

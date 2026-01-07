@@ -102,65 +102,6 @@ def process_metadata_file(metadata, required_columns=None):
     return samples
 
 
-def process_h5_file(metadata, required_columns=None):
-    """
-    Collects samples from metadata file, ensuring required columns are included.
-
-    Args:
-        metadata (str): Path to metadata CSV/TSV file.
-        required_columns (set or list, optional): Columns that must be present
-            in the metadata file and included in the return object.
-            Defaults to {"sample_id", "h5_path"}.
-    """
-    if required_columns is None:
-        required_columns = {"sample_id", "h5_path"}
-    else:
-        required_columns = set(required_columns)
-
-    samples = []
-
-    if metadata:
-        try:
-            sep = (
-                ","
-                if metadata.endswith(".csv")
-                else "\t" if metadata.endswith(".tsv") else None
-            )
-            if sep is None:
-                logger.error(
-                    "Unsupported file format. Please provide a .csv or .tsv file"
-                )
-                return []
-
-            df = pd.read_csv(metadata, sep=sep)
-
-            # Check for missing required columns
-            missing = required_columns - set(df.columns)
-            if missing:
-                logger.warning(
-                    f"Metadata file {metadata} is missing required columns: {', '.join(missing)}"
-                )
-            else:
-                # Iterate rows, build dict with only required columns
-                for _, row in df.iterrows():
-                    if all(row.get(col) for col in required_columns):
-                        sample = {col: row[col] for col in required_columns}
-
-                        samples.append(sample)
-                    else:
-                        logger.warning(
-                            f"Invalid entry (missing required values): {row}"
-                        )
-        except Exception as e:
-            logger.error(f"Error reading metadata file {metadata}: {e}")
-
-    if not samples:
-        logger.error("No valid samples provided. Use --metadata")
-        raise click.Abort()
-
-    return samples
-
-
 def validate_irods_path(sample_id, irods_path):
     """Validate that irods_path exists in imeta query results for sample_id."""
     try:
