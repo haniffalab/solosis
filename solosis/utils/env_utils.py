@@ -33,6 +33,7 @@ def validate_env():
         logger.error(f"Failed to create sample data directory '{samples_dir}': {e}")
         raise click.Abort()
 
+    # Set the SCRIPT_BIN environment variable
     script_bin = os.path.abspath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -44,9 +45,21 @@ def validate_env():
             f"Script bin directory '{script_bin}' does not exist or is inaccessible."
         )
         raise click.Abort()
-
-    # Set the environment variable
     os.environ["SCRIPT_BIN"] = script_bin
+
+    # Set the NOTEBOOKS_DIR environment variable
+    notebooks_dir = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../notebooks",
+        )
+    )
+    if not os.path.isdir(notebooks_dir):
+        logger.error(
+            f"Notebooks directory '{notebooks_dir}' does not exist or is inaccessible."
+        )
+        raise click.Abort()
+    os.environ["NOTEBOOKS_DIR"] = notebooks_dir
 
 
 def irods_auth(timeout=5):

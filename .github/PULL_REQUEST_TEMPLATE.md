@@ -2,17 +2,20 @@
 
 Give a brief summary of changes...
 
-Fixes # (issue)
+Fixes # (issue)  
+Related to # (if applicable)
 
 ## Type of change
 
-- [ ] Documentation (non-breaking change that adds or improves the documentation)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Optimization (non-breaking, back-end change that speeds up the code)
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] Breaking change (whatever its nature)
+- [ ] 🐛 Bug fix (non-breaking change that resolves an issue)
+- [ ] ✨ New feature (non-breaking change that adds functionality)
+- [ ] ⚡ Optimisation (non-breaking improvement to performance or efficiency)
+- [ ] 🧩 Documentation (adds or improves documentation)
+- [ ] 🧱 Maintenance (refactor, dependency update, CI/CD, etc.)
+- [ ] 🔥 Breaking change (fix or feature that causes existing functionality to change)
 
 ## Checklist
 
 - [ ] All tests pass (eg. `pytest`)
 - [ ] Pre-commit hooks run successfully (eg. `pre-commit run --all-files`)
+- [ ] Documentation updated (if required)
