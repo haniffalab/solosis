@@ -14,12 +14,12 @@
 #   <time>        - Time allocated to LSF job.
 #   --no-bam         - Optional flag to disable BAM file generation (saves memory and disk space).
 
-set -e  # Exit immediately if a command fails
+set -e # Exit immediately if a command fails
 
 # Check if at least 6 arguments are provided
 if [ "$#" -lt 6 ]; then
-  echo "Usage: $0 <sample_id> <output_dir> <libraries_path> <version> <cpu> <mem> <time> [--no-bam]" >&2
-  exit 1
+	echo "Usage: $0 <sample_id> <output_dir> <libraries_path> <version> <cpu> <mem> <time> [--no-bam]" >&2
+	exit 1
 fi
 
 # Assign command-line arguments to variables
@@ -30,18 +30,18 @@ VERSION="$4"
 CPU="$5"
 MEM="$6"
 TIME="$7"
-BAM_FLAG=""  # Default to generating BAM files
-REF="/software/cellgen/cellgeni/refdata_10x/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"  # Reference genome
+BAM_FLAG=""                                                                             # Default to generating BAM files
+REF="/software/cellgen/cellgeni/refdata_10x/refdata-cellranger-arc-GRCh38-2020-A-2.0.0" # Reference genome
 
 # Handle optional --no-bam flag (disables BAM file generation)
 if [ "$8" == "--no-bam" ]; then
-  BAM_FLAG="--no-bam"
+	BAM_FLAG="--no-bam"
 fi
 
 # Load Cell Ranger ARC module (make sure the version is correct)
 if ! module load cellgen/cellranger-arc/"$VERSION"; then
-  echo "Error: Failed to load Cell Ranger ARC version $VERSION" >&2
-  exit 1
+	echo "Error: Failed to load Cell Ranger ARC version $VERSION" >&2
+	exit 1
 fi
 
 # Ensure output directory exists and create it if not
@@ -56,12 +56,12 @@ echo "Using $CPU CPU cores and $(($MEM / 1000)) GB memory"
 
 # Run Cell Ranger ARC count
 cellranger-arc count \
-    --id="$ID" \
-    --libraries="$LIBRARIES_PATH" \
-    --reference="$REF" \
-    --localcores=$CPU \
-    --localmem=$((MEM / 1000)) \
-    $BAM_FLAG
+	--id="$ID" \
+	--libraries="$LIBRARIES_PATH" \
+	--reference="$REF" \
+	--localcores="$CPU" \
+	--localmem=$((MEM / 1000)) \
+	$BAM_FLAG
 
 chmod -R g+w "$OUTPUT_DIR" >/dev/null 2>&1 || true
 echo "Cell Ranger ARC count completed for libraries file: $LIBRARIES_PATH"

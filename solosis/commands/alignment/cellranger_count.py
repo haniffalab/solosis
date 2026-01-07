@@ -37,7 +37,10 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
     "--chemistry",
     type=click.Choice(
         [
+            "threeprime",
+            "fiveprime",
             "SC5P-R2",
+            "SC5P-PE",
             "SC5P-PE-v3",
             "SC5P-R2",
             "SC5P-R2-v3",
@@ -47,8 +50,10 @@ FASTQ_EXTENSIONS = [".fastq", ".fastq.gz"]
             "SC3Pv4",
             "SC3Pv3LT",
             "SC3Pv3HT",
+            "SC-FB",
             "SFRP",
             "MFRP",
+            "ARC-v1",
         ]
     ),
     # type=str,

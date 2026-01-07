@@ -14,7 +14,7 @@ conda_env = "/software/cellgen/team298/shared/envs/solosis-sc-env"
 rna__merge_path = os.path.abspath(
     os.path.join(
         os.getenv("NOTEBOOKS_DIR"),
-        "sc_base1.ipynb",
+        "rna__merge.ipynb",
     )
 )
 
@@ -53,7 +53,9 @@ def cmd(
     Submit a job to merge multiple h5ad objects into a single file.
 
     Input metadata should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    1st column: sample_id
+    2nd column: sanger_id
+    3rd column: h5_path
 
     Make sure to run `solosis-cli sc-rna scanpy --metadata ...` first.
     """
@@ -68,47 +70,28 @@ def cmd(
     logger.debug(f"Job name: {job_name}")
 
     samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
+        metadata,
+        required_columns={"sample_id", "sanger_id", "h5_path"},
     )
 
-    # defining output path for notebook
+    # Check for invalid h5 paths
+    for s in samples:
+        h5_path = s["h5_path"]
+        if not h5_path.endswith(".h5"):
+            raise click.ClickException(
+                f"Invalid h5_path detected (must end with .h5): {h5_path}"
+            )
+
+    # Define output path for notebook
+    # Note: there is only a single notebook generated for all samples
     output_notebook = os.path.join(
         os.getenv("TEAM_SAMPLES_DIR"), f"merged_objects", f"{merged_filename}.ipynb"
     )
 
     valid_samples = []
-    for sample in samples:
-        sample_id = sample["sample_id"]
-        sanger_id = sample["sanger_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        if not os.path.exists(cellranger_dir):
-            logger.error(
-                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
-            )
-            continue  # skip this sample entirely
-
-        # Path of the expected output from scanpy cmd
-        output_dir = os.path.join(os.getenv("TEAM_SAMPLES_DIR"), sample_id)
-        os.makedirs(output_dir, exist_ok=True)
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-        if not os.path.exists(scanpy_output):
-            logger.warning(
-                f"Output for {sample_id} does not exist at {scanpy_output}. Skipping."
-            )
-            continue  # skip this sample
-
-        valid_samples.append(
-            {
-                "sample_id": sample_id,
-                "sanger_id": sanger_id,
-                "cellranger_dir": cellranger_dir,
-                "output_dir": output_dir,
-            }
-        )
-
-    if not valid_samples:
-        logger.error(f"No valid samples found. Exiting")
-        return
+    # Normally, we would validate samples and then pass those downstream.
+    # However, this notebook is setup to receive just the path to the metadata
+    # file. Therefore, we offload any validation for this command to the notebook.
 
     with tempfile.NamedTemporaryFile(
         delete=False, mode="w", suffix=".txt", dir=os.environ["TEAM_TMP_DIR"]

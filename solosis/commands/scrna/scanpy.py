@@ -51,7 +51,10 @@ def cmd(
     Submit Scanpy workflow for scRNA-seq data as a job on the compute farm.
 
     Input samplefile should have 3 mandatory columns:
-    1st column: sample_id, 2nd column: sanger_id, 3rd column: cellranger_dir
+    1st column: sample_id
+    2nd column: sanger_id
+    3rd column: h5_path
+
     Example csv:
         sample_id,sanger_id,cellranger_dir
         WS_wEMB10202353,WS_wEMB10202353,/lustre/scratch124/cellgen/haniffa/data/samples/WS_wEMB10202353/cellranger/cellranger601_count_37876_WS_wEMB10202353_GRCh38-2020-A
@@ -70,27 +73,35 @@ def cmd(
     logger.debug(f"Job name: {job_name}")
 
     samples = process_metadata_file(
-        metadata, required_columns={"sample_id", "sanger_id", "cellranger_dir"}
+        metadata, required_columns={"sample_id", "sanger_id", "h5_path"}
     )
+
+    # Check for invalid h5 paths
+    for s in samples:
+        h5_path = s["h5_path"]
+        if not h5_path.endswith(".h5"):
+            raise click.ClickException(
+                f"Invalid h5_path detected (must end with .h5): {h5_path}"
+            )
 
     valid_samples = []
     for sample in samples:
         sample_id = sample["sample_id"]
         sanger_id = sample["sanger_id"]
-        cellranger_dir = sample["cellranger_dir"]
-        if not os.path.exists(cellranger_dir):
+        h5_path = sample["h5_path"]
+        if not os.path.exists(h5_path):
             logger.error(
-                f"Cellranger path does not exist: {cellranger_dir} for sample: {sample_id}. Skipping."
+                f"h5 file does not exist: {h5_path} for sample: {sample_id}. Skipping."
             )
             continue  # skip this sample entirely
 
         # Path of the expected output notebook
         output_dir = outpt_folder_path
         os.makedirs(output_dir, exist_ok=True)
-        scanpy_output = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
-        if os.path.exists(scanpy_output):
+        output_notebook = os.path.join(output_dir, f"{sample_id}_{sanger_id}.ipynb")
+        if os.path.exists(output_notebook):
             logger.warning(
-                f"Notebook for {sample_id} already exists at {scanpy_output}. Skipping."
+                f"Notebook for {sample_id} already exists at {output_notebook}. Skipping."
             )
             continue  # skip this sample
 
@@ -98,7 +109,7 @@ def cmd(
             {
                 "sample_id": sample_id,
                 "sanger_id": sanger_id,
-                "cellranger_dir": cellranger_dir,
+                "h5_path": h5_path,
                 "output_dir": output_dir,
             }
         )
@@ -112,10 +123,12 @@ def cmd(
     ) as tmpfile:
         logger.debug(f"Temporary command file created: {tmpfile.name}")
         os.chmod(tmpfile.name, 0o660)
+
+        # Submit job for each valid sample
         for sample in valid_samples:
             sample_id = sample["sample_id"]
             sanger_id = sample["sanger_id"]
-            cellranger_dir = sample["cellranger_dir"]
+            h5_path = sample["h5_path"]
             output_dir = sample["output_dir"]
 
             # Build papermill command
@@ -124,10 +137,10 @@ def cmd(
                 f"source activate {conda_env} && "
                 f"python -m ipykernel install --user --name hlb_rna --display-name 'HLB RNA (conda)' && "
                 f"papermill {sc_base1_path} -k hlb_rna "
-                f"{scanpy_output} "
+                f"{output_notebook} "
                 f"-p sample_id '{sample_id}' "
                 f"-p sanger_id '{sanger_id}' "
-                f"-p cellranger_folder '{cellranger_dir}' "
+                f"-p h5_file '{h5_path}' "
                 f"-p outpt_folder_path '{outpt_folder_path}' "
                 "--log-output"
             )
