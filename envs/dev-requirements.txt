@@ -4,7 +4,7 @@
 #
 #    pip-compile --extra=dev --output-file=envs/dev-requirements.txt
 #
-black==25.1.0
+black==26.3.1
     # via solosis (setup.py)
 cfgv==3.4.0
     # via pre-commit
