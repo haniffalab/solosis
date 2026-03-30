@@ -35,7 +35,7 @@ packaging==24.2
     # via sphinx
 pandas==2.2.3
     # via solosis (setup.py)
-pygments==2.19.1
+pygments==2.20.0
     # via sphinx
 python-dateutil==2.9.0.post0
     # via pandas
